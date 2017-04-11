@@ -43,7 +43,7 @@ using namespace NPUNITS;
 
 //   ROOT
 #include "TChain.h"
-#include "TVector3.h" 
+#include "TVector3.h"
 //#include "TRandom3.h"
 //#include "random"
 
@@ -65,10 +65,10 @@ ClassImp(TTiaraHyballPhysics)
 
     // Threshold
     m_StripRing_E_RAW_Threshold = 0 ;
-    m_StripRing_E_Threshold = 0.0 ;
+    m_StripRing_E_Threshold = 0.3 ;
 
     m_StripSector_E_RAW_Threshold = 0 ;
-    m_StripSector_E_Threshold = 0.0 ;
+    m_StripSector_E_Threshold = 0.3 ;
 
     m_Take_E_Ring=false;
     m_Take_T_Sector=true;
@@ -100,7 +100,7 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       // Search for associate Time:
       double Ring_T = -1000 ;
-      unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult(); 
+      unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult();
       for(unsigned int t = 0 ; t < StripRingTMult ; ++t ){
         if(  m_PreTreatedData->GetRingEStripNbr( couple[i].X() ) == m_PreTreatedData->GetRingTStripNbr(t)
             &&m_PreTreatedData->GetRingEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetRingTDetectorNbr(t))
@@ -109,7 +109,7 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       // Search for associate Time:
       double Sector_T = -1000 ;
-      unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult(); 
+      unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult();
       for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
         if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
             &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
@@ -221,7 +221,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
       //   if same detector check energy
       if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
         //   Look if energy match
-        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. ) 
+        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
             < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
           ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
         }
@@ -417,7 +417,7 @@ void TTiaraHyballPhysics::ReadConfiguration(NPL::InputParser parser){
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
 
   vector<string> token = {"Z","R","Phi"};
 
@@ -442,22 +442,22 @@ void TTiaraHyballPhysics::ReadConfiguration(NPL::InputParser parser){
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTiaraHyballPhysics::InitSpectra(){  
+void TTiaraHyballPhysics::InitSpectra(){
   m_Spectra = new TTiaraHyballSpectra();
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TTiaraHyballPhysics::FillSpectra(){  
+void TTiaraHyballPhysics::FillSpectra(){
   m_Spectra -> FillRawSpectra(m_EventData);
   m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
   m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 ///////////////////////////////////////////////////////////////////////////
-void TTiaraHyballPhysics::CheckSpectra(){  
+void TTiaraHyballPhysics::CheckSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
-void TTiaraHyballPhysics::ClearSpectra(){  
+void TTiaraHyballPhysics::ClearSpectra(){
   // To be done
 }
 ///////////////////////////////////////////////////////////////////////////
@@ -475,7 +475,7 @@ map< string,TH1* > TTiaraHyballPhysics::GetSpectra() {
     return empty ;
   }
 
-} 
+}
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
@@ -530,33 +530,33 @@ void TTiaraHyballPhysics::InitializeRootOutput(){
 /////   Specific to TiaraHyballArray   ////
 void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
 
-  m_NumberOfDetector++; 
+  m_NumberOfDetector++;
   double r_min = R+32.6;
   double r_max = R+135.1;
-  double phi_offset = 5.6*deg; 
+  double phi_offset = 5.6*deg;
   double phi_min = -27.2*deg;
   double phi_max = 27.2*deg;
   int NumberOfRings = 16 ;
   int NumberOfSectors = 8 ;
-  double wedge_pitch  = 60*deg  ; 
-  double ring_pitch   = (r_max-r_min)/NumberOfRings  ; 
+  double wedge_pitch  = 60*deg  ;
+  double ring_pitch   = (r_max-r_min)/NumberOfRings  ;
   double sec_pitch = (phi_max-phi_min)/NumberOfSectors ;
 
   //   Buffer object to fill Position Array
   TVector3 StripCenter(0,0,0);
-  vector<double> lineX ; 
-  vector<double> lineY ; 
+  vector<double> lineX ;
+  vector<double> lineY ;
   vector<double> lineZ ;
   vector< vector< double > >   WedgeStripPositionX   ;
   vector< vector< double > >   WedgeStripPositionY   ;
   vector< vector< double > >   WedgeStripPositionZ   ;
-  
+
   for(int iRing = 0 ; iRing < NumberOfRings ; iRing++){
     lineX.clear() ;
     lineY.clear() ;
     lineZ.clear() ;
-    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){ 
-      StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate 
+    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){
+      StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate
       StripCenter.SetY(0);
       StripCenter.SetZ(Z);
       StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://gca.tamu.edu/TIARA+General/25
@@ -599,13 +599,13 @@ TVector3 TTiaraHyballPhysics::GetPositionOfInteraction(const int i) const{
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) const{
   TVector3 OriginalPosition = GetPositionOfInteraction(i);
-  double rho = OriginalPosition.Perp(); 
+  double rho = OriginalPosition.Perp();
   double phi = OriginalPosition.Phi();
   double z = OriginalPosition.Z();
   // randomises within a given detector ring and sector
   double rho_rand = (rho-3.2) + 6.4*sqrt(Rand->Uniform(0,1));// sqrt is necessary for realistic randomise!
-  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg); 
-  return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ; 
+  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg);
+  return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -687,9 +687,9 @@ namespace TiaraHyball_LOCAL{
 
   double fStrip_Sector_T(const TTiaraHyballData* m_EventData , const int i){
     static string name; name = "TIARAHYBALL/D" ;
-    name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) ); 
+    name+= NPL::itoa( m_EventData->GetSectorTDetectorNbr(i) );
     name+= "_STRIP_SECTOR" ;
-    name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) ); 
+    name+= NPL::itoa( m_EventData->GetSectorTStripNbr(i) );
     name+="_T";
     return CalibrationManager::getInstance()->ApplyCalibration(name,
         m_EventData->GetRingTTime(i) );
@@ -718,4 +718,3 @@ class proxy_hyball{
 
 proxy_hyball p;
 }
-
