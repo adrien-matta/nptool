@@ -329,22 +329,15 @@ void TMust2Physics::PreTreat(){
   for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
     if( m_EventData->GetMMStripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel("X", m_EventData->GetMMStripXEDetectorNbr(i), m_EventData->GetMMStripXEStripNbr(i)) ){
       double EX = fSi_X_E(m_EventData , i);
-      if( EX > m_Si_X_E_Threshold ){
-        m_PreTreatedData->SetMMStripXEDetectorNbr( m_EventData->GetMMStripXEDetectorNbr(i) );
-        m_PreTreatedData->SetMMStripXEStripNbr( m_EventData->GetMMStripXEStripNbr(i) );
-        m_PreTreatedData->SetMMStripXEEnergy( EX );
-      }
-
+      if( EX > m_Si_X_E_Threshold )
+        m_PreTreatedData->SetStripXE( m_EventData->GetMMStripXEDetectorNbr(i) ,  m_EventData->GetMMStripXEStripNbr(i)  , EX);
     }
   }
 
   //   T
   for(unsigned int i = 0 ; i < m_StripXTMult ; ++i){
-    if(IsValidChannel("X", m_EventData->GetMMStripXTDetectorNbr(i), m_EventData->GetMMStripXTStripNbr(i))){
-      m_PreTreatedData->SetMMStripXTDetectorNbr( m_EventData->GetMMStripXTDetectorNbr(i) );
-      m_PreTreatedData->SetMMStripXTStripNbr( m_EventData->GetMMStripXTStripNbr(i) );
-      m_PreTreatedData->SetMMStripXTTime( fSi_X_T(m_EventData , i) );
-    }
+    if(IsValidChannel("X", m_EventData->GetMMStripXTDetectorNbr(i), m_EventData->GetMMStripXTStripNbr(i)))
+      m_PreTreatedData->SetStripXT( m_EventData->GetMMStripXTDetectorNbr(i),m_EventData->GetMMStripXTStripNbr(i),fSi_X_T(m_EventData , i));
   }
 
 
@@ -353,21 +346,16 @@ void TMust2Physics::PreTreat(){
   for(unsigned int i = 0 ; i < m_StripYEMult ; ++i){
     if( m_EventData->GetMMStripYEEnergy(i)<m_Si_Y_E_RAW_Threshold && IsValidChannel("Y", m_EventData->GetMMStripYEDetectorNbr(i), m_EventData->GetMMStripYEStripNbr(i))){
       double EY = fSi_Y_E(m_EventData , i);
-      if( EY >m_Si_Y_E_Threshold ){
-        m_PreTreatedData->SetMMStripYEDetectorNbr( m_EventData->GetMMStripYEDetectorNbr(i) );
-        m_PreTreatedData->SetMMStripYEStripNbr( m_EventData->GetMMStripYEStripNbr(i) );
-        m_PreTreatedData->SetMMStripYEEnergy( EY );
-      }
+      if( EY >m_Si_Y_E_Threshold )
+        m_PreTreatedData->SetStripYE( m_EventData->GetMMStripYEDetectorNbr(i),m_EventData->GetMMStripYEStripNbr(i),EY);
+      
     }
   }
 
   //   T
   for(unsigned int i = 0 ; i < m_StripYTMult ; ++i){
-    if(IsValidChannel("Y", m_EventData->GetMMStripYTDetectorNbr(i), m_EventData->GetMMStripYTStripNbr(i))){
-      m_PreTreatedData->SetMMStripYTDetectorNbr( m_EventData->GetMMStripYTDetectorNbr(i) );
-      m_PreTreatedData->SetMMStripYTStripNbr( m_EventData->GetMMStripYTStripNbr(i) );
-      m_PreTreatedData->SetMMStripYTTime( fSi_Y_T(m_EventData , i) );
-    }
+    if(IsValidChannel("Y", m_EventData->GetMMStripYTDetectorNbr(i), m_EventData->GetMMStripYTStripNbr(i)))
+       m_PreTreatedData->SetStripYT( m_EventData->GetMMStripYTDetectorNbr(i),m_EventData->GetMMStripYTStripNbr(i),fSi_Y_T(m_EventData , i));
   }
 
 
@@ -376,21 +364,15 @@ void TMust2Physics::PreTreat(){
   for(unsigned int i = 0 ; i < m_CsIEMult ; ++i){
     if( m_EventData->GetMMCsIEEnergy(i)>m_CsI_E_RAW_Threshold && IsValidChannel("CsI", m_EventData->GetMMCsIEDetectorNbr(i), m_EventData->GetMMCsIECristalNbr(i))){
       double ECsI = fCsI_E(m_EventData , i);
-      if( ECsI > m_CsI_E_Threshold ){
-        m_PreTreatedData->SetMMCsIEDetectorNbr( m_EventData->GetMMCsIEDetectorNbr(i) );
-        m_PreTreatedData->SetMMCsIECristalNbr( m_EventData->GetMMCsIECristalNbr(i) );
-        m_PreTreatedData->SetMMCsIEEnergy( ECsI );
-      }
+      if( ECsI > m_CsI_E_Threshold )
+        m_PreTreatedData->SetCsIE( m_EventData->GetMMCsIEDetectorNbr(i),m_EventData->GetMMCsIECristalNbr(i),ECsI);
     }
   }
 
   //   T
   for(unsigned int i = 0 ; i < m_CsITMult ; ++i){
-    if(IsValidChannel("CsI", m_EventData->GetMMCsITDetectorNbr(i), m_EventData->GetMMCsITCristalNbr(i))){
-      m_PreTreatedData->SetMMCsITDetectorNbr( m_EventData->GetMMCsITDetectorNbr(i) );
-      m_PreTreatedData->SetMMCsITCristalNbr( m_EventData->GetMMCsITCristalNbr(i) );
-      m_PreTreatedData->SetMMCsITTime( fCsI_T(m_EventData , i) );
-    }
+    if(IsValidChannel("CsI", m_EventData->GetMMCsITDetectorNbr(i), m_EventData->GetMMCsITCristalNbr(i)))
+      m_PreTreatedData->SetCsIT(m_EventData->GetMMCsITDetectorNbr(i), m_EventData->GetMMCsITCristalNbr(i), fCsI_T(m_EventData , i));
   }
 
 
@@ -399,21 +381,15 @@ void TMust2Physics::PreTreat(){
   for(unsigned int i = 0 ; i < m_SiLiEMult ; ++i){
     if( m_EventData->GetMMSiLiEEnergy(i)>m_SiLi_E_RAW_Threshold && IsValidChannel("SiLi", m_EventData->GetMMSiLiEDetectorNbr(i), m_EventData->GetMMSiLiEPadNbr(i))){
       double ESiLi = fSiLi_E(m_EventData , i);
-      if( ESiLi > m_SiLi_E_Threshold ){
-        m_PreTreatedData->SetMMSiLiEDetectorNbr( m_EventData->GetMMSiLiEDetectorNbr(i) );
-        m_PreTreatedData->SetMMSiLiEPadNbr( m_EventData->GetMMSiLiEPadNbr(i) );
-        m_PreTreatedData->SetMMSiLiEEnergy( ESiLi );
-      }
+      if( ESiLi > m_SiLi_E_Threshold )
+        m_PreTreatedData->SetSiLiE( m_EventData->GetMMSiLiEDetectorNbr(i), m_EventData->GetMMSiLiEPadNbr(i),ESiLi);
     }
   }
 
   //   T
   for(unsigned int i = 0 ; i < m_SiLiTMult ; ++i){
-    if(IsValidChannel("SiLi", m_EventData->GetMMSiLiTDetectorNbr(i), m_EventData->GetMMSiLiTPadNbr(i))){
-      m_PreTreatedData->SetMMSiLiTDetectorNbr( m_EventData->GetMMSiLiTDetectorNbr(i) );
-      m_PreTreatedData->SetMMSiLiTPadNbr( m_EventData->GetMMSiLiTPadNbr(i) );
-      m_PreTreatedData->SetMMSiLiTTime( fSiLi_T(m_EventData , i) );
-    }
+    if(IsValidChannel("SiLi", m_EventData->GetMMSiLiTDetectorNbr(i), m_EventData->GetMMSiLiTPadNbr(i)))
+      m_PreTreatedData->SetSiLiT(m_EventData->GetMMSiLiTDetectorNbr(i), m_EventData->GetMMSiLiTPadNbr(i) , fSiLi_T(m_EventData , i)); 
   }
 
   return;
