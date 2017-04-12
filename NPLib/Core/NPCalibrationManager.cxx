@@ -23,7 +23,7 @@
 #include "NPOptionManager.h"
 #include "TAsciiFile.h"
 #include "RootOutput.h"
-
+#include "NPCore.h"
 //   STL
 #include <cstdlib>
 #include <limits>
@@ -107,9 +107,9 @@ void CalibrationManager::ClearCalibration(){
 }
 
 /////////////////////////////////////////////////////////////////
-vector<double> CalibrationManager::GetCorrection(const string& ParameterPath){
+vector<double> CalibrationManager::GetCorrection(const string& ParameterPath) const {
   vector<double> Coeff ;
-  map< string , vector<double> >::iterator it ;
+  map< string , vector<double> >::const_iterator it ;
   it = fCalibrationCoeff.find(ParameterPath)  ;
 
   if(it == fCalibrationCoeff.end() )
@@ -128,8 +128,7 @@ vector<double> CalibrationManager::GetCorrection(const string& ParameterPath){
 
 
 //////////////////////////////////////////////////////////////////
-void CalibrationManager::LoadParameterFromFile()
-{
+void CalibrationManager::LoadParameterFromFile(){
   ifstream CalibFile    ;
   string    DataBuffer   ;
   string   LineBuffer ;
@@ -138,28 +137,24 @@ void CalibrationManager::LoadParameterFromFile()
   TAsciiFile* AcsiiCalibration = RootOutput::getInstance()->GetAsciiFileCalibration();
 
 
-  for(unsigned int i = 0 ; i < fFileList.size() ; i++)
-  {
+  unsigned int sizeF = fFileList.size();
+  for(unsigned int i = 0 ; i < sizeF ; i++){
     CalibFile.open( fFileList[i].c_str() );
     map<string,string>::iterator it ;
 
-    if(!CalibFile)
-    {
-      cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-      cout << " WARNING: FILE " << fFileList[i] << " IS MISSING "                                                        << endl ;
-      cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
+    if(!CalibFile){
+      ostringstream message;
+      message << "file " << fFileList[i] << " is missing " ;
+      NPL::SendWarning ("NPL::CalibrationManager" , message.str());
     }
 
-    else 
-    {
+    else {
       // Append the Calibration File to the RootOuput for Back-up
       string comment = "%%% From File " + fFileList[i] + "%%%";
       AcsiiCalibration->AppendLine(comment.c_str());
       AcsiiCalibration->Append(fFileList[i].c_str());
 
-
-      while( !CalibFile.eof() )
-      {
+      while( !CalibFile.eof() ){
         // Read the file Line by line
         getline(CalibFile, LineBuffer);
 
@@ -174,8 +169,7 @@ void CalibrationManager::LoadParameterFromFile()
         //   Search word in the token list
         it=fToken.find(DataBuffer);
         //   if the word is find, values are read
-        if( it!=fToken.end() )
-        { 
+        if( it!=fToken.end() ){ 
           vector<double> Coeff ;
           while( theLine >> DataBuffer ){
             Coeff.push_back( atof(DataBuffer.c_str()) ) ;
@@ -188,20 +182,16 @@ void CalibrationManager::LoadParameterFromFile()
           //   Add the list of Coeff to the Coeff map using Parameter Path as index
           fCalibrationCoeff[ it->second ] = Coeff ;
         }
-
       }
-
     }
-
-
     CalibFile.close() ;
   }
 }
 
 //////////////////////////////////////////////////////////////////
-double CalibrationManager::ApplyCalibration(const string& ParameterPath , const double& RawValue){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+double CalibrationManager::ApplyCalibration(const string& ParameterPath , const double& RawValue) const {
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -223,9 +213,9 @@ double CalibrationManager::ApplyCalibration(const string& ParameterPath , const 
 
 }
 //////////////////////////////////////////////////////////////////
-double CalibrationManager::ApplyCalibrationDebug(const string& ParameterPath , const double& RawValue){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+double CalibrationManager::ApplyCalibrationDebug(const string& ParameterPath , const double& RawValue) const{
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -253,10 +243,10 @@ double CalibrationManager::ApplyCalibrationDebug(const string& ParameterPath , c
   cout << "results = " << CalibratedValue << endl ;
   return CalibratedValue ;
 }
-//////////////////////////////////////////////////////////////////
-double CalibrationManager::ApplyResistivePositionCalibration(const string& ParameterPath , const double& DeltaRawValue){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+////////////////////////////////////////////////////////////////////////////////
+double CalibrationManager::ApplyResistivePositionCalibration(const string& ParameterPath , const double& DeltaRawValue) const{
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -277,9 +267,10 @@ double CalibrationManager::ApplyResistivePositionCalibration(const string& Param
   return CalibratedValue ;
 }
 
-double CalibrationManager::ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& DeltaRawValue){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+////////////////////////////////////////////////////////////////////////////////
+double CalibrationManager::ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& DeltaRawValue) const {
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -307,9 +298,9 @@ double CalibrationManager::ApplyResistivePositionCalibrationDebug(const string& 
 }
 
 //////////////////////////////////////////////////////////////////
-bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const double& RawValue){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const double& RawValue) const{
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
   
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -317,9 +308,6 @@ bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const doubl
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
-    // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-    // cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
-    // cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;           
     return false;
   }
 
@@ -347,14 +335,14 @@ bool CalibrationManager::ApplyThreshold(const string& ParameterPath, const doubl
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-double CalibrationManager::GetPedestal(const string& ParameterPath){
+double CalibrationManager::GetPedestal(const string& ParameterPath) const{
   return GetValue(ParameterPath,0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
-double CalibrationManager::GetValue(const string& ParameterPath,const unsigned int& order){
-  map< string , vector<double> >::iterator it ;
-  static map< string , vector<double> >::iterator ite = fCalibrationCoeff.end();
+double CalibrationManager::GetValue(const string& ParameterPath,const unsigned int& order) const{
+  map< string , vector<double> >::const_iterator it ;
+  static map< string , vector<double> >::const_iterator ite = fCalibrationCoeff.end();
 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
@@ -362,10 +350,6 @@ double CalibrationManager::GetValue(const string& ParameterPath,const unsigned i
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
-   /* cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-    cout << " ERROR: PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
-    cout << "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX " << endl ;
-    */
     return 0;
   }
 

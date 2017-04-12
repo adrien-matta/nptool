@@ -57,15 +57,15 @@ class CalibrationManager{
          
          // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
          // return the Calibrated value
-         double ApplyCalibration(const string& ParameterPath , const double& RawValue);
-         double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
+         double ApplyCalibration (const string& ParameterPath , const double& RawValue) const ;
+         double ApplyResistivePositionCalibration (const string& ParameterPath , const double& RawValue) const ;
          // Same but with debug information outputs
-         double ApplyCalibrationDebug(const string& ParameterPath , const double& RawValue);
-         double ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& RawValue);
+         double ApplyCalibrationDebug (const string& ParameterPath , const double& RawValue) const ;
+         double ApplyResistivePositionCalibrationDebug (const string& ParameterPath , const double& RawValue) const ;
          
-         bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
-         double GetPedestal(const string& ParameterPath);
-         double GetValue(const string& ParameterPath,const unsigned int& order);
+         bool ApplyThreshold (const string& ParameterPath, const double& RawValue) const ;
+         double GetPedestal  (const string& ParameterPath) const ;
+         double GetValue     (const string& ParameterPath,const unsigned int& order) const ;
 
       public:   //   To be called after initialisation
          //   Loop over the file list and catch the file used for calibration
@@ -75,14 +75,11 @@ class CalibrationManager{
          void ClearCalibration();
 
       public: //Get correction coefficient vector
-         vector<double> GetCorrection(const string& ParameterPath);
-
-
+         vector<double> GetCorrection (const string& ParameterPath) const ;
 
       private:
          //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
      
-
          map< string , vector<double> >   fCalibrationCoeff ;  
          //   Hold the path of all the registered file of coeff
          vector<string>   fFileList   ;
