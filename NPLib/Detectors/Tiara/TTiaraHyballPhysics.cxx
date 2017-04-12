@@ -65,10 +65,10 @@ ClassImp(TTiaraHyballPhysics)
 
     // Threshold
     m_StripRing_E_RAW_Threshold = 0 ;
-    m_StripRing_E_Threshold = 0.0 ;
+    m_StripRing_E_Threshold = 0.300 ; // MeV
 
     m_StripSector_E_RAW_Threshold = 0 ;
-    m_StripSector_E_Threshold = 0.0 ;
+    m_StripSector_E_Threshold = 0.300 ; // MeV
 
     m_Take_E_Ring=false;
     m_Take_T_Sector=true;
