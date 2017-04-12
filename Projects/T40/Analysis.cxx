@@ -97,11 +97,10 @@ void Analysis::Init(){
   // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
-  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  //LightSi = NPL::EnergyLoss(light+"_Si.G4table","SRIM",10);
+  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",100);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -173,7 +172,7 @@ void Analysis::TreatEvent(){
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
-      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on target
+      ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on Hyball
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
     }
     else{
@@ -187,10 +186,11 @@ void Analysis::TreatEvent(){
     Energy = ELab = 0;
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH; // calibration for hyball is in MeV
-
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.7*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
-    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); 
+    //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget); 
+    //cin.get();
+
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
@@ -218,12 +218,15 @@ void Analysis::TreatEvent(){
     if(XTarget>-1000 && YTarget>-1000){
       TVector3 BeamImpact(XTarget,YTarget,0);
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
+      //Angle of emission wrt to beam
       ThetaLab = HitDirection.Angle( BeamDirection );
-      TVector3 NormalOnBarrel(+1,0,0); // Normal on detector 5 
-      int det = TB->DetectorNumber[countTiaraBarrel];
-      NormalOnBarrel.RotateZ((5-det)*45*deg);
-      ThetaTBSurface = HitDirection.Angle(NormalOnBarrel);
+      //Angle of emission wrt to target normal
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
+      //angle of impact on detector
+      TVector3 NormalOnBarrel(0,1,0); // Normal on detector 3 
+      int det = TB->Detector_N[countTiaraBarrel];
+      NormalOnBarrel.RotateZ((3-det)*45*deg);
+      ThetaTBSurface = HitDirection.Angle(NormalOnBarrel);
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -236,16 +239,14 @@ void Analysis::TreatEvent(){
     Energy = ELab = 0;
     Si_E_InnerTB = TB->Strip_E[countTiaraBarrel];
     Energy = Si_E_InnerTB*keV;// calibration for barrel is in keV
+    
     //treat the back detector (in progress)
     if(false && TB->Outer_Strip_E.size()>0)
 	    if(TB->Outer_Strip_E[countTiaraBarrel]>0){
 	      Si_E_OuterTB = TB->Outer_Strip_E[countTiaraBarrel];
-	      Energy = Si_E_InnerTB + Si_E_OuterTB;
+	      Energy = Si_E_InnerTB*keV + Si_E_OuterTB*keV;
 	    }
 
-    if (ThetaTBSurface>89*deg && ThetaTBSurface<91*deg ) { //this case produces problems with the Eloss calc
-    	//ThetaTBSurface += 2*deg; //temporary solution
-    }
     // Evaluate energy using the thickness, Target and Si dead layer Correction
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface); 
     //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
