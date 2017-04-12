@@ -33,7 +33,7 @@
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;
 
-CalibrationManager* CalibrationManager::getInstance(string configFileName){
+CalibrationManager* CalibrationManager::getInstance(const string& configFileName){
   // A new instance of CalibrationManager is created if it does not exist:
   if (instance == 0) {
     instance = new CalibrationManager(configFileName);
