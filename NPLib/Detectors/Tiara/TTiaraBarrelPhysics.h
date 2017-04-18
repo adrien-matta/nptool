@@ -55,7 +55,8 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     Int_t EventMultiplicity;
 
     // Detector
-    vector<int> DetectorNumber ;
+    vector<int> Detector_N ;
+    vector<int> Outer_Detector_N ;
 
     // Inner Barrel
     vector<double> Strip_E;
@@ -175,7 +176,13 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     TTiaraBarrelData*         m_PreTreatedData;//!
     TTiaraBarrelData*         m_PreTreatedMSData;//! stores the intermediate Matchsticks calibrated Data
     TTiaraBarrelPhysics*      m_EventPhysics;//!
-
+    map<int, vector <double> > m_mapU;//! the maps sorts out the data before storing in m_PreTreatedData
+    map<int, vector <double> > m_mapD;//! 
+    map<int, vector <double> > m_mapB;//! 
+    map<int, vector <double> > m_mapO;//! 
+    map<int, vector <double> > m_mapMSU;//! 
+    map<int, vector <double> > m_mapMSD;//! 
+    
   private:   //   Map of activated channel
     map< int, vector<bool> > m_InnerBarrelStripUpstreamChannelStatus;//!
     map< int, vector<bool> > m_InnerBarrelStripDownstreamChannelStatus;//!
