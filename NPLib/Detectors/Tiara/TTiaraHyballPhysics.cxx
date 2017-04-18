@@ -603,7 +603,10 @@ TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) co
   double phi = OriginalPosition.Phi();
   double z = OriginalPosition.Z();
   // randomises within a given detector ring and sector
-  double rho_rand = (rho-3.2) + 6.4*sqrt(Rand->Uniform(0,1));// sqrt is necessary for realistic randomise!
+  double totalRadius = 135.1;
+  double rho_min = (rho-3.2)/totalRadius ; // ratios
+  double rho_max = (rho+3.2)/totalRadius ;
+  double rho_rand = totalRadius*sqrt(Rand->Uniform(rho_min,rho_max));// sqrt is necessary for realistic randomise!
   double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg);
   return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }
