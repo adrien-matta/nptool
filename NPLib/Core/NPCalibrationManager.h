@@ -31,65 +31,62 @@
 using namespace std ;
 
 class CalibrationManager{
-   
-      protected:   //   Constructor and Destructor are protected because the class is a singleton
-         CalibrationManager(string configFileName);
-         ~CalibrationManager();
-   
-      public: // Accessor
-         //   return a pointer to the calibration manager instance.
-         //   if the instance does not exist it is created.
-         static CalibrationManager* getInstance(string configFileName="XXX");
-   
-      private: // the instance
-         //   Hold a pointer on itself
-         static CalibrationManager* instance ;
-   
-      public:   //   File Management
-         inline void AddFile(string Path) { fFileList.push_back(Path) ;} ;
-         
-         
-      public:   // Calibration Parameter Related
-   
-         // call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
-         // return false if the token is not found in the file list
-         bool AddParameter(string DetectorName , string ParameterName , string Token)    ;      
-         
-         // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
-         // return the Calibrated value
-         double ApplyCalibration(const string& ParameterPath , const double& RawValue);
-         double ApplyResistivePositionCalibration(const string& ParameterPath , const double& RawValue);
-         // Same but with debug information outputs
-         double ApplyCalibrationDebug(const string& ParameterPath , const double& RawValue);
-         double ApplyResistivePositionCalibrationDebug(const string& ParameterPath , const double& RawValue);
-         
-         bool ApplyThreshold(const string& ParameterPath, const double& RawValue);
-         double GetPedestal(const string& ParameterPath);
-         double GetValue(const string& ParameterPath,const unsigned int& order);
 
-      public:   //   To be called after initialisation
-         //   Loop over the file list and catch the file used for calibration
-         void LoadParameterFromFile();
+  protected:   //   Constructor and Destructor are protected because the class is a singleton
+    CalibrationManager(string configFileName);
+    ~CalibrationManager();
 
-      public: //Clear calibration if we have some calibration files to read 
-         void ClearCalibration();
+  public: // Accessor
+    //   return a pointer to the calibration manager instance.
+    //   if the instance does not exist it is created.
+    static CalibrationManager* getInstance(const string& configFileName="XXX");
 
-      public: //Get correction coefficient vector
-         vector<double> GetCorrection(const string& ParameterPath);
+  private: // the instance
+    //   Hold a pointer on itself
+    static CalibrationManager* instance ;
+
+  public:   //   File Management
+    inline void AddFile(string Path) { fFileList.push_back(Path) ;} ;
 
 
+  public:   // Calibration Parameter Related
 
-      private:
-         //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
-     
+    // call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
+    // return false if the token is not found in the file list
+    bool AddParameter(string DetectorName , string ParameterName , string Token)    ;      
 
-         map< string , vector<double> >   fCalibrationCoeff ;  
-         //   Hold the path of all the registered file of coeff
-         vector<string>   fFileList   ;
-         
-         //   Hold The list of Token. Index is the Token, value the parameter path.
-         map< string , string >   fToken      ;
-      
-   };
-   
+    // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
+    // return the Calibrated value
+    double ApplyCalibration (const string& ParameterPath , const double& RawValue) const ;
+    double ApplyResistivePositionCalibration (const string& ParameterPath , const double& RawValue) const ;
+    // Same but with debug information outputs
+    double ApplyCalibrationDebug (const string& ParameterPath , const double& RawValue) const ;
+    double ApplyResistivePositionCalibrationDebug (const string& ParameterPath , const double& RawValue) const ;
+
+    bool ApplyThreshold (const string& ParameterPath, const double& RawValue) const ;
+    double GetPedestal  (const string& ParameterPath) const ;
+    double GetValue     (const string& ParameterPath,const unsigned int& order) const ;
+
+  public:   //   To be called after initialisation
+    //   Loop over the file list and catch the file used for calibration
+    void LoadParameterFromFile();
+
+  public: //Clear calibration if we have some calibration files to read 
+    void ClearCalibration();
+
+  public: //Get correction coefficient vector
+    vector<double> GetCorrection (const string& ParameterPath) const ;
+
+  private:
+    //   This map hold a vector of the calibration coefficient. Index is the Parameter path, like "MUST2/Telescope5_Si_X38_E"
+
+    map< string , vector<double> >   fCalibrationCoeff ;  
+    //   Hold the path of all the registered file of coeff
+    vector<string>   fFileList   ;
+
+    //   Hold The list of Token. Index is the Token, value the parameter path.
+    map< string , string >   fToken      ;
+
+};
+
 #endif

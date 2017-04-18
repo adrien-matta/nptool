@@ -194,7 +194,7 @@ void TSplitPolePhysics::ReadNMR()
             TString FileToRead = libname;
             FileToRead.Prepend("/");
             FileToRead.Prepend(m_NmrFilePath);
-            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(FileToRead.Data(), m_TimeDelay);
+            m_NMRTable[m_NarvalMidasTable[run]] = new TSplitPoleNMR(FileToRead.Data(), m_TimeDelay, m_LargeField);
          }
       }
    }

@@ -47,7 +47,7 @@ class TDETECTORNAMEData : public TObject {
   // Constructor and destructor
   public: 
     TDETECTORNAMEData();
-    virtual ~TDETECTORNAMEData();
+    ~TDETECTORNAMEData();
     
 
   //////////////////////////////////////////////////////////////
@@ -66,25 +66,15 @@ class TDETECTORNAMEData : public TObject {
   public:
     //////////////////////    SETTERS    ////////////////////////
     // Energy
-    inline void SetE_DetectorNbr(const UShort_t& DetNbr)
-      {fDETECTORNAME_E_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_Energy(const Double_t& Energy)
-      {fDETECTORNAME_Energy.push_back(Energy);}//!
-    // Prefer global setter so that all vectors have the same size
-    inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy) {
-      SetE_DetectorNbr(DetNbr);
-      Set_Energy(Energy);
+    inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy){
+      fDETECTORNAME_E_DetectorNbr.push_back(DetNbr);
+      fDETECTORNAME_Energy.push_back(Energy);
     };//!
 
     // Time
-    inline void SetT_DetectorNbr(const UShort_t& DetNbr)
-      {fDETECTORNAME_T_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_Time(const Double_t& Time)
-      {fDETECTORNAME_Time.push_back(Time);}//!
-    // Prefer global setter so that all vectors have the same size
     inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
-      SetT_DetectorNbr(DetNbr);
-      Set_Time(Time);
+      fDETECTORNAME_T_DetectorNbr.push_back(DetNbr);     
+      fDETECTORNAME_Time.push_back(Time);
     };//!
 
 

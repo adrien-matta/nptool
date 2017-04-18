@@ -58,7 +58,7 @@ TChio_digPhysics::~TChio_digPhysics()
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
- vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
@@ -67,16 +67,12 @@ void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
       TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
-
-     // AddChio(A,B,C,D);
     }
-
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);
     }
   }
-
 //  InitializeStandardParameter();
 //  ReadAnalysisConfig();
 }

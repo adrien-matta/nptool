@@ -747,14 +747,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
-        m_Event->SetMMStripXEDetectorNbr(detectorNbr);
-        m_Event->SetMMStripXEStripNbr(b+1);
-        m_Event->SetMMStripXEEnergy(energyX);
+        m_Event->SetStripXE(detectorNbr,b+1,energyX);
 
         // Time 
-        m_Event->SetMMStripXTDetectorNbr(detectorNbr);
-        m_Event->SetMMStripXTStripNbr(b+1);
-        m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
+        m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
       }
       else{ // Interstrip X, keep maximum shared energy
         double rand = G4UniformRand();
@@ -763,14 +759,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           if(energyX>0.1*keV){
             trig.insert(detectorNbr);
             // Energy 
-            m_Event->SetMMStripXEDetectorNbr(detectorNbr);
-            m_Event->SetMMStripXEStripNbr(b+1);
-            m_Event->SetMMStripXEEnergy(energyX);
+            m_Event->SetStripXE(detectorNbr,b+1,energyX) ;
 
             // Time 
-            m_Event->SetMMStripXTDetectorNbr(detectorNbr);
-            m_Event->SetMMStripXTStripNbr(b+1);
-            m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
+            m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
           } 
         }
         else{
@@ -779,14 +771,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
             trig.insert(detectorNbr);
 
             // Energy 
-            m_Event->SetMMStripXEDetectorNbr(detectorNbr);
-            m_Event->SetMMStripXEStripNbr(g+1);
-            m_Event->SetMMStripXEEnergy(energyX);
+            m_Event->SetStripXE(detectorNbr,g+1,energyX) ;  
 
             // Time 
-            m_Event->SetMMStripXTDetectorNbr(detectorNbr);
-            m_Event->SetMMStripXTStripNbr(g+1);
-            m_Event->SetMMStripXTTime(RandGauss::shoot(time, ResoTimeMust));
+            m_Event->SetStripXT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
           }
         }
       }
@@ -800,14 +788,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
-        m_Event->SetMMStripYEDetectorNbr(detectorNbr);
-        m_Event->SetMMStripYEStripNbr(b+1);
-        m_Event->SetMMStripYEEnergy(energyY);
+        m_Event->SetStripYE(detectorNbr,b+1,energyY);
 
         // Time 
-        m_Event->SetMMStripYTDetectorNbr(detectorNbr);
-        m_Event->SetMMStripYTStripNbr(b+1);
-        m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+        m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust)); 
       }
       else{ // Interstrip Y, keep both strip with shared energy
         double rand = G4UniformRand();
@@ -816,28 +800,20 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           trig.insert(detectorNbr);
 
           // Energy 
-          m_Event->SetMMStripYEDetectorNbr(detectorNbr);
-          m_Event->SetMMStripYEStripNbr(b+1);
-          m_Event->SetMMStripYEEnergy(energyY1);
+          m_Event->SetStripYE(detectorNbr,b+1,energyY1); 
 
           // Time 
-          m_Event->SetMMStripYTDetectorNbr(detectorNbr);
-          m_Event->SetMMStripYTStripNbr(b+1);
-          m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+          m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
         }
 
         if(energyY1>0.1*keV){
           trig.insert(detectorNbr);
           double energyY2 = (1-rand)*energyY;
           // Energy 
-          m_Event->SetMMStripYEDetectorNbr(detectorNbr);
-          m_Event->SetMMStripYEStripNbr(g+1);
-          m_Event->SetMMStripYEEnergy(energyY2);
+          m_Event->SetStripYE(detectorNbr,g+1,energyY2);  
 
           // Time 
-          m_Event->SetMMStripYTDetectorNbr(detectorNbr);
-          m_Event->SetMMStripYTStripNbr(g+1);
-          m_Event->SetMMStripYTTime(RandGauss::shoot(time, ResoTimeMust));
+          m_Event->SetStripYT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
         }
       }
     }
@@ -864,12 +840,8 @@ void MUST2Array::ReadSensitive(const G4Event* event){
     for(SiLi_itr = SiLiHitMap->GetMap()->begin(); SiLi_itr!=SiLiHitMap->GetMap()->end() ; SiLi_itr++){
       G4double* Info = *(SiLi_itr->second);
       if(Info[7]==*itr){//matching telescope number
-        m_Event->SetMMSiLiEDetectorNbr(Info[7]); 
-        m_Event->SetMMSiLiEEnergy(RandGauss::shoot(Info[0],ResoSiLi)); 
-        m_Event->SetMMSiLiEPadNbr(Info[8]);
-        m_Event->SetMMSiLiTDetectorNbr(Info[7]); 
-        m_Event->SetMMSiLiTTime(RandGauss::shoot(Info[1],ResoTimeMust)); 
-        m_Event->SetMMSiLiTPadNbr(Info[8]);
+        m_Event->SetSiLiE(Info[7],Info[8],RandGauss::shoot(Info[0],ResoSiLi));
+        m_Event->SetSiLiT(Info[7],Info[8],RandGauss::shoot(Info[1],ResoTimeMust));
       }
     }
   }
@@ -880,12 +852,8 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       G4double* Info = *(CsI_itr->second);
       
       if(Info[7]==*itr){//matching telescope number
-        m_Event->SetMMCsIEDetectorNbr(Info[7]); 
-        m_Event->SetMMCsIEEnergy(RandGauss::shoot(Info[0],ResoCsI)); 
-        m_Event->SetMMCsIECristalNbr(Info[8]);
-        m_Event->SetMMCsITDetectorNbr(Info[7]); 
-        m_Event->SetMMCsITTime(RandGauss::shoot(Info[1],ResoTimeMust)); 
-        m_Event->SetMMCsITCristalNbr(Info[8]);
+        m_Event->SetCsIE(Info[7],Info[8],RandGauss::shoot(Info[0],ResoCsI));
+        m_Event->SetCsIT(Info[7],Info[8],RandGauss::shoot(Info[1],ResoTimeMust));
       }
     }
   }

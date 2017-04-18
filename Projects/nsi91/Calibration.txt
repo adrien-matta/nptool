@@ -1,0 +1,5 @@
+CalibrationFilePath
+%   ./calibs/W1CalibrationBefore.txt
+%   ./calibs/W1CalibrationAfter.txt
+%   ./calibs/W1CalibrationTime_runs50-74.txt
+   ./calibs/SplitPoleCalibration.txt

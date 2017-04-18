@@ -41,6 +41,11 @@
 #include "TFile.h"
 #include "TMessage.h"
 #include "TGSplitter.h"
+#include "TG3DLine.h"
+#include "TGDoubleSlider.h"
+#include "TGTextEdit.h"
+#include "TASImage.h"
+#include "TH2.h"
 ClassImp(NPL::OnlineGUI);
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::ExecuteMacro(string name){
@@ -73,11 +78,82 @@ NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client){
   m_Connect->Connect("Clicked()", "NPL::OnlineGUI", this, "Connect()");
   m_Update->Connect("Clicked()", "NPL::OnlineGUI", this, "Update()");
   m_Clock->Connect("Clicked()","NPL::OnlineGUI",this,"AutoUpdate()");
+  m_Fit->Connect("Clicked()", "NPL::OnlineGUI", this, "Fit()");
 
   Connect();
 }
+////////////////////////////////////////////////////////////////////////////////
+void NPL::OnlineGUI::Fit(){
 
 
+  TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+
+  if(m_CheckFitAll->IsOn()){
+    int size= ((TList*)c->GetListOfPrimitives())->GetSize();
+    for(unsigned int i =  1 ; i < size ;i++){
+      c->cd(i);
+      TList* list = gPad->GetListOfPrimitives();
+      int Hsize = list->GetSize();
+      for(int h = 0 ; h < Hsize ; h++){
+        TObject* obj = list->At(h);
+        if(obj->InheritsFrom(TH1::Class()) && !obj->InheritsFrom(TH2::Class())){
+          TF1* fit1 = new TF1("Gaussian","gaus");
+          TF1* fit2 = new TF1("Gaussian+Background","gaus(0)+pol1(3)");
+          fit2->SetParName(0,"Constant");
+          fit2->SetParName(1,"Mean");
+          fit2->SetParName(2,"Sigma");
+          fit2->SetParName(3,"Offset");
+          fit2->SetParName(4,"Slope");
+
+          if(m_BackgroundFit->IsOn()){
+            TH1* hh = (TH1*)obj;
+            fit2->SetParameter(0,hh->GetMaximum());
+            fit2->SetParameter(1,hh->GetBinCenter(hh->GetMaximumBin()));
+            fit2->SetParameter(2,5);
+            fit2->SetParameter(3,10);
+            fit2->SetParameters(4,0);
+            ((TH1*) obj)->Fit(fit2,"Q");
+
+          }
+          else
+            ((TH1*) obj)->Fit(fit1,"Q"); 
+
+        }
+      }
+    }
+  }
+
+  else{
+    TList* list = gPad->GetListOfPrimitives();
+    int Hsize = list->GetSize();
+    for(int h = 0 ; h < Hsize ; h++){
+      TObject* obj = list->At(h);
+      if(obj->InheritsFrom(TH1::Class()) && !obj->InheritsFrom(TH2::Class())){
+        TF1* fit1 = new TF1("Gaussian","gaus");
+        TF1* fit2 = new TF1("Gaussian+Background","gaus(0)+pol1(3)");
+        fit2->SetParName(0,"Constant");
+        fit2->SetParName(1,"Mean");
+        fit2->SetParName(2,"Sigma");
+        fit2->SetParName(3,"Offset");
+        fit2->SetParName(4,"Slope");
+
+        if(m_BackgroundFit->IsOn()){
+          ((TH1*) obj)->Fit(fit1,"Q");
+          fit2->SetParameters(fit1->GetParameters());
+          ((TH1*) obj)->Fit(fit2,"Q");
+
+        }
+        else
+          ((TH1*) obj)->Fit(fit1,"Q"); 
+
+      }
+    }
+  }
+
+
+  c ->Update();
+
+}
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::MakeGui(){
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
@@ -87,10 +163,11 @@ void NPL::OnlineGUI::MakeGui(){
   m_Timer = 0;
 
   // main frame
-  m_Main = new TGMainFrame(gClient->GetRoot(),10,10,kMainFrame | kVerticalFrame);
+  m_Main = new TGMainFrame(gClient->GetRoot(),1500,500,kMainFrame | kVerticalFrame);
   m_Main->SetName("nponline");
   m_Main->SetBackgroundColor(m_BgColor);
   m_Main->SetForegroundColor(m_FgColor);
+  m_Main->SetWindowName("nponline");
   // Button bar to hold the button
   m_ButtonBar= new TGVerticalFrame(m_Main,10000,42,kFixedSize);
   m_ButtonBar->SetBackgroundColor(m_BgColor);
@@ -135,10 +212,10 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->AddFrame(m_Clock, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Clock->MoveResize(442,5,32,32);
 
-  TGFont* ufont;         // will reflect user font changes
+  TGFont* ufont;// will reflect user font changes
   ufont = gClient->GetFont("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-iso8859-1");
 
-  TGGC  * uGC;           // will reflect user GC changes
+  TGGC  * uGC;// will reflect user GC changes
   // graphics context changes
   GCValues_t valress;
   valress.fMask = kGCForeground | kGCBackground | kGCFillStyle | kGCFont | kGCGraphicsExposures;
@@ -170,41 +247,223 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->AddFrame(m_TimerEntry, new TGLayoutHints(kLHintsLeft));
   m_TimerEntry->MoveResize(484,10,40,20);
 
-
   // Create the splitted frame
   m_Split = new TGHorizontalFrame(m_Main, 50, 50);
   TGVerticalFrame* fV1 = new TGVerticalFrame(m_Split, 10, 10, kFixedWidth);
   TGVerticalFrame* fV2 = new TGVerticalFrame(m_Split, 10, 10);
-  m_Left = new TGCompositeFrame(fV1, 10, 10, kChildFrame);
-  m_Right = new TGCompositeFrame(fV2, 10, 10, kChildFrame);
-  fV1->AddFrame(m_Left, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
-  fV2->AddFrame(m_Right, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+  TGVerticalFrame* fV3 = new TGVerticalFrame(m_Split, 10, 10, kFixedWidth);
 
-  fV1->Resize(m_Left->GetDefaultWidth()+200, fV1->GetDefaultHeight());
-  fV2->Resize(m_Right->GetDefaultWidth(), fV1->GetDefaultHeight());
+  m_Left   = new TGCompositeFrame(fV1, 10, 10, kChildFrame);
+  m_Center = new TGCompositeFrame(fV2, 10, 10, kChildFrame);
+  m_Right  = new TGCompositeFrame(fV3, 10, 10, kChildFrame); 
+  fV1->AddFrame(m_Left,  new TGLayoutHints(kLHintsLeft |    kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+  fV2->AddFrame(m_Center,new TGLayoutHints(kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+  fV3->AddFrame(m_Right, new TGLayoutHints(kLHintsRight |   kLHintsExpandX | kLHintsExpandY,0, 0, 5, 10));
+
+  fV1->Resize(200, 400);
+  fV2->Resize(400, 400);
+  fV3->Resize(200, 400);
+
+
+  // Change the size of the list tree
   m_Split->AddFrame(fV1, new TGLayoutHints(kLHintsLeft | kLHintsExpandY ));
 
-  TGVSplitter* splitter = new TGVSplitter(m_Split,5,5);
-  splitter->SetFrame(fV1, kTRUE);
-  m_Split->AddFrame(splitter, new TGLayoutHints(kLHintsLeft| kLHintsTop |  kLHintsExpandY));
+  TGVSplitter* splitter1 = new TGVSplitter(m_Split,5,5);
+  splitter1->SetFrame(fV1, kTRUE);
+  m_Split->AddFrame(splitter1, new TGLayoutHints(kLHintsLeft| kLHintsTop |  kLHintsExpandY));
+  m_Split->AddFrame(fV2,  new TGLayoutHints(kLHintsExpandX| kLHintsTop |  kLHintsExpandY));
+
+  // Change the size of the tool bar
+  TGVSplitter* splitter2 = new TGVSplitter(m_Split,5,5);
+  splitter2->SetFrame(fV3, false);
+  m_Split->AddFrame(splitter2, new TGLayoutHints(kLHintsLeft| kLHintsTop |  kLHintsExpandY));
+  m_Split->AddFrame(fV3, new TGLayoutHints(kLHintsRight| kLHintsTop |  kLHintsExpandY));
+
+  splitter1->SetBackgroundColor(m_BgColor);    
+  splitter1->SetForegroundColor(m_BgColor);    
+
+  splitter2->SetBackgroundColor(m_BgColor);    
+  splitter2->SetForegroundColor(m_BgColor);    
+
+
   m_Split->SetBackgroundColor(m_BgColor); 
-  splitter->SetBackgroundColor(m_BgColor);    
   m_Split->SetForegroundColor(m_BgColor); 
-  splitter->SetForegroundColor(m_BgColor);    
+
   m_Left->SetBackgroundColor(m_BgColor); 
-  m_Right->SetBackgroundColor(m_BgColor);    
+  m_Right->SetBackgroundColor(m_FgColor);    
   m_Left->SetForegroundColor(m_BgColor); 
   m_Right->SetForegroundColor(m_BgColor);    
   fV1->SetBackgroundColor(m_BgColor); 
   fV2->SetBackgroundColor(m_BgColor);    
   fV1 ->SetForegroundColor(m_BgColor); 
   fV2->SetForegroundColor(m_BgColor);    
-
-  m_Split->AddFrame(fV2, new TGLayoutHints(kLHintsRight | kLHintsExpandX | kLHintsExpandY));
+  fV3->SetBackgroundColor(m_BgColor);
   m_Main->AddFrame(m_Split, new TGLayoutHints(kLHintsRight | kLHintsExpandX |kLHintsExpandY));
-  // Right //
-  TRootEmbeddedCanvas* canvas = new TRootEmbeddedCanvas("Canvas",m_Right,700,490,!kSunkenFrame);  
-  m_Right->AddFrame(canvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
+
+  // Right
+  // Create a fit tool bar
+  //m_Right->SetLayoutBroken(kTRUE);
+
+  // Navigation
+  TGVerticalFrame* m_NavBar= new TGVerticalFrame(m_Right,10000,80);
+  m_NavBar->SetBackgroundColor(m_FgColor);
+  m_NavBar->SetForegroundColor(m_FgColor);
+  m_Right->AddFrame(m_NavBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+  TGVerticalFrame* m_LogBar= new TGVerticalFrame(m_NavBar,10000,80);
+  m_LogBar->SetBackgroundColor(m_FgColor);
+  m_LogBar->SetForegroundColor(m_FgColor);
+  m_LogBar->SetLayoutManager(new TGHorizontalLayout(m_LogBar));
+  m_NavBar->AddFrame(m_LogBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+  TGCheckButton* m_CheckLogX = new TGCheckButton(m_LogBar,"LogX");
+  m_CheckLogX->SetBackgroundColor(m_FgColor);
+  m_CheckLogX->SetForegroundColor(m_BgColor);        
+  m_LogBar->AddFrame(m_CheckLogX, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
+  m_CheckLogX->Move(0,0); 
+
+  TGCheckButton* m_CheckLogY = new TGCheckButton(m_LogBar,"LogY");
+  m_CheckLogY->SetBackgroundColor(m_FgColor);
+  m_CheckLogY->SetForegroundColor(m_BgColor);        
+  m_LogBar->AddFrame(m_CheckLogY, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
+  m_CheckLogY->Move(60,0); 
+
+  TGCheckButton* m_CheckLogZ = new TGCheckButton(m_LogBar,"LogZ");
+  m_CheckLogZ->SetBackgroundColor(m_FgColor);
+  m_CheckLogZ->SetForegroundColor(m_BgColor);        
+  m_LogBar->AddFrame(m_CheckLogZ, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
+  m_CheckLogZ->Move(120 ,0); 
+
+  TGDoubleHSlider* m_ZoomAllH = new TGDoubleHSlider(m_NavBar,m_NavBar->GetWidth());
+  m_NavBar->AddFrame(m_ZoomAllH, new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX,2,2,2,2)); 
+  m_ZoomAllH->SetBackgroundColor(m_FgColor); 
+  m_ZoomAllH->SetRange(0,100); 
+  m_ZoomAllH->SetPosition(0,100);
+
+  TGDoubleHSlider* m_ZoomAllV = new TGDoubleHSlider(m_NavBar,m_NavBar->GetWidth());
+  m_NavBar->AddFrame(m_ZoomAllV, new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX,2,2,2,2)); 
+  m_ZoomAllV->SetBackgroundColor(m_FgColor); 
+  m_ZoomAllV->SetRange(0,100); 
+  m_ZoomAllV->SetPosition(0,100);
+
+  // Horizontal separator
+  TGHorizontal3DLine* m_NavLine = new TGHorizontal3DLine(m_Right,408,8);
+  m_NavLine->SetBackgroundColor(m_FgColor);
+  m_NavLine->SetForegroundColor(m_BgColor);
+  m_Right->AddFrame(m_NavLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
+
+
+  // Fit Bar
+  TGVerticalFrame* m_FitBar = new TGVerticalFrame(m_Right,10000,80);
+  m_FitBar->SetBackgroundColor(m_FgColor);
+  m_FitBar->SetForegroundColor(m_FgColor);
+  m_FitBar->SetLayoutManager(new TGHorizontalLayout(m_FitBar));  
+  m_Right->AddFrame(m_FitBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+  // Fit button
+  string path_fit = NPLPath + "/NPLib/Core/icons/barchart.xpm";
+  m_Fit= new TGPictureButton(m_FitBar,gClient->GetPicture(path_fit.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Fit->SetBackgroundColor(m_FgColor);
+  m_Fit->SetToolTipText("Fit");
+  m_FitBar->AddFrame(m_Fit, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
+
+  // Check box container
+  TGVerticalFrame* m_SelectBar = new TGVerticalFrame(m_FitBar,10000,80);
+  m_SelectBar->SetBackgroundColor(m_FgColor);
+  m_SelectBar->SetForegroundColor(m_FgColor);
+  m_SelectBar->SetLayoutManager(new TGVerticalLayout(m_SelectBar));
+  m_FitBar->AddFrame(m_SelectBar, new TGLayoutHints(kLHintsLeft|kLHintsExpandX));
+
+  // Fit check box
+  m_CheckFitAll = new TGCheckButton(m_SelectBar,"all");
+  m_CheckFitAll->SetBackgroundColor(m_FgColor);
+  m_CheckFitAll->SetForegroundColor(m_BgColor);        
+  m_SelectBar->AddFrame(m_CheckFitAll, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+
+  m_BackgroundFit = new TGCheckButton(m_SelectBar,"background");
+  m_BackgroundFit->SetBackgroundColor(m_FgColor);
+  m_BackgroundFit->SetForegroundColor(m_BgColor);        
+  m_SelectBar->AddFrame(m_BackgroundFit, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+
+  // Fit Slider
+  TGDoubleHSlider* m_FitSlider = new TGDoubleHSlider(m_Right,m_NavBar->GetWidth());
+  m_Right->AddFrame(m_FitSlider, new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX,2,2,2,2)); 
+  m_FitSlider->SetBackgroundColor(m_FgColor); 
+  m_FitSlider->SetRange(0,100); 
+  m_FitSlider->SetPosition(0,100);
+
+
+  // Horizontal separator
+  TGHorizontal3DLine* m_FitLine = new TGHorizontal3DLine(m_Right,408,8);
+  m_FitLine->SetBackgroundColor(m_FgColor);
+  m_FitLine->SetForegroundColor(m_BgColor);
+  m_Right->AddFrame(m_FitLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
+
+  // Print Bar
+  TGVerticalFrame* m_PrintBar = new TGVerticalFrame(m_Right,10000,80);
+  m_PrintBar->SetBackgroundColor(m_FgColor);
+  m_PrintBar->SetForegroundColor(m_FgColor);
+  m_PrintBar->SetLayoutManager(new TGHorizontalLayout(m_PrintBar));  
+  m_Right->AddFrame(m_PrintBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+  // Print button
+  string path_print= NPLPath + "/NPLib/Core/icons/print.xpm";
+  TGPictureButton* m_Print= new TGPictureButton(m_PrintBar,gClient->GetPicture(path_print.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Print->SetBackgroundColor(m_FgColor);
+  m_Print->SetToolTipText("SaveAs");
+  m_PrintBar->AddFrame(m_Print, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
+
+  // Check box container
+  TGVerticalFrame* m_OptionBar = new TGVerticalFrame(m_PrintBar,10000,80);
+  m_OptionBar->SetBackgroundColor(m_FgColor);
+  m_OptionBar->SetForegroundColor(m_FgColor);
+  m_OptionBar->SetLayoutManager(new TGVerticalLayout(m_OptionBar));
+  m_PrintBar->AddFrame(m_OptionBar, new TGLayoutHints(kLHintsLeft|kLHintsExpandX));
+
+  // Fit check box
+  TGCheckButton* m_PrintColor = new TGCheckButton(m_OptionBar,"printer color");
+  m_PrintColor->SetBackgroundColor(m_FgColor);
+  m_PrintColor->SetForegroundColor(m_BgColor);        
+  m_OptionBar->AddFrame(m_PrintColor, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+
+  // Fit check box
+  TGCheckButton* m_PrintPDF = new TGCheckButton(m_OptionBar,"pdf");
+  m_PrintPDF->SetBackgroundColor(m_FgColor);
+  m_PrintPDF->SetForegroundColor(m_BgColor);        
+  m_OptionBar->AddFrame(m_PrintPDF, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+
+
+  // Horizontal separator
+  TGHorizontal3DLine* m_PrintLine = new TGHorizontal3DLine(m_Right,408,8);
+  m_PrintLine->SetBackgroundColor(m_FgColor);
+  m_PrintLine->SetForegroundColor(m_BgColor);
+  m_Right->AddFrame(m_PrintLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
+  // m_PrintLine->Move(0,offset+50);
+
+
+  // Elog button
+  string path_elog= NPLPath +  "/NPLib/Core/icons/booklet.xpm";
+  TGPictureButton* m_Elog= new TGPictureButton(m_Right,gClient->GetPicture(path_elog.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_Elog->SetBackgroundColor(m_FgColor);
+  m_Elog->SetToolTipText("Elog");
+  m_Right->AddFrame(m_Elog, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
+  // m_Elog->Move(10,offset); 
+
+  // Elog entry
+  TGTextEdit* m_ElogEntry = new TGTextEdit(m_Right,m_Right->GetWidth(),100);
+  m_Right->AddFrame(m_ElogEntry, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY |kLHintsCenterY, 5, 5, 5, 5));
+  //m_ElogEntry->Move(0,offset+40); 
+
+
+  // Center //
+  m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,700,490,!kSunkenFrame);  
+  m_EmbeddedCanvas->SetAutoFit(true);
+  m_Center->AddFrame(m_EmbeddedCanvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
+//  TCanvas* c = new TCanvas("logo",0,0,0);
+ // string path = NPLPath + "/NPLib/Core/icons/nptoolLogo.png";
+//  TASImage* logo = new TASImage(path.c_str());
+//  logo->Draw("");
+//  m_EmbeddedCanvas->AdoptCanvas(c);
   // Left //
   // Create tabs for histo list and canvas list
   m_Tab = new TGTab(m_Left,700,500);
@@ -216,6 +475,7 @@ void NPL::OnlineGUI::MakeGui(){
   TGCompositeFrame* tfHisto = m_Tab->AddTab("Histo");
 
   m_Left->AddFrame(m_Tab, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
+
   // canvas widget
   TGCanvas* m_ListCanvas = new TGCanvas(tfCanvas,120,500);
   m_ListCanvas->SetName("m_ListCanvas");
@@ -223,12 +483,11 @@ void NPL::OnlineGUI::MakeGui(){
   m_ListCanvas->SetForegroundColor(m_BgColor); 
   m_ListCanvas->SetForegroundColor(m_BgColor);    
 
-
   // canvas viewport
   TGViewPort* CanvasViewPort = m_ListCanvas->GetViewPort();
 
   // list tree
-  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas,canvas);
+  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas,m_EmbeddedCanvas);
   m_ListTree = m_CanvasListTree->GetListTree();
 
   CanvasViewPort->AddFrame(m_ListTree,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
@@ -240,13 +499,12 @@ void NPL::OnlineGUI::MakeGui(){
   tfCanvas->AddFrame(m_ListCanvas, new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
   m_ListCanvas->MoveResize(10,50,120,500);
 
-
   m_Main->SetMWMHints(kMWMDecorAll,kMWMFuncAll,kMWMInputModeless);
   m_Main->MapSubwindows();
 
   m_Main->Resize(m_Main->GetDefaultSize());
   m_Main->MapWindow();
-  m_Main->MoveResize(0,0,500,500);
+  m_Main->MoveResize(50,50,1250,800);
 
 }
 
@@ -307,9 +565,11 @@ void NPL::OnlineGUI::AutoUpdate(){
 NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCanvas* canvas){
   string NPLPath = gSystem->Getenv("NPTOOL");  
   string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
+  string path_icon_folder = NPLPath+"/NPLib/Core/icons/folder.xpm";
 
   m_popen = gClient->GetPicture(path_icon.c_str());
   m_pclose = gClient->GetPicture(path_icon.c_str());
+  m_pfolder = gClient->GetPicture(path_icon_folder.c_str()); 
 
   m_BgColor = gROOT->GetColor(kGray+3)->GetPixel();
   m_FgColor = gROOT->GetColor(kWhite)->GetPixel();
@@ -326,8 +586,14 @@ NPL::CanvasList::~CanvasList(){
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
   TCanvas* c = m_Canvas[item->GetText()];
+
   if(c){
     m_EmbeddedCanvas->AdoptCanvas(c);
+    TGDimension size = m_EmbeddedCanvas->GetContainer()->GetSize();
+    m_EmbeddedCanvas->GetContainer()->Resize(0,0);
+    m_EmbeddedCanvas->GetContainer()->Resize(size);
+    c->SetHighLightColor(kAzure+7); // color of active pad
+    c->Update();
     ExecuteMacro(c->GetName());
   }
 }
@@ -335,6 +601,9 @@ void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
 void NPL::CanvasList::AddItem(TCanvas* c,TGListTreeItem* parent){
   TGListTreeItem* item  = m_ListTree->AddItem(parent,c->GetName());
   item->SetPictures(m_popen, m_pclose);
+  if(parent)
+    parent->SetPictures(m_pfolder,m_pfolder);
+  string path = c->GetName();
   m_Canvas[c->GetName()]=c;
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -388,8 +657,24 @@ void NPL::CanvasList::LoadCanvasList(){
       vector<int> divide = blocks[i]->GetVectorInt("Divide");
       vector<std::string> histo = blocks[i]->GetVectorString("Histo");
       string name = path[path.size()-1];
-      TCanvas* c = new TCanvas(name.c_str(),name.c_str());
+      TCanvas* c = new TCanvas(name.c_str(), 5000,5000,0);
       c->Divide(divide[0],divide[1]);
+
+      static int pos = 0 ;
+      pos++;
+      TH1D* hpipo1 = new TH1D(Form("pipo%d",pos),Form("pipo%d",pos),1000,-100,100);
+      TF1* f = new TF1("ff","gaus(0)+pol1(3)");
+      f->SetParameter(0,100); f->SetParameter(1,-pos*2); f->SetParameter(2,2); f->SetParameter(3,10);
+      hpipo1->FillRandom("ff",100000);
+      c->cd(1);
+      hpipo1->Draw();
+
+      c->cd(2);
+      pos++;
+      TH1D* hpipo2 = new TH1D(Form("pipo%d",pos),Form("pipo%d",pos),1000,-100,100);
+      f->SetParameter(0,100); f->SetParameter(1,pos*2); f->SetParameter(2,2);
+      hpipo2->FillRandom("ff",100000);
+      hpipo2->Draw();
       TGListTreeItem*  item  =  NULL;
       TGListTreeItem*  pitem =  NULL;
 
@@ -399,6 +684,8 @@ void NPL::CanvasList::LoadCanvasList(){
         item = m_ListTree->FindItemByPathname(item_path.c_str());
         if(!item){
           item= m_ListTree->AddItem(pitem,path[j].c_str());
+          if(pitem)
+            pitem->SetPictures(m_pfolder,m_pfolder); 
         }
         pitem = item;
 

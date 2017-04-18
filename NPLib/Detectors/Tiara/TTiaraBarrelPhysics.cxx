@@ -57,9 +57,10 @@ ClassImp(TTiaraBarrelPhysics)
     m_NumberOfDetector  = 0 ;
 
     m_Take_E_Strip= true;
-    m_Take_T_Back= true;
+    m_Take_T_Back=true;
     m_Strip_E_Threshold = 300 ; //keV
-    m_Back_E_Threshold = 50 ; //keV
+    m_Back_E_Threshold = 10 ; //keV
+    m_Maximum_FrontBack_Difference = 30 ; // keV
     m_OuterBack_E_Threshold = 50;
     m_Spectra = NULL ;
   }
