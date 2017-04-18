@@ -194,7 +194,7 @@ double NPL::SiliconCalibrator::SimpleCalibration(TH1* histo, NPL::CalibrationSou
   vector<double> Assume_E ; // Energie calculated assuming Assume_Thickness deadlayer of Al
   Assume_E.resize(source_size,0); 
   for(unsigned int i = 0 ; i < source_size ; i++){
-    Assume_E[i] = EL->Slow(Source_E[i], Assume_Thickness, 0); // Assume_Thickness in micrometer
+    Assume_E[i] = EL->Slow(Source_E[i], Assume_Thickness, 0);
     g->SetPoint(i,x[i],Assume_E[i]);
   }
 
