@@ -37,36 +37,6 @@ using namespace std;
 #include "TFitResultPtr.h"
 
 ////// INTERNAL FUNCTIONS //////////
-namespace {
-double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
-{
-	vector<double> X, Z;
-	for(int i=0; i< len; ++i) {
-		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
-		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
-	}
-
-	Long64_t N = X.size();
-	double meanZ = TMath::Mean(N, &Z[0]);
-	double meanX = TMath::Mean(N, &X[0]);
-	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
-	for(size_t i=0; i< N; ++i) {
-		meanZ2 += Z[i]*Z[i];
-		meanX2 += X[i]*X[i];
-		meanXZ += Z[i]*X[i];
-	}
-	meanZ2 /= N;
-	meanXZ /= N;
-
-	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
-	R2 = pow(meanXZ - meanX*meanZ, 2) / 
-		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
-
-	/// TODO::: R2 doesn't seem to make sense... look into it!
-	
-	return slope;
-} }
-
 
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
@@ -95,6 +65,7 @@ void Analysis::Init(){
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
 
   // energy losses
+/*Original Files
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",10 );
@@ -102,6 +73,18 @@ void Analysis::Init(){
   //LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",10);
   LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4Table",10);
+  FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
+  myReaction->SetBeamEnergy(FinalBeamEnergy);
+  cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
+*/
+
+//Copied from Momo's Slack 170222.
+  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -284,7 +267,7 @@ void Analysis::TreatEvent(){
   /////////////////////////////
   // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
   TG->DCSingles(RecoilBeta);
-  TG->AddBack(RecoilBeta,3); 
+  TG->AddBack(RecoilBeta,1); 
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
   //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero 
@@ -343,7 +326,7 @@ void Analysis::TreatEvent(){
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
 
-			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
+			double slope = TF->calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
 			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
 			break;
 		}

@@ -26,6 +26,7 @@
 using namespace std;
 
 #include "TGeTAMUPhysics.h"
+#include "TRandom.h"
 
 //   NPL
 #include "RootInput.h"
@@ -194,7 +195,9 @@ void TGeTAMUPhysics::PreTreat(){
       clover = m_EventData->GetCoreCloverNbrE(i);
       crystal = m_EventData->GetCoreCrystalNbrE(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-      Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+//by Shuya and Momo 170228.
+      //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw+gRandom->Rndm());
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);
