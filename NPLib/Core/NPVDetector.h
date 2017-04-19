@@ -91,7 +91,9 @@ namespace NPL {
       virtual  std::map< std::string , TH1*> GetSpectra() {std::map< std::string, TH1* > x; return x;};
       // Used for Online only, get all the canvases
       virtual std::vector<TCanvas*> GetCanvas(){std::vector<TCanvas*> x ; return x;};
-
+      // Used for interoperability with other framework
+      virtual void SetRawDataPointer(void*) {};
+      
     private:   //   The list below is here to help you building your own detector
       /*
       //   GRU and Simulated Tree output are made of Data Object wich contain all the RAW parameter output by Detectors during an experiment.

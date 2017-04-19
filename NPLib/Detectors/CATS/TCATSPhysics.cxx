@@ -66,15 +66,15 @@ void TCATSPhysics::PreTreat(){
     if(IsValidChannel("X", m_EventData->GetCATSDetX(i), m_EventData->GetCATSStripX(i)) ){
       if( fCATS_Threshold_X(m_EventData , i) ){
         double QX = fCATS_X_Q(m_EventData , i);
-        m_PreTreatedData->SetCATSChargeX( QX );
+        unsigned int stripX = -1;
         //Inversion X
         if( *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1) != m_EventData->GetCATSStripX(i) ){
-          m_PreTreatedData->SetCATSStripX( *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1) );
+          stripX = *(m_CATSXInversion[m_EventData->GetCATSDetX(i)-1].begin() + m_EventData->GetCATSStripX(i)-1); 
         }
         else {
-          m_PreTreatedData->SetCATSStripX( m_EventData->GetCATSStripX(i) );
+          stripX =  m_EventData->GetCATSStripX(i);
         }
-        m_PreTreatedData->SetCATSDetX( m_EventData->GetCATSDetX(i) );
+        m_PreTreatedData->SetStripX( m_EventData->GetCATSDetX(i) , stripX, QX);
       }
     }
   }
@@ -86,15 +86,15 @@ void TCATSPhysics::PreTreat(){
     if(IsValidChannel("Y", m_EventData->GetCATSDetY(i), m_EventData->GetCATSStripY(i))){
       if( fCATS_Threshold_Y(m_EventData , i) ){
         double QY = fCATS_Y_Q(m_EventData , i);
-        m_PreTreatedData->SetCATSChargeY( QY );
+        unsigned int stripY = -1;
         //Inversion Y
         if( *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1) != m_EventData->GetCATSStripY(i) ){
-          m_PreTreatedData->SetCATSStripY( *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1) );
+          stripY = *(m_CATSYInversion[m_EventData->GetCATSDetY(i)-1].begin() + m_EventData->GetCATSStripY(i)-1); 
         }
         else {
-          m_PreTreatedData->SetCATSStripY( m_EventData->GetCATSStripY(i) );
+          stripY = m_EventData->GetCATSStripY(i) ;
         }
-        m_PreTreatedData->SetCATSDetY( m_EventData->GetCATSDetY(i) );
+        m_PreTreatedData->SetStripY( m_EventData->GetCATSDetY(i), stripY, QY );
       }
     }
   }

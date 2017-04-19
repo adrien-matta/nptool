@@ -151,35 +151,27 @@ void TExlPhysics::BuildPhysicalEvent()
    }
 
 ///////////////////////////////////////////////////////////////////////////
-void TExlPhysics::BuildSimplePhysicalEvent()
-{
-	if(EventData->GetEnergyMult()>0)
-	{
-		for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
-		{
-			if(EventData->GetEnergy(i)>m_E_RAW_Threshold)
-			{
+void TExlPhysics::BuildSimplePhysicalEvent(){
+	if(EventData->GetMult()>0){
+		for(unsigned int i = 0 ; i < EventData->GetMult() ; i++){
+			if(EventData->GetEnergy(i)>m_E_RAW_Threshold){
 				CrystalNumber.push_back( EventData->GetExlNumber(i))   ;
 				EXL_Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_E_" + NPL::itoa( EventData->GetExlNumber(i) ),EventData->GetEnergy(i) ) );
 			}
 		}
 	}
-	else
-	{
+	else{
 		CrystalNumber.push_back(-1000)   ;
 		EXL_Energy.push_back(-1000);
 	}
 
-	if(EventData->GetTimeMult()>0)
-	{
-		for(unsigned int i = 0 ; i < EventData->GetTimeMult() ; i++)
-		{
+	if(EventData->GetMult()>0){
+		for(unsigned int i = 0 ; i < EventData->GetMult() ; i++){
 			//EXL_Time.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_T_" + NPL::itoa( EventData->GetExlNumber(i) ),EventData->GetTime(i) ) );
 			EXL_Time=EventData->GetTime(i);
 		}
 	}
-	else
-	{
+	else{
 		EXL_Time=-1000;
 	}
 }

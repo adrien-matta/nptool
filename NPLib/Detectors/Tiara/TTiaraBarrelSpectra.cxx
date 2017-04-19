@@ -290,11 +290,11 @@ void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
   // Inner Barrel
   //unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
-    name ="IB"+NPL::itoa(Physics->DetectorNumber[i])+"_EPOS"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
+    name ="IB"+NPL::itoa(Physics->Detector_N[i])+"_EPOS"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
     GetHisto(family,name)
       ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
 
-    name = "IB"+NPL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
+    name = "IB"+NPL::itoa(Physics->Detector_N[i])+"_ETHETA"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
 
     GetHisto(family,name)

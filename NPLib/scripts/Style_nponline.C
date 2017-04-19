@@ -12,14 +12,15 @@ void Style_nponline(){
   style->SetFrameFillColor(kGray+3);	
   style->SetFrameBorderMode(0);	
   style->SetFrameLineColor(kGray+3);
-  style->SetStatColor(kGray+3);	
+  style->SetStatColor(kWhite);	
   style->SetFillColor(kGray+3); 
   style->SetTitleFillColor(kGray+3);  
   style->SetTitleColor(kWhite,"pad");
   style->SetTitleBorderSize(0);
   style->SetTextColor(kWhite);
 
-
+style->SetFrameLineColor(kGray+3);
+style->SetFrameFillColor(kGray+3); 
   // Canvas
   style->SetCanvasColor(kGray+3);	
   style->SetCanvasDefH(800);
@@ -31,7 +32,7 @@ void Style_nponline(){
   style->SetPadLeftMargin(0.15);
   style->SetPadTopMargin(0.10);
   style->SetPadRightMargin(0.15);
-  style->SetPadBorderMode(0);	
+  style->SetPadBorderMode(1);	
   style->SetPadBorderSize(1);
   style->SetPadColor(kGray+3);		
   style->SetPadTickX(1);

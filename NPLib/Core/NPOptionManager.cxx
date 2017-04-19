@@ -374,12 +374,12 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t--generate-histo -GH\t\tInstantiate the T*Spectra class of each detector" << endl ;
   cout << "\t--check-histo -CH\t\tCheck if the Histogram looks ok and change there color if not" << endl ;
   cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << endl  ;
-  cout << "\t-L <arg>\t\t\tLimit the number of envent to be analysed to arg" << endl ;
+  cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << endl ;
   cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << endl ;
   cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
   cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;
   cout << "\t--last-any\t\t\tIgnore the list of Run to treat if any and analysed the last generated root file" << endl ;
-  cout << "\t--online  \t\t\ttStart the spectra server" << endl ;
+  cout << "\t--online  \t\t\tStart the spectra server" << endl ;
   cout << endl << "NPSimulation only:"<<endl;
   cout << "\t-M <arg>\t\t\tExecute Geant4 macro <arg> at startup" << endl ;
   cout << "\t-B <arg>\t\t\tExecute in batch mode (no ui) with Geant4 macro <arg> at startup" << endl ;

@@ -44,29 +44,20 @@ class TExlData : public TObject {
    void   Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
-   // (E)
-   double   GetEnergy(int i) { return fExl_Energy[i] ;}
-   // (T)
-   double   GetTime(int i) { return fExl_Time[i] ;}
-   // (N)
-   int    GetExlNumber(int i) { return fExl_Number[i] ;}
+   inline double   GetEnergy(const int& i)    const { return fExl_Energy[i] ;}
+   inline double   GetTime(const int& i)      const { return fExl_Time[i] ;}
+   inline int      GetExlNumber(const int& i) const { return fExl_Number[i] ;}
    
    //Mult
-   // E
-   double   GetEnergyMult() { return fExl_Energy.size() ;}
-   // T
-   double   GetTimeMult() { return fExl_Time.size() ;}
-   // (N)
-   int      GetExlNumberMult() { return fExl_Number.size() ;}
+   inline double   GetMult()    const { return fExl_Energy.size() ;}
    
    /////////////////////           SETTERS           ////////////////////////
-   // (E)
-   void   SetEnergy(double E) { fExl_Energy.push_back(E) ;}
-   // (T)
-   void   SetTime(double T) { fExl_Time.push_back(T) ;}
-   //(N)
-   void   SetExlNumber(int N) { fExl_Number.push_back(N) ;}
-   //
+   inline void SetEandTime(const int& N,const double& E,const double& T){
+   fExl_Energy.push_back(E) ;
+   fExl_Time.push_back(T) ;
+   fExl_Number.push_back(N) ;
+   }
+   
    ClassDef(TExlData,1)  // ExlData structure
 };
 

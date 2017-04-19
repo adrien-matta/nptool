@@ -1,5 +1,5 @@
-#ifndef NPONLINE_H
-#define NPONLINE_H
+#ifndef NPONLINEGUI_H
+#define NPONLINEGUI_H
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -26,6 +26,7 @@
 #include "TGLayout.h"
 #include "TGButton.h"
 #include "TGTab.h"
+#include "TGStatusBar.h"
 #include "TRootEmbeddedCanvas.h"
 #include "TH1.h"
 #include "TSocket.h"
@@ -35,6 +36,7 @@
 #include "TTimer.h"
 //#include "TGCanvasContainer.h"
 #include "RQ_OBJECT.h"
+#include "NPSpectraClient.h"
 #include<map>
 using namespace std;
 
@@ -46,42 +48,57 @@ namespace NPL{
     protected:
       TGMainFrame* m_Main;
       TGListTree* m_ListTree;
+      TRootEmbeddedCanvas* m_EmbeddedCanvas; 
       TGTab* m_Tab;
       map<string,TCanvas*> m_Canvas;
       const TGPicture* m_popen;     
       const TGPicture* m_pclose;   
+      const TGPicture* m_pfolder;   
+
       Pixel_t m_BgColor;
       Pixel_t m_FgColor;
+      vector<TGStatusBar*> m_StatusBar;
 
-   
     public:
-      CanvasList(TGMainFrame* main, TGCanvas* parent);
+      CanvasList(TGMainFrame* main, TGCanvas* parent, TRootEmbeddedCanvas* canvas);
       virtual ~CanvasList();
 
       // slots
       void OnDoubleClick(TGListTreeItem* item, Int_t btn);
 
-      // Interface with NPOnline
+      // Interface with OnlineGUI
       void SetTab(TGTab* tab);
-      void AddItem(TCanvas* c);
+      void AddItem(TCanvas* c,TGListTreeItem* parent=NULL);
       void Clear();
-      TGListTree* GetListTree();
-      // Add a new Tab to the interface
-      void AddTab(std::string name="default",TCanvas* c=0);
+
+      // Read in the declared Canvas
+      void LoadCanvasList();
+
+      // For Status bar
+      void SetStatusText(const char* txt,int pi); 
+      void EventInfo(int event,int px,int py,TObject* selected);
+
+           TGListTree* GetListTree();
   };
 
-  class NPOnline{
-    RQ_OBJECT("NPOnline")
+  class OnlineGUI{
+    RQ_OBJECT("OnlineGUI")
 
     public:
-      NPOnline(string address="localhost", int port=9090);
-      ~NPOnline();
-
-      void MakeGui(string address="localhost", int port=9090);
+      OnlineGUI(NPL::SpectraClient*);
+      ~OnlineGUI();
+    
+    private:
+      NPL::SpectraClient* m_Client;
+    
+    public:
+      void MakeGui();
       void Connect();
       void Update();
       void AutoUpdate();
-    
+      void Fit();
+
+
     private: // Server client
       TSocket* m_Sock;
       TList* m_CanvasList;
@@ -94,19 +111,28 @@ namespace NPL{
       // Splitted frame for Tree (l) and Tab (r)
       TGHorizontalFrame* m_Split; 
 
-      // left view port
+      // left List Tree
       TGCompositeFrame* m_Left;
-      // right view port
-      TGCompositeFrame* m_Right;
+      // center View port
+      TGCompositeFrame* m_Center;
+      TRootEmbeddedCanvas* m_EmbeddedCanvas; 
 
+      // right Tool bar
+      TGCompositeFrame* m_Right;
+      TGPictureButton* m_Fit;
+      TGCheckButton* m_CheckFitAll;
+      TGCheckButton* m_BackgroundFit;
+
+      // Server tool bar
       TGTab* m_Tab;
       TGPictureButton* m_Quit;
       TGPictureButton* m_Connect;
       TGPictureButton* m_Update;
       TGPictureButton* m_Clock;
+      
       TGNumberEntry* m_TimerEntry;
       TTimer* m_Timer;
-      
+      TGStatusBar* m_StatusBar;     
 
       TGTextEntry* m_Address; 
       TGNumberEntry* m_Port; 
@@ -123,7 +149,7 @@ namespace NPL{
 
       TH1* m_hist; 
 
-      ClassDef(NPOnline,1);
+      ClassDef(NPL::OnlineGUI,1);
   };
 
 }

@@ -484,12 +484,13 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
     // and going clowise looking upstrea
 
     // Detector are rotate by 45deg with each other 
+    // Detector 3 [i=2] is perpendicular to positive y-axis, Detector 5 [i=4] is perpendicular to positive x-axis, 
     G4RotationMatrix* DetectorRotation = 
-      new G4RotationMatrix(0*deg,0*deg,i*45*deg);
+      new G4RotationMatrix(0*deg,0*deg,(2-i)*45*deg);
 
     // There center is also rotated by 45deg
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
-    DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));   
+    DetectorPosition.rotate((2-i)*45*deg,G4ThreeVector(0,0,1));   
 
     // Place the Master volume with its two daugther volume at the final place 
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),

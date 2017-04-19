@@ -76,22 +76,31 @@ TMust2Spectra::~TMust2Spectra(){
 void TMust2Spectra::InitRawSpectra(){
   string name;
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
+    TString nbr = NPL::itoa(i+1);
+    TCanvas* c = new TCanvas("Telescope"+nbr+"_SiRaw","Telescope"+nbr+"_SiRaw");
+    c->Divide(2,2);
+    
     // STRX_E_RAW
+    c->cd(1);
     name = "MM"+NPL::itoa(i+1)+"_STRX_E_RAW";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE");
-
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE")->Draw("colz");
+    
     // STRY_E_RAW
+    c->cd(2);
     name = "MM"+NPL::itoa(i+1)+"_STRY_E_RAW";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE")->Draw("colz");
 
     // STRX_T_RAW
+    c->cd(3);
     name = "MM"+NPL::itoa(i+1)+"_STRX_T_RAW";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT")->Draw("colz");
 
     // STRY_T_RAW
+    c->cd(4);
     name = "MM"+NPL::itoa(i+1)+"_STRY_T_RAW";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT");
-
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT")->Draw("colz");
+    
+    AddCanvas(c);
     // SILI_E_RAW
     name = "MM"+NPL::itoa(i+1)+"_SILI_E_RAW";
     AddHisto2D(name, name, fPadSili, 1, fPadSili+1, 512, 0, 8192, "MUST2/RAW/SILIE");

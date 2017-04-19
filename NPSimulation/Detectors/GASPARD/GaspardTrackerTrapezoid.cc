@@ -57,7 +57,6 @@
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
-
 using namespace std;
 using namespace CLHEP;
 
@@ -426,7 +425,8 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter;
+         MMpos = MMw * Length + MMCenter;
+
       }
 
       FirstStage  = m_wFirstStage[i];
