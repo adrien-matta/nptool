@@ -115,6 +115,9 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     // treatment
     void BuildSimplePhysicalEvent();
 
+//to calculate particle angles from Awire positions. By Shuya 170417
+    double calculate_fit_slope(int len,double* Aw_X, double* Aw_Z, double& R2);
+
     // same as above but for online analysis
     void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
