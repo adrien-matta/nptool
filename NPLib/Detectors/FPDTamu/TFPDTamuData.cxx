@@ -60,9 +60,11 @@ void TFPDTamuData::Clear() {
     fFPDTamu_AWire_T_DetectorSide.clear();
     fFPDTamu_AWire_Time.clear();
 
+    fFPDTamu_Micro_E_DetNbr.clear();
     fFPDTamu_Micro_E_RowNbr.clear();
     fFPDTamu_Micro_E_ColNbr.clear(); 
     fFPDTamu_Micro_Energy.clear();
+    fFPDTamu_Micro_T_DetNbr.clear(); 
     fFPDTamu_Micro_T_RowNbr.clear(); 
     fFPDTamu_Micro_T_ColNbr.clear(); 
     fFPDTamu_Micro_Time.clear();
@@ -128,7 +130,8 @@ void TFPDTamuData::Dump() const {
   mysize = fFPDTamu_Micro_E_RowNbr.size();
   cout << "Energy Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "Row: " << fFPDTamu_Micro_E_RowNbr[i]
+    cout << "Det: " << fFPDTamu_Micro_E_DetNbr[i]
+         << " Row: " << fFPDTamu_Micro_E_RowNbr[i]
          << " Col: " << fFPDTamu_Micro_E_ColNbr[i]
          << " Energy: " << fFPDTamu_Micro_Energy[i]
          <<endl;
@@ -137,7 +140,8 @@ void TFPDTamuData::Dump() const {
   mysize = fFPDTamu_Micro_T_RowNbr.size();
   cout << "Time Mult: " << mysize << endl;
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "Row: " << fFPDTamu_Micro_T_RowNbr[i]
+    cout << "Det: " << fFPDTamu_Micro_T_DetNbr[i]
+         << " Row: " << fFPDTamu_Micro_T_RowNbr[i]
          << " Col: " << fFPDTamu_Micro_T_ColNbr[i]
          << " Time: " << fFPDTamu_Micro_Time[i]
          <<endl;

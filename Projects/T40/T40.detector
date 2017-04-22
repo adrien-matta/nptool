@@ -52,6 +52,10 @@ FPDTamu DELTA
 FPDTamu MICRO
  UPSTREAM-LEFT=  +154 +00 +340 mm
  UPSTREAM-RIGHT= -154 +00 +340 mm
+% position of second micro not verified 
+FPDTamu MICRO
+ UPSTREAM-LEFT=  +154 +00 +360 mm
+ UPSTREAM-RIGHT= -154 +00 +360 mm
 %%%%%%%%%%%%%%%%%%%%%
 % All AWIRE detectors
 FPDTamu AWIRE
