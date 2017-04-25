@@ -280,7 +280,7 @@ void Analysis::TreatEvent(){
   /////////////////////////////
   // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
   TG->DCSingles(RecoilBeta);
-  TG->AddBack(RecoilBeta,3);
+  TG->AddBack(RecoilBeta);
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
   //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero
