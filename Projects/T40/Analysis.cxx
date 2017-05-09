@@ -112,8 +112,11 @@ void Analysis::Init(){
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
-  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
-  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+//by Shuya 170505
+  //LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
