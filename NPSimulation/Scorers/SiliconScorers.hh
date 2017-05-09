@@ -157,7 +157,7 @@ namespace SILICONSCORERS {
       G4int m_DetectorNumber    ;
       G4int m_StripLengthNumber ;
       G4int m_StripWidthNumber  ;
-      G4int m_Index             ;
+      G4long m_Index             ;
 
   };
 
@@ -219,7 +219,7 @@ namespace SILICONSCORERS {
       G4int m_StripRingNumber   ;
       G4int m_StripSectorNumber    ;
       G4int m_StripQuadrantNumber ;
-      G4int m_Index               ;
+      G4long m_Index               ;
 
   };
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -271,7 +271,7 @@ namespace SILICONSCORERS {
       G4ThreeVector m_Position  ;
       G4int m_DetectorNumber    ;
       G4int m_StripWidthNumber  ;
-      G4int m_Index             ;
+      G4long m_Index             ;
 
   };
 

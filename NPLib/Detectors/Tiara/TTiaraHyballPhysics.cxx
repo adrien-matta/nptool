@@ -559,7 +559,7 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
       StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate
       StripCenter.SetY(0);
       StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://gca.tamu.edu/TIARA+General/25
+      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://static.miraheze.org/t40wiki/5/55/TIARA_Detector_Map.png
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
@@ -603,11 +603,10 @@ TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) co
   double phi = OriginalPosition.Phi();
   double z = OriginalPosition.Z();
   // randomises within a given detector ring and sector
-  double totalRadius = 135.1;
-  double rho_min = (rho-3.2)/totalRadius ; // ratios
-  double rho_max = (rho+3.2)/totalRadius ;
-  double rho_rand = totalRadius*sqrt(Rand->Uniform(rho_min,rho_max));// sqrt is necessary for realistic randomise!
-  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg);
+  double rho_min2 = (rho-3.2)*(rho-3.2) ; // ^2 to reproduce a randomization in the arc
+  double rho_max2 = (rho+3.2)*(rho+3.2) ;
+  double rho_rand = sqrt(Rand->Uniform(rho_min2,rho_max2));// sqrt is necessary for realistic randomise!
+  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg); 
   return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////

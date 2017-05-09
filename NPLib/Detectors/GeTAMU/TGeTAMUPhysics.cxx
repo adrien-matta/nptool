@@ -50,8 +50,174 @@ ClassImp(TGeTAMUPhysics)
     m_EventData         = new TGeTAMUData ;
     m_PreTreatedData    = new TGeTAMUData ;
     m_EventPhysics      = this ;
+    //m_Spectra           = NULL;
+    
+    //Raw Thresholds
+    m_Cry_E_Threshold = 10 ;
+    m_Seg_E_Threshold = 10 ;
+    //Calibrated Threshold
+    m_Cry_E_Raw_Threshold = 100 ;
+    m_Seg_E_Raw_Threshold = 100 ;
+    //Add Back mode
+    m_AddBackMode = 1;
+
   };
 
+
+
+void TGeTAMUPhysics::InitializeStandardParameter(){
+
+//Set high gain as default
+  m_LowGainIsSet = false;
+  m_CryChannelStatus.clear() ;
+  m_SegChannelStatus.clear() ;
+
+//enable all channels 
+vector< bool > CryChannelStatus;
+vector< bool > SegChannelStatus;
+CryChannelStatus.resize(4,true);
+SegChannelStatus.resize(3,true);
+for (unsigned iDet = 0 ; iDet < m_CloverPosition.size() ; iDet++){
+  m_CryChannelStatus[iDet] = CryChannelStatus;
+  m_SegChannelStatus[iDet] = SegChannelStatus;
+}
+
+  return;
+}
+
+///////////////////////////////////////////////////////////////////////////
+void TGeTAMUPhysics::ReadAnalysisConfig(){
+  bool ReadingStatus = false;
+
+  // path to file
+  string FileName = "./configs/ConfigGeTamu.dat";
+
+  // open analysis config file
+  ifstream AnalysisConfigFile;
+  AnalysisConfigFile.open(FileName.c_str());
+
+  if (!AnalysisConfigFile.is_open()) {
+    cout << " No ConfigGeTamu.dat found: Default parameters loaded for Analysis " << FileName << endl;
+    return;
+  }
+  cout << " Loading user parameters for Analysis from ConfigGeTamu.dat " << endl;
+
+  // Save it in a TAsciiFile
+  TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
+  asciiConfig->AppendLine("%%% ConfigGeTamu.dat %%%");
+  asciiConfig->Append(FileName.c_str());
+  asciiConfig->AppendLine("");
+  // read analysis config file
+  string LineBuffer,DataBuffer,whatToDo;
+  while (!AnalysisConfigFile.eof()) {
+    // Pick-up next line
+    getline(AnalysisConfigFile, LineBuffer);
+
+    // search for "header"
+    if (LineBuffer.compare(0, 12, "ConfigGeTamu") == 0) ReadingStatus = true;
+
+    // loop on tokens and data
+    while (ReadingStatus ) {
+
+      whatToDo="";
+      AnalysisConfigFile >> whatToDo;
+
+      // Search for comment symbol (%)
+      if (whatToDo.compare(0, 1, "%") == 0) {
+        AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+      }
+
+      else if (whatToDo== "LOW_GAIN_ENERGY") {
+        m_LowGainIsSet  = true ; 
+        cout << whatToDo << " " << m_LowGainIsSet << endl; // e.g. DataBuffer = CLOVER03
+      }
+
+      else if (whatToDo== "DISABLE_ALL") {
+        AnalysisConfigFile >> DataBuffer;
+        cout << whatToDo << "  " << DataBuffer << endl; // e.g. DataBuffer = CLOVER03
+        int detector = atoi(DataBuffer.substr(6,2).c_str());
+        vector< bool > CryChannelStatus;
+        vector< bool > SegChannelStatus;
+        CryChannelStatus.resize(4,false);
+        SegChannelStatus.resize(3,false);
+        m_CryChannelStatus[detector-1] = CryChannelStatus;
+        m_SegChannelStatus[detector-1] = SegChannelStatus;
+      }
+
+      else if (whatToDo == "DISABLE_CHANNEL") {
+        AnalysisConfigFile >> DataBuffer;
+        cout << whatToDo << "  " << DataBuffer << endl; // e.g. DataBuffer = CLOVER03_CRY01, CLOVER03_SEG01
+        int detector = atoi(DataBuffer.substr(6,2).c_str());
+        int channel = -1;
+        if (DataBuffer.compare(9,3,"CRY") == 0) {
+          channel = atoi(DataBuffer.substr(12,2).c_str());
+          m_CryChannelStatus[detector-1][channel-1] = false;
+        }
+        else if (DataBuffer.compare(9,3,"SEG") == 0) {
+          channel = atoi(DataBuffer.substr(12,2).c_str());
+          m_SegChannelStatus[detector-1][channel-1] = false;
+        }
+        else cout << "Warning: detector type for GeTAMU unknown!" << endl;
+      }
+
+      else if (whatToDo=="ADD_BACK_CLOVER") {
+        m_AddBackMode = 1;
+        cout << whatToDo << endl;
+      }
+
+      else if (whatToDo=="ADD_BACK_FACING") {
+        m_AddBackMode = 2;
+        cout << whatToDo << endl;
+      }
+
+      else if (whatToDo=="ADD_BACK_ARRAY") {
+        m_AddBackMode = 3;
+        cout << whatToDo << endl;
+      }
+
+      else if (whatToDo=="CRY_E_RAW_THRESHOLD") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Cry_E_Raw_Threshold = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Raw_Threshold << endl;
+      }
+
+      else if (whatToDo=="SEG_E_RAW_THRESHOLD") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Seg_E_Raw_Threshold = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Raw_Threshold << endl;
+      }
+
+      else if (whatToDo=="CRY_E_THRESHOLD") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Cry_E_Threshold = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Threshold << endl;
+      }
+
+      else if (whatToDo== "SEG_E_THRESHOLD") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Seg_E_Threshold = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Threshold << endl;
+      }
+
+      else {
+        ReadingStatus = false;
+      }
+
+    }
+  }
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+bool TGeTAMUPhysics :: IsValidChannel(const int& DetectorType, const int& detector , const int& channel) {
+  if(DetectorType == 0) //Cry
+    return m_CryChannelStatus[detector-1][channel-1];
+
+  else if(DetectorType == 1)
+    return m_SegChannelStatus[detector-1][channel-1];
+
+  else return false;
+}
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::BuildPhysicalEvent(){
@@ -129,17 +295,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
         }
       }
     }
-    // show
-    /*
-    int* apixel = *pixel;
-    cout <<endl<<"------- Clover "<< clover << endl;
-    for (unsigned i = 0 ; i < 4 ; i++){
-      for (unsigned j = 0 ; j < 3 ; j++)
-          cout << *(apixel+(i*3)+j) << " ";
-      cout << endl;
-    }
-     cout <<"----------------------- " <<endl;
-    */
+
      //Calculate the singles
     for (unsigned i = 0 ; i < CryEN.size() ; i++){
       int segment = -1;
@@ -182,18 +338,33 @@ for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
 
-  ClearPreTreatedData();
+ClearPreTreatedData();
 
-  static CalibrationManager* cal = CalibrationManager::getInstance();
-  static string name;
-  unsigned int mysizeE = m_EventData->GetMultiplicityCoreE();
-  unsigned int mysizeT = m_EventData->GetMultiplicityCoreT();
-  double Eraw,Energy;
-  double Traw,Time;
-  int clover, crystal, segment;
+static CalibrationManager* cal = CalibrationManager::getInstance();
+static string name;
+unsigned int mysizeE ;
+unsigned int mysizeT ;
+double Eraw,Energy;
+double Traw,Time;
+int clover, crystal, segment;
 
-  for(unsigned int i = 0 ; i < mysizeE ; i++){
+if(m_LowGainIsSet)
+  mysizeE = m_EventData->GetMultiplicityCoreELowGain();
+else
+  mysizeE = m_EventData->GetMultiplicityCoreE();
+
+for(unsigned int i = 0 ; i < mysizeE ; i++){
+  if(m_LowGainIsSet){
+    clover = m_EventData->GetCoreCloverNbrELowGain(i);
+    crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
+    Eraw = m_EventData->GetCoreEnergyLowGain(i);
+  }
+  else{
+    clover = m_EventData->GetCoreCloverNbrE(i);
+    crystal = m_EventData->GetCoreCrystalNbrE(i);
     Eraw = m_EventData->GetCoreEnergy(i);
+/*
+<<<<<<< HEAD
     if(Eraw>0){
       clover = m_EventData->GetCoreCloverNbrE(i);
       crystal = m_EventData->GetCoreCrystalNbrE(i);
@@ -201,52 +372,77 @@ void TGeTAMUPhysics::PreTreat(){
 //by Shuya and Momo 170228.
       //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
       Energy =  cal->ApplyCalibration(name+"_E", Eraw+gRandom->Rndm());
+=======
+  }
+*/
+
+  if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+    if(Energy>=m_Cry_E_Threshold){
+//>>>>>>> 1ae8e442f1809ee7fe5fe2a8d84697fd9bc6e6b7
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);
     }
   }
+}
 
-  for(unsigned int i = 0 ; i < mysizeT ; i++){
-    Traw = m_EventData->GetCoreTime(i);
-    if(Traw>0){
-      clover = m_EventData->GetCoreCloverNbrT(i);
-      crystal = m_EventData->GetCoreCrystalNbrT(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-      Singles_CloverMap_CryTN[clover].push_back(crystal);
-      Singles_CloverMap_CryT[clover].push_back(Time);
-      m_PreTreatedData->SetCoreT(clover,crystal,Time);
-    }
+mysizeT = m_EventData->GetMultiplicityCoreT();
+for(unsigned int i = 0 ; i < mysizeT ; i++){
+  Traw = m_EventData->GetCoreTime(i);
+  if(Traw>0){
+    clover = m_EventData->GetCoreCloverNbrT(i);
+    crystal = m_EventData->GetCoreCrystalNbrT(i);
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+    Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+    Singles_CloverMap_CryTN[clover].push_back(crystal);
+    Singles_CloverMap_CryT[clover].push_back(Time);
+    m_PreTreatedData->SetCoreT(clover,crystal,Time);
+  }
+}
+
+if(m_LowGainIsSet)
+  mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
+else
+  mysizeE = m_EventData->GetMultiplicitySegmentE();
+for(unsigned int i = 0 ; i < mysizeE ; i++){
+  
+  if(m_LowGainIsSet){
+    clover = m_EventData->GetSegmentCloverNbrELowGain(i);
+    segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
+    Eraw = m_EventData->GetSegmentEnergyLowGain(i);
+  }
+  else{
+    clover = m_EventData->GetSegmentCloverNbrE(i);
+    segment = m_EventData->GetSegmentSegmentNbrE(i);
+    Eraw = m_EventData->GetSegmentEnergy(i);
   }
 
- mysizeE = m_EventData->GetMultiplicitySegmentE();
-  for(unsigned int i = 0 ; i < mysizeE ; i++){
-    Eraw = m_EventData->GetSegmentEnergy(i);
-    if(Eraw>0){
-      clover = m_EventData->GetSegmentCloverNbrE(i);
-      segment = m_EventData->GetSegmentSegmentNbrE(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-      Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+  if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+    if(Energy>=m_Seg_E_Threshold){
       Singles_CloverMap_SegEN[clover].push_back(segment);
       Singles_CloverMap_SegE[clover].push_back(Energy);
       m_PreTreatedData->SetSegmentE(clover,segment,Energy);
     }
   }
+}
 
- mysizeT = m_EventData->GetMultiplicitySegmentT();
-  for(unsigned int i = 0 ; i < mysizeT ; i++){
-    Traw = m_EventData->GetSegmentTime(i);
-    if(Traw>0){
-      clover = m_EventData->GetSegmentCloverNbrT(i);
-      segment = m_EventData->GetSegmentSegmentNbrT(i);
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-      Singles_CloverMap_CryTN[clover].push_back(segment);
-      Singles_CloverMap_CryT[clover].push_back(Time);
-      m_PreTreatedData->SetSegmentT(clover,segment,Time);
-    }
+mysizeT = m_EventData->GetMultiplicitySegmentT();
+for(unsigned int i = 0 ; i < mysizeT ; i++){
+  Traw = m_EventData->GetSegmentTime(i);
+  if(Traw>0){
+    clover = m_EventData->GetSegmentCloverNbrT(i);
+    segment = m_EventData->GetSegmentSegmentNbrT(i);
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+    Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+    Singles_CloverMap_CryTN[clover].push_back(segment);
+    Singles_CloverMap_CryT[clover].push_back(Time);
+    m_PreTreatedData->SetSegmentT(clover,segment,Time);
   }
+}
 
 }
 
@@ -285,15 +481,10 @@ void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
 
 
 
-void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
-    vector<int>::iterator itClover;
-
-  if (! (scheme >=1 && scheme <= 3) ){
-      cout << " Addback scheme " << scheme << " is not supported " << endl;
-      return;
-      }   
+void TGeTAMUPhysics::AddBack( TVector3& BeamBeta){
+    vector<int>::iterator itClover; 
   
-  if (scheme==1){ // clover by clover add-back
+  if (m_AddBackMode==1){ // clover by clover add-back
     for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
       int clv = Singles_Clover[iPixel];
       int cry = Singles_Crystal[iPixel];
@@ -323,7 +514,7 @@ void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
     }
   } 
   else 
-    if (scheme==2){ // facing clovers (1&3) or (2&4) add-back
+    if (m_AddBackMode==2){ // facing clovers (1&3) or (2&4) add-back
       double max24 = -1; // maximum stored energy 
       double max13 = -1;
       double totE24 = 0; // total energy 
@@ -389,7 +580,7 @@ void TGeTAMUPhysics::AddBack( TVector3& BeamBeta, int scheme){
     } 
   } // end of scheme 2
 else 
-  if (scheme==3){ // all clovers add-back
+  if (m_AddBackMode==3){ // all clovers add-back
     double maxE = -1; // maximum stored energy 
     double totE = 0; // total energy 
     unsigned pixel = -1;
@@ -425,30 +616,7 @@ else
       AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
     }
   } // end of scheme 3 
-
 }
-
-/*
-/////////////////////////////////////////////////
-TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
-  //return TVector3();
-  return GetSegmentPosition(Singles_Clover[i],Singles_Crystal[i],Singles_Segment[i]);
-}
-/////////////////////////////////////////////////
-// original energy, position, beta
-double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 direction, TVector3& beta){
-  // renormalise pos vector
-  direction.SetMag(1);
-  m_GammaLV.SetPx(energy*direction.X());
-  m_GammaLV.SetPy(energy*direction.Y());
-  m_GammaLV.SetPz(energy*direction.Z());
-  m_GammaLV.SetE(energy);
-  m_GammaLV.Boost(-beta);
-  return m_GammaLV.Energy();
-}
-//=======
-//} // end of add back
-*/
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
@@ -550,7 +718,12 @@ void TGeTAMUPhysics::ReadConfiguration(NPL::InputParser parser)  {
       exit(1);
     }
   }
+
+  InitializeStandardParameter();
+  ReadAnalysisConfig();
+
 }
+
 ///////////////////////////////////////////////////////////////////////////
 void TGeTAMUPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();

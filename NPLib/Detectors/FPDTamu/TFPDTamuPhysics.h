@@ -71,6 +71,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> DeltaEnergy;
   vector<double> DeltaTime;//!
   //Micromega
+  vector<int>    MicroDetNumber;
   vector<int>    MicroRowNumber;
   vector<int>    MicroColNumber;
 	vector<int>    MicroTimeRowNumber;
@@ -187,8 +188,8 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     TFPDTamuData* GetPreTreatedData() const {return m_PreTreatedData;}
     
     // Micromega specific used in analysis
-    double GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol) ; 
-    double GetMicroRowGeomEnergy(int lrow, int hrow);
+    double GetMicroGroupEnergy(int det, int lrow, int hrow, int lcol, int hcol) ; 
+    double GetMicroRowGeomEnergy(int det, int lrow, int hrow);
   
   // parameters used in the analysis
   private:

@@ -102,11 +102,11 @@ class Analysis: public NPL::VAnalysis{
   //FPD
 	static const Int_t kNumAw = 4; // number of wires
   double Delta_E      ;
-  double Micro_E_row1 ;   
-  double Micro_E_col4 ; 
-  double Micro_E      ;
-	double Micro_E_row1_2;
-	double Micro_E_row3_6;
+  double Micro1_E_row1 ;   
+  double Micro1_E_col4 ; 
+  double Micro1_E_row1_2;
+  double Micro2_E      ;
+	double Micro2_E_row1_2;
   double Plast_E      ;
 	double Aw_X[kNumAw] ;
 	double Aw_Z[kNumAw] ;

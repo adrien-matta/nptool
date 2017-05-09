@@ -146,11 +146,11 @@ void Analysis::Init(){
 
   //FPD
   Delta_E = 0; // Energy ionisation chamber
-  Micro_E = 0; // Energy from micromega total
-	Micro_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
-	Micro_E_row3_6 = 0; // Energy from micromega rows 3-6  ("E in stopping mode")
-  Micro_E_row1 = 0 ;// Energy from micromega row 1
-  Micro_E_col4 = 0 ;// energy from micromega col 1
+  Micro2_E = 0; // Energy from micromega total
+	Micro1_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
+	Micro2_E_row1_2 = 0; // Energy from micromega rows 1-2  ("E in stopping mode")
+  Micro1_E_row1 = 0 ;// Energy from micromega row 1
+  Micro1_E_col4 = 0 ;// energy from micromega col 1
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -296,7 +296,7 @@ void Analysis::TreatEvent(){
   /////////////////////////////
   // Part 2 : Calculate Doppler-Corrected energies for singles, and addback spectra
   TG->DCSingles(RecoilBeta);
-  TG->AddBack(RecoilBeta,1); 
+  TG->AddBack(RecoilBeta);
 
   /////////////////////////// LOOP on Ge TAMU /////////////////////////////
   //for(unsigned int countGe = 0 ; countGe < TG->Singles_E.size() ; countGe++){ // multiplicity treated for now is zero
@@ -311,19 +311,19 @@ void Analysis::TreatEvent(){
 	// Sums across various rows & columns
 	if(TF->MicroRowNumber.size())
 	{
-		Micro_E_row1 = TF->GetMicroGroupEnergy(1,1,1,7); // energy sum from the row 1
-		Micro_E_col4 = TF->GetMicroGroupEnergy(1,4,4,4); // energy sum from the col 4
-		Micro_E      = TF->GetMicroGroupEnergy(1,4,1,7); // energy sum from all the pads
-		Micro_E_row1_2 = TF->GetMicroGroupEnergy(1,2,1,7); // energy sum from row 1-2
-		Micro_E_row3_6 = TF->GetMicroGroupEnergy(3,6,1,7); // energy sum from row 3-6
+		Micro1_E_row1 = TF->GetMicroGroupEnergy(1,1,1,1,7); // energy sum from the row 1
+		Micro1_E_col4 = TF->GetMicroGroupEnergy(1,1,4,4,4); // energy sum from the col 4
+		Micro2_E      = TF->GetMicroGroupEnergy(2,1,4,1,7); // energy sum from all the pads
+		Micro1_E_row1_2 = TF->GetMicroGroupEnergy(1,1,2,1,7); // energy sum from row 1-2
+		Micro2_E_row1_2 = TF->GetMicroGroupEnergy(2,1,2,1,7); // energy sum from row 3-6
 	}
 	else
 	{
-		Micro_E_row1 = -1000;
-		Micro_E_col4 = -1000;
-		Micro_E_row1_2 = -1000;
-		Micro_E_row3_6 = -1000;
-		Micro_E      = -1000;
+		Micro1_E_row1 = -1000;
+		Micro1_E_col4 = -1000;
+		Micro1_E_row1_2 = -1000;
+		Micro2_E_row1_2 = -1000;
+		Micro2_E      = -1000;
 	}
 	// Delta E ion chamber
 	Delta_E      = TF->DeltaEnergy.empty() ? -1000 : TF->DeltaEnergy[0];
@@ -428,11 +428,11 @@ void Analysis::ReInitValue(){
 
   //FPD
   Delta_E      = -1000;
-  Micro_E_row1 = -1000;
-  Micro_E_col4 = -1000;
- 	Micro_E_row1_2 = -1000;
-	Micro_E_row3_6 = -1000;
-	Micro_E      = -1000;
+  Micro1_E_row1 = -1000;
+  Micro1_E_col4 = -1000;
+ 	Micro1_E_row1_2 = -1000;
+	Micro2_E_row1_2 = -1000;
+	Micro2_E      = -1000;
   Plast_E      = -1000;
 
 	for(int i=0; i< kNumAw; ++i) {
@@ -474,11 +474,11 @@ void Analysis::InitOutputBranch() {
 
   //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1",&Micro_E_row1,"Micro_E_row1/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro_E_col4",&Micro_E_col4,"Micro_E_col4/D");
-	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row1_2", &Micro_E_row1_2, "Micro_E_row1_2/D");
-	RootOutput::getInstance()->GetTree()->Branch("Micro_E_row3_6", &Micro_E_row3_6, "Micro_E_row3_6/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro_E",&Micro_E,"Micro_E/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_row1",&Micro1_E_row1,"Micro1_E_row1/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col4",&Micro1_E_col4,"Micro1_E_col4/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro1_E_row1_2", &Micro1_E_row1_2, "Micro1_E_row1_2/D");
+	RootOutput::getInstance()->GetTree()->Branch("Micro2_E_row1_2", &Micro2_E_row1_2, "Micro2_E_row1_2/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E",&Micro2_E,"Micro2_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Plast_E",&Plast_E,"Plast_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_X",Aw_X,Form("Aw_X[%i]/D", kNumAw));
   RootOutput::getInstance()->GetTree()->Branch("Aw_Z",Aw_Z,Form("Aw_Z[%i]/D", kNumAw));
