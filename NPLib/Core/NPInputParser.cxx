@@ -347,7 +347,12 @@ void NPL::InputParser::TreatAliases(){
     if(!alias[i]->HasTokenList(token)){
       NPL::SendErrorAndExit("NPL::InputParser", "Alias block syntax incorrect");
     }
-    std::cout << "Using Alias : @" << alias[i]->GetMainValue() << endl;
+    
+    int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
+
+    if(verbose)
+      std::cout << "Using Alias : @" << alias[i]->GetMainValue() << endl;
+    
     std::string name="@";
     name += alias[i]->GetMainValue(); 
     std::string action = alias[i]->GetString("Action");

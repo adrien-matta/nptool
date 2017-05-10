@@ -22,7 +22,7 @@
  *                                                                           *
  *****************************************************************************/
 
-
+#include "TApplication.h" 
 #include "TGLayout.h"
 #include "TGButton.h"
 #include "TGTab.h"
@@ -32,11 +32,13 @@
 #include "TSocket.h"
 #include "TGListTree.h"
 #include "TGTextEntry.h"
+#include "TGTextEdit.h"
 #include "TGNumberEntry.h"
 #include "TTimer.h"
 //#include "TGCanvasContainer.h"
 #include "RQ_OBJECT.h"
 #include "NPSpectraClient.h"
+#include "NPElog.h"
 #include<map>
 using namespace std;
 
@@ -81,12 +83,15 @@ namespace NPL{
            TGListTree* GetListTree();
   };
 
-  class OnlineGUI{
+  class OnlineGUI: public TGMainFrame{
     RQ_OBJECT("OnlineGUI")
 
     public:
       OnlineGUI(NPL::SpectraClient*);
       ~OnlineGUI();
+    
+    public: // necessarry to kill the app when closing the windows
+      void CloseWindow() {gApplication->Terminate(0);}
     
     private:
       NPL::SpectraClient* m_Client;
@@ -96,13 +101,20 @@ namespace NPL{
       void Connect();
       void Update();
       void AutoUpdate();
-      void Fit();
+      void FitCurrent();
+      void FitAll();
+      void ApplyRangeCurrent();
+      void ApplyRangeAll();
+      void Eloging();
 
-
-    private: // Server client
+    private: // Server/Client
       TSocket* m_Sock;
-      TList* m_CanvasList;
+      TList*   m_HistoList;
 
+    private: // ELog Stuff
+      NPL::Elog m_Elog;
+      std::map<std::string,TGTextEntry*> m_ElogAttributes ;
+      TGTextEdit* m_ElogEntry; 
     private: // GUI stuff
       // Main window
       TGMainFrame* m_Main;
@@ -118,11 +130,27 @@ namespace NPL{
       TRootEmbeddedCanvas* m_EmbeddedCanvas; 
 
       // right Tool bar
-      TGCompositeFrame* m_Right;
-      TGPictureButton* m_Fit;
-      TGCheckButton* m_CheckFitAll;
-      TGCheckButton* m_BackgroundFit;
+     
+      //Nav
+      TGCheckButton* m_CheckLogX;
+      TGCheckButton* m_CheckLogY;
+      TGCheckButton* m_CheckLogZ;
+      TGNumberEntry* m_Xmin;
+      TGNumberEntry* m_Xmax;
+      TGNumberEntry* m_Ymin;
+      TGNumberEntry* m_Ymax;
 
+      //
+      //
+      TGTextButton* m_ApplyRangeCurrent;
+      TGTextButton* m_ApplyRangeAll;
+
+      // Fit
+      TGCompositeFrame* m_Right;
+      TGTextButton* m_FitCurrent;
+      TGTextButton* m_FitAll;
+      TGCheckButton* m_BackgroundFit;
+      TGPictureButton* m_Eloging;
       // Server tool bar
       TGTab* m_Tab;
       TGPictureButton* m_Quit;
