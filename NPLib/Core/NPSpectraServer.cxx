@@ -45,7 +45,7 @@ NPL::SpectraServer::SpectraServer(){
   m_Server= new TServerSocket(9092,true);
   if(!m_Server->IsValid())
     exit(1);
-  
+
   m_Server->SetCompressionSettings(1);
   // Add server socket to monitor so we are notified when a client needs to be
   // accepted
@@ -56,18 +56,18 @@ NPL::SpectraServer::SpectraServer(){
   m_Sockets = new TList;
 
   // Create the list of Canvas
-  m_Canvas = new TList;
-  
+  m_Spectra = new TList;
+
   std::cout << "INFO: nptool spectra server started on port 9092" << std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
   if(m_Server && m_Monitor){
-      TSocket* s ;
-      m_Monitor->ResetInterrupt();
-      if((s=m_Monitor->Select(10))!=(TSocket*)-1)
-        HandleSocket(s);
+    TSocket* s ;
+    m_Monitor->ResetInterrupt();
+    if((s=m_Monitor->Select(10))!=(TSocket*)-1)
+      HandleSocket(s);
   }
 }
 
@@ -90,20 +90,20 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     m_Sockets->Add(socket);
   }
   else{
-  // we only get string based requests from the spy
-  char request[64];
-  if (s->Recv(request, sizeof(request)) <= 0) {
-    m_Monitor->Remove(s);
-    m_Sockets->Remove(s);
-    delete s;
-    return;
-  }
+    // we only get string based requests from the spy
+    char request[64];
+    if (s->Recv(request, sizeof(request)) <= 0) {
+      m_Monitor->Remove(s);
+      m_Sockets->Remove(s);
+      delete s;
+      return;
+    }
 
-  // send requested object back
-  TMessage answer(kMESS_OBJECT);
-  if (!strcmp(request, "RequestSpectra")){
-    answer.WriteObject(m_Canvas);
+    // send requested object back
+    TMessage answer(kMESS_OBJECT);
+    if (!strcmp(request, "RequestSpectra")){
+      answer.WriteObject(m_Spectra);
+    }
+    s->Send(answer);
   }
-  s->Send(answer);
-}
 }

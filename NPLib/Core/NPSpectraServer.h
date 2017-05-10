@@ -54,9 +54,9 @@ namespace NPL{
       bool m_stop;
       TServerSocket* m_Server;     
       TMonitor* m_Monitor;     
-      std::map<TSocket*,std::map<std::string,TH1*> > m_Delta;
+      std::map<TSocket*,std::map<std::string,double> > m_Delta;
       TList* m_Sockets;
-      TList* m_Canvas;
+      TList* m_Spectra;
   };
 }
 #endif
