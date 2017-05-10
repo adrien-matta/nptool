@@ -198,6 +198,8 @@ double CalibrationManager::ApplyCalibration(const string& ParameterPath , const 
   it = fCalibrationCoeff.find(ParameterPath)  ;
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
+//by Shuya 170222
+//cout << ParameterPath << "!" << endl;
     return RawValue ;
   }
 

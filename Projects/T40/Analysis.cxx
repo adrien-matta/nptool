@@ -95,12 +95,28 @@ void Analysis::Init(){
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
 
   // energy losses
+/*Original Files
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
   //LightSi = NPL::EnergyLoss(light+"_Si.G4table","SRIM",10);
   LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",100);
   
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
+  myReaction->SetBeamEnergy(FinalBeamEnergy);
+  cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
+*/
+
+//Copied from Momo's Slack 170222.
+  string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+//by Shuya 170505
+  //LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
@@ -339,7 +355,7 @@ void Analysis::TreatEvent(){
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
 
-			double slope = calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
+			double slope = TF->calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
 			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
 			break;
 		}

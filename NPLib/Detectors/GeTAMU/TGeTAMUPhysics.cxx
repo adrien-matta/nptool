@@ -26,6 +26,7 @@
 using namespace std;
 
 #include "TGeTAMUPhysics.h"
+#include "TRandom.h"
 
 //   NPL
 #include "RootInput.h"
@@ -362,12 +363,24 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     clover = m_EventData->GetCoreCloverNbrE(i);
     crystal = m_EventData->GetCoreCrystalNbrE(i);
     Eraw = m_EventData->GetCoreEnergy(i);
+/*
+<<<<<<< HEAD
+    if(Eraw>0){
+      clover = m_EventData->GetCoreCloverNbrE(i);
+      crystal = m_EventData->GetCoreCrystalNbrE(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+//by Shuya and Momo 170228.
+      //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+      Energy =  cal->ApplyCalibration(name+"_E", Eraw+gRandom->Rndm());
+=======
   }
+*/
 
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
     Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
     if(Energy>=m_Cry_E_Threshold){
+//>>>>>>> 1ae8e442f1809ee7fe5fe2a8d84697fd9bc6e6b7
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);

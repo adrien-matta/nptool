@@ -40,6 +40,9 @@ using namespace std;
 //   ROOT
 #include "TChain.h"
 
+// by Shuya 170417.
+#include "TMath.h"
+
 ClassImp(TFPDTamuPhysics)
 
 
@@ -65,6 +68,37 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
 }
 
+
+///////////////////////////////////////////////////////////////////////////
+//Copied Greg's function from Analysis.cxx by Shuya 170417.
+double TFPDTamuPhysics::calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
+{
+	vector<double> X, Z;
+	for(int i=0; i< len; ++i) {
+		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
+	}
+
+	Long64_t N = X.size();
+	double meanZ = TMath::Mean(N, &Z[0]);
+	double meanX = TMath::Mean(N, &X[0]);
+	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
+	for(size_t i=0; i< N; ++i) {
+		meanZ2 += Z[i]*Z[i];
+		meanX2 += X[i]*X[i];
+		meanXZ += Z[i]*X[i];
+	}
+	meanZ2 /= N;
+	meanXZ /= N;
+
+	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
+	R2 = pow(meanXZ - meanX*meanZ, 2) / 
+		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
+
+	/// TODO::: R2 doesn't seem to make sense... look into it!
+	
+	return slope;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
@@ -267,7 +301,7 @@ double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
   if (det < 1 || det > m_NumberOfMicro) return 0; 
 
   int dummy; 
-  double energy = 0;
+  double energy = 0.;
   int sample = 0;   
 
   //avoid zeros
@@ -282,6 +316,10 @@ double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
   // group energies
   for (int r = lrow; r < hrow ; r++) {
     double esample = GetMicroGroupEnergy(det, r,r,1,7);
+
+//by Shuya 170418
+	if(r == lrow)	energy = 1.;
+
     if( esample > 0 ){
       sample++;  
       energy *= esample ;
@@ -778,6 +816,17 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         "Delta_R"+ NPL::itoa(i+1)+"_C1_T");
   }
 
+<<<<<<< HEAD
+  for (int i = 0; i < m_NumberOfMicro; ++i) { // in case there's 2 micromega add up the rows
+	//by Shuya 170414.
+    //for (int iRow = 0; iRow < 4; ++iRow) {
+    for (int iRow = 0; iRow < 6; ++iRow) {
+      for (int iCol = 0; iCol < 7; ++iCol) {
+        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
+            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
+        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
+            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+=======
   for (int iDet = 0; iDet < m_NumberOfMicro; ++iDet) { // in case there's 2 micromega add up the rows
     for (int iRow = 0; iRow < 4; ++iRow) { // 4 rows
       for (int iCol = 0; iCol < 7; ++iCol) { // 7 columns
@@ -790,6 +839,7 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         Cal->AddParameter("FPDTamu", 
             "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T",
             "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T");      
+>>>>>>> 1ae8e442f1809ee7fe5fe2a8d84697fd9bc6e6b7
       }
     }
   }
