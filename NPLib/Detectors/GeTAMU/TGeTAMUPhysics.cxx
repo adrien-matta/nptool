@@ -373,8 +373,8 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
       //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
       Energy =  cal->ApplyCalibration(name+"_E", Eraw+gRandom->Rndm());
 =======
-  }
 */
+  }
 
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
@@ -781,7 +781,9 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
 
     for(int cry = 0 ; cry < 4 ; cry++){ // 4 crystals
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E");
-      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
+	//by Shuya 170509
+      //Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
+      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
     }
     for( int seg = 0 ; seg < 3 ; seg++){ // 3 segments
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_SEG"+ NPL::itoa(seg+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_SEG"+NPL::itoa(seg+1)+"_E");
