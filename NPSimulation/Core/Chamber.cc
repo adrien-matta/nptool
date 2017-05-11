@@ -23,11 +23,11 @@
 #include <fstream>
 #include <limits>
 
+#ifdef NPS_GDML
 // for GDML (MARA and MuGasT)
 #include "G4GDMLParser.hh"
 #include "G4VisAttributes.hh"
-#include "G4Colour.hh"
-
+#endif
 
 // G4 geometry header
 #include "G4Tubs.hh"
@@ -38,6 +38,7 @@
 #include "G4SubtractionSolid.hh"
 
 //G4 various headers
+#include "G4Colour.hh"
 #include "G4NistManager.hh"  // NIST database of material
 #include "G4Material.hh"
 #include "G4MaterialTable.hh"
@@ -195,18 +196,9 @@ Chamber::Chamber(): nStripsX(60),nStripsY(40)
 
 }
 
-G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temperature, G4double Pressure)
-{
-  
-  G4Material* myMaterial;
-  //G4NistManager *man= G4NistManager::Instance();
-  //G4NistManager::Instance()->ListMaterials("all"); 
-    Temperature=0.;
-    Pressure=0.;
+G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName){
 
    if (MaterialName == "Alu") {
-
-
      G4Material* myMaterial = new G4Material("Alu", 13, 26.98*g/mole, 2.7*g/cm3);
      //G4Material* myMaterial = man->FindOrBuildMaterial("G4_Al");
      return myMaterial;
@@ -230,7 +222,7 @@ G4Material* Chamber::GetMaterialFromLibrary(G4String MaterialName, G4double Temp
       G4cout << "No Matching Material in the Chamber Library Default is Vacuum" << G4endl;
       G4Element* N = new G4Element("Nitrogen", "N", 7., 14.01*g / mole);
       G4Element* O = new G4Element("Oxygen"  , "O", 8., 16.00*g / mole);
-      myMaterial = new G4Material("Vacuum", 0.000000001*mg / cm3, 2);
+      G4Material* myMaterial = new G4Material("Vacuum", 0.000000001*mg / cm3, 2);
       myMaterial->AddElement(N, .7);
       myMaterial->AddElement(O, .3);
 
@@ -331,13 +323,13 @@ void Chamber::DefineMaterials()
   G4Material* Ge=new G4Material(name="Germanium", z=32., a, density);
   
   a=26.98*g/mole;  density=2.7*g/cm3;
-  G4Material* Al=new G4Material(name="Aluminium", z=13., a, density);
+  //G4Material* Al=new G4Material(name="Aluminium", z=13., a, density);
   
   a=63.54*g/mole;  density=8.96*g/cm3;
-  G4Material* Cu=new G4Material(name="Copper", z=29., a, density);
+  //G4Material* Cu=new G4Material(name="Copper", z=29., a, density);
 
   a=183.84*g/mole;  density=19.3*g/cm3;
-  G4Material* W=new G4Material(name="Tungsten", z=74., a, density);
+  //G4Material* W=new G4Material(name="Tungsten", z=74., a, density);
   
   //---------------------------------
   // AIR
@@ -856,6 +848,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 
 
    }
+#ifdef NPS_GDML
    else if(m_ChamberType==4){  // MARA chamber	
 		G4GDMLParser m_gdmlparser;
 		//m_gdmlparser.Read("/mnt/hgfs/Echanges/gdml/honeycomb/HoneyComb.gdml");
@@ -903,7 +896,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 
 
    }
-
+#endif
    
    else if(m_ChamberType==2){  // case of GREAT chamber  
 
@@ -1107,7 +1100,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 	 //fChamberL = m_ChamberDmax;
 	 fChamberThickness= m_ChamberHmax-m_ChamberHmin;
  
-	 G4double fVacuumH = fChamberH - fChamberThickness;
+	 fVacuumH = fChamberH - fChamberThickness;
 
 	 G4cout << "fChamberH=" << fChamberH << G4endl;
 	 G4cout << "fChamberW=" << fChamberW << G4endl;
@@ -1432,7 +1425,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 	   thisY += planarPixel_H;
 	 }
 
-	 /* */
+	  */
 
 	 //----------------------------------------------------------
 	 // Cooling Frame: Tunnel and DSSD Detector Support
@@ -1455,7 +1448,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 	 G4double Hole4DSSD_H = fCoolingBlockCutOutH;
 	 
 	 //from the above can determine the centre of the DSSD wrt centre of Cooling block
-	 G4double fCoolingBlockCutOut_PosY = fCoolingBlockH/2. - fCoolingBlockT - fCoolingBlockCutOutH/2.; //save this frequently used position
+	 fCoolingBlockCutOut_PosY = fCoolingBlockH/2. - fCoolingBlockT - fCoolingBlockCutOutH/2.; //save this frequently used position
 	 G4cout << "fCoolingBlockCutOut_PosY " << fCoolingBlockCutOut_PosY << " cf " << fCoolingBlockDSSDCentre << G4endl;
 	 
 	 G4Box*  hole1 = new G4Box("Hole #1",Hole4DSSD_W/2., Hole4DSSD_H/2., fCoolingBlockL/2.);
@@ -1660,7 +1653,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
 
       
   // The ChamberVac is located wrt centre of Chamber => z0 = -fChamberL/2.
-  G4double fDSSD_PosZ = DSSD_z - fChamberL/2. - fDSSD_T/2.;
+  fDSSD_PosZ = DSSD_z - fChamberL/2. - fDSSD_T/2.;
   G4cout << "Upstream DSSD face @ Z = " << fDSSD_PosZ << G4endl;
 
 
@@ -1748,7 +1741,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
   G4double PinGap        =  1.0 * mm; //between PINS
   G4double PinToEdge     =  3.0 * mm; //gap from the end
   G4double PinEpoxyT     =  1.6 * mm; //thickness of pcb board
-  G4double PinSupportLip =  PinT+PinEpoxyT; //thickness of pcb board
+//  G4double PinSupportLip =  PinT+PinEpoxyT; //thickness of pcb board
   
   //horizontal-side dimensions [approxiamted as a single board]
   G4double PinBoard_H_W = PinL*5.;
@@ -1770,7 +1763,7 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
   G4double PinBoard_H_x  = 0.0 * mm;
   G4double PinBoard_H_dy = Hole4DSSD_H/2. - PinEpoxyT/2. - PinBoardSupport_T;
   G4double PinBoard_V_x  = Hole4DSSD_W/2. - PinEpoxyT/2. - PinBoardSupport_T;
-  G4double fDSSD_PosY             = fCentreOfDSSD_Y;
+  fDSSD_PosY             = fCentreOfDSSD_Y;
   G4double PinBoard_V_y  = fDSSD_PosY;
 
   //The epoxy board for the pins
@@ -1969,15 +1962,15 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
   visAttPIN->SetForceWireframe(true);
 
   G4double Pin_z1 = PinBoard_z + PinBoard_V_L/2. - PinToEdge - PinL/2;
-  G4double Pin_z2 = Pin_z1 - PinGap - PinL;
+  //G4double Pin_z2 = Pin_z1 - PinGap - PinL;
 
   //total Si area
   G4Box* solidPINS_H = new G4Box("pins-passive", PinL/2., PinT/2., PinL/2);  //horizontal
-  G4Box* solidPINS_V = new G4Box("pins-passive", PinT/2., PinL/2., PinL/2);  //vertical
+  new G4Box("pins-passive", PinT/2., PinL/2., PinL/2);  //vertical
   
   //active Si
   G4Box* solidPINS_Active_H = new G4Box("pins", PinL/2.-PinGuard, PinT/2., PinL/2-PinGuard);  //horizontal
-  G4Box* solidPINS_Active_V = new G4Box("pins", PinT/2., PinL/2.-PinGuard, PinL/2-PinGuard);  //vertical
+  new G4Box("pins", PinT/2., PinL/2.-PinGuard, PinL/2-PinGuard);  //vertical
 
 
   //horizontal rows  could put an index[i] = copyNo to match position in real array !!
@@ -2402,7 +2395,6 @@ void Chamber::Place_PhaseIIs_Left_and_Right(G4LogicalVolume* world)
   G4RotationMatrix* rmC;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
   
   //Keep track of which detectors are used
   G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
@@ -2425,8 +2417,6 @@ void Chamber::Place_PhaseIIs_Left_and_Right(G4LogicalVolume* world)
     } else {
       leafY = -22.15*mm;
     }
-    //the z-translation
-    leafZ = geLeaf_PosZ;
     
     
     //for(G4int det = prevNumber; det < numberOfClovers; det++) {
@@ -2580,7 +2570,6 @@ void Chamber::Place_PhaseII_On_the_Top(G4LogicalVolume* world)
   G4RotationMatrix* rmC;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
   
   for(G4int l = 0; l < 4; l++) {
     //the rotation
@@ -2601,7 +2590,6 @@ void Chamber::Place_PhaseII_On_the_Top(G4LogicalVolume* world)
       leafY = -22.15*mm;
     }
     //the z-translation
-    leafZ = geLeaf_PosZ;
     
     
     //physiGeLeaf_CloverT[l] = new G4PVPlacement(rmC,                       //rotation
@@ -2916,7 +2904,6 @@ void Chamber::Place_GREAT_Left_and_Right(G4LogicalVolume* world)
   G4double dPos = fGeLeaf_dX_GREAT + fGapBetweenLeaves_GREAT/2.;
   G4double leafX;
   G4double leafY;
-  G4double leafZ;
   
   //Keep track of which detectors are used
   G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
@@ -2939,8 +2926,6 @@ void Chamber::Place_GREAT_Left_and_Right(G4LogicalVolume* world)
     } else {
       leafY = -dPos;
     }
-    //the z-translation
-    leafZ = geLeaf_PosZ;
     
     
     //for(G4int det = prevNumber; det < numberOfClovers; det++) {
@@ -3473,7 +3458,6 @@ void  Chamber::CreateCloverIISolids()
   G4double passiveThick = 0.5 * mm;    //fPassiveThick_PhaseII;  //passivated Ge
   G4double contactThick = fContactThick_PhaseII;  //Li contact
 
-  G4double innerRHole =  0.00*mm;
   G4double holeR      = fHoleR_PhaseII;
   G4double contactR   = holeR + contactThick;
   G4double passiveR   = contactR + passiveThick;
@@ -3690,7 +3674,6 @@ void  Chamber::CreateGREATCloverSolids()
   G4double passiveThick =  0.30 * mm;  //passivated Ge
   G4double contactThick =  0.50 * mm;  //Li contact
 
-  G4double innerRHole =  0.00 * mm;
   G4double holeR      =  5.00 * mm; //fHoleR_PhaseII;
   G4double contactR   = holeR + contactThick;
   G4double passiveR   = contactR + passiveThick;
