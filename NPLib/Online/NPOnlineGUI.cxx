@@ -92,8 +92,29 @@ NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client):TGMainFrame(gClient->GetRo
   m_ResetAll->Connect("Clicked()","NPL::OnlineGUI",this,"ResetAll()");
   m_ApplyRangeCurrent->Connect("Clicked()","NPL::OnlineGUI",this,"ApplyRangeCurrent()");
   m_ApplyRangeAll->Connect("Clicked()","NPL::OnlineGUI",this,"ApplyRangeAll()");
+  m_SaveAs->Connect("Clicked()","NPL::OnlineGUI",this,"SaveAs()");
   m_Eloging->Connect("Clicked()","NPL::OnlineGUI",this,"Eloging()");
   Connect();
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::OnlineGUI::SaveAs(){
+  TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+ 
+  if(!c)
+   return;
+
+  if(m_SaveAsColor->IsOn()){
+   gROOT->SetStyle("Modern");
+   c->UseCurrentStyle();
+   c->SaveAs(m_SaveAsFileName->GetText());
+   gROOT->SetStyle("nponline");
+   c->UseCurrentStyle();
+  }
+
+  else
+    c->SaveAs(m_SaveAsFileName->GetText());
+
+  c->Update();
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::ResetAll(){
@@ -546,7 +567,6 @@ void NPL::OnlineGUI::MakeGui(){
   m_FitButton->SetLayoutManager(new TGHorizontalLayout(m_FitButton));
   m_FitBar->AddFrame(m_FitButton, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
-
   m_FitCurrent= new  TGTextButton(m_FitButton, "Fit &Current",-1);
   m_FitButton->AddFrame(m_FitCurrent, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
@@ -560,47 +580,43 @@ void NPL::OnlineGUI::MakeGui(){
   m_FitLine->SetForegroundColor(m_BgColor);
   m_Right->AddFrame(m_FitLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
 
-  // Print Bar
-  TGVerticalFrame* m_PrintBar = new TGVerticalFrame(m_Right,10000,80);
-  m_PrintBar->SetBackgroundColor(m_FgColor);
-  m_PrintBar->SetForegroundColor(m_FgColor);
-  m_PrintBar->SetLayoutManager(new TGHorizontalLayout(m_PrintBar));  
-  m_Right->AddFrame(m_PrintBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+  // SaveAs Bar
+  TGVerticalFrame* m_SaveAsBar = new TGVerticalFrame(m_Right,10000,80);
+  m_SaveAsBar->SetBackgroundColor(m_FgColor);
+  m_SaveAsBar->SetForegroundColor(m_FgColor);
+  m_SaveAsBar->SetLayoutManager(new TGHorizontalLayout(m_SaveAsBar));  
+  m_Right->AddFrame(m_SaveAsBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
-  // Print button
+  // SaveAs button
   string path_print= NPLPath + "/NPLib/Core/icons/print.xpm";
-  TGPictureButton* m_Print= new TGPictureButton(m_PrintBar,gClient->GetPicture(path_print.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
-  m_Print->SetBackgroundColor(m_FgColor);
-  m_Print->SetToolTipText("SaveAs");
-  m_PrintBar->AddFrame(m_Print, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
+  m_SaveAs= new TGPictureButton(m_SaveAsBar,gClient->GetPicture(path_print.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
+  m_SaveAs->SetBackgroundColor(m_FgColor);
+  m_SaveAs->SetToolTipText("SaveAs");
+  m_SaveAsBar->AddFrame(m_SaveAs, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
 
   // Check box container
-  TGVerticalFrame* m_OptionBar = new TGVerticalFrame(m_PrintBar,10000,80);
+  TGVerticalFrame* m_OptionBar = new TGVerticalFrame(m_SaveAsBar,10000,80);
   m_OptionBar->SetBackgroundColor(m_FgColor);
   m_OptionBar->SetForegroundColor(m_FgColor);
   m_OptionBar->SetLayoutManager(new TGVerticalLayout(m_OptionBar));
-  m_PrintBar->AddFrame(m_OptionBar, new TGLayoutHints(kLHintsLeft|kLHintsExpandX));
+  m_SaveAsBar->AddFrame(m_OptionBar, new TGLayoutHints(kLHintsLeft|kLHintsExpandX));
 
-  // Fit check box
-  TGCheckButton* m_PrintColor = new TGCheckButton(m_OptionBar,"printer color");
-  m_PrintColor->SetBackgroundColor(m_FgColor);
-  m_PrintColor->SetForegroundColor(m_BgColor);        
-  m_OptionBar->AddFrame(m_PrintColor, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+  // SaveAs color
+  m_SaveAsColor = new TGCheckButton(m_OptionBar,"printer color");
+  m_SaveAsColor->SetBackgroundColor(m_FgColor);
+  m_SaveAsColor->SetForegroundColor(m_BgColor);        
+  m_OptionBar->AddFrame(m_SaveAsColor, new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX|kLHintsExpandY,2,2,2,2)); 
 
-  // Fit check box
-  TGCheckButton* m_PrintPDF = new TGCheckButton(m_OptionBar,"pdf");
-  m_PrintPDF->SetBackgroundColor(m_FgColor);
-  m_PrintPDF->SetForegroundColor(m_BgColor);        
-  m_OptionBar->AddFrame(m_PrintPDF, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
+  // Format
+  m_SaveAsFileName = new TGTextEntry(m_OptionBar,"nponline.pdf");
+  m_OptionBar->AddFrame(m_SaveAsFileName, new TGLayoutHints(kLHintsTop|kLHintsLeft|kLHintsExpandX|kLHintsExpandY,1,1,1,1)); 
 
 
   // Horizontal separator
-  TGHorizontal3DLine* m_PrintLine = new TGHorizontal3DLine(m_Right,408,8);
-  m_PrintLine->SetBackgroundColor(m_FgColor);
-  m_PrintLine->SetForegroundColor(m_BgColor);
-  m_Right->AddFrame(m_PrintLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
-  // m_PrintLine->Move(0,offset+50);
-
+  TGHorizontal3DLine* m_SaveAsLine = new TGHorizontal3DLine(m_Right,408,8);
+  m_SaveAsLine->SetBackgroundColor(m_FgColor);
+  m_SaveAsLine->SetForegroundColor(m_BgColor);
+  m_Right->AddFrame(m_SaveAsLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
 
   // Elog button
   string path_elog= NPLPath +  "/NPLib/Core/icons/booklet.xpm";

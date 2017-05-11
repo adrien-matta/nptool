@@ -27,6 +27,7 @@
 #include "TGButton.h"
 #include "TGTab.h"
 #include "TGStatusBar.h"
+#include "TGComboBox.h"
 #include "TRootEmbeddedCanvas.h"
 #include "TH1.h"
 #include "TSocket.h"
@@ -108,6 +109,7 @@ namespace NPL{
       void ResetCurrent();
       void ResetAll();
       void Eloging();
+      void SaveAs();
 
     private: // Server/Client
       TSocket* m_Sock;
@@ -141,8 +143,6 @@ namespace NPL{
       TGNumberEntry* m_Xmax;
       TGNumberEntry* m_Ymin;
       TGNumberEntry* m_Ymax;
-
-      //
       TGTextButton* m_ApplyRangeCurrent;
       TGTextButton* m_ApplyRangeAll;
       TGTextButton* m_ResetCurrent;
@@ -154,6 +154,12 @@ namespace NPL{
       TGTextButton* m_FitAll;
       TGCheckButton* m_BackgroundFit;
       TGPictureButton* m_Eloging;
+      
+      // SaveAs
+      TGPictureButton* m_SaveAs;
+      TGTextEntry*     m_SaveAsFileName;
+      TGCheckButton*   m_SaveAsColor;
+      
       // Server tool bar
       TGTab* m_Tab;
       TGPictureButton* m_Quit;
