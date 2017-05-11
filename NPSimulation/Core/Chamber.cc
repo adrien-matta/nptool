@@ -2396,8 +2396,6 @@ void Chamber::Place_PhaseIIs_Left_and_Right(G4LogicalVolume* world)
   G4double leafX;
   G4double leafY;
   
-  //Keep track of which detectors are used
-  G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
   
   for(G4int l = 0; l < 4; l++) {
     //the rotation
@@ -2904,9 +2902,6 @@ void Chamber::Place_GREAT_Left_and_Right(G4LogicalVolume* world)
   G4double dPos = fGeLeaf_dX_GREAT + fGapBetweenLeaves_GREAT/2.;
   G4double leafX;
   G4double leafY;
-  
-  //Keep track of which detectors are used
-  G4String  detName[2] = {"CloverR","CloverL"}; //Looking upstream
   
   for(G4int l = 0; l < 4; l++) {
     //the rotation
