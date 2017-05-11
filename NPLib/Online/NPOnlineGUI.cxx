@@ -88,10 +88,49 @@ NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client):TGMainFrame(gClient->GetRo
   m_Clock->Connect("Clicked()","NPL::OnlineGUI",this,"AutoUpdate()");
   m_FitAll->Connect("Clicked()", "NPL::OnlineGUI", this, "FitAll()");
   m_FitCurrent->Connect("Clicked()", "NPL::OnlineGUI", this, "FitCurrent()");
+  m_ResetCurrent->Connect("Clicked()","NPL::OnlineGUI",this,"ResetCurrent()");
+  m_ResetAll->Connect("Clicked()","NPL::OnlineGUI",this,"ResetAll()");
   m_ApplyRangeCurrent->Connect("Clicked()","NPL::OnlineGUI",this,"ApplyRangeCurrent()");
   m_ApplyRangeAll->Connect("Clicked()","NPL::OnlineGUI",this,"ApplyRangeAll()");
   m_Eloging->Connect("Clicked()","NPL::OnlineGUI",this,"Eloging()");
   Connect();
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::OnlineGUI::ResetAll(){
+  TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+  if (!c)
+    return;
+
+  int size= ((TList*)c->GetListOfPrimitives())->GetSize();
+  for(unsigned int i =  1 ; i < size ;i++){
+    c->cd(i);
+    ResetCurrent();
+  }
+  c->cd(1);
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::OnlineGUI::ResetCurrent(){
+   TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+  if (!c)
+    return;
+
+  gPad->SetLogx(false);
+  gPad->SetLogy(false);
+  gPad->SetLogz(false);
+
+
+     TList* list = gPad->GetListOfPrimitives();
+    int Hsize = list->GetSize();
+    for(int h = 0 ; h < Hsize ; h++){
+      TObject* obj = list->At(h);
+      if(obj->InheritsFrom(TH1::Class())){
+        TH1* h = (TH1*) obj;
+        h->GetXaxis()->UnZoom();
+        h->GetYaxis()->UnZoom();
+        h->GetZaxis()->UnZoom();
+      }
+    }
+  c->Update();
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Eloging(){
@@ -395,19 +434,19 @@ void NPL::OnlineGUI::MakeGui(){
   m_LogBar->SetLayoutManager(new TGHorizontalLayout(m_LogBar));
   m_NavBar->AddFrame(m_LogBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
-  m_CheckLogX = new TGCheckButton(m_LogBar,"LogX");
+  m_CheckLogX = new TGCheckButton(m_LogBar,"Log&X");
   m_CheckLogX->SetBackgroundColor(m_FgColor);
   m_CheckLogX->SetForegroundColor(m_BgColor);        
   m_LogBar->AddFrame(m_CheckLogX, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
   m_CheckLogX->Move(0,0); 
 
-  m_CheckLogY = new TGCheckButton(m_LogBar,"LogY");
+  m_CheckLogY = new TGCheckButton(m_LogBar,"Log&Y");
   m_CheckLogY->SetBackgroundColor(m_FgColor);
   m_CheckLogY->SetForegroundColor(m_BgColor);        
   m_LogBar->AddFrame(m_CheckLogY, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
   m_CheckLogY->Move(60,0); 
 
-  m_CheckLogZ = new TGCheckButton(m_LogBar,"LogZ");
+  m_CheckLogZ = new TGCheckButton(m_LogBar,"Log&Z");
   m_CheckLogZ->SetBackgroundColor(m_FgColor);
   m_CheckLogZ->SetForegroundColor(m_BgColor);        
   m_LogBar->AddFrame(m_CheckLogZ, new TGLayoutHints(kLHintsCenterX,2,2,2,2)); 
@@ -451,12 +490,24 @@ void NPL::OnlineGUI::MakeGui(){
   m_NavBar->AddFrame(m_RangeButton, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
 
-  m_ApplyRangeCurrent= new  TGTextButton(m_RangeButton, "Current Pad",-1);
+  m_ApplyRangeCurrent= new  TGTextButton(m_RangeButton, "C&urrent Pad",-1);
   m_RangeButton->AddFrame(m_ApplyRangeCurrent, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
-  m_ApplyRangeAll= new  TGTextButton(m_RangeButton, "All Pad",-1);
+  m_ApplyRangeAll= new  TGTextButton(m_RangeButton, "All &Pad",-1);
   m_RangeButton->AddFrame(m_ApplyRangeAll, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
+  TGVerticalFrame* m_ResetButton= new TGVerticalFrame(m_NavBar,10000,80);
+  m_ResetButton->SetBackgroundColor(m_FgColor);
+  m_ResetButton->SetForegroundColor(m_FgColor);
+  m_ResetButton->SetLayoutManager(new TGHorizontalLayout(m_ResetButton));
+  m_NavBar->AddFrame(m_ResetButton, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+
+  m_ResetCurrent= new  TGTextButton(m_ResetButton, "Reset Current",-1);
+  m_ResetButton->AddFrame(m_ResetCurrent, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
+
+  m_ResetAll= new  TGTextButton(m_ResetButton, "Reset All",-1);
+  m_ResetButton->AddFrame(m_ResetAll, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
 
 
@@ -483,7 +534,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_FitBar->AddFrame(m_SelectBar, new TGLayoutHints(kLHintsLeft|kLHintsExpandX));
 
   // Fit check box
-  m_BackgroundFit = new TGCheckButton(m_SelectBar,"background");
+  m_BackgroundFit = new TGCheckButton(m_SelectBar,"&Background");
   m_BackgroundFit->SetBackgroundColor(m_FgColor);
   m_BackgroundFit->SetForegroundColor(m_BgColor);        
   m_SelectBar->AddFrame(m_BackgroundFit, new TGLayoutHints(kLHintsTop|kLHintsLeft,2,2,2,2)); 
@@ -496,10 +547,10 @@ void NPL::OnlineGUI::MakeGui(){
   m_FitBar->AddFrame(m_FitButton, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
 
-  m_FitCurrent= new  TGTextButton(m_FitButton, "Fit Current",-1);
+  m_FitCurrent= new  TGTextButton(m_FitButton, "Fit &Current",-1);
   m_FitButton->AddFrame(m_FitCurrent, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
-  m_FitAll= new  TGTextButton(m_FitButton, "Fit All",-1);
+  m_FitAll= new  TGTextButton(m_FitButton, "Fit &All",-1);
   m_FitButton->AddFrame(m_FitAll, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
 

@@ -105,6 +105,8 @@ namespace NPL{
       void FitAll();
       void ApplyRangeCurrent();
       void ApplyRangeAll();
+      void ResetCurrent();
+      void ResetAll();
       void Eloging();
 
     private: // Server/Client
@@ -141,9 +143,10 @@ namespace NPL{
       TGNumberEntry* m_Ymax;
 
       //
-      //
       TGTextButton* m_ApplyRangeCurrent;
       TGTextButton* m_ApplyRangeAll;
+      TGTextButton* m_ResetCurrent;
+      TGTextButton* m_ResetAll;
 
       // Fit
       TGCompositeFrame* m_Right;

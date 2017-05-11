@@ -23,8 +23,8 @@
 
 
 #include "NPSpectraServer.h"
-#include<cstdlib>
-#include<unistd.h>
+#include <cstdlib>
+#include <unistd.h>
 #include<iostream>
 
 NPL::SpectraServer* NPL::SpectraServer::instance = 0 ;
