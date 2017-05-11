@@ -72,7 +72,7 @@ class Chamber : public NPS::VDetector
 
 	public:
 		//	Return Material from the Chamber Material Library
-		G4Material* GetMaterialFromLibrary(G4String MaterialName, G4double Temperature = 0, G4double Pressure = 0);
+		G4Material* GetMaterialFromLibrary(G4String MaterialName);
 		
 		//	Generate a DEDX file table using the material used in the target
 		void 				WriteDEDXTable(G4ParticleDefinition* Particle,G4double Emin,G4double Emax);

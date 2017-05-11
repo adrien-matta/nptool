@@ -51,7 +51,7 @@ ClassImp(TGeTAMUPhysics)
     m_PreTreatedData    = new TGeTAMUData ;
     m_EventPhysics      = this ;
     //m_Spectra           = NULL;
-    
+
     //Raw Thresholds
     m_Cry_E_Threshold = 10 ;
     m_Seg_E_Threshold = 10 ;
@@ -67,20 +67,20 @@ ClassImp(TGeTAMUPhysics)
 
 void TGeTAMUPhysics::InitializeStandardParameter(){
 
-//Set high gain as default
+  //Set high gain as default
   m_LowGainIsSet = false;
   m_CryChannelStatus.clear() ;
   m_SegChannelStatus.clear() ;
 
-//enable all channels 
-vector< bool > CryChannelStatus;
-vector< bool > SegChannelStatus;
-CryChannelStatus.resize(4,true);
-SegChannelStatus.resize(3,true);
-for (unsigned iDet = 0 ; iDet < m_CloverPosition.size() ; iDet++){
-  m_CryChannelStatus[iDet] = CryChannelStatus;
-  m_SegChannelStatus[iDet] = SegChannelStatus;
-}
+  //enable all channels 
+  vector< bool > CryChannelStatus;
+  vector< bool > SegChannelStatus;
+  CryChannelStatus.resize(4,true);
+  SegChannelStatus.resize(3,true);
+  for (unsigned iDet = 0 ; iDet < m_CloverPosition.size() ; iDet++){
+    m_CryChannelStatus[iDet] = CryChannelStatus;
+    m_SegChannelStatus[iDet] = SegChannelStatus;
+  }
 
   return;
 }
@@ -253,15 +253,15 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
       SegE    = Singles_CloverMap_SegE[iClover+1];
     }
 
-  /*
-  //calculate total energy for sum rules
+    /*
+    //calculate total energy for sum rules
     double totCryE =0;
     double totSegE =0;
     for (unsigned i=0 ; i < CryE.size();i++)    totCryE+=CryE[i];
     for (unsigned i=0 ; i < SegE.size();i++)   totSegE+=SegE[i];
-  */
+    */
 
-  //sort the crystal energies;
+    //sort the crystal energies;
     int swapEN;
     double swapE;
     int size = (int) CryE.size();
@@ -296,7 +296,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
       }
     }
 
-     //Calculate the singles
+    //Calculate the singles
     for (unsigned i = 0 ; i < CryEN.size() ; i++){
       int segment = -1;
       unsigned crystal = CryEN[i];
@@ -312,7 +312,7 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
       else if (pixel[crystal-1][segmentA-1] > pixel[crystal-1][segmentB-1])
         segment = segmentA;
       else if (pixel[crystal-1][segmentA-1] < pixel[crystal-1][segmentB-1])
-         segment = segmentB;
+        segment = segmentB;
 
       //cout << i <<" picked: crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << endl;
       Singles_Clover.push_back(clover);
@@ -329,45 +329,40 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
   } // end of Clover loop on map
 
 
-//Fill the time OR
-for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
-  GeTime.push_back(m_PreTreatedData->GetCoreTime(i));
+  //Fill the time OR
+  for (unsigned i = 0 ; i < m_PreTreatedData->GetMultiplicityCoreT(); i++)
+    GeTime.push_back(m_PreTreatedData->GetCoreTime(i));
 
 } // end
 
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
 
-ClearPreTreatedData();
+  ClearPreTreatedData();
 
-static CalibrationManager* cal = CalibrationManager::getInstance();
-static string name;
-unsigned int mysizeE ;
-unsigned int mysizeT ;
-double Eraw,Energy;
-double Traw,Time;
-int clover, crystal, segment;
+  static CalibrationManager* cal = CalibrationManager::getInstance();
+  static string name;
+  unsigned int mysizeE ;
+  unsigned int mysizeT ;
+  double Eraw,Energy;
+  double Traw,Time;
+  int clover, crystal, segment;
 
-if(m_LowGainIsSet)
-  mysizeE = m_EventData->GetMultiplicityCoreELowGain();
-else
-  mysizeE = m_EventData->GetMultiplicityCoreE();
+  if(m_LowGainIsSet)
+    mysizeE = m_EventData->GetMultiplicityCoreELowGain();
+  else
+    mysizeE = m_EventData->GetMultiplicityCoreE();
 
-for(unsigned int i = 0 ; i < mysizeE ; i++){
-  if(m_LowGainIsSet){
-    clover = m_EventData->GetCoreCloverNbrELowGain(i);
-    crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
-    Eraw = m_EventData->GetCoreEnergyLowGain(i);
-  }
-  else{
-    clover = m_EventData->GetCoreCloverNbrE(i);
-    crystal = m_EventData->GetCoreCrystalNbrE(i);
-    Eraw = m_EventData->GetCoreEnergy(i);
-/*
-<<<<<<< HEAD
-    if(Eraw>0){
+  for(unsigned int i = 0 ; i < mysizeE ; i++){
+    if(m_LowGainIsSet){
+      clover = m_EventData->GetCoreCloverNbrELowGain(i);
+      crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
+      Eraw = m_EventData->GetCoreEnergyLowGain(i);
+    }
+    else{
       clover = m_EventData->GetCoreCloverNbrE(i);
       crystal = m_EventData->GetCoreCrystalNbrE(i);
+<<<<<<< HEAD
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
 //by Shuya and Momo 170228.
       //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
@@ -387,63 +382,78 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     }
   }
 }
+=======
+      Eraw = m_EventData->GetCoreEnergy(i);
 
-mysizeT = m_EventData->GetMultiplicityCoreT();
-for(unsigned int i = 0 ; i < mysizeT ; i++){
-  Traw = m_EventData->GetCoreTime(i);
-  if(Traw>0){
-    clover = m_EventData->GetCoreCloverNbrT(i);
-    crystal = m_EventData->GetCoreCrystalNbrT(i);
-    name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-    Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-    Singles_CloverMap_CryTN[clover].push_back(crystal);
-    Singles_CloverMap_CryT[clover].push_back(Time);
-    m_PreTreatedData->SetCoreT(clover,crystal,Time);
-  }
-}
+      if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
+        name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+        Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+        if(Energy>=m_Cry_E_Threshold){
+          Singles_CloverMap_CryEN[clover].push_back(crystal);
+          Singles_CloverMap_CryE[clover].push_back(Energy);
+          m_PreTreatedData->SetCoreE(clover,crystal,Energy);
+        }
+      }
+>>>>>>> ab259f332a96dc9a1007ef922f6a311d79bf6d2f
 
-if(m_LowGainIsSet)
-  mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
-else
-  mysizeE = m_EventData->GetMultiplicitySegmentE();
-for(unsigned int i = 0 ; i < mysizeE ; i++){
-  
-  if(m_LowGainIsSet){
-    clover = m_EventData->GetSegmentCloverNbrELowGain(i);
-    segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
-    Eraw = m_EventData->GetSegmentEnergyLowGain(i);
-  }
-  else{
-    clover = m_EventData->GetSegmentCloverNbrE(i);
-    segment = m_EventData->GetSegmentSegmentNbrE(i);
-    Eraw = m_EventData->GetSegmentEnergy(i);
-  }
+      mysizeT = m_EventData->GetMultiplicityCoreT();
+      for(unsigned int i = 0 ; i < mysizeT ; i++){
+        Traw = m_EventData->GetCoreTime(i);
+        if(Traw>0){
+          clover = m_EventData->GetCoreCloverNbrT(i);
+          crystal = m_EventData->GetCoreCrystalNbrT(i);
+          name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+          Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+          Singles_CloverMap_CryTN[clover].push_back(crystal);
+          Singles_CloverMap_CryT[clover].push_back(Time);
+          m_PreTreatedData->SetCoreT(clover,crystal,Time);
+        }
+      }
 
-  if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
-    name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-    Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
-    if(Energy>=m_Seg_E_Threshold){
-      Singles_CloverMap_SegEN[clover].push_back(segment);
-      Singles_CloverMap_SegE[clover].push_back(Energy);
-      m_PreTreatedData->SetSegmentE(clover,segment,Energy);
+      if(m_LowGainIsSet)
+        mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
+      else
+        mysizeE = m_EventData->GetMultiplicitySegmentE();
+      for(unsigned int i = 0 ; i < mysizeE ; i++){
+
+        if(m_LowGainIsSet){
+          clover = m_EventData->GetSegmentCloverNbrELowGain(i);
+          segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
+          Eraw = m_EventData->GetSegmentEnergyLowGain(i);
+        }
+        else{
+          clover = m_EventData->GetSegmentCloverNbrE(i);
+          segment = m_EventData->GetSegmentSegmentNbrE(i);
+          Eraw = m_EventData->GetSegmentEnergy(i);
+        }
+
+        if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
+          name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+          Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+          if(Energy>=m_Seg_E_Threshold){
+            Singles_CloverMap_SegEN[clover].push_back(segment);
+            Singles_CloverMap_SegE[clover].push_back(Energy);
+            m_PreTreatedData->SetSegmentE(clover,segment,Energy);
+          }
+        }
+      }
+
+      mysizeT = m_EventData->GetMultiplicitySegmentT();
+      for(unsigned int i = 0 ; i < mysizeT ; i++){
+        Traw = m_EventData->GetSegmentTime(i);
+        if(Traw>0){
+          clover = m_EventData->GetSegmentCloverNbrT(i);
+          segment = m_EventData->GetSegmentSegmentNbrT(i);
+          name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+          Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+          Singles_CloverMap_CryTN[clover].push_back(segment);
+          Singles_CloverMap_CryT[clover].push_back(Time);
+          m_PreTreatedData->SetSegmentT(clover,segment,Time);
+        }
+      }
+
     }
   }
-}
-
-mysizeT = m_EventData->GetMultiplicitySegmentT();
-for(unsigned int i = 0 ; i < mysizeT ; i++){
-  Traw = m_EventData->GetSegmentTime(i);
-  if(Traw>0){
-    clover = m_EventData->GetSegmentCloverNbrT(i);
-    segment = m_EventData->GetSegmentSegmentNbrT(i);
-    name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-    Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-    Singles_CloverMap_CryTN[clover].push_back(segment);
-    Singles_CloverMap_CryT[clover].push_back(Time);
-    m_PreTreatedData->SetSegmentT(clover,segment,Time);
-  }
-}
-
 }
 
 /////////////////////////////////////////////////
@@ -451,10 +461,11 @@ TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
   //return TVector3();
   return GetSegmentPosition(Singles_Clover[i],Singles_Crystal[i],Singles_Segment[i]);
 }
+
 /////////////////////////////////////////////////
 // original energy, position, beta
 double TGeTAMUPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 GamLabDirection, TVector3& BeamBeta){
-  
+
   // renormalise GamLabDirection vector
   GamLabDirection.SetMag(1); // gamma direction
   m_GammaLV.SetPx(energy*GamLabDirection.X());
@@ -482,8 +493,8 @@ void TGeTAMUPhysics::DCSingles( TVector3& BeamBeta){
 
 
 void TGeTAMUPhysics::AddBack( TVector3& BeamBeta){
-    vector<int>::iterator itClover; 
-  
+  vector<int>::iterator itClover; 
+
   if (m_AddBackMode==1){ // clover by clover add-back
     for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
       int clv = Singles_Clover[iPixel];
@@ -542,80 +553,80 @@ void TGeTAMUPhysics::AddBack( TVector3& BeamBeta){
           }
         }
       }
-    //Fill the addback vectors
-    if (totE13>0){
-      int clv = Singles_Clover[pixel13];
-      int cry = Singles_Crystal[pixel13];
-      int seg = Singles_Segment[pixel13];
-      double maxE13 = Singles_E[pixel13];
-      AddBack_Clover.push_back(clv);
-      AddBack_Crystal.push_back(cry);
-      AddBack_Segment.push_back(seg);
-      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
-      AddBack_X.push_back(GammaLabDirection.X());
-      AddBack_Y.push_back(GammaLabDirection.Y());
-      AddBack_Z.push_back(GammaLabDirection.Z());
-      AddBack_E.push_back(totE13);
-      //Doppler correction
-      totE13 -= maxE13 ; // take out the maximum energy contribution, Apply DC and add again 
-      AddBack_DC.push_back(totE13+GetDopplerCorrectedEnergy(maxE13, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
-      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
-    }
-    if (totE24>0){
-      int clv = Singles_Clover[pixel24];
-      int cry = Singles_Crystal[pixel24];
-      int seg = Singles_Segment[pixel24];
-      double maxE24 = Singles_E[pixel24];
-      AddBack_Clover.push_back(clv);
-      AddBack_Crystal.push_back(cry);
-      AddBack_Segment.push_back(seg);
-      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
-      AddBack_X.push_back(GammaLabDirection.X());
-      AddBack_Y.push_back(GammaLabDirection.Y());
-      AddBack_Z.push_back(GammaLabDirection.Z());
-      AddBack_E.push_back(totE24);
-      totE24 -= maxE24 ; 
-      AddBack_DC.push_back(totE24+GetDopplerCorrectedEnergy(maxE24, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
-      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
-    } 
-  } // end of scheme 2
-else 
-  if (m_AddBackMode==3){ // all clovers add-back
-    double maxE = -1; // maximum stored energy 
-    double totE = 0; // total energy 
-    unsigned pixel = -1;
-
-    for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
-      int clv = Singles_Clover[iPixel];
-      int cry = Singles_Crystal[iPixel];
-      int seg = Singles_Segment[iPixel];
-      double energy = Singles_E[iPixel];
-      totE+=energy;
-      if(energy>maxE) {
-        maxE = energy;
-        pixel = iPixel; // select this pixel for this clover souple 2,4
+      //Fill the addback vectors
+      if (totE13>0){
+        int clv = Singles_Clover[pixel13];
+        int cry = Singles_Crystal[pixel13];
+        int seg = Singles_Segment[pixel13];
+        double maxE13 = Singles_E[pixel13];
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(GammaLabDirection.X());
+        AddBack_Y.push_back(GammaLabDirection.Y());
+        AddBack_Z.push_back(GammaLabDirection.Z());
+        AddBack_E.push_back(totE13);
+        //Doppler correction
+        totE13 -= maxE13 ; // take out the maximum energy contribution, Apply DC and add again 
+        AddBack_DC.push_back(totE13+GetDopplerCorrectedEnergy(maxE13, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
       }
-    }
-    //Fill the addback vectors
-    if (totE>0){
-      int clv = Singles_Clover[pixel];
-      int cry = Singles_Crystal[pixel];
-      int seg = Singles_Segment[pixel];
-      double maxE = Singles_E[pixel];
-      AddBack_Clover.push_back(clv);
-      AddBack_Crystal.push_back(cry);
-      AddBack_Segment.push_back(seg);
-      TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
-      AddBack_X.push_back(GammaLabDirection.X());
-      AddBack_Y.push_back(GammaLabDirection.Y());
-      AddBack_Z.push_back(GammaLabDirection.Z());
-      AddBack_E.push_back(totE);
-      //Doppler correction
-      totE -= maxE ; // take out the maximum energy contribution, Apply DC and add again 
-      AddBack_DC.push_back(totE+GetDopplerCorrectedEnergy(maxE, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
-      AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
-    }
-  } // end of scheme 3 
+      if (totE24>0){
+        int clv = Singles_Clover[pixel24];
+        int cry = Singles_Crystal[pixel24];
+        int seg = Singles_Segment[pixel24];
+        double maxE24 = Singles_E[pixel24];
+        AddBack_Clover.push_back(clv);
+        AddBack_Crystal.push_back(cry);
+        AddBack_Segment.push_back(seg);
+        TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+        AddBack_X.push_back(GammaLabDirection.X());
+        AddBack_Y.push_back(GammaLabDirection.Y());
+        AddBack_Z.push_back(GammaLabDirection.Z());
+        AddBack_E.push_back(totE24);
+        totE24 -= maxE24 ; 
+        AddBack_DC.push_back(totE24+GetDopplerCorrectedEnergy(maxE24, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+        AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+      } 
+    } // end of scheme 2
+    else 
+      if (m_AddBackMode==3){ // all clovers add-back
+        double maxE = -1; // maximum stored energy 
+        double totE = 0; // total energy 
+        unsigned pixel = -1;
+
+        for(unsigned int iPixel = 0 ; iPixel < Singles_E.size() ; iPixel++){
+          int clv = Singles_Clover[iPixel];
+          int cry = Singles_Crystal[iPixel];
+          int seg = Singles_Segment[iPixel];
+          double energy = Singles_E[iPixel];
+          totE+=energy;
+          if(energy>maxE) {
+            maxE = energy;
+            pixel = iPixel; // select this pixel for this clover souple 2,4
+          }
+        }
+        //Fill the addback vectors
+        if (totE>0){
+          int clv = Singles_Clover[pixel];
+          int cry = Singles_Crystal[pixel];
+          int seg = Singles_Segment[pixel];
+          double maxE = Singles_E[pixel];
+          AddBack_Clover.push_back(clv);
+          AddBack_Crystal.push_back(cry);
+          AddBack_Segment.push_back(seg);
+          TVector3 GammaLabDirection = GetSegmentPosition(clv,cry,seg);
+          AddBack_X.push_back(GammaLabDirection.X());
+          AddBack_Y.push_back(GammaLabDirection.Y());
+          AddBack_Z.push_back(GammaLabDirection.Z());
+          AddBack_E.push_back(totE);
+          //Doppler correction
+          totE -= maxE ; // take out the maximum energy contribution, Apply DC and add again 
+          AddBack_DC.push_back(totE+GetDopplerCorrectedEnergy(maxE, GammaLabDirection, BeamBeta)); // Doppler Corrected for highest energy
+          AddBack_Theta.push_back(GammaLabDirection.Angle(BeamBeta)); 
+        }
+      } // end of scheme 3 
 }
 
 /////////////////////////////////////////////////
@@ -659,9 +670,9 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
 
   if (SegmentNbr==0) return GetCorePosition(CloverNbr,CoreNbr);
 
-   double offsetX = 20; // 20mm in GeTAMU according to measurments, 33.4 mm in TIGRESS
-   double offsetY = 20;
-   double depth = 40;  // 40mm in GeTAMU according to measurments, 45 mm in TIGRESS
+  double offsetX = 20; // 20mm in GeTAMU according to measurments, 33.4 mm in TIGRESS
+  double offsetY = 20;
+  double depth = 40;  // 40mm in GeTAMU according to measurments, 45 mm in TIGRESS
 
   // Changes signs with segment/core combinations
   if (CoreNbr==3||CoreNbr==2)
@@ -675,15 +686,15 @@ TVector3 TGeTAMUPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& Se
   if(SegmentNbr==1 || SegmentNbr==3){ // LEFT OR RIGHT
     offsetX = 1.5*offsetX ;
     Pos.SetXYZ(offsetX,offsetY,depth);
-    }
+  }
   else if(SegmentNbr==2){ // MIDDLE
     offsetX = 0.5*offsetX ;
     Pos.SetXYZ(offsetX,offsetY,depth);
-    }
+  }
   else
 
     cout << "Warning: GeTAMU segment number " << SegmentNbr
-    << " is out of range\n accepted values: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
+      << " is out of range\n accepted values: 0 (reserved for core) or 1-3 (Left, Middle, Right segment) " << endl;
 
   // Define reference axis as the Clover position, 
   // This is a special case to GeTAMU where segmentation is with respect to clover

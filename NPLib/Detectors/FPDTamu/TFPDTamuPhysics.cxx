@@ -816,6 +816,7 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         "Delta_R"+ NPL::itoa(i+1)+"_C1_T");
   }
 
+<<<<<<< HEAD
   for (int iDet = 0; iDet < m_NumberOfMicro; ++iDet) { // in case there's 2 micromega add up the rows
     for (int iRow = 0; iRow < 4; ++iRow) { // 4 rows
       for (int iCol = 0; iCol < 7; ++iCol) { // 7 columns
@@ -828,6 +829,17 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         Cal->AddParameter("FPDTamu", 
             "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T",
             "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T");      
+=======
+  for (int i = 0; i < m_NumberOfMicro; ++i) { // in case there's 2 micromega add up the rows
+	//by Shuya 170414.
+    //for (int iRow = 0; iRow < 4; ++iRow) {
+    for (int iRow = 0; iRow < 6; ++iRow) {
+      for (int iCol = 0; iCol < 7; ++iCol) {
+        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
+            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
+        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
+            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+>>>>>>> ab259f332a96dc9a1007ef922f6a311d79bf6d2f
       }
     }
   }
