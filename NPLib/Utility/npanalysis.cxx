@@ -166,10 +166,8 @@ int main(int argc , char** argv){
     if(!IsPhysics){ 
       for (unsigned int i = 0 ; i < nentries; i++) { 
         // Get the raw Data
-cout << "!" << endl;
-cout << nentries << endl;
         Chain -> GetEntry(i);
-cout << "!!" << endl;
+        Chain -> GetEntry(i);
         // Build the current event
         myDetector->BuildPhysicalEvent();
         // User Analysis
