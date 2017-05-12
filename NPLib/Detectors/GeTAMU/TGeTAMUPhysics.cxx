@@ -368,7 +368,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
   else{
     clover = m_EventData->GetCoreCloverNbrE(i);
     crystal = m_EventData->GetCoreCrystalNbrE(i);
-    Eraw = m_EventData->GetCoreEnergy(i)
+    Eraw = m_EventData->GetCoreEnergy(i);
   }
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
