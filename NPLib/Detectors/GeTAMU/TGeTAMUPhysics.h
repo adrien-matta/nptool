@@ -67,10 +67,6 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     //   First argument is either 0 for Cry,1 Seg
     bool IsValidChannel(const int& DetectorType, const int& detector , const int& channel) ;
 
-    //   Return true if the energy is read from low gain channel
-    //   First argument is either 0 for Cry,1 Seg
-    bool IsLowGainChannel(const int& DetectorType, const int& detector , const int& channel) ;
-
     //   Initialize the standard parameter for analysis
     //   ie: all channel enable, maximum multiplicity for strip = number of telescope
     void InitializeStandardParameter();
@@ -144,8 +140,9 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     double m_Seg_E_Threshold;
     int m_Cry_E_Raw_Threshold;
     int m_Seg_E_Raw_Threshold;
-    int m_AddBackMode;
-    bool m_LowGainIsSet; 
+    int m_AddBackMode; 
+    bool m_LowGainCryIsSet; 
+    bool m_LowGainSegIsSet; 
  
   private: // use for anlysis
     TLorentzVector m_GammaLV; //!

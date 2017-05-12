@@ -67,7 +67,8 @@ ClassImp(TGeTAMUPhysics)
 void TGeTAMUPhysics::InitializeStandardParameter(){
 
 //Set high gain as default
-  m_LowGainIsSet = false;
+  m_LowGainCryIsSet = false;
+  m_LowGainSegIsSet = false;
   m_CryChannelStatus.clear() ;
   m_SegChannelStatus.clear() ;
 
@@ -126,9 +127,14 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
       }
 
-      else if (whatToDo== "LOW_GAIN_ENERGY") {
-        m_LowGainIsSet  = true ; 
-        cout << whatToDo << " " << m_LowGainIsSet << endl; // e.g. DataBuffer = CLOVER03
+      else if (whatToDo== "LOW_GAIN_ENERGY_CRY") {
+        m_LowGainCryIsSet  = true ; 
+        cout << whatToDo << " " << m_LowGainCryIsSet << endl; // e.g. DataBuffer = CLOVER03
+      }
+
+      else if (whatToDo== "LOW_GAIN_ENERGY_SEG") {
+        m_LowGainSegIsSet  = true ; 
+        cout << whatToDo << " " << m_LowGainSegIsSet << endl; // e.g. DataBuffer = CLOVER03
       }
 
       else if (whatToDo== "DISABLE_ALL") {
@@ -347,13 +353,13 @@ double Eraw,Energy;
 double Traw,Time;
 int clover, crystal, segment;
 
-if(m_LowGainIsSet)
+if(m_LowGainCryIsSet)
   mysizeE = m_EventData->GetMultiplicityCoreELowGain();
 else
   mysizeE = m_EventData->GetMultiplicityCoreE();
 
 for(unsigned int i = 0 ; i < mysizeE ; i++){
-  if(m_LowGainIsSet){
+  if(m_LowGainCryIsSet){
     clover = m_EventData->GetCoreCloverNbrELowGain(i);
     crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
     Eraw = m_EventData->GetCoreEnergyLowGain(i);
@@ -389,13 +395,13 @@ for(unsigned int i = 0 ; i < mysizeT ; i++){
   }
 }
 
-if(m_LowGainIsSet)
+if(m_LowGainSegIsSet)
   mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
 else
   mysizeE = m_EventData->GetMultiplicitySegmentE();
 for(unsigned int i = 0 ; i < mysizeE ; i++){
   
-  if(m_LowGainIsSet){
+  if(m_LowGainSegIsSet){
     clover = m_EventData->GetSegmentCloverNbrELowGain(i);
     segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
     Eraw = m_EventData->GetSegmentEnergyLowGain(i);
