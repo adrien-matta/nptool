@@ -25,10 +25,8 @@
 #include <limits>
 using namespace std;
 
-#include "TGeTAMUPhysics.h"
-#include "TRandom.h"
-
 //   NPL
+#include "TGeTAMUPhysics.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
@@ -41,7 +39,7 @@ using namespace NPUNITS;
 #include "TChain.h"
 #include "TRandom3.h"
 
-TRandom *Random = new TRandom3();
+TRandom3 *Random = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TGeTAMUPhysics)
@@ -203,6 +201,12 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         AnalysisConfigFile >> DataBuffer;
         m_Seg_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Seg_E_Threshold << endl;
+      }
+
+      else if (whatToDo== "ADC_RANDOM_BIN") {
+        AnalysisConfigFile >> DataBuffer;
+        m_ADCRandomBinIsSet  = true ; 
+        cout << whatToDo << " " << m_ADCRandomBinIsSet << endl;
       }
 
       else {
@@ -372,7 +376,9 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
   }
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-    Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+    if(m_ADCRandomBinIsSet) 
+      Eraw += Random->Rndm();
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
     if(Energy>=m_Cry_E_Threshold){
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
@@ -389,7 +395,9 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
       clover = m_EventData->GetCoreCloverNbrT(i);
       crystal = m_EventData->GetCoreCrystalNbrT(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+      if(m_ADCRandomBinIsSet) 
+        Traw += Random->Rndm();
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
       Singles_CloverMap_CryTN[clover].push_back(crystal);
       Singles_CloverMap_CryT[clover].push_back(Time);
       m_PreTreatedData->SetCoreT(clover,crystal,Time);
@@ -415,7 +423,9 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
   }
   if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-    Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
+    if(m_ADCRandomBinIsSet) 
+      Eraw += Random->Rndm();
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
     if(Energy>=m_Seg_E_Threshold){
       Singles_CloverMap_SegEN[clover].push_back(segment);
       Singles_CloverMap_SegE[clover].push_back(Energy);
@@ -431,7 +441,9 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
       clover = m_EventData->GetSegmentCloverNbrT(i);
       segment = m_EventData->GetSegmentSegmentNbrT(i);
       name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-      Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
+      if(m_ADCRandomBinIsSet) 
+        Traw += Random->Rndm();
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
       Singles_CloverMap_CryTN[clover].push_back(segment);
       Singles_CloverMap_CryT[clover].push_back(Time);
       m_PreTreatedData->SetSegmentT(clover,segment,Time);

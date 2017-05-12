@@ -143,6 +143,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     int m_AddBackMode; 
     bool m_LowGainCryIsSet; 
     bool m_LowGainSegIsSet; 
+    bool m_ADCRandomBinIsSet; //Randomise the raw energy in the Raw data within a bin
  
   private: // use for anlysis
     TLorentzVector m_GammaLV; //!

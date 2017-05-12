@@ -1,7 +1,7 @@
 ConfigGeTamu
   %%%%%%%% Default is high energy 
-  LOW_GAIN_ENERGY_CRY
-  LOW_GAIN_ENERGY_SEG
+  %LOW_GAIN_ENERGY_CRY
+  %LOW_GAIN_ENERGY_SEG
 	%%%%%%%% Defective channels 
 	%DISABLE_ALL     CLOVER04
 	%DISABLE_CHANNEL CLOVER01_SEG01
@@ -14,3 +14,5 @@ ConfigGeTamu
   ADD_BACK_CLOVER
   %ADD_BACK_ARRAY
   %ADD_BACK_FACING
+  %%%%%%%% Randomise raw energy within ADC bin
+  %ADC_RANDOM_BIN
