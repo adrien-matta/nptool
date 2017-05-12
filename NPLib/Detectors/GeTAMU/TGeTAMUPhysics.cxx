@@ -362,13 +362,7 @@ void TGeTAMUPhysics::PreTreat(){
     else{
       clover = m_EventData->GetCoreCloverNbrE(i);
       crystal = m_EventData->GetCoreCrystalNbrE(i);
-<<<<<<< HEAD
-      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-//by Shuya and Momo 170228.
-      //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
-      Energy =  cal->ApplyCalibration(name+"_E", Eraw+gRandom->Rndm());
-=======
-*/
+      Eraw = m_EventData->GetCoreEnergy(i);
   }
 
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
@@ -382,19 +376,7 @@ void TGeTAMUPhysics::PreTreat(){
     }
   }
 }
-=======
-      Eraw = m_EventData->GetCoreEnergy(i);
 
-      if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
-        name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-        Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
-        if(Energy>=m_Cry_E_Threshold){
-          Singles_CloverMap_CryEN[clover].push_back(crystal);
-          Singles_CloverMap_CryE[clover].push_back(Energy);
-          m_PreTreatedData->SetCoreE(clover,crystal,Energy);
-        }
-      }
->>>>>>> ab259f332a96dc9a1007ef922f6a311d79bf6d2f
 
       mysizeT = m_EventData->GetMultiplicityCoreT();
       for(unsigned int i = 0 ; i < mysizeT ; i++){
@@ -452,8 +434,8 @@ void TGeTAMUPhysics::PreTreat(){
         }
       }
 
-    }
-  }
+//    }
+//  }
 }
 
 /////////////////////////////////////////////////
