@@ -1,5 +1,5 @@
-#ifndef NPSPECTRASERVER_H
-#define NPSPECTRASERVER_H
+#ifndef NPDELTASPECTRA_H
+#define NPDELTASPECTRA_H
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -10,55 +10,54 @@
 /*****************************************************************************
  * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
  *                                                                           *
- * Creation Date  :                                                          *
+ * Creation Date  : 11 May 2017                                              *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *                                                                           *
+ *  This Class hold the record of pas filling of an histo server             *
+ *  It is used in Online module to guarantee a faster Histo Sync             *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+// STL
+#include<string>
+#include<map>
+#include<vector>
+#include<algorithm>
 
-#include "TSocket.h"
-#include "TServerSocket.h"
-#include "TMonitor.h"
-#include "TMessage.h"
-#include "TList.h"
-#include "TH1.h"
-#include "NPDeltaSpectra.h"
-#include <string>
-#include <map>
+// ROOT
+#include"TObject.h"
+#include"TList.h"
 
 namespace NPL{
-  class SpectraServer{
+  class DeltaSpectra:public TObject{
     public:
-      static SpectraServer* getInstance();
-      void Destroy();
- 
-    private:
-      SpectraServer();
-      ~SpectraServer();
+      DeltaSpectra():TObject(){};
+      ~DeltaSpectra(){};
 
     private:
-      static SpectraServer* instance;
+      // Hold the record of Filling 
+      std::map<std::string , std::pair<std::vector<double> ,std::vector<double> > > m_Delta;
 
     public:
-      void HandleSocket(TSocket* s);
-      void AddSpectra(TH1* h);
-      void FillSpectra(std::string name,double valx);
-      void FillSpectra(std::string name,double valx, double valy);
-      void CheckRequest();
+      // Record a Fill for TH1
+      void Fill(std::string name, double valx);
+      // Record a Fill for TH2
+      void Fill(std::string name, double valx, double valy);
+      // Erase all recorded data (typically called after a client update)
+      void Clear();
+      // Fill in the spectra using there name and the internal data
+      void UpdateLocalSpectra(TList* local);
+      // Print for debug
+      void Print();
 
-    private:
-      bool m_stop;
-      TServerSocket* m_Server;     
-      TMonitor* m_Monitor;     
-      std::map<TSocket*,NPL::DeltaSpectra > m_Delta;
-      TList* m_Sockets;
-      TList* m_Spectra;
-  };
+      ClassDef(NPL::DeltaSpectra,1)  // NPL::DeltaSpectra structure
+
+  }; 
 }
+
+
 #endif

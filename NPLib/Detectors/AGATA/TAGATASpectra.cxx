@@ -119,7 +119,7 @@ void TAGATASpectra::FillRawSpectra(TAGATAData* RawData) {
     name = "AGATA"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "AGATA/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetE_DetectorNbr(i), 
+    FillSpectra(family,name,RawData->GetE_DetectorNbr(i), 
                                   RawData->Get_Energy(i));
   }
 
@@ -129,7 +129,7 @@ void TAGATASpectra::FillRawSpectra(TAGATAData* RawData) {
     name = "AGATA"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "AGATA/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetT_DetectorNbr(i), 
+    FillSpectra(family,name,RawData->GetT_DetectorNbr(i), 
                                   RawData->Get_Time(i));
   }
 }
@@ -147,7 +147,7 @@ void TAGATASpectra::FillPreTreatedSpectra(TAGATAData* PreTreatedData) {
     name = "AGATA"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "AGATA/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetE_DetectorNbr(i), 
+    FillSpectra(family,name,PreTreatedData->GetE_DetectorNbr(i), 
                                   PreTreatedData->Get_Energy(i));
   }
 
@@ -157,7 +157,7 @@ void TAGATASpectra::FillPreTreatedSpectra(TAGATAData* PreTreatedData) {
     name = "AGATA"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "AGATA/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetT_DetectorNbr(i), 
+    FillSpectra(family,name,PreTreatedData->GetT_DetectorNbr(i), 
                                   PreTreatedData->Get_Time(i));
   }
 }
@@ -174,7 +174,7 @@ void TAGATASpectra::FillPhysicsSpectra(TAGATAPhysics* Physics) {
   unsigned int sizeE = Physics->Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "AGATA_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    FillSpectra(family,name,Physics->Energy[i],Physics->Time[i]);
   }
 }
 

@@ -885,15 +885,6 @@ map< string , TH1*> TMust2Physics::GetSpectra() {
     return empty;
   }
 }
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TMust2Physics::GetCanvas(){
-  if(m_Spectra)
-   return m_Spectra->GetCanvas();
-  else{
-     vector<TCanvas*> empty;
-    return empty;
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////
 void TMust2Physics::AddParameterToCalibrationManager()

@@ -784,20 +784,6 @@ map< string , TH1*> TFPDTamuPhysics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TFPDTamuPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TFPDTamuPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();

@@ -202,53 +202,53 @@ void TSiLiSpectra::FillRawSpectra(TSiLiData* RawData)
    for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
       name   = Form("SILI_%d_E_RAW", RawData->GetENumber(i));
       family = "SILI/RAW/ENERGY";
-      GetHisto(family,name) -> Fill(RawData->GetEEnergy(i));
+      FillSpectra(family,name,RawData->GetEEnergy(i));
    }
 
    // T_RAW
    for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
       name   = Form("SILI_%d_T_RAW", RawData->GetTNumber(i));
       family = "SILI/RAW/TIME";
-      GetHisto(family,name) -> Fill(RawData->GetTTime(i));
+      FillSpectra(family,name,RawData->GetTTime(i));
    }
 
    // SILI_E_RAW
    name = "SILI_E_RAW";
    family = "SILI/RAW/ENERGY";
    for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-      GetHisto(family,name) -> Fill(RawData->GetENumber(i), RawData->GetEEnergy(i));
+      FillSpectra(family,name,RawData->GetENumber(i), RawData->GetEEnergy(i));
    }
 
    // SILI_T_RAW
    name = "SILI_T_RAW";
    family = "SILI/RAW/TIME";
    for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
-      GetHisto(family,name) -> Fill(RawData->GetTNumber(i), RawData->GetTTime(i));
+      FillSpectra(family,name,RawData->GetTNumber(i), RawData->GetTTime(i));
    }
 
    // SILI_HIT_E_RAW
    name = "SILI_HITPATTERN_E_RAW";
    family = "SILI/RAW/ENERGY";
    for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
-      GetHisto(family,name) -> Fill(RawData->GetENumber(i));
+      FillSpectra(family,name,RawData->GetENumber(i));
    }
 
    // SILI_HIT_T_RAW
    name = "SILI_HITPATTERN_T_RAW";
    family = "SILI/RAW/TIME";
    for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
-      GetHisto(family,name) -> Fill(RawData->GetTNumber(i));
+      FillSpectra(family,name,RawData->GetTNumber(i));
    }
 
    // E_RAW_MULT
    name = "SILI_E_RAW_MULT";
    family = "SILI/RAW/MULT";
-   GetHisto(family,name) -> Fill(RawData->GetEnergyMult());
+   FillSpectra(family,name,RawData->GetEnergyMult());
 
    // T_RAW_MULT
    name = "SILI_T_RAW_MULT";
    family = "SILI/RAW/MULT";
-   GetHisto(family,name) -> Fill(RawData->GetTimeMult());
+   FillSpectra(family,name,RawData->GetTimeMult());
 }
 
 
@@ -263,53 +263,53 @@ void TSiLiSpectra::FillPreTreatedSpectra(TSiLiData* PreTreatedData)
    for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
       name   = Form("SILI_%d_E_CAL", PreTreatedData->GetENumber(i));
       family = "SILI/CAL/ENERGY";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergy(i));
+      FillSpectra(family,name,PreTreatedData->GetEEnergy(i));
    }
 
    // T_CAL
    for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
       name   = Form("SILI_%d_T_CAL", PreTreatedData->GetTNumber(i));
       family = "SILI/CAL/TIME";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetTTime(i));
+      FillSpectra(family,name,PreTreatedData->GetTTime(i));
    }
 
    // SILI_E_CAL
    name = "SILI_E_CAL";
    family = "SILI/CAL/ENERGY";
    for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
-      GetHisto(family,name) -> Fill(PreTreatedData->GetENumber(i), PreTreatedData->GetEEnergy(i));
+      FillSpectra(family,name,PreTreatedData->GetENumber(i), PreTreatedData->GetEEnergy(i));
    }
 
    // SILI_T_CAL
    name = "SILI_T_CAL";
    family = "SILI/CAL/TIME";
    for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
-      GetHisto(family,name) -> Fill(PreTreatedData->GetTNumber(i), PreTreatedData->GetTTime(i));
+      FillSpectra(family,name,PreTreatedData->GetTNumber(i), PreTreatedData->GetTTime(i));
    }
 
    // SILI_HIT_E_CAL
    name = "SILI_HITPATTERN_E_CAL";
    family = "SILI/CAL/ENERGY";
    for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
-      GetHisto(family,name) -> Fill(PreTreatedData->GetENumber(i));
+      FillSpectra(family,name,PreTreatedData->GetENumber(i));
    }
 
    // SILI_HIT_T_CAL
    name = "SILI_HITPATTERN_T_CAL";
    family = "SILI/CAL/TIME";
    for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
-      GetHisto(family,name) -> Fill(PreTreatedData->GetTNumber(i));
+      FillSpectra(family,name,PreTreatedData->GetTNumber(i));
    }
 
    // E_CAL_MULT
    name = "SILI_E_CAL_MULT";
    family = "SILI/CAL/MULT";
-   GetHisto(family,name) -> Fill(PreTreatedData->GetEnergyMult());
+   FillSpectra(family,name,PreTreatedData->GetEnergyMult());
 
    // T_CAL_MULT
    name = "SILI_T_CAL_MULT";
    family = "SILI/CAL/MULT";
-   GetHisto(family,name) -> Fill(PreTreatedData->GetTimeMult());
+   FillSpectra(family,name,PreTreatedData->GetTimeMult());
 }
 
 
@@ -324,13 +324,13 @@ void TSiLiSpectra::FillPhysicsSpectra(TSiLiPhysics* Physics)
    // Energy-Time Correlation
    for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
       name = Form("SILI_%d_E_TOF", i+1);
-      GetHisto(family,name) -> Fill(Physics->Time[i], Physics->Energy[i]);
+      FillSpectra(family,name,Physics->Time[i], Physics->Energy[i]);
    }
 
    // E-TOF:
    name = "SILI_E_TOF";
    for (unsigned int i = 0 ; i < Physics->DetectorNumber.size(); i++) { // loop on number of detectors
-      GetHisto(family,name) -> Fill(Physics->Time[i], Physics->Energy[i]);
+      FillSpectra(family,name,Physics->Time[i], Physics->Energy[i]);
    }
 }
 

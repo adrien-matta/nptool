@@ -230,7 +230,6 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   // spectra getter
   public:
     map<string, TH1*>   GetSpectra(); 
-    vector<TCanvas*>    GetCanvas();
 
   // Static constructor to be passed to the Detector Factory
   public:

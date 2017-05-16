@@ -21,8 +21,8 @@
  *                                                                           *
  *****************************************************************************/
 
-
 #include "NPSpectraServer.h"
+#include "NPCore.h"
 #include <cstdlib>
 #include <unistd.h>
 #include<iostream>
@@ -42,12 +42,12 @@ void NPL::SpectraServer::Destroy(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer::SpectraServer(){
-  m_Server= new TServerSocket(9092,true);
+  m_Server= new TServerSocket(9092,true,100);
   if(!m_Server->IsValid())
     exit(1);
 
   m_Server->SetCompressionSettings(1);
-  // Add server socket to monitor so we are notified when a client needs to be
+  // Add erver socket to monitor so we are notified when a client needs to be
   // accepted
   m_Monitor  = new TMonitor();
   m_Monitor->Add(m_Server,TMonitor::kRead|TMonitor::kWrite);
@@ -58,7 +58,7 @@ NPL::SpectraServer::SpectraServer(){
   // Create the list of Canvas
   m_Spectra = new TList;
 
-  std::cout << "INFO: nptool spectra server started on port 9092" << std::endl;
+  NPL::SendInformation("NPL::SpectraServer","Server started on port 9092");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -66,8 +66,9 @@ void NPL::SpectraServer::CheckRequest(){
   if(m_Server && m_Monitor){
     TSocket* s ;
     m_Monitor->ResetInterrupt();
-    if((s=m_Monitor->Select(10))!=(TSocket*)-1)
+    if((s=m_Monitor->Select(100))!=(TSocket*)-1){
       HandleSocket(s);
+      }
   }
 }
 
@@ -88,6 +89,7 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     TSocket* socket = ((TServerSocket*)s)->Accept();
     m_Monitor->Add(socket,TMonitor::kRead|TMonitor::kWrite);
     m_Sockets->Add(socket);
+    NPL::SendInformation("NPL::SpectraServer","Accepted new client connection");
   }
   else{
     // we only get string based requests from the spy
@@ -100,10 +102,50 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     }
 
     // send requested object back
-    TMessage answer(kMESS_OBJECT);
-    if (!strcmp(request, "RequestSpectra")){
+    static TMessage answer(kMESS_OBJECT);
+    answer.Reset();
+    
+   if (!strcmp(request, "RequestSpectra")){
       answer.WriteObject(m_Spectra);
+      s->Send(answer);
+      m_Delta[s].Clear();
     }
-    s->Send(answer);
+    
+    else if (!strcmp(request, "RequestDelta")){
+      answer.WriteObject(&m_Delta[s]);
+      s->Send(answer);
+      m_Delta[s].Clear();
+    }
+    
+    else if (!strcmp(request, "RequestClear")){
+     // TO DO 
+    }
+    else // answer nothing
+      s->Send(answer);
   }
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::SpectraServer::FillSpectra(std::string name,double valx){
+  // Fill the local histo
+  ((TH1*) m_Spectra->FindObject(name.c_str()))->Fill(valx);
+  
+  // Fill the Delta for each Socket
+  std::map<TSocket*,NPL::DeltaSpectra >::iterator it;
+  for(it = m_Delta.begin(); it!=m_Delta.end() ; it++){
+    it->second.Fill(name,valx);
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::SpectraServer::FillSpectra(std::string name,double valx,double valy){
+  // Fill the local histo
+  ((TH1*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
+  
+  std::map<TSocket*,NPL::DeltaSpectra >::iterator it;
+  for(it = m_Delta.begin(); it!=m_Delta.end() ; it++){
+    it->second.Fill(name,valx,valy);  
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::SpectraServer::AddSpectra(TH1* h){
+  m_Spectra->Add(h);
 }
