@@ -25,10 +25,8 @@
 #include <limits>
 using namespace std;
 
-#include "TGeTAMUPhysics.h"
-#include "TRandom.h"
-
 //   NPL
+#include "TGeTAMUPhysics.h"
 #include "RootInput.h"
 #include "NPDetectorFactory.h"
 #include "RootOutput.h"
@@ -41,7 +39,7 @@ using namespace NPUNITS;
 #include "TChain.h"
 #include "TRandom3.h"
 
-TRandom *Random = new TRandom3();
+TRandom3 *Random = new TRandom3();
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TGeTAMUPhysics)
@@ -67,8 +65,9 @@ ClassImp(TGeTAMUPhysics)
 
 void TGeTAMUPhysics::InitializeStandardParameter(){
 
-  //Set high gain as default
-  m_LowGainIsSet = false;
+//Set high gain as default
+  m_LowGainCryIsSet = false;
+  m_LowGainSegIsSet = false;
   m_CryChannelStatus.clear() ;
   m_SegChannelStatus.clear() ;
 
@@ -127,9 +126,14 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
       }
 
-      else if (whatToDo== "LOW_GAIN_ENERGY") {
-        m_LowGainIsSet  = true ; 
-        cout << whatToDo << " " << m_LowGainIsSet << endl; // e.g. DataBuffer = CLOVER03
+      else if (whatToDo== "LOW_GAIN_ENERGY_CRY") {
+        m_LowGainCryIsSet  = true ; 
+        cout << whatToDo << " " << m_LowGainCryIsSet << endl; // e.g. DataBuffer = CLOVER03
+      }
+
+      else if (whatToDo== "LOW_GAIN_ENERGY_SEG") {
+        m_LowGainSegIsSet  = true ; 
+        cout << whatToDo << " " << m_LowGainSegIsSet << endl; // e.g. DataBuffer = CLOVER03
       }
 
       else if (whatToDo== "DISABLE_ALL") {
@@ -197,6 +201,12 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         AnalysisConfigFile >> DataBuffer;
         m_Seg_E_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Seg_E_Threshold << endl;
+      }
+
+      else if (whatToDo== "ADC_RANDOM_BIN") {
+        AnalysisConfigFile >> DataBuffer;
+        m_ADCRandomBinIsSet  = true ; 
+        cout << whatToDo << " " << m_ADCRandomBinIsSet << endl;
       }
 
       else {
@@ -338,101 +348,110 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
 /////////////////////////////////////////////////
 void TGeTAMUPhysics::PreTreat(){
 
-  ClearPreTreatedData();
+ClearPreTreatedData();
 
-  static CalibrationManager* cal = CalibrationManager::getInstance();
-  static string name;
-  unsigned int mysizeE ;
-  unsigned int mysizeT ;
-  double Eraw,Energy;
-  double Traw,Time;
-  int clover, crystal, segment;
+static CalibrationManager* cal = CalibrationManager::getInstance();
+static string name;
+unsigned int mysizeE ;
+unsigned int mysizeT ;
+double Eraw,Energy;
+double Traw,Time;
+int clover, crystal, segment;
 
-  if(m_LowGainIsSet)
-    mysizeE = m_EventData->GetMultiplicityCoreELowGain();
-  else
-    mysizeE = m_EventData->GetMultiplicityCoreE();
-
-  for(unsigned int i = 0 ; i < mysizeE ; i++){
-    if(m_LowGainIsSet){
-      clover = m_EventData->GetCoreCloverNbrELowGain(i);
-      crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
-      Eraw = m_EventData->GetCoreEnergyLowGain(i);
-    }
-    else{
-      clover = m_EventData->GetCoreCloverNbrE(i);
-      crystal = m_EventData->GetCoreCrystalNbrE(i);
-      Eraw = m_EventData->GetCoreEnergy(i);
-
-      if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
-        name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-        Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
-        if(Energy>=m_Cry_E_Threshold){
-          Singles_CloverMap_CryEN[clover].push_back(crystal);
-          Singles_CloverMap_CryE[clover].push_back(Energy);
-          m_PreTreatedData->SetCoreE(clover,crystal,Energy);
-        }
-      }
-
-      mysizeT = m_EventData->GetMultiplicityCoreT();
-      for(unsigned int i = 0 ; i < mysizeT ; i++){
-        Traw = m_EventData->GetCoreTime(i);
-        if(Traw>0){
-          clover = m_EventData->GetCoreCloverNbrT(i);
-          crystal = m_EventData->GetCoreCrystalNbrT(i);
-          name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
-          Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-          Singles_CloverMap_CryTN[clover].push_back(crystal);
-          Singles_CloverMap_CryT[clover].push_back(Time);
-          m_PreTreatedData->SetCoreT(clover,crystal,Time);
-        }
-      }
-
-      if(m_LowGainIsSet)
-        mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
-      else
-        mysizeE = m_EventData->GetMultiplicitySegmentE();
-      for(unsigned int i = 0 ; i < mysizeE ; i++){
-
-        if(m_LowGainIsSet){
-          clover = m_EventData->GetSegmentCloverNbrELowGain(i);
-          segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
-          Eraw = m_EventData->GetSegmentEnergyLowGain(i);
-        }
-        else{
-          clover = m_EventData->GetSegmentCloverNbrE(i);
-          segment = m_EventData->GetSegmentSegmentNbrE(i);
-          Eraw = m_EventData->GetSegmentEnergy(i);
-        }
-
-        if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
-          name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-          Energy =  cal->ApplyCalibration(name+"_E", Eraw+Random->Rndm());
-          if(Energy>=m_Seg_E_Threshold){
-            Singles_CloverMap_SegEN[clover].push_back(segment);
-            Singles_CloverMap_SegE[clover].push_back(Energy);
-            m_PreTreatedData->SetSegmentE(clover,segment,Energy);
-          }
-        }
-      }
-
-      mysizeT = m_EventData->GetMultiplicitySegmentT();
-      for(unsigned int i = 0 ; i < mysizeT ; i++){
-        Traw = m_EventData->GetSegmentTime(i);
-        if(Traw>0){
-          clover = m_EventData->GetSegmentCloverNbrT(i);
-          segment = m_EventData->GetSegmentSegmentNbrT(i);
-          name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
-          Time =  cal->ApplyCalibration(name+"_T", Traw+Random->Rndm());
-          Singles_CloverMap_CryTN[clover].push_back(segment);
-          Singles_CloverMap_CryT[clover].push_back(Time);
-          m_PreTreatedData->SetSegmentT(clover,segment,Time);
-        }
-      }
-
+//Crystal energy
+if(m_LowGainCryIsSet)
+  mysizeE = m_EventData->GetMultiplicityCoreELowGain();
+else
+  mysizeE = m_EventData->GetMultiplicityCoreE();
+for(unsigned int i = 0 ; i < mysizeE ; i++){
+  if(m_LowGainCryIsSet){
+    clover = m_EventData->GetCoreCloverNbrELowGain(i);
+    crystal = m_EventData->GetCoreCrystalNbrELowGain(i);
+    Eraw = m_EventData->GetCoreEnergyLowGain(i);
+  }
+  else{
+    clover = m_EventData->GetCoreCloverNbrE(i);
+    crystal = m_EventData->GetCoreCrystalNbrE(i);
+    Eraw = m_EventData->GetCoreEnergy(i);
+  }
+  if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+    if(m_ADCRandomBinIsSet) 
+      Eraw += Random->Rndm();
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    if(Energy>=m_Cry_E_Threshold){
+      Singles_CloverMap_CryEN[clover].push_back(crystal);
+      Singles_CloverMap_CryE[clover].push_back(Energy);
+      m_PreTreatedData->SetCoreE(clover,crystal,Energy);
     }
   }
 }
+
+//Crystal time
+  mysizeT = m_EventData->GetMultiplicityCoreT();
+  for(unsigned int i = 0 ; i < mysizeT ; i++){
+    Traw = m_EventData->GetCoreTime(i);
+    if(Traw>0){
+      clover = m_EventData->GetCoreCloverNbrT(i);
+      crystal = m_EventData->GetCoreCrystalNbrT(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
+      if(m_ADCRandomBinIsSet) 
+        Traw += Random->Rndm();
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      Singles_CloverMap_CryTN[clover].push_back(crystal);
+      Singles_CloverMap_CryT[clover].push_back(Time);
+      m_PreTreatedData->SetCoreT(clover,crystal,Time);
+    }
+  }
+
+//Segment Energy
+if(m_LowGainSegIsSet)
+  mysizeE = m_EventData->GetMultiplicitySegmentELowGain();
+else
+  mysizeE = m_EventData->GetMultiplicitySegmentE();
+
+for(unsigned int i = 0 ; i < mysizeE ; i++){
+  if(m_LowGainSegIsSet){
+    clover = m_EventData->GetSegmentCloverNbrELowGain(i);
+    segment = m_EventData->GetSegmentSegmentNbrELowGain(i);
+    Eraw = m_EventData->GetSegmentEnergyLowGain(i);
+  }
+  else{
+    clover = m_EventData->GetSegmentCloverNbrE(i);
+    segment = m_EventData->GetSegmentSegmentNbrE(i);
+    Eraw = m_EventData->GetSegmentEnergy(i);
+  }
+  if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
+    name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+    if(m_ADCRandomBinIsSet) 
+      Eraw += Random->Rndm();
+    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    if(Energy>=m_Seg_E_Threshold){
+      Singles_CloverMap_SegEN[clover].push_back(segment);
+      Singles_CloverMap_SegE[clover].push_back(Energy);
+      m_PreTreatedData->SetSegmentE(clover,segment,Energy);
+    }
+  }
+}
+//Segment time
+  mysizeT = m_EventData->GetMultiplicitySegmentT();
+  for(unsigned int i = 0 ; i < mysizeT ; i++){
+    Traw = m_EventData->GetSegmentTime(i);
+    if(Traw>0){
+      clover = m_EventData->GetSegmentCloverNbrT(i);
+      segment = m_EventData->GetSegmentSegmentNbrT(i);
+      name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
+      if(m_ADCRandomBinIsSet) 
+        Traw += Random->Rndm();
+      Time =  cal->ApplyCalibration(name+"_T", Traw);
+      Singles_CloverMap_CryTN[clover].push_back(segment);
+      Singles_CloverMap_CryT[clover].push_back(Time);
+      m_PreTreatedData->SetSegmentT(clover,segment,Time);
+    }
+  }
+
+}
+
 
 /////////////////////////////////////////////////
 TVector3 TGeTAMUPhysics::GetPositionOfInteraction(unsigned int& i){
@@ -770,7 +789,9 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
 
     for(int cry = 0 ; cry < 4 ; cry++){ // 4 crystals
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E");
-      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
+	//by Shuya 170509
+      //Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
+      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
     }
     for( int seg = 0 ; seg < 3 ; seg++){ // 3 segments
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_SEG"+ NPL::itoa(seg+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_SEG"+NPL::itoa(seg+1)+"_E");
