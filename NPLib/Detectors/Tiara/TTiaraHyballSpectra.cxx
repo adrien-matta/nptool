@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ t Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -157,7 +157,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   name = "HYB_HIT_RING_RAW";
   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) {
     unsigned short channel = (RawData->GetRingEDetectorNbr(i)-1) * fRingsNumber + RawData->GetRingEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel);
+    FillSpectra(family,name ,channel);
   }
 
   // HIT_SECT_RAW
@@ -165,7 +165,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   name = "HYB_HIT_SECT_RAW";
   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) {
     unsigned short channel = (RawData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel);
+    FillSpectra(family,name ,channel);
   }
 
   // RING_E_RAW
@@ -173,7 +173,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   name = "HYB_RING_E_RAW";
   for (unsigned int i = 0; i < RawData->GetRingEMult(); i++) {
     unsigned short channel = (RawData->GetRingEDetectorNbr(i)-1) * fRingsNumber + RawData->GetRingEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel, RawData->GetRingEEnergy(i));
+    FillSpectra(family,name ,channel, RawData->GetRingEEnergy(i));
   }
 
   // SECTOR_E_RAW
@@ -181,7 +181,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   name = "HYB_SECT_E_RAW";
   for (unsigned int i = 0; i < RawData->GetSectorEMult(); i++) {
     unsigned short channel = (RawData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + RawData->GetSectorEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel, RawData->GetSectorEEnergy(i));
+    FillSpectra(family,name ,channel, RawData->GetSectorEEnergy(i));
 }
 
   // RING_RAW_MULT
@@ -192,7 +192,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
     name   = "HYB_W"+NPL::itoa(i+1)+"_RING_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
-    GetHisto(family,name) -> Fill(myMULT[i]);
+    FillSpectra(family,name ,myMULT[i]);
   }
 
   // Sector_RAW_MULT
@@ -202,7 +202,7 @@ void TTiaraHyballSpectra::FillRawSpectra(TTiaraHyballData* RawData){
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
     name   = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_RAW_MULT";
     family = "TIARA/HYBALL/RAW/MULT";
-    GetHisto(family,name) -> Fill(myMULT[i]);
+    FillSpectra(family,name ,myMULT[i]);
   }
 }
 
@@ -218,7 +218,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   name = "HYB_HIT_RING_CAL";
   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
     unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel);
+    FillSpectra(family,name ,channel);
   }
 
   // HIT_SECT_CAL
@@ -226,7 +226,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   name = "HYB_HIT_SECT_CAL";
   for (unsigned int i = 0; i < PreTreatedData->GetSectorEMult(); i++) {
     unsigned short channel = (PreTreatedData->GetSectorEDetectorNbr(i)-1) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel);
+    FillSpectra(family,name ,channel);
   }
 
   // RING_E_CAL
@@ -234,7 +234,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   name = "HYB_RING_E_CAL";
   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
     unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fRingsNumber + PreTreatedData->GetRingEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel, PreTreatedData->GetRingEEnergy(i));
+    FillSpectra(family,name ,channel, PreTreatedData->GetRingEEnergy(i));
   }
 
   // SECTOR_E_CAL
@@ -242,7 +242,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   name = "HYB_SECT_E_CAL";
   for (unsigned int i = 0; i < PreTreatedData->GetRingEMult(); i++) {
     unsigned short channel = (PreTreatedData->GetRingEDetectorNbr(i)-1) * fSectorsNumber + PreTreatedData->GetSectorEStripNbr(i);
-    GetHisto(family, name) -> Fill(channel, PreTreatedData->GetRingEEnergy(i));
+    FillSpectra(family, name ,channel, PreTreatedData->GetRingEEnergy(i));
   }
 
   // RING_CAL_MULT
@@ -253,7 +253,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
     name   = "HYB_W"+NPL::itoa(i+1)+"_RING_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
-    GetHisto(family,name) -> Fill(myMULT[i]);
+    FillSpectra(family,name ,myMULT[i]);
   }
 
   // RING_CAL_MULT
@@ -263,7 +263,7 @@ void TTiaraHyballSpectra::FillPreTreatedSpectra(TTiaraHyballData* PreTreatedData
   for (unsigned int i = 0; i < fWedgesNumber; i++) {
     name   = "HYB_W"+NPL::itoa(i+1)+"_SECT_E_CAL_MULT";
     family = "TIARA/HYBALL/CAL/MULT";
-    GetHisto(family,name) -> Fill(myMULT[i]);
+    FillSpectra(family,name ,myMULT[i]);
   }
 }
 
@@ -279,16 +279,16 @@ void TTiaraHyballSpectra::FillPhysicsSpectra(TTiaraHyballPhysics* Physics){
   name = "HYB_IMPACT_MATRIX";
   double x = Physics->GetPositionOfInteraction(i).x();
   double y = Physics->GetPositionOfInteraction(i).y();
-  GetHisto(family,name)-> Fill(x,y);
+  FillSpectra(family,name,x,y);
 
   name = "HYB_THETA_E";
   double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
   Theta = Theta/deg;
-  GetHisto(family,name)-> Fill(Theta,Physics->Strip_E[i]);
+  FillSpectra(family,name,Theta,Physics->Strip_E[i]);
 
   // STRX_E_CAL
   name = "HYB_XY_COR";
-  GetHisto(family,name)-> Fill(Physics->StripRing_E[i],Physics->StripSector_E[i]);
+  FillSpectra(family,name,Physics->StripRing_E[i],Physics->StripSector_E[i]);
   }
 
 }

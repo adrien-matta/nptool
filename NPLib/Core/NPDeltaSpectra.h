@@ -22,14 +22,20 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
+// STL
 #include<string>
 #include<map>
 #include<vector>
 #include<algorithm>
+
+// ROOT
+#include"TObject.h"
+#include"TList.h"
+
 namespace NPL{
-  class DeltaSpectra{
+  class DeltaSpectra:public TObject{
     public:
-      DeltaSpectra(){};
+      DeltaSpectra():TObject(){};
       ~DeltaSpectra(){};
 
     private:
@@ -44,7 +50,12 @@ namespace NPL{
       // Erase all recorded data (typically called after a client update)
       void Clear();
       // Fill in the spectra using there name and the internal data
-      void UpdateLocalSpectra();
+      void UpdateLocalSpectra(TList* local);
+      // Print for debug
+      void Print();
+
+      ClassDef(NPL::DeltaSpectra,1)  // NPL::DeltaSpectra structure
+
   }; 
 }
 

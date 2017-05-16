@@ -63,7 +63,7 @@ namespace NPL{
       vector<TGStatusBar*> m_StatusBar;
 
     public:
-      CanvasList(TGMainFrame* main, TGCanvas* parent, TRootEmbeddedCanvas* canvas);
+      CanvasList(TGMainFrame* main, TGCanvas* parent, TRootEmbeddedCanvas* canvas, TList*);
       virtual ~CanvasList();
 
       // slots
@@ -75,7 +75,7 @@ namespace NPL{
       void Clear();
 
       // Read in the declared Canvas
-      void LoadCanvasList();
+      void LoadCanvasList(TList* Spectra);
 
       // For Status bar
       void SetStatusText(const char* txt,int pi); 

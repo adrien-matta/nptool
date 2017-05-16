@@ -366,19 +366,6 @@ void TTRexPhysics::AddBarrelDetector(double X, double Y, double Z){
 
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TTRexPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TTRexPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();

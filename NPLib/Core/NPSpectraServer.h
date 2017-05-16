@@ -28,6 +28,7 @@
 #include "TMessage.h"
 #include "TList.h"
 #include "TH1.h"
+#include "NPDeltaSpectra.h"
 #include <string>
 #include <map>
 
@@ -46,15 +47,16 @@ namespace NPL{
 
     public:
       void HandleSocket(TSocket* s);
-      void AddSpectra(std::string family,TH1* h);
-      void FillHisto(std::string index,double val);
+      void AddSpectra(TH1* h);
+      void FillSpectra(std::string name,double valx);
+      void FillSpectra(std::string name,double valx, double valy);
       void CheckRequest();
 
     private:
       bool m_stop;
       TServerSocket* m_Server;     
       TMonitor* m_Monitor;     
-      std::map<TSocket*,std::map<std::string,double> > m_Delta;
+      std::map<TSocket*,NPL::DeltaSpectra > m_Delta;
       TList* m_Sockets;
       TList* m_Spectra;
   };

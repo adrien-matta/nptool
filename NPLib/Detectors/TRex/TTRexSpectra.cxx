@@ -117,7 +117,7 @@ void TTRexSpectra::FillRawSpectra(TTRexData* RawData) {
     name = "TRex"+NPL::itoa(RawData->GetFrontE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "TRex/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetFront_Energy(i));
+    FillSpectra(family,name,RawData->GetFront_Energy(i));
   }
 
   // Time
@@ -126,7 +126,7 @@ void TTRexSpectra::FillRawSpectra(TTRexData* RawData) {
     name = "TRex"+NPL::itoa(RawData->GetFrontT_DetectorNbr(i))+"_TIME_RAW";
     family = "TRex/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetFront_Time(i));
+    FillSpectra(family,name,RawData->GetFront_Time(i));
   }
 }
 
@@ -143,7 +143,7 @@ void TTRexSpectra::FillPreTreatedSpectra(TTRexData* PreTreatedData) {
     name = "TRex"+NPL::itoa(PreTreatedData->GetFrontE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "TRex/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetFront_Energy(i));
+    FillSpectra(family,name,PreTreatedData->GetFront_Energy(i));
   }
 
   // Time
@@ -152,7 +152,7 @@ void TTRexSpectra::FillPreTreatedSpectra(TTRexData* PreTreatedData) {
     name = "TRex"+NPL::itoa(PreTreatedData->GetFrontT_DetectorNbr(i))+"_TIME_CAL";
     family = "TRex/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetFront_Time(i));
+    FillSpectra(family,name,PreTreatedData->GetFront_Time(i));
   }
 }
 
@@ -168,7 +168,7 @@ void TTRexSpectra::FillPhysicsSpectra(TTRexPhysics* Physics) {
   unsigned int sizeE = Physics->Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "TRex_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    FillSpectra(family,name,Physics->Energy[i],Physics->Time[i]);
   }
 }
 

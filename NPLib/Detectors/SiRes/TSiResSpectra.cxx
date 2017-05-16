@@ -174,30 +174,30 @@ void TSiResSpectra::FillRawSpectra(TSiResData* RawData)
 	for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_%d_E_RAW", RawData->GetEDetectorNumber(i), RawData->GetEChannelNumber(i));
 	      family = "SiRes/RAW/ENERGY";
-	      GetHisto(family,name) -> Fill(RawData->GetEEnergy(i));
+	      FillSpectra(family,name ,RawData->GetEEnergy(i));
 
 	      name   = Form("SiRes_%d_E_RAW", RawData->GetEDetectorNumber(i));
 	      family = "SiRes/RAW/ENERGY";
-	      GetHisto(family,name) -> Fill(RawData->GetEChannelNumber(i),RawData->GetEEnergy(i));
+	      FillSpectra(family,name ,RawData->GetEChannelNumber(i),RawData->GetEEnergy(i));
 
 	   }
 // SiRes_E_RAW
 	for (unsigned int i = 0; i < RawData->GetEEnergyBackMult(); i++) {
 	   name = Form("SiRes_%d_EBack_RAW",RawData->GetEEnergyBackDetectorNumber(i));
 	   family = "SiRes/RAW/ENERGY";
-	      GetHisto(family,name) -> Fill(RawData->GetEEnergyBack(i));
+	      FillSpectra(family,name ,RawData->GetEEnergyBack(i));
 	   }
 
 	for (unsigned int i = 0; i < RawData->GetTimeMult(); i++) {
 	   name = Form("SiRes_%d_T_RAW",RawData->GetTDetectorNumber(i));
 	   family = "SiRes/RAW/TIME";
-	      GetHisto(family,name) -> Fill(RawData->GetTTime(i));
+	      FillSpectra(family,name ,RawData->GetTTime(i));
 	   }
 	
 	for (unsigned int i = 0; i < RawData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_E_RAW_MULT", RawData->GetEDetectorNumber(i));
 	      family = "SiRes/RAW/MULT";
-	      GetHisto(family,name) -> Fill(RawData->GetEnergyMult());
+	      FillSpectra(family,name ,RawData->GetEnergyMult());
 
 	   }
 
@@ -214,30 +214,30 @@ void TSiResSpectra::FillPreTreatedSpectra(TSiResData* PreTreatedData)
 	for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_%d_E_CAL", PreTreatedData->GetEDetectorNumber(i), PreTreatedData->GetEChannelNumber(i));
 	      family = "SiRes/CAL/ENERGY";
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergy(i));
+	      FillSpectra(family,name ,PreTreatedData->GetEEnergy(i));
 
 	      name   = Form("SiRes_%d_E_CAL", PreTreatedData->GetEDetectorNumber(i));
 	      family = "SiRes/CAL/ENERGY";
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetEChannelNumber(i),PreTreatedData->GetEEnergy(i));
+	      FillSpectra(family,name ,PreTreatedData->GetEChannelNumber(i),PreTreatedData->GetEEnergy(i));
 
 	   }
 // SiRes_E_RAW
 	for (unsigned int i = 0; i < PreTreatedData->GetEEnergyBackMult(); i++) {
 	   name = Form("SiRes_%d_EBack_CAL",PreTreatedData->GetEEnergyBackDetectorNumber(i));
 	   family = "SiRes/CAL/ENERGY";
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetEEnergyBack(i));
+	      FillSpectra(family,name ,PreTreatedData->GetEEnergyBack(i));
 	   }
 
 	for (unsigned int i = 0; i < PreTreatedData->GetTimeMult(); i++) {
 	   name = Form("SiRes_%d_T_CAL",PreTreatedData->GetTDetectorNumber(i));
 	   family = "SiRes/CAL/TIME";
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetTTime(i));
+	      FillSpectra(family,name ,PreTreatedData->GetTTime(i));
 	   }
 	
 	for (unsigned int i = 0; i < PreTreatedData->GetEnergyMult(); i++) {
 	      name   = Form("SiRes_%d_E_CAL_MULT", PreTreatedData->GetEDetectorNumber(i));
 	      family = "SiRes/CAL/MULT";
-	      GetHisto(family,name) -> Fill(PreTreatedData->GetEnergyMult());
+	      FillSpectra(family,name ,PreTreatedData->GetEnergyMult());
 
 	   }   // E_CAL
 
@@ -253,12 +253,12 @@ void TSiResSpectra::FillPhysicsSpectra(TSiResPhysics* Physics)
 	
 	for (unsigned int i = 0; i < Physics->x.size(); i++) {
 	   name = Form("SiRes_%d_XY",Physics->DetectorNumber[i]);
-	      GetHisto(family,name) -> Fill(Physics->x[i],Physics->y[i]);
+	      FillSpectra(family,name ,Physics->x[i],Physics->y[i]);
 	   }
 
 	for (unsigned int i = 0; i < Physics->EnergyBack.size(); i++) {
 	   name = Form("SiRes_%d_EBack_TOF",Physics->DetectorNumber[i]);
-	      GetHisto(family,name) -> Fill(Physics->EnergyBack[i],Physics->Time[i]);
+	      FillSpectra(family,name ,Physics->EnergyBack[i],Physics->Time[i]);
 	   }
 	
 

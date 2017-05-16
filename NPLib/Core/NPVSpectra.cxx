@@ -24,6 +24,7 @@
 // NPL
 #include "NPVSpectra.h"
 #include "NPOptionManager.h"
+#include "NPSpectraServer.h"
 #include "RootOutput.h"
 
 // ROOT
@@ -51,6 +52,9 @@ TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow
   // fill map
   fMapHisto[index] = hist;
 
+  // Add it to the server
+  NPL::SpectraServer::getInstance()->AddSpectra(hist);
+ 
   return hist;
 }
 
@@ -63,19 +67,13 @@ TH1* VSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow
 
   // fill map
   fMapHisto[index] = hist;
+  
+  // Add it to the server
+  NPL::SpectraServer::getInstance()->AddSpectra(hist);
 
   return hist;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-void VSpectra::AddCanvas(TCanvas* c){
-  m_Canvas.push_back(c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> VSpectra::GetCanvas(){
-  return m_Canvas;
-}
 ////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::GetSpectra(const string& FamilyAndName){
   map< string , TH1*>::iterator it;
@@ -91,11 +89,25 @@ TH1* VSpectra::GetSpectra(const string& FamilyAndName){
 
   return it->second;
 }
-
 ////////////////////////////////////////////////////////////////////////////////
-void VSpectra::FillSpectra(const string& family,const string& name, double val){
-  string index = family + "/" + name;
-  GetSpectra(index)->Fill(val);
+void VSpectra::FillSpectra(const string& familyAndname, double valx){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+   serv->FillSpectra( GetSpectra(familyAndname)->GetName(),valx);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& familyAndname, double valx,double valy){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+   serv->FillSpectra( GetSpectra(familyAndname)->GetName(),valx,valy);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& family,const string& name, double valx){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+  serv->FillSpectra(name,valx);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& family,const string& name, double valx, double valy){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+  serv->FillSpectra(name,valx,valy);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

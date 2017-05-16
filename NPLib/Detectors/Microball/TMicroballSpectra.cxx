@@ -117,7 +117,7 @@ void TMicroballSpectra::FillRawSpectra(TMicroballData* RawData) {
     name = "Microball"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "Microball/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Energy(i));
+    FillSpectra(family,name ,RawData->Get_Energy(i));
   }
 
   // Time
@@ -126,7 +126,7 @@ void TMicroballSpectra::FillRawSpectra(TMicroballData* RawData) {
     name = "Microball"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "Microball/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Time(i));
+    FillSpectra(family,name ,RawData->Get_Time(i));
   }
 }
 
@@ -143,7 +143,7 @@ void TMicroballSpectra::FillPreTreatedSpectra(TMicroballData* PreTreatedData) {
     name = "Microball"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "Microball/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Energy(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Energy(i));
   }
 
   // Time
@@ -152,7 +152,7 @@ void TMicroballSpectra::FillPreTreatedSpectra(TMicroballData* PreTreatedData) {
     name = "Microball"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "Microball/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Time(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Time(i));
   }
 }
 
@@ -168,7 +168,7 @@ void TMicroballSpectra::FillPhysicsSpectra(TMicroballPhysics* Physics) {
   unsigned int sizeE = Physics->Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "Microball_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    FillSpectra(family,name ,Physics->Energy[i],Physics->Time[i]);
   }
 }
 

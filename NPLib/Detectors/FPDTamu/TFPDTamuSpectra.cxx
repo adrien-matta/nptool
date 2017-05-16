@@ -120,7 +120,7 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     name = "FPDTamu"+NPL::itoa(RawData->Get_Delta_E_DetectorNbr(i))+"_ENERGY_RAW";
     family = "FPDTamu/Delta/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Delta_Energy(i));
+    FillSpectra(family,name ,RawData->Get_Delta_Energy(i));
   }
   // Time
   unsigned int sizeT = RawData->Get_Delta_Time_Mult();
@@ -128,7 +128,7 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     name = "FPDTamu"+NPL::itoa(RawData->Get_Delta_T_DetectorNbr(i))+"_TIME_RAW";
     family = "FPDTamu/Delta/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Delta_Time(i));
+    FillSpectra(family,name ,RawData->Get_Delta_Time(i));
   }
 
   // Avalanche Resistive Wire
@@ -139,9 +139,9 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     family = "FPDTamu/AWire/RAW";
     side = RawData->Get_AWire_E_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Energy(i));
+    	FillSpectra(family,name+"_Left" ,RawData->Get_AWire_Energy(i));
 	else
-    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Energy(i));
+    	FillSpectra(family,name+"_Right" ,RawData->Get_AWire_Energy(i));
   }
   // Time
   sizeT = RawData->Get_AWire_Time_Mult();
@@ -150,9 +150,9 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     family = "FPDTamu/AWire/RAW";
     side = RawData->Get_AWire_T_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_AWire_Time(i));
+    	FillSpectra(family,name+"_Left" ,RawData->Get_AWire_Time(i));
 	else
-    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_AWire_Time(i));
+    	FillSpectra(family,name+"_Right" ,RawData->Get_AWire_Time(i));
   }
     
   // MicroMega Plate
@@ -163,7 +163,7 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     				+NPL::itoa(RawData->Get_Micro_E_ColNbr(i))+"_ENERGY_RAW";
     family = "FPDTamu/Micro/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Micro_Energy(i));
+    FillSpectra(family,name ,RawData->Get_Micro_Energy(i));
   }
   // Time
   sizeT = RawData->Get_Micro_Time_Mult();
@@ -172,7 +172,7 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     				+NPL::itoa(RawData->Get_Micro_T_ColNbr(i))+"_TIME_RAW";
     family = "FPDTamu/Micro/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Micro_Time(i));
+    FillSpectra(family,name ,RawData->Get_Micro_Time(i));
   }
 
   // Plastic Scintillator
@@ -183,9 +183,9 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     family = "FPDTamu/Plast/RAW";
     side = RawData->Get_Plast_E_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Energy(i));
+    	FillSpectra(family,name+"_Left" ,RawData->Get_Plast_Energy(i));
 	else
-    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Energy(i));
+    	FillSpectra(family,name+"_Right" ,RawData->Get_Plast_Energy(i));
   }
   // Time
   sizeT = RawData->Get_Plast_Time_Mult();
@@ -194,9 +194,9 @@ void TFPDTamuSpectra::FillRawSpectra(TFPDTamuData* RawData) {
     family = "FPDTamu/Plast/RAW";
     side = RawData->Get_Plast_T_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(RawData->Get_Plast_Time(i));
+    	FillSpectra(family,name+"_Left" ,RawData->Get_Plast_Time(i));
 	else
-    	GetHisto(family,name+"_Right") -> Fill(RawData->Get_Plast_Time(i));
+    	FillSpectra(family,name+"_Right" ,RawData->Get_Plast_Time(i));
   }
   
 
@@ -217,7 +217,7 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Delta_E_DetectorNbr(i))+"_ENERGY_CAL";
     family = "FPDTamu/Delta/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Delta_Energy(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Delta_Energy(i));
   }
   // Time
   unsigned int sizeT = PreTreatedData->Get_Delta_Time_Mult();
@@ -225,7 +225,7 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     name = "FPDTamu"+NPL::itoa(PreTreatedData->Get_Delta_T_DetectorNbr(i))+"_TIME_CAL";
     family = "FPDTamu/Delta/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Delta_Time(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Delta_Time(i));
   }
 
   // Avalanche Resistive Wire
@@ -236,9 +236,9 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
 	family = "FPDTamu/AWire/CAL";
 	side = PreTreatedData->Get_AWire_E_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Energy(i));
+    	FillSpectra(family,name+"_Left" ,PreTreatedData->Get_AWire_Energy(i));
 	else    
-		GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Energy(i));
+		FillSpectra(family,name+"_Right" ,PreTreatedData->Get_AWire_Energy(i));
   }
   // Time
   sizeT = PreTreatedData->Get_AWire_Time_Mult();
@@ -247,9 +247,9 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     family = "FPDTamu/AWire/CAL";
 	side = PreTreatedData->Get_AWire_T_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_AWire_Time(i));
+    	FillSpectra(family,name+"_Left" ,PreTreatedData->Get_AWire_Time(i));
 	else    
-		GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_AWire_Time(i));
+		FillSpectra(family,name+"_Right" ,PreTreatedData->Get_AWire_Time(i));
   }
     
   // MicroMega Plate
@@ -260,7 +260,7 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     				+NPL::itoa(PreTreatedData->Get_Micro_E_ColNbr(i))+"_ENERGY_CAL";
     family = "FPDTamu/Micro/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Micro_Energy(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Micro_Energy(i));
   }
   // Time
   sizeT = PreTreatedData->Get_Micro_Time_Mult();
@@ -269,7 +269,7 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     				+NPL::itoa(PreTreatedData->Get_Micro_T_ColNbr(i))+"_TIME_CAL";
     family = "FPDTamu/Micro/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Micro_Time(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Micro_Time(i));
   }
 
   // Plastic Scintillator
@@ -280,9 +280,9 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     family = "FPDTamu/Plast/CAL";
 	side = PreTreatedData->Get_Plast_E_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Energy(i));
+    	FillSpectra(family,name+"_Left" ,PreTreatedData->Get_Plast_Energy(i));
 	else 
-    	GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Energy(i));
+    	FillSpectra(family,name+"_Right" ,PreTreatedData->Get_Plast_Energy(i));
   }
   // Time
   sizeT = PreTreatedData->Get_Plast_Time_Mult();
@@ -291,9 +291,9 @@ void TFPDTamuSpectra::FillPreTreatedSpectra(TFPDTamuData* PreTreatedData) {
     family = "FPDTamu/Plast/CAL";
 	side = PreTreatedData->Get_Plast_T_DetectorSide(i);
 	if (side==0)
-    	GetHisto(family,name+"_Left") -> Fill(PreTreatedData->Get_Plast_Time(i));
+    	FillSpectra(family,name+"_Left" ,PreTreatedData->Get_Plast_Time(i));
 	else
-    	GetHisto(family,name+"_Right") -> Fill(PreTreatedData->Get_Plast_Time(i));
+    	FillSpectra(family,name+"_Right" ,PreTreatedData->Get_Plast_Time(i));
   }
   
 }
@@ -310,7 +310,7 @@ void TFPDTamuSpectra::FillPhysicsSpectra(TFPDTamuPhysics* Physics) {
   unsigned int sizeE = Physics->DeltaEnergy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "FPDTamu_DELTA_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->DeltaEnergy[i],Physics->DeltaTime[i]);
+    FillSpectra(family,name ,Physics->DeltaEnergy[i],Physics->DeltaTime[i]);
   }
 }
 

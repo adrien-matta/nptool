@@ -117,7 +117,7 @@ void TNeutronWallSpectra::FillRawSpectra(TNeutronWallData* RawData) {
     name = "NeutronWall"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "NeutronWall/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Energy(i));
+    FillSpectra(family,name ,RawData->Get_Energy(i));
   }
 
   // Time
@@ -126,7 +126,7 @@ void TNeutronWallSpectra::FillRawSpectra(TNeutronWallData* RawData) {
     name = "NeutronWall"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "NeutronWall/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->Get_Time(i));
+    FillSpectra(family,name ,RawData->Get_Time(i));
   }
 }
 
@@ -143,7 +143,7 @@ void TNeutronWallSpectra::FillPreTreatedSpectra(TNeutronWallData* PreTreatedData
     name = "NeutronWall"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "NeutronWall/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Energy(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Energy(i));
   }
 
   // Time
@@ -152,7 +152,7 @@ void TNeutronWallSpectra::FillPreTreatedSpectra(TNeutronWallData* PreTreatedData
     name = "NeutronWall"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "NeutronWall/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->Get_Time(i));
+    FillSpectra(family,name ,PreTreatedData->Get_Time(i));
   }
 }
 
@@ -168,7 +168,7 @@ void TNeutronWallSpectra::FillPhysicsSpectra(TNeutronWallPhysics* Physics) {
   unsigned int sizeE = Physics->NW_Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "NeutronWall_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->NW_Energy[i],Physics->NW_Time[i]);
+    FillSpectra(family,name ,Physics->NW_Energy[i],Physics->NW_Time[i]);
   }
 }
 

@@ -21,12 +21,14 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-
+// ROOT
 #include "TSocket.h"
 #include "TMonitor.h"
 #include "TMessage.h"
 #include "TList.h"
 #include "TH1.h"
+// NPTOOL
+#include "NPDeltaSpectra.h"
 
 namespace NPL{
   class SpectraClient{
@@ -50,7 +52,7 @@ namespace NPL{
 
     private: // The spectrum list
       TList* m_Spectra; 
-      TList* m_Delta;
+      NPL::DeltaSpectra* m_Delta;
     public: // GUI Interface
       TList* GetSpectra();
  

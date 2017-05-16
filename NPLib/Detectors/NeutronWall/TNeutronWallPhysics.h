@@ -1,20 +1,20 @@
 #ifndef TNeutronWallPHYSICS_H
 #define TNeutronWallPHYSICS_H
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : June 2016                                           *
+ * Creation Date  : June 2016                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold NeutronWall Treated data                                *
+ *  This class hold NeutronWall Treated data                                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -178,7 +178,6 @@ class TNeutronWallPhysics : public TObject, public NPL::VDetector {
   // spectra getter
   public:
     map<string, TH1*>   GetSpectra(); 
-    vector<TCanvas*>    GetCanvas();
 
   // Static constructor to be passed to the Detector Factory
   public:

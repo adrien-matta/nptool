@@ -31,7 +31,6 @@ NPL::SpectraClient::SpectraClient(){
   m_Delta = NULL;
   m_Address = "localhost";
   m_Port = 9092;
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraClient::SpectraClient(std::string address, int port){
@@ -40,7 +39,6 @@ NPL::SpectraClient::SpectraClient(std::string address, int port){
   m_Delta = NULL;
   m_Address = address;
   m_Port = port;
-  Connect();
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraClient::~SpectraClient(){
@@ -54,6 +52,8 @@ NPL::SpectraClient::~SpectraClient(){
     delete m_Spectra;
     m_Spectra=NULL;
   }
+  if(m_Delta)
+    delete m_Delta;
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::SpectraClient::Connect(){
@@ -65,14 +65,14 @@ bool NPL::SpectraClient::Connect(){
   }
   m_Sock = new TSocket(m_Address.c_str(),m_Port);
   if(m_Sock->IsValid()){
-    //Sync();
+    NPL::SendInformation("NPL::SpectraClient","Successful connection to spectra server");
+    Sync();
     return true;
   }
   else{
     std::ostringstream message;
     message << "Connection to " << m_Address << ":" << m_Port << " Failed";
     NPL::SendWarning("NPL::SpectraClient",message.str());
-
     return false;
   }
 
@@ -112,8 +112,17 @@ bool NPL::SpectraClient::Sync(){
       delete m_Spectra;
       m_Spectra = NULL;
     }
+    
     m_Spectra = (TList*) message->ReadObject(message->GetClass());
-    return true;
+    if(m_Spectra){
+      NPL::SendInformation("NPL::SpectraClient","Successful sync of spectra list");
+      return true;
+    }
+    
+    else{
+      NPL::SendInformation("NPL::SpectraClient","Sync return a NULL spectra list");
+      return false;
+    }
   }
 
   else{
@@ -152,13 +161,19 @@ bool NPL::SpectraClient::Update(){
   }
 
   if(message){
-    m_Delta = (TList*) message->ReadObject(message->GetClass());
-    // Loop over delta to apply update
-    //    for(void* c = (void*) m_Delta->First() ; c !=0 ; c = (void*) m_Delta->After(c)){
-    // Fill some stuff
-    //  }
+    if(m_Delta)
+      delete m_Delta;
+     
+    m_Delta = (NPL::DeltaSpectra*) message->ReadObject(message->GetClass());
+   
+    if(m_Delta && m_Spectra){
+      m_Delta->UpdateLocalSpectra(m_Spectra);
+      }
+    else
+      NPL::SendWarning("NPL::SpectraClient","Local Spectra or received Delta are NULL");
     return true;
   }
+  
   else{
     NPL::SendInformation("NPL::SpectraClient","Server return empty update list");
     return true;
