@@ -161,7 +161,7 @@ G4LogicalVolume* AnnularS1::ConstructVolume(){
     G4Tubs* solidWaferBase = new G4Tubs("Wafer", 
         WaferInnerRadius,
         WaferOutterRadius,
-        WaferThickness,
+        0.5*WaferThickness,
         0*deg, 
         360*deg); 
 
@@ -190,7 +190,7 @@ G4LogicalVolume* AnnularS1::ConstructVolume(){
     G4Tubs* solidActiveWaferBase = new G4Tubs("ActiveWafer", 
         ActiveWaferInnerRadius,
         ActiveWaferOutterRadius,
-        WaferThickness,
+        0.5*WaferThickness,
         0*deg, 
         360*deg); 
 
