@@ -189,7 +189,9 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     
     // Micromega specific used in analysis
     double GetMicroGroupEnergy(int det, int lrow, int hrow, int lcol, int hcol) ; 
-    double GetMicroRowGeomEnergy(int det, int lrow, int hrow);
+//by Shuya 170516
+    //double GetMicroRowGeomEnergy(int det, int lrow, int hrow);
+    double GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col);	//"col" gives you an choice if you sum up all of signals in a row (col==0), otherwise just for one column.
   
   // parameters used in the analysis
   private:

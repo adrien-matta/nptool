@@ -296,7 +296,9 @@ double TFPDTamuPhysics::GetMicroGroupEnergy(int detector, int lrow, int hrow, in
   return energy ; 
 }
 
-double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
+//by Shuya 170516
+//double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
+double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col){
 
   if (det < 1 || det > m_NumberOfMicro) return 0; 
 
@@ -313,9 +315,14 @@ double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
     lrow = hrow;
     hrow = dummy;
   }
+
   // group energies
   for (int r = lrow; r < hrow ; r++) {
-    double esample = GetMicroGroupEnergy(det, r,r,1,7);
+//by Shuya 170516
+    //double esample = GetMicroGroupEnergy(det, r,r,1,7);
+    double esample;
+    if(col>=1 && col<=7)	esample = GetMicroGroupEnergy(det,r,r,col,col);
+    else esample = GetMicroGroupEnergy(det, r,r,1,7);
 
 //by Shuya 170418
 	if(r == lrow)	energy = 1.;
@@ -326,7 +333,9 @@ double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
     }
   } 
 
-  return pow(energy,1./sample) ; 
+//by Shuya 170517
+  if(sample>0)	return pow(energy,1./sample) ; 
+  else return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////

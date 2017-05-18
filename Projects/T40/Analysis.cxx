@@ -152,7 +152,7 @@ void Analysis::Init(){
 	Micro1_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
 	Micro2_E_row1_2 = 0; // Energy from micromega rows 1-2  ("E in stopping mode")
   Micro1_E_row1 = 0 ;// Energy from micromega row 1
-  Micro1_E_col4 = 0 ;// energy from micromega col 1
+  Micro1_E_col4 = 0 ;// energy from micromega col 4
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -161,6 +161,20 @@ void Analysis::Init(){
 	Aw_Theta1_2 = -1000;
 	Aw_ThetaFit = -1000;
 	Aw_ThetaFit_R2 = -1000;
+//by Shuya 170516
+  Micro1_E_col1 = 0. ;// energy from micromega col 1
+  Micro1_E_col2 = 0. ;// energy from micromega col 2
+  Micro1_E_col3 = 0. ;// energy from micromega col 3
+  Micro1_E_col5 = 0. ;// energy from micromega col 5
+  Micro1_E_col6 = 0. ;// energy from micromega col 6
+  Micro1_E_col7 = 0. ;// energy from micromega col 7
+  Micro2_E_col1 = 0. ;// energy from micromega2 col 1
+  Micro2_E_col2 = 0. ;// energy from micromega2 col 2
+  Micro2_E_col3 = 0. ;// energy from micromega2 col 3
+  Micro2_E_col4 = 0. ;// energy from micromega2 col 3
+  Micro2_E_col5 = 0. ;// energy from micromega2 col 5
+  Micro2_E_col6 = 0. ;// energy from micromega2 col 6
+  Micro2_E_col7 = 0. ;// energy from micromega2 col 7
 
   //TAC
   TacSiGeOR     = -1000;
@@ -315,9 +329,27 @@ void Analysis::TreatEvent(){
 	{
 		Micro1_E_row1 = TF->GetMicroGroupEnergy(1,1,1,1,7); // energy sum from the row 1
 		Micro1_E_col4 = TF->GetMicroGroupEnergy(1,1,4,4,4); // energy sum from the col 4
-		Micro2_E      = TF->GetMicroGroupEnergy(2,1,4,1,7); // energy sum from all the pads
+		//by Shuya 170516. Since Micro2_E is dE detector, we always expect the particles penetrate through the whole rows. That is why you should use GetMicroRowGeomEnergy() instead of GetMicroGroupEnergy().
+		//Micro2_E      = TF->GetMicroGroupEnergy(2,1,4,1,7); // energy sum from all the pads
+		Micro2_E      = TF->GetMicroRowGeomEnergy(2,1,4,0); // energy sum from all the pads
 		Micro1_E_row1_2 = TF->GetMicroGroupEnergy(1,1,2,1,7); // energy sum from row 1-2
 		Micro2_E_row1_2 = TF->GetMicroGroupEnergy(2,1,2,1,7); // energy sum from row 3-6
+
+		//by Shuya 170516. For Micro1's energy sum, you need to choose which of GetMicroGroupEnergy() and GetMicroRowGeomEnergy(). If you're using the particles penetrate the Micro1, better to use GetMicroRowGeomEnergy().
+		Micro1_E_col1 = TF->GetMicroGroupEnergy(1,1,4,1,1); // energy sum from the col 1
+		Micro1_E_col2 = TF->GetMicroGroupEnergy(1,1,4,2,2); // energy sum from the col 2
+		Micro1_E_col3 = TF->GetMicroGroupEnergy(1,1,4,3,3); // energy sum from the col 3
+		Micro1_E_col5 = TF->GetMicroGroupEnergy(1,1,4,5,5); // energy sum from the col 5
+		Micro1_E_col6 = TF->GetMicroGroupEnergy(1,1,4,6,6); // energy sum from the col 6
+		Micro1_E_col7 = TF->GetMicroGroupEnergy(1,1,4,7,7); // energy sum from the col 7
+
+		Micro2_E_col1      = TF->GetMicroRowGeomEnergy(2,1,4,1); // energy sum from the col1.
+		Micro2_E_col2      = TF->GetMicroRowGeomEnergy(2,1,4,2); // energy sum from the col2.
+		Micro2_E_col3      = TF->GetMicroRowGeomEnergy(2,1,4,3); // energy sum from the col3.
+		Micro2_E_col4      = TF->GetMicroRowGeomEnergy(2,1,4,4); // energy sum from the col4.
+		Micro2_E_col5      = TF->GetMicroRowGeomEnergy(2,1,4,5); // energy sum from the col5.
+		Micro2_E_col6      = TF->GetMicroRowGeomEnergy(2,1,4,6); // energy sum from the col6.
+		Micro2_E_col7      = TF->GetMicroRowGeomEnergy(2,1,4,7); // energy sum from the col7.
 	}
 	else
 	{
@@ -326,7 +358,22 @@ void Analysis::TreatEvent(){
 		Micro1_E_row1_2 = -1000;
 		Micro2_E_row1_2 = -1000;
 		Micro2_E      = -1000;
+		//by Shuya 170516
+		Micro1_E_col1 = -1000;
+		Micro1_E_col2 = -1000;
+		Micro1_E_col3 = -1000;
+		Micro1_E_col5 = -1000;
+		Micro1_E_col6 = -1000;
+		Micro1_E_col7 = -1000;
+		Micro2_E_col1 = -1000;
+		Micro2_E_col2 = -1000;
+		Micro2_E_col3 = -1000;
+		Micro2_E_col4 = -1000;
+		Micro2_E_col5 = -1000;
+		Micro2_E_col6 = -1000;
+		Micro2_E_col7 = -1000;
 	}
+
 	// Delta E ion chamber
 	Delta_E      = TF->DeltaEnergy.empty() ? -1000 : TF->DeltaEnergy[0];
 
@@ -362,7 +409,6 @@ void Analysis::TreatEvent(){
 			break;
 		}
 	}
-
 
   ////////////////////////////////////////// TAC  //////////////////////////////////////////
   // The Physics classes for FPDTamu are made to hold the time information from every channel
@@ -436,6 +482,20 @@ void Analysis::ReInitValue(){
 	Micro2_E_row1_2 = -1000;
 	Micro2_E      = -1000;
   Plast_E      = -1000;
+//by Shuya 170516
+  Micro1_E_col1 = -1000;
+  Micro1_E_col2 = -1000;
+  Micro1_E_col3 = -1000;
+  Micro1_E_col5 = -1000;
+  Micro1_E_col6 = -1000;
+  Micro1_E_col7 = -1000;
+  Micro2_E_col1 = -1000;
+  Micro2_E_col2 = -1000;
+  Micro2_E_col3 = -1000;
+  Micro2_E_col4 = -1000;
+  Micro2_E_col5 = -1000;
+  Micro2_E_col6 = -1000;
+  Micro2_E_col7 = -1000;
 
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -487,6 +547,20 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Aw_Theta1_2",&Aw_Theta1_2,"Aw_Theta1_2/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit_R2",&Aw_ThetaFit_R2,"Aw_ThetaFit_R2/D");
+  //by Shuya 170516
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col1",&Micro1_E_col1,"Micro1_E_col1/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col2",&Micro1_E_col2,"Micro1_E_col2/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col3",&Micro1_E_col3,"Micro1_E_col3/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col5",&Micro1_E_col5,"Micro1_E_col5/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col6",&Micro1_E_col6,"Micro1_E_col6/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col7",&Micro1_E_col7,"Micro1_E_col7/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col1",&Micro2_E_col1,"Micro2_E_col1/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col2",&Micro2_E_col2,"Micro2_E_col2/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col3",&Micro2_E_col3,"Micro2_E_col3/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col4",&Micro2_E_col4,"Micro2_E_col4/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5",&Micro2_E_col5,"Micro2_E_col5/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6",&Micro2_E_col6,"Micro2_E_col6/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7",&Micro2_E_col7,"Micro2_E_col7/D");
 
 //TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
