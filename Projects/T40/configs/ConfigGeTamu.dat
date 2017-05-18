@@ -1,6 +1,6 @@
 ConfigGeTamu
   %%%%%%%% Default is high energy 
-  LOW_GAIN_ENERGY_CRY
+  %LOW_GAIN_ENERGY_CRY
   %LOW_GAIN_ENERGY_SEG
 	%%%%%%%% Defective channels 
 	%DISABLE_ALL     CLOVER04
