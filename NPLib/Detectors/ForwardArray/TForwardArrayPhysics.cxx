@@ -55,7 +55,7 @@ TForwardArrayPhysics::TForwardArrayPhysics()
 
 ///////////////////////////////////////////////////////////////////////////
 /// A usefull method to bundle all operation to add a detector
-void TForwardArrayPhysics::AddDetector(TVector3 , string ){
+void TForwardArrayPhysics::AddDetector(TVector3 , double Rot ){
   // In That simple case nothing is done
   // Typically for more complex detector one would calculate the relevant 
   // positions (stripped silicon) or angles (gamma array)
@@ -63,11 +63,11 @@ void TForwardArrayPhysics::AddDetector(TVector3 , string ){
 } 
 
 ///////////////////////////////////////////////////////////////////////////
-void TForwardArrayPhysics::AddDetector(double R, double Theta, double Phi, string shape){
+void TForwardArrayPhysics::AddDetector(double R, double Theta, double Phi, double Rot){
   // Compute the TVector3 corresponding
   TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
   // Call the cartesian method
-  AddDetector(Pos,shape);
+  AddDetector(Pos,Rot);
 } 
   
 ///////////////////////////////////////////////////////////////////////////
@@ -207,8 +207,8 @@ void TForwardArrayPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> cart = {"POS","ROT"};
+  vector<string> sphe = {"R","Theta","Phi","ROT"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(cart)){
@@ -216,8 +216,8 @@ void TForwardArrayPhysics::ReadConfiguration(NPL::InputParser parser) {
         cout << endl << "////  ForwardArray " << i+1 <<  endl;
     
       TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(Pos,Shape);
+      double Rot = blocks[i]->GetDouble("ROT","deg");
+      AddDetector(Pos,Rot);
     }
     else if(blocks[i]->HasTokenList(sphe)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
@@ -225,8 +225,8 @@ void TForwardArrayPhysics::ReadConfiguration(NPL::InputParser parser) {
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(R,Theta,Phi,Shape);
+      double Rot = blocks[i]->GetDouble("ROT","deg");
+      AddDetector(R,Theta,Phi,Rot);
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;
