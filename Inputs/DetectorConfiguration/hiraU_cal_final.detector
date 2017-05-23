@@ -123,5 +123,31 @@ HiraTelescope
  ThickSi_E= 1
  CsI= 1
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+ THETA= 25.0
+ PHI= 0
+ R= 3950
+ BARS= 25
+ VETOWALL= 1
+ VWDISTANCE= 429 
+ OVERLAP= 3
+ VWMATERIAL= BC400
+ NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+NeutronWall
+ THETA= 25.0
+ PHI= 0
+ R= 4900
+ BARS= 25
+ VETOWALL= 0
+ VWDISTANCE= 300
+ OVERLAP= 3
+ VWMATERIAL= BC400
+ NWMATERIAL= NE213
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
 
 

@@ -243,14 +243,14 @@ void ForwardArray::ConstructDetector(G4LogicalVolume* world){
                           BuildSmallVolume(),
                           "ForwardArray",world,false,17,false);
         
-        G4double wXpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * cos(16*dangle+m_Rot[i]+dangle);
+        /*G4double wXpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * cos(16*dangle+m_Rot[i]+dangle);
         G4double wYpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * sin(16*dangle+m_Rot[i]+dangle);
         G4double wZpm = m_R[i]+ForwardArray_NS::Thickness*0.5;
         G4ThreeVector Det_PM = G4ThreeVector(wXpm, wYpm, wZpm);
         RotPM->rotateZ(dangle+dangle/2);
         new G4PVPlacement(G4Transform3D(*RotPM,Det_PM),
                           BuildPhotoTube(),
-                          "PhotoTube",world,false,17,false);
+                          "PhotoTube",world,false,17,false);*/
         
         
         
@@ -260,14 +260,14 @@ void ForwardArray::ConstructDetector(G4LogicalVolume* world){
                           BuildSmallVolume(),
                           "ForwardArray",world,false,18,false);
         
-        wXpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * cos(18*dangle+m_Rot[i]+dangle);
+        /*wXpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * cos(18*dangle+m_Rot[i]+dangle);
         wYpm = (ForwardArray_NS::Rmax_new + ForwardArray_NS::PMLength/2) * sin(18*dangle+m_Rot[i]+dangle);
         wZpm = m_R[i]+ForwardArray_NS::Thickness*0.5;
         Det_PM = G4ThreeVector(wXpm, wYpm, wZpm);
         RotPM->rotateZ(2*dangle);
         new G4PVPlacement(G4Transform3D(*RotPM,Det_PM),
                           BuildPhotoTube(),
-                          "PhotoTube",world,false,18,false);
+                          "PhotoTube",world,false,18,false);*/
 
         
     }
