@@ -184,8 +184,13 @@ void Analysis::Init(){
 	TacSiPlastLeft  = -1000;
 	TacSiPlastRight = -1000;
 
-	RunNumber = 0;
+  //by Shuya 170524
+	//RunNumber = 0;
+	RunNumber = -1;
 
+  //by Shuya 170524
+	entry = 0;
+	EntryNumber = 0;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -452,7 +457,17 @@ void Analysis::TreatEvent(){
   else
     TacSiGeOR = -999;
 
- 	RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
+  //by Shuya 170524
+ 	//RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
+	if(currentfilename != RootInput::getInstance()->GetChain()->GetCurrentFile()->GetName())
+	{
+		RunNumber++;
+		currentfilename = RootInput::getInstance()->GetChain()->GetCurrentFile()->GetName();
+	}
+
+  //by Shuya 170524
+ 	EntryNumber = RootInput::getInstance()->GetChain()->GetEntryNumber(entry);
+	entry++;
 
 }
 
@@ -513,7 +528,8 @@ void Analysis::ReInitValue(){
   TacSiPlastLeft  = -1000;
   TacSiPlastRight = -1000;
 
-	RunNumber = 0;
+	//by Shuya 170524
+	//RunNumber = 0;
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -572,6 +588,8 @@ void Analysis::InitOutputBranch() {
 
 // Other
 	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber," RunNumber/I");
+// by Shuya 170524.
+	RootOutput::getInstance()->GetTree()->Branch("EntryNumber", &EntryNumber," EntryNumber/I");
 
   //Simulation
   //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
