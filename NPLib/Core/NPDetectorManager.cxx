@@ -434,7 +434,7 @@ void NPL::DetectorManager::StopSpectraServer(){
   if(m_SpectraServer)
     m_SpectraServer->Destroy();
   else
-  cout <<"WARNING: requesting to stop spectra server, which is not started" << endl; 
+    cout <<"WARNING: requesting to stop spectra server, which is not started" << endl; 
   
 }
 
@@ -443,7 +443,7 @@ void NPL::DetectorManager::CheckSpectraServer(){
   if(m_SpectraServer)
     m_SpectraServer->CheckRequest();
   else
-  cout <<"WARNING: requesting to check spectra server, which is not started" << endl; 
+    cout <<"WARNING: requesting to check spectra server, which is not started" << endl; 
 
 }
 

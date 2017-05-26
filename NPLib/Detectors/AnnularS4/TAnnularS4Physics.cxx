@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : January 2017                                           *
+ * Creation Date  : January 2017                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AnnularS4 Treated  data                               *
+ *  This class hold AnnularS4 Treated  data                                  *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -332,19 +332,6 @@ map< string , TH1*> TAnnularS4Physics::GetSpectra() {
         return empty;
     }
 }
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TAnnularS4Physics::GetCanvas() {
-    if(m_Spectra)
-        return m_Spectra->GetCanvas();
-    else{
-        vector<TCanvas*> empty;
-        return empty;
-    }
-}
-
 
 
 ///////////////////////////////////////////////////////////////////////////

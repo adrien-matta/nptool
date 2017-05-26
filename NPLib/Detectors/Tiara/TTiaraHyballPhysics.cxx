@@ -70,7 +70,9 @@ ClassImp(TTiaraHyballPhysics)
     m_StripSector_E_RAW_Threshold = 0 ;
     m_StripSector_E_Threshold = 0.300 ; // MeV
 
-    m_Take_E_Ring=false;
+//by Shuya 170523.
+    //m_Take_E_Ring=false;
+    m_Take_E_Ring=true;
     m_Take_T_Sector=true;
     m_Spectra = NULL;
   }

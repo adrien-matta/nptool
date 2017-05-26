@@ -259,7 +259,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
      if(RawData->GetCharissaLayer1StripXEEnergy(i)> 500 &&  RawData->GetCharissaLayer1StripYEEnergy(j)>500){
       name = Form("CHA%d_DE_IMPACT_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
       family = "CHARISSA/RAW/IMPACT";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer1StripXEStripNbr(i), RawData->GetCharissaLayer1StripYEStripNbr(j));
+      FillSpectra(family,name ,RawData->GetCharissaLayer1StripXEStripNbr(i), RawData->GetCharissaLayer1StripYEStripNbr(j));
       }
     }
   }
@@ -267,35 +267,35 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_DE_STRX_E_RAW", RawData->GetCharissaLayer1StripXEDetectorNbr(i));
       family = "CHARISSA/RAW/STRXE";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer1StripXEStripNbr(i), RawData->GetCharissaLayer1StripXEEnergy(i));
+      FillSpectra(family,name ,RawData->GetCharissaLayer1StripXEStripNbr(i), RawData->GetCharissaLayer1StripXEEnergy(i));
    }
 
    // DE_STRY_E 
    for (unsigned int i = 0; i < RawData->GetCharissaLayer1StripYEMult(); i++) {
       name   = Form("CHA%d_DE_STRY_E_RAW", RawData->GetCharissaLayer1StripYEDetectorNbr(i));
       family = "CHARISSA/RAW/STRYE";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer1StripYEStripNbr(i), RawData->GetCharissaLayer1StripYEEnergy(i));
+      FillSpectra(family,name ,RawData->GetCharissaLayer1StripYEStripNbr(i), RawData->GetCharissaLayer1StripYEEnergy(i));
    }
 
    // E_STRX_E 
    for (unsigned int i = 0; i < RawData->GetCharissaLayer2StripXEMult(); i++) {
       name   = Form("CHA%d_E_STRX_E_RAW", RawData->GetCharissaLayer2StripXEDetectorNbr(i));
       family = "CHARISSA/RAW/STRXE";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer2StripXEStripNbr(i), RawData->GetCharissaLayer2StripXEEnergy(i));
+      FillSpectra(family,name ,RawData->GetCharissaLayer2StripXEStripNbr(i), RawData->GetCharissaLayer2StripXEEnergy(i));
    }
 
    // E_STRY_E 
    for (unsigned int i = 0; i < RawData->GetCharissaLayer2StripYEMult(); i++) {
       name   = Form("CHA%d_E_STRY_E_RAW", RawData->GetCharissaLayer2StripYEDetectorNbr(i));
       family = "CHARISSA/RAW/STRYE";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaLayer2StripYEStripNbr(i), RawData->GetCharissaLayer2StripYEEnergy(i));
+      FillSpectra(family,name ,RawData->GetCharissaLayer2StripYEStripNbr(i), RawData->GetCharissaLayer2StripYEEnergy(i));
    }
 
    // CSI_E
    for (unsigned int i = 0; i < RawData->GetCharissaCsIEMult(); i++) {
       name   = Form("CHA%d_CSI_E_RAW", RawData->GetCharissaCsIEDetectorNbr(i));
       family = "CHARISSA/RAW/CSIE";
-      GetHisto(family,name) -> Fill(RawData->GetCharissaCsIECristalNbr(i), RawData->GetCharissaCsIEEnergy(i));
+      FillSpectra(family,name ,RawData->GetCharissaCsIECristalNbr(i), RawData->GetCharissaCsIEEnergy(i));
    }
 
    // DE_STRX MULT
@@ -307,7 +307,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_DE_STRX_RAW_MULT", i+1);
       family = "CHARISSA/RAW/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // DE_STRY MULT
@@ -318,7 +318,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_DE_STRY_RAW_MULT", i+1);
       family = "CHARISSA/RAW/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // E_STRX MULT
@@ -329,7 +329,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_E_STRX_RAW_MULT", i+1);
       family = "CHARISSA/RAW/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // E_STRY MULT
@@ -340,7 +340,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_E_STRY_RAW_MULT", i+1);
       family = "CHARISSA/RAW/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // CSI MULT
@@ -351,7 +351,7 @@ void TCharissaSpectra::FillRawSpectra(TCharissaData* RawData)
    for( unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_CSI_RAW_MULT", i+1);
       family = "CHARISSA/RAW/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
 }
@@ -367,7 +367,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaLayer1StripXEMult(); i++) {
       name   = Form("CHA%d_DE_STRX_E_CAL", PreTreatedData->GetCharissaLayer1StripXEDetectorNbr(i));
       family = "CHARISSA/CAL/STRXE";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetCharissaLayer1StripXEStripNbr(i), PreTreatedData->GetCharissaLayer1StripXEEnergy(i));
+      FillSpectra(family,name ,PreTreatedData->GetCharissaLayer1StripXEStripNbr(i), PreTreatedData->GetCharissaLayer1StripXEEnergy(i));
   
 } 
 
@@ -375,28 +375,28 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaLayer1StripYEMult(); i++) {
       name   = Form("CHA%d_DE_STRY_E_CAL", PreTreatedData->GetCharissaLayer1StripYEDetectorNbr(i));
       family = "CHARISSA/CAL/STRYE";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetCharissaLayer1StripYEStripNbr(i), PreTreatedData->GetCharissaLayer1StripYEEnergy(i));
+      FillSpectra(family,name ,PreTreatedData->GetCharissaLayer1StripYEStripNbr(i), PreTreatedData->GetCharissaLayer1StripYEEnergy(i));
    }
 
    // E_STRX_E 
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaLayer2StripXEMult(); i++) {
       name   = Form("CHA%d_E_STRX_E_CAL", PreTreatedData->GetCharissaLayer2StripXEDetectorNbr(i));
       family = "CHARISSA/CAL/STRXE";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetCharissaLayer2StripXEStripNbr(i), PreTreatedData->GetCharissaLayer2StripXEEnergy(i));
+      FillSpectra(family,name ,PreTreatedData->GetCharissaLayer2StripXEStripNbr(i), PreTreatedData->GetCharissaLayer2StripXEEnergy(i));
    }
 
    // E_STRY_E 
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaLayer2StripYEMult(); i++) {
       name   = Form("CHA%d_E_STRY_E_CAL", PreTreatedData->GetCharissaLayer2StripYEDetectorNbr(i));
       family = "CHARISSA/CAL/STRYE";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetCharissaLayer2StripYEStripNbr(i), PreTreatedData->GetCharissaLayer2StripYEEnergy(i));
+      FillSpectra(family,name ,PreTreatedData->GetCharissaLayer2StripYEStripNbr(i), PreTreatedData->GetCharissaLayer2StripYEEnergy(i));
    }
 
    // CSI_E
    for (unsigned int i = 0; i < PreTreatedData->GetCharissaCsIEMult(); i++) {
       name   = Form("CHA%d_CSI_E_CAL", PreTreatedData->GetCharissaCsIEDetectorNbr(i));
       family = "CHARISSA/CAL/CSIE";
-      GetHisto(family,name) -> Fill(PreTreatedData->GetCharissaCsIECristalNbr(i), PreTreatedData->GetCharissaCsIEEnergy(i));
+      FillSpectra(family,name ,PreTreatedData->GetCharissaCsIECristalNbr(i), PreTreatedData->GetCharissaCsIEEnergy(i));
    }
 
    // DE_STRX MULT
@@ -408,7 +408,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_DE_STRX_CAL_MULT", i+1);
       family = "CHARISSA/CAL/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // DE_STRY MULT
@@ -419,7 +419,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_DE_STRY_CAL_MULT", i+1);
       family = "CHARISSA/CAL/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // E_STRX MULT
@@ -430,7 +430,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_E_STRX_CAL_MULT", i+1);
       family = "CHARISSA/CAL/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // E_STRY MULT
@@ -441,7 +441,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_E_STRY_CAL_MULT", i+1);
       family = "CHARISSA/CAL/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 
    // CSI MULT
@@ -452,7 +452,7 @@ void TCharissaSpectra::FillPreTreatedSpectra(TCharissaData* PreTreatedData)
    for( unsigned int i = 0; i < fNumberOfTelescope; i++) {
       name   = Form("CHA%d_CSI_CAL_MULT", i+1);
       family = "CHARISSA/CAL/MULT";
-      GetHisto(family,name) -> Fill(myMULT[i]);
+      FillSpectra(family,name ,myMULT[i]);
    }
 }
 
@@ -469,12 +469,12 @@ void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
     
     if(Physics->Layer1_Si_E[i]>0){ 
       name = "CHA_DE_IMPACT_MATRIX";
-      GetHisto(family,name)-> Fill(x,y);
+      FillSpectra(family,name,x,y);
     }
 
     if(Physics->Layer2_Si_E[i]>0){ 
       name = "CHA_E_IMPACT_MATRIX";
-      GetHisto(family,name)-> Fill(x,y);
+      FillSpectra(family,name,x,y);
     }
 
     name = "CHA_DE_THETA";
@@ -486,32 +486,32 @@ void TCharissaSpectra::FillPhysicsSpectra(TCharissaPhysics* Physics)
     if(Physics->Layer2_Si_E[i]>0) TotalE += Physics->Layer2_Si_E[i];
     if(Physics->CsI_E[i]>0) TotalE += Physics->CsI_E[i];
     
-    GetHisto(family,name)-> Fill(Theta,TotalE); 
+    FillSpectra(family,name,Theta,TotalE); 
     
     // DE-TOF:
     if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]< 0 ){
       name = "CHA_DE_TOF";
-      GetHisto(family,name)->Fill(Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
+      FillSpectra(family,name,Physics->Layer1_Si_E[i],Physics->Layer1_Si_T[i]);
     }
     // DE-E:
     if(Physics->Layer1_Si_E[i]>0 && Physics->Layer2_Si_E[i]> 0 ){
       name = "CHA_DE_E";
-      GetHisto(family,name)->Fill(Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
+      FillSpectra(family,name,Physics->Layer2_Si_E[i],Physics->Layer1_Si_E[i]);
     }
   
     name = "CHA_DE_CSIE";
-    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
+    FillSpectra(family,name,Physics->CsI_E[i],Physics->Layer1_Si_E[i]);
 
     name = "CHA_E_CSIE";
-    GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
+    FillSpectra(family,name,Physics->CsI_E[i],Physics->Layer2_Si_E[i]);
     
     // X-Y Corr
     name = Form("CHA%d_DE_XY_COR", Physics->TelescopeNumber[i]);
-    GetHisto(family,name)->Fill(Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]);
+    FillSpectra(family,name,Physics->Layer1_Si_EX[i],Physics->Layer1_Si_EY[i]);
     
     // X-Y Corr
     name = Form("CHA%d_E_XY_COR", Physics->TelescopeNumber[i]);
-    GetHisto(family,name)->Fill(Physics->Layer2_Si_EX[i],Physics->Layer2_Si_EY[i]);
+    FillSpectra(family,name,Physics->Layer2_Si_EX[i],Physics->Layer2_Si_EY[i]);
 
   }
  

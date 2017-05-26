@@ -20,8 +20,6 @@
  *                                                                           *
  *****************************************************************************/
 
-
-
 // NPL
 #include "NPOnlineGUI.h"
 #include "NPOptionManager.h"
@@ -77,10 +75,10 @@ NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client):TGMainFrame(gClient->GetRo
   // Check Elog config 
   m_Elog.ReadConfiguration("elog.txt");
 
-
   // Build the interface
   MakeGui();
 
+ 
   // Link the button slot to the function
   m_Quit->SetCommand("gApplication->Terminate()");
   m_Connect->Connect("Clicked()", "NPL::OnlineGUI", this, "Connect()");
@@ -94,7 +92,12 @@ NPL::OnlineGUI::OnlineGUI(NPL::SpectraClient* client):TGMainFrame(gClient->GetRo
   m_ApplyRangeAll->Connect("Clicked()","NPL::OnlineGUI",this,"ApplyRangeAll()");
   m_SaveAs->Connect("Clicked()","NPL::OnlineGUI",this,"SaveAs()");
   m_Eloging->Connect("Clicked()","NPL::OnlineGUI",this,"Eloging()");
+
+  // Connect to server 
   Connect();
+
+
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::SaveAs(){
@@ -198,7 +201,6 @@ void NPL::OnlineGUI::ApplyRangeCurrent(){
   if (!c)
     return;
 
-
   // Log Scale
   if(m_CheckLogX->IsOn())
     gPad->SetLogx();
@@ -212,7 +214,6 @@ void NPL::OnlineGUI::ApplyRangeCurrent(){
     gPad->SetLogz();
   else
     gPad->SetLogz(false);
-
 
   if(m_Xmin->GetNumber() != m_Xmax->GetNumber()){
     TList* list = gPad->GetListOfPrimitives();
@@ -237,7 +238,6 @@ void NPL::OnlineGUI::ApplyRangeCurrent(){
       }
     }
   }
-
 
   gPad->Update(); 
 }
@@ -694,7 +694,7 @@ void NPL::OnlineGUI::MakeGui(){
   TGViewPort* CanvasViewPort = m_ListCanvas->GetViewPort();
 
   // list tree
-  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas,m_EmbeddedCanvas);
+  m_CanvasListTree = new CanvasList(m_Main,m_ListCanvas,m_EmbeddedCanvas,m_Client->GetSpectra());
   m_ListTree = m_CanvasListTree->GetListTree();
 
   CanvasViewPort->AddFrame(m_ListTree,new TGLayoutHints(kLHintsRight | kLHintsBottom | kLHintsExpandY | kLHintsExpandX));
@@ -734,6 +734,7 @@ NPL::OnlineGUI::~OnlineGUI(){
 void NPL::OnlineGUI::Connect(){
   m_Client->SetAddressAndPort((string) m_Address->GetDisplayText(),(int) m_Port->GetNumber());
   m_Client->Connect();
+  m_CanvasListTree->LoadCanvasList(m_Client->GetSpectra());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -769,7 +770,7 @@ void NPL::OnlineGUI::AutoUpdate(){
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCanvas* canvas){
+NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCanvas* canvas,TList* Spectra){
   string NPLPath = gSystem->Getenv("NPTOOL");  
   string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
   string path_icon_folder = NPLPath+"/NPLib/Core/icons/folder.xpm";
@@ -785,7 +786,7 @@ NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCan
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
   m_Main = main;
   m_EmbeddedCanvas = canvas;
-  LoadCanvasList();
+  //LoadCanvasList(Spectra);
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::CanvasList::~CanvasList(){
@@ -838,7 +839,7 @@ void NPL::CanvasList::SetStatusText(const char* txt, int pi){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
-  const char *text0, *text1, *text3;
+    const char *text0, *text1, *text3;
   char text2[50];
   text0 = selected->GetTitle();
   SetStatusText(text0,0);
@@ -853,8 +854,8 @@ void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
   SetStatusText(text3,3);
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::CanvasList::LoadCanvasList(){
-    NPL::InputParser parser("CanvasList.txt",false);
+void NPL::CanvasList::LoadCanvasList(TList* Spectra){
+  NPL::InputParser parser("CanvasList.txt",false);
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
   vector<std::string> token = {"Path","Divide","Histo"};
   gROOT->ProcessLine("gROOT->SetBatch(kTRUE)");
@@ -867,21 +868,16 @@ void NPL::CanvasList::LoadCanvasList(){
       TCanvas* c = new TCanvas(name.c_str(), 5000,5000,0);
       c->Divide(divide[0],divide[1]);
 
-      static int pos = 0 ;
-      pos++;
-      TH1D* hpipo1 = new TH1D(Form("pipo%d",pos),Form("pipo%d",pos),1000,-100,100);
-      TF1* f = new TF1("ff","gaus(0)+pol1(3)");
-      f->SetParameter(0,100); f->SetParameter(1,-pos*2); f->SetParameter(2,2); f->SetParameter(3,10);
-      hpipo1->FillRandom("ff",100000);
-      c->cd(1);
-      hpipo1->Draw();
 
-      c->cd(2);
-      pos++;
-      TH1D* hpipo2 = new TH1D(Form("pipo%d",pos),Form("pipo%d",pos),1000,-100,100);
-      f->SetParameter(0,1); f->SetParameter(1,pos*2); f->SetParameter(2,0.5);f->SetParameter(3,0);f->SetParameter(4,0);
-      hpipo2->FillRandom("ff",100000);
-      hpipo2->Draw();
+      unsigned int size = histo.size();
+      for(unsigned int h = 0 ; h < size ; h++){
+        c->cd(h+1);
+        TH1* hist = (TH1*) Spectra->FindObject(histo[h].c_str());
+        if(hist){
+          hist->UseCurrentStyle();
+          hist->Draw("colz");
+        }
+      }
       TGListTreeItem*  item  =  NULL;
       TGListTreeItem*  pitem =  NULL;
 

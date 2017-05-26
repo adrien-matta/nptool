@@ -526,15 +526,6 @@ map< string , TH1*> TSharcPhysics::GetSpectra() {
     return empty;
   }
 } 
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TSharcPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-} 
 
 ///////////////////////////////////////////////////////////////////////////
 void TSharcPhysics::WriteSpectra(){

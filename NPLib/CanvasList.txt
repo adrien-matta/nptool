@@ -8,12 +8,9 @@ Alias Face
 
 
 Canvas
- Path= MUST2 RAW T@Telescope Si_@Face
+ Path= MUST2 T@Telescope 
  Divide= 2 2
- Histo= hA_T@Telescope hB_T@Telescope hC_T@Telescope hD_T@Telescope
+ Histo= MM@Telescope_STRX_RAW_MULT MM@Telescope_STRY_RAW_MULT
+ 
 
 
-Canvas
- Path= Single
- Divide= 2 2
- Histo= h1 h2 h3 h4

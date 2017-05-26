@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for ComptonTelescope                 *
+ *  This class holds all the online spectra needed for ComptonTelescope      *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -172,8 +172,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
     name = "CT"+NPL::itoa(RawData->GetCTTrackerFrontEDetectorNbr(i))+"_FRONT_E_RAW";
     family = "COMPTONTELESCOPE/RAW/FRONTE";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetCTTrackerFrontEStripNbr(i), 
+    FillSpectra(family,name, 
+          RawData->GetCTTrackerFrontEStripNbr(i), 
           RawData->GetCTTrackerFrontEEnergy(i));
   }
 
@@ -182,8 +182,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
     name = "CT"+NPL::itoa(RawData->GetCTTrackerBackEDetectorNbr(i))+"_BACK_E_RAW";
     family = "COMPTONTELESCOPE/RAW/BACKE";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetCTTrackerBackEStripNbr(i),
+    FillSpectra(family,name
+      ,RawData->GetCTTrackerBackEStripNbr(i),
           RawData->GetCTTrackerBackEEnergy(i));
   }
 
@@ -192,8 +192,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
     name = "CT"+NPL::itoa(RawData->GetCTTrackerFrontTDetectorNbr(i))+"_FRONT_T_RAW";
     family = "COMPTONTELESCOPE/RAW/FRONTT";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetCTTrackerFrontTStripNbr(i),
+    FillSpectra(family,name
+      ,RawData->GetCTTrackerFrontTStripNbr(i),
           RawData->GetCTTrackerFrontTTime(i));
   }
   // BACK_T
@@ -201,8 +201,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
     name = "CT"+NPL::itoa(RawData->GetCTTrackerBackEDetectorNbr(i))+"_BACK_T_RAW";
     family = "COMPTONTELESCOPE/RAW/BACKT";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetCTTrackerBackTStripNbr(i),
+    FillSpectra(family,name
+      ,RawData->GetCTTrackerBackTStripNbr(i),
           RawData->GetCTTrackerBackTTime(i));
   }
 
@@ -218,8 +218,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
      name = "CT"+NPL::itoa(i+1)+"_FRONT_RAW_MULT";
      family= "COMPTONTELESCOPE/RAW/MULT";
-     GetHisto(family,name)
-        -> Fill(myMULT[i]);
+     FillSpectra(family,name
+        ,myMULT[i]);
   }
 
   // BACK MULT
@@ -233,8 +233,8 @@ void TComptonTelescopeSpectra::FillRawSpectra(TComptonTelescopeData* RawData)
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) {
      name = "CT"+NPL::itoa(i+1)+"_BACK_RAW_MULT";
      family= "COMPTONTELESCOPE/RAW/MULT";
-     GetHisto(family,name)
-        -> Fill(myMULT[i]);
+     FillSpectra(family,name
+        ,myMULT[i]);
   }
 }
 
@@ -248,8 +248,8 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
     name = "CT"+NPL::itoa(PreTreatedData->GetCTTrackerFrontEDetectorNbr(i))+"_FRONT_E_CAL";
     family = "COMPTONTELESCOPE/CAL/FRONTE";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetCTTrackerFrontEStripNbr(i), 
+    FillSpectra(family,name
+      ,PreTreatedData->GetCTTrackerFrontEStripNbr(i), 
           PreTreatedData->GetCTTrackerFrontEEnergy(i));
   }
   // BACK_E
@@ -257,8 +257,8 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
     name = "CT"+NPL::itoa( PreTreatedData->GetCTTrackerBackEDetectorNbr(i))+"_BACK_E_CAL";
     family = "COMPTONTELESCOPE/CAL/BACKE";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetCTTrackerBackEStripNbr(i), 
+    FillSpectra(family,name
+      ,PreTreatedData->GetCTTrackerBackEStripNbr(i), 
           PreTreatedData->GetCTTrackerBackEEnergy(i));
   }
   // FRONT_T
@@ -266,8 +266,8 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
     name = "CT"+NPL::itoa(PreTreatedData->GetCTTrackerFrontTDetectorNbr(i))+"_FRONT_T_CAL";
     family = "COMPTONTELESCOPE/CAL/FRONTT";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetCTTrackerFrontTStripNbr(i), 
+    FillSpectra(family,name
+      ,PreTreatedData->GetCTTrackerFrontTStripNbr(i), 
           PreTreatedData->GetCTTrackerFrontTTime(i));
   }
   // BACK_T
@@ -275,8 +275,8 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
     name = "CT"+NPL::itoa(PreTreatedData->GetCTTrackerBackTDetectorNbr(i))+"_BACK_T_CAL";
     family = "COMPTONTELESCOPE/CAL/BACKT";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetCTTrackerBackTStripNbr(i), 
+    FillSpectra(family,name
+          ,PreTreatedData->GetCTTrackerBackTStripNbr(i), 
           PreTreatedData->GetCTTrackerBackTTime(i));
   }
 
@@ -293,8 +293,7 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
 
     name = "CT"+NPL::itoa(i+1)+"_FRONT_CAL_MULT";
     family= "COMPTONTELESCOPE/CAL/MULT";
-    GetHisto(family,name)
-      -> Fill(myMULT[i]);
+    FillSpectra(family,name,myMULT[i]);
   }
 
   // BACK MULT
@@ -308,8 +307,7 @@ void TComptonTelescopeSpectra::FillPreTreatedSpectra(TComptonTelescopeData* PreT
   for( unsigned int i = 0; i < fNumberOfTelescope; i++){
     name = "CT"+NPL::itoa(i+1)+"_BACK_CAL_MULT";
     family= "COMPTONTELESCOPE/CAL/MULT";
-    GetHisto(family,name)
-      -> Fill(myMULT[i]);
+    FillSpectra(family,name,myMULT[i]);
   }
 }
 
@@ -323,52 +321,52 @@ void TComptonTelescopeSpectra::FillPhysicsSpectra(TComptonTelescopePhysics* Phys
     name = "CT_IMPACT_MATRIX";
     double x = Physics->GetPositionOfInteraction(i).x();
     double y = Physics->GetPositionOfInteraction(i).y();
-    GetHisto(family,name)-> Fill(x,y);
+    FillSpectra(family,name),x,y);
 
     name = "CT_THETA_E";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
     Theta = Theta/deg;
-    GetHisto(family,name)-> Fill(Theta,Physics->Si_E[i]);
+    FillSpectra(family,name),Theta,Physics->Si_E[i]);
 
     // FRONT_E_CAL
     name = "CT"+NPL::itoa( Physics->TelescopeNumber[i])+"_XY_COR";
-    GetHisto(family,name)-> Fill(Physics->Si_EX[i],Physics->Si_EY[i]);
+    FillSpectra(family,name),Physics->Si_EX[i],Physics->Si_EY[i]);
 
 
     // Fill only for particle stopped in the first stage
     if(Physics->SiLi_E[i]<0 && Physics->CsI_E[i]<0){
       // E-TOF:
       name = "CT_E_TOF";
-      GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
+      FillSpectra(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
 
       name = "CT"+NPL::itoa(Physics->TelescopeNumber[i])+"_E_TOF";
-      GetHisto(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
+      FillSpectra(family,name)->Fill(Physics->Si_E[i],Physics->Si_T[i]);
     }
 
     double Etot=0;
     if(Physics->SiLi_E[i]>0){
       name = "CT_SILIE_E";
       Etot = Physics->SiLi_E[i];
-      GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
 
       name = "CT"+NPL::itoa(Physics->TelescopeNumber[i])+"_SILIE_E";
-      GetHisto(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Physics->SiLi_E[i],Physics->Si_E[i]);
     }
 
     if(Physics->CsI_E[i]>0){
       name = "CT_CSIE_E";
       Etot += Physics->CsI_E[i];
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
       name = "CT"+NPL::itoa(Physics->TelescopeNumber[i])+"_CSIE_E";
-      GetHisto(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Physics->CsI_E[i],Physics->Si_E[i]);
 
     }
 
     if(Etot>0){
       name = "CT_Etot_E";
-      GetHisto(family,name)->Fill(Etot,Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Etot,Physics->Si_E[i]);
       name = "CT"+NPL::itoa(Physics->TelescopeNumber[i])+"_Etot_E";
-      GetHisto(family,name)->Fill(Etot,Physics->Si_E[i]);
+      FillSpectra(family,name)->Fill(Etot,Physics->Si_E[i]);
     }
 
   }
