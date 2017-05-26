@@ -15,4 +15,4 @@ ConfigGeTamu
   %ADD_BACK_ARRAY
   %ADD_BACK_FACING
   %%%%%%%% Randomise raw energy within ADC bin
-  %ADC_RANDOM_BIN
+  ADC_RANDOM_BIN
