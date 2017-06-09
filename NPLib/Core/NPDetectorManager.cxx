@@ -275,6 +275,10 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
     cout << endl;
     cout << "**********************************       Error       **********************************" << endl;
     cout << " No Detector " << name << " found in the Detector Manager" << endl;
+		cout << " Available Detectors: " << endl;
+		for(map<string,VDetector*>::iterator i = m_Detector.begin(); i != m_Detector.end(); ++i) {
+			cout << "\t" << i->first << endl;
+		}
     cout << "***************************************************************************************" << endl;
     cout << endl;
     exit(1);
