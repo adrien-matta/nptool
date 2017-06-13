@@ -52,7 +52,7 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	Infos[7] = m_CloverNumber;
   Infos[8] = m_CrystalNumber;
 
-	m_Index =  /*step->GetTrack()->GetTrackID() +*/ m_CloverNumber * 1e3 + m_CrystalNumber * 1e6;
+	m_Index = m_CloverNumber * 1 + m_CrystalNumber * 1e3;
 
   // Sum up all hits in the SAME CORE AND CLOVER
   map<G4int, G4double**>::iterator it;
@@ -64,60 +64,6 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	
   EvtMap->set(m_Index, Infos);
   return TRUE;
-
-	
-#if 0
-  // contain Energy Time, DetNbr, StripFront and StripBack
-  G4double* Infos = new G4double[10];
-  Infos[0] = aStep->GetTotalEnergyDeposit();
-  Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
-  m_Position  = aStep->GetPreStepPoint()->GetPosition();
-
-  // Interaction coordinates (used to fill the InteractionCoordinates branch)
-  Infos[2] = m_Position.x();
-  Infos[3] = m_Position.y();
-  Infos[4] = m_Position.z();
-  Infos[5] = m_Position.theta();
-  Infos[6] = m_Position.phi();
-
-  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
-
-  if(m_Axis=="xy"){
-    m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
-    m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
-  }
-  else if(m_Axis=="yz"){
-    m_StripLengthNumber = (int)((m_Position.y() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
-    m_StripWidthNumber = (int)((m_Position.z() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
-  }
-  else if(m_Axis=="xz"){
-    m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
-    m_StripWidthNumber = (int)((m_Position.z() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
-  }
-
-  //Rare case where particle is close to edge of silicon plan
-  if (m_StripLengthNumber > m_NumberOfStripLength) m_StripLengthNumber = m_NumberOfStripLength;
-  if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
-
-  Infos[7] = m_DetectorNumber;
-  Infos[8] = m_StripLengthNumber;
-  Infos[9] = m_StripWidthNumber;
-
-  m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
-
-  // Check if the particle has interact before, if yes, add up the energies.
-  map<G4int, G4double**>::iterator it;
-  it= EvtMap->GetMap()->find(m_Index);
-  if(it!=EvtMap->GetMap()->end()){
-    G4double* dummy = *(it->second);
-    Infos[0]+=dummy[0];
-  }
-
-  EvtMap->set(m_Index, Infos);
-  return TRUE;
-#endif
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
