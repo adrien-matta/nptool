@@ -134,11 +134,12 @@ int main(int argc , char** argv){
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
+
           bool first = true;
-          while(!Chain || first){
+          if(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
-            RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
+           RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
             new_nentries = Chain->GetEntries();
@@ -167,6 +168,7 @@ int main(int argc , char** argv){
       for (unsigned int i = 0 ; i < nentries; i++) { 
         // Get the raw Data
         Chain -> GetEntry(i);
+        Chain -> GetEntry(i);
         // Build the current event
         myDetector->BuildPhysicalEvent();
         // User Analysis
@@ -176,11 +178,12 @@ int main(int argc , char** argv){
       
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
+        
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
           bool first = true;
           while(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
             RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
@@ -210,10 +213,11 @@ int main(int argc , char** argv){
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
+
           bool first = true;
           while(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
             RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    

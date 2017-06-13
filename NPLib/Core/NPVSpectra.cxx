@@ -24,6 +24,7 @@
 // NPL
 #include "NPVSpectra.h"
 #include "NPOptionManager.h"
+#include "NPSpectraServer.h"
 #include "RootOutput.h"
 
 // ROOT
@@ -42,10 +43,6 @@ VSpectra::VSpectra(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-VSpectra::~VSpectra(){
-}
-
-////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
   TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
@@ -55,6 +52,9 @@ TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow
   // fill map
   fMapHisto[index] = hist;
 
+  // Add it to the server
+  NPL::SpectraServer::getInstance()->AddSpectra(hist);
+ 
   return hist;
 }
 
@@ -67,21 +67,15 @@ TH1* VSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow
 
   // fill map
   fMapHisto[index] = hist;
+  
+  // Add it to the server
+  NPL::SpectraServer::getInstance()->AddSpectra(hist);
 
   return hist;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void VSpectra::AddCanvas(TCanvas* c){
-  m_Canvas.push_back(c);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> VSpectra::GetCanvas(){
-  return m_Canvas;
-}
-////////////////////////////////////////////////////////////////////////////////
-TH1* VSpectra::GetHisto(const string& FamilyAndName){
+TH1* VSpectra::GetSpectra(const string& FamilyAndName){
   map< string , TH1*>::iterator it;
   it = fMapHisto.find(FamilyAndName);
 
@@ -95,12 +89,31 @@ TH1* VSpectra::GetHisto(const string& FamilyAndName){
 
   return it->second;
 }
-
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& familyAndname, double valx){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+   serv->FillSpectra( GetSpectra(familyAndname)->GetName(),valx);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& familyAndname, double valx,double valy){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+   serv->FillSpectra( GetSpectra(familyAndname)->GetName(),valx,valy);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& family,const string& name, double valx){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+  serv->FillSpectra(name,valx);
+}
+////////////////////////////////////////////////////////////////////////////////
+void VSpectra::FillSpectra(const string& family,const string& name, double valx, double valy){
+  static NPL::SpectraServer* serv = NPL::SpectraServer::getInstance();
+  serv->FillSpectra(name,valx,valy);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
-TH1* VSpectra::GetHisto(const string& family,const string& name){
+TH1* VSpectra::GetSpectra(const string& family,const string& name){
   string index = family + "/" + name;
-  return GetHisto(index);
+  return GetSpectra(index);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

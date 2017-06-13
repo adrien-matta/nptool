@@ -1,9 +1,32 @@
 #ifndef NPINPUTPARSER
 #define NPINPUTPARSER
+/*****************************************************************************
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ *                                                                           *
+ * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
+ * For the list of contributors see $NPTOOL/Licence/Contributors             *
+ *****************************************************************************/
+
+/*****************************************************************************
+ * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ *                                                                           *
+ * Creation Date  : December 2016                                            *
+ * Last update    :                                                          *
+ *---------------------------------------------------------------------------*
+ * Decription:                                                               *
+ *   This class allow for parsing of tabulated input file with unit and token*
+ *                                                                           *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *                                                                           *
+ *                                                                           *
+ *****************************************************************************/
+
 
 // STL
 #include<string>
 #include<vector>
+#include<map>
 
 // ROOT
 #include"TVector3.h"
@@ -19,8 +42,10 @@ namespace NPL{
 
   class InputBlock{
     public:
+      InputBlock(){};
       InputBlock(std::string line);
       ~InputBlock(){};
+      NPL::InputBlock* Copy();
 
     private:
       unsigned int m_Level;
@@ -28,7 +53,6 @@ namespace NPL{
       std::string m_MainValue;
       std::vector<std::string> m_Token;
       std::vector<std::string> m_Value; 
-      std::vector<NPL::InputBlock*> m_SubBlock;
 
     public:
       void AddLine(std::string line);  
@@ -39,6 +63,8 @@ namespace NPL{
       std::string GetToken(unsigned int i){return m_Token[i];};
       std::string GetValue(unsigned int i){return m_Value[i];};
       std::string GetValue(std::string Token);
+      void SetValue(unsigned int i, std::string val){m_Value[i]=val;};
+
 
     public:  
       bool HasTokenList(std::vector<std::string> TokenList);
@@ -65,19 +91,23 @@ namespace NPL{
   class InputParser{
     public:
       InputParser(){};
-      InputParser(std::string filename) {ReadFile(filename);}
+      InputParser(std::string filename,bool ExitOnError=true) {ReadFile(filename,ExitOnError);}
       ~InputParser(){};
 
     private:
       std::vector<InputBlock*> m_Block;
+      std::map<std::string, std::vector<std::string> > m_Aliases;
 
     private:
       int m_verbose;
 
     public:
-      void ReadFile(std::string filename);
+      void ReadFile(std::string filename,bool ExitOnError=true);
+      void TreatAliases();
+      void TreatOneAlias(){};
       void Dump();
       void Print() {Dump();}
+      void Clear();
       std::vector<InputBlock*> GetAllBlocksWithToken(std::string Token);
       std::vector<InputBlock*> GetAllBlocksWithTokenAndValue(std::string Token,std::string Value);
 

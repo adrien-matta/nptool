@@ -1,22 +1,33 @@
 #include"NPInputParser.h"
-using namespace NPL;
 #include"NPSystemOfUnits.h"
 #include"NPOptionManager.h"
-
+#include"NPCore.h"
 #include<sstream>
 #include<iostream>
 #include<fstream>
 #include<algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
+NPL::InputBlock* NPL::InputBlock::Copy(){
+  NPL::InputBlock* res = new NPL::InputBlock();
+  res->m_Level = this->m_Level;
+  res->m_MainToken = this->m_MainToken;
+  res->m_MainValue = this->m_MainValue;
+  res->m_Token = this->m_Token;
+  res->m_Value = this->m_Value; 
+  return res;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 std::string NPL::StripSpaces(std::string line){
   // Remove preceding spaces
-  while(line.front()==' ')
+  while(*line.begin()==' ')
     line = line.substr(1,line.length());
 
   // Remove trailing spaces
   if(line.length()>0)
-    while(line.back()==' ')
+    while(*line.rbegin()==' ')
       line = line.substr(0,line.length()-1);
   return line;
 
@@ -44,14 +55,14 @@ std::string NPL::ToLower(std::string line){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-InputBlock::InputBlock(std::string line){
+NPL::InputBlock::InputBlock(std::string line){
   m_Level     = GetLevel(line);
   m_MainToken = StripSpaces(ExtractToken(line," "));     
   m_MainValue = StripSpaces(ExtractValue(line," "));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string InputBlock::ExtractToken(std::string line,std::string separator){
+std::string NPL::InputBlock::ExtractToken(std::string line,std::string separator){
   // Find the separator
   if(separator=="")
     separator = NPL::token_separator;
@@ -60,7 +71,7 @@ std::string InputBlock::ExtractToken(std::string line,std::string separator){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::string InputBlock::ExtractValue(std::string line,std::string separator){
+std::string NPL::InputBlock::ExtractValue(std::string line,std::string separator){
   // Find the separator
   if(separator=="")
     separator = NPL::token_separator;
@@ -72,12 +83,12 @@ std::string InputBlock::ExtractValue(std::string line,std::string separator){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void InputBlock::AddLine(std::string line){
+void NPL::InputBlock::AddLine(std::string line){
   m_Token.push_back(ToLower(StripSpaces(ExtractToken(line))));
   m_Value.push_back(StripSpaces(ExtractValue(line)));
 }
 ////////////////////////////////////////////////////////////////////////////////
-void InputBlock::Dump(){
+void NPL::InputBlock::Dump(){
   std::cout << "//////////// Block ////////////" << std::endl;
   std::cout << " * Main Token: " << m_MainToken << std::endl ;
   std::cout << " * Main Value: "  << m_MainValue << std::endl;
@@ -86,7 +97,7 @@ void InputBlock::Dump(){
     std::cout << "  - " << i+1 << " " << m_Token[i] << ": " << m_Value[i] << std::endl; 
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool InputBlock::HasTokenList(std::vector<std::string> Token){
+bool NPL::InputBlock::HasTokenList(std::vector<std::string> Token){
   if(m_Token.size()==0)
     return false;
 
@@ -98,7 +109,7 @@ bool InputBlock::HasTokenList(std::vector<std::string> Token){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool InputBlock::HasToken(std::string Token){
+bool NPL::InputBlock::HasToken(std::string Token){
   for(unsigned int i = 0 ; i < m_Token.size() ; i++){
     if(m_Token[i] == ToLower(Token)){
       return true;
@@ -107,7 +118,7 @@ bool InputBlock::HasToken(std::string Token){
   return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
-std::string InputBlock::GetValue(std::string Token){
+std::string NPL::InputBlock::GetValue(std::string Token){
   for(unsigned int i = 0 ; i < m_Token.size() ; i++){
     if(m_Token[i]==ToLower(Token))
       return m_Value[i];
@@ -116,7 +127,7 @@ std::string InputBlock::GetValue(std::string Token){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-double InputBlock::GetDouble(std::string Token,std::string default_unit){
+double NPL::InputBlock::GetDouble(std::string Token,std::string default_unit){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   std::stringstream iss(GetValue(Token));
   double val;
@@ -130,14 +141,14 @@ double InputBlock::GetDouble(std::string Token,std::string default_unit){
   else{
     val = ApplyUnit(val,unit);
   }
-  
+
   if(verbose)
     cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) << endl; 
 
   return val;        
 }
 ////////////////////////////////////////////////////////////////////////////////
-int InputBlock::GetInt(std::string Token){
+int NPL::InputBlock::GetInt(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   std::stringstream iss(GetValue(Token));
   int val;
@@ -150,7 +161,7 @@ int InputBlock::GetInt(std::string Token){
   return val;        
 }
 ////////////////////////////////////////////////////////////////////////////////
-std::string InputBlock::GetString(std::string Token){
+std::string NPL::InputBlock::GetString(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   if(verbose)
     cout << " " << Token << ": " << GetValue(Token) << endl; 
@@ -158,7 +169,7 @@ std::string InputBlock::GetString(std::string Token){
   return GetValue(Token);
 }
 ////////////////////////////////////////////////////////////////////////////////
-TVector3 InputBlock::GetTVector3(std::string Token,std::string  default_unit){
+TVector3 NPL::InputBlock::GetTVector3(std::string Token,std::string  default_unit){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   std::stringstream iss(GetValue(Token));
 
@@ -180,25 +191,25 @@ TVector3 InputBlock::GetTVector3(std::string Token,std::string  default_unit){
 
   if(verbose)
     cout << " " << Token << " (" <<default_unit << "): (" 
-    << x/ApplyUnit(1,default_unit) << " ; " 
-    << y/ApplyUnit(1,default_unit) << " ; " 
-    << z/ApplyUnit(1,default_unit) << ")" << endl; 
+      << x/ApplyUnit(1,default_unit) << " ; " 
+      << y/ApplyUnit(1,default_unit) << " ; " 
+      << z/ApplyUnit(1,default_unit) << ")" << endl; 
 
 
   return TVector3(x,y,z);        
 }
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> InputBlock::GetVectorString(std::string Token){
+std::vector<std::string> NPL::InputBlock::GetVectorString(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
 
   std::stringstream iss(GetValue(Token));
 
   std::vector<std::string> val;
   std::string buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
-  
+
   if(verbose){
     cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
@@ -209,21 +220,21 @@ std::vector<std::string> InputBlock::GetVectorString(std::string Token){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<double> InputBlock::GetVectorDouble(std::string Token,std::string  default_unit){
+std::vector<double> NPL::InputBlock::GetVectorDouble(std::string Token,std::string  default_unit){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
 
   std::stringstream iss(GetValue(Token));
 
   std::vector<double> val;
   double buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
   // Try to read the unit  
   iss.clear();
   std::string unit;
   iss>>unit;
- 
+
   if(unit==""){
     if(default_unit!="void")
       std::cout <<"WARNING: Using default units for token " << Token << std::endl;
@@ -242,20 +253,20 @@ std::vector<double> InputBlock::GetVectorDouble(std::string Token,std::string  d
     cout << endl; 
   }
 
-return val;        
+  return val;        
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<int> InputBlock::GetVectorInt(std::string Token){
+std::vector<int> NPL::InputBlock::GetVectorInt(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
 
   std::stringstream iss(GetValue(Token));
   std::vector<int> val;
   int buffer;
-    while(iss>>buffer)
-      val.push_back(buffer);
+  while(iss>>buffer)
+    val.push_back(buffer);
 
- if(verbose){
+  if(verbose){
     cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
       cout << val[i] << " " ;
@@ -267,25 +278,14 @@ std::vector<int> InputBlock::GetVectorInt(std::string Token){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<NPL::InputBlock*> InputBlock::GetSubBlock(std::string Token){
-  std::vector<NPL::InputBlock*> blocks;
-  for(unsigned int i = 0 ; i < m_SubBlock.size() ; i++){
-    if(Token == m_SubBlock[i]->GetMainToken())
-      blocks.push_back(m_SubBlock[i]);
-  }
-  return blocks;        
-}
-
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-void InputParser::Dump(){
+void NPL::InputParser::Dump(){
   for(unsigned int i = 0 ; i < m_Block.size() ; i++)
     m_Block[i]->Dump();
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool InputParser::IsNotComment(std::string line){
+bool NPL::InputParser::IsNotComment(std::string line){
   line = StripSpaces(line);
   if(line.length()==0)
     return false;
@@ -298,11 +298,11 @@ bool InputParser::IsNotComment(std::string line){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<InputBlock*> InputParser::GetAllBlocksWithToken(std::string Token){
-  std::vector<InputBlock*> res;
+std::vector<NPL::InputBlock*> NPL::InputParser::GetAllBlocksWithToken(std::string Token){
+  std::vector<NPL::InputBlock*> res;
   for(unsigned int i = 0 ; i < m_Block.size(); i++){
     if(m_Block[i]->GetMainToken() == Token){
-        res.push_back(m_Block[i]);
+      res.push_back(m_Block[i]);
     }
   }
 
@@ -310,8 +310,8 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithToken(std::string Token){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<InputBlock*> InputParser::GetAllBlocksWithTokenAndValue(std::string Token,std::string Value){
-  std::vector<InputBlock*> res;
+std::vector<NPL::InputBlock*> NPL::InputParser::GetAllBlocksWithTokenAndValue(std::string Token,std::string Value){
+  std::vector<NPL::InputBlock*> res;
   for(unsigned int i = 0 ; i < m_Block.size(); i++){
     if(m_Block[i]->GetMainToken() == Token){
       if(m_Block[i]->GetMainValue() == Value)
@@ -323,32 +323,115 @@ std::vector<InputBlock*> InputParser::GetAllBlocksWithTokenAndValue(std::string 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-std::vector<std::string> InputParser::GetAllBlocksToken(){
+std::vector<std::string> NPL::InputParser::GetAllBlocksToken(){
   std::vector<std::string> token;
-    for(unsigned int i = 0 ; i < m_Block.size() ; i++){
-        token.push_back(m_Block[i]->GetMainToken());
-    }
+  for(unsigned int i = 0 ; i < m_Block.size() ; i++){
+    token.push_back(m_Block[i]->GetMainToken());
+  }
 
   return token;
 }
-
 ////////////////////////////////////////////////////////////////////////////////
-void InputParser::ReadFile(std::string filename){
+void NPL::InputParser::TreatAliases(){
+
+  // Call the alias block
+  std::vector<NPL::InputBlock*> alias = GetAllBlocksWithToken("Alias");
+  // List of token:                      
+
+  // - Action 
+  //    -> Split : create new block for each value
+  //    -> Inplace : Replace the value in existing alias
+  // - Value -> The list of value to be used
+  std::vector<std::string> token = {"Action","Value"};
+  for(unsigned int i = 0 ; i < alias.size() ; i++){
+    if(!alias[i]->HasTokenList(token)){
+      NPL::SendErrorAndExit("NPL::InputParser", "Alias block syntax incorrect");
+    }
+    
+    int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
+
+    if(verbose)
+      std::cout << "Using Alias : @" << alias[i]->GetMainValue() << endl;
+    
+    std::string name="@";
+    name += alias[i]->GetMainValue(); 
+    std::string action = alias[i]->GetString("Action");
+    std::vector<std::string> value  = alias[i]->GetVectorString("Value"); 
+    if(action=="Inplace" && value.size()!=1)
+      NPL::SendErrorAndExit("NPL::InputParser", "Inplace alias can only take one value"); 
+
+    // Scan all blocks for aliases
+    for(unsigned int b = 0 ; b < m_Block.size() ; b++){
+      unsigned int size = m_Block[b]->GetSize();
+      size_t pos;  
+      // In place case loop over each value and replace them
+      if(action=="Inplace"){
+        for(unsigned int v = 0 ; v < size ; v++){
+          while((pos=m_Block[b]->GetValue(v).find(name))!=std::string::npos){
+            std::string val = m_Block[b]->GetValue(v);
+            val.replace(pos,name.length(),value[0]);
+            m_Block[b]->SetValue(v,val);
+          }
+        }
+      }
+
+      else if (action=="Split"){
+        bool check = false;
+        // first pass identify if the block use an alias
+        for(unsigned int v = 0 ; v < size ; v++){
+          if(m_Block[b]->GetValue(v).find(name)!=std::string::npos)
+            check = true; 
+        }
+        if(check){ 
+          NPL::InputBlock* originalBlock = m_Block[b]->Copy();
+          for(unsigned int a = 0 ; a < value.size() ; a++){
+            NPL::InputBlock* newBlock = originalBlock->Copy();
+            for(unsigned int v = 0 ; v < size ; v++){
+              while((pos=newBlock->GetValue(v).find(name))!=std::string::npos){
+                std::string val = newBlock->GetValue(v);
+                val.replace(pos,name.length(),value[a]);
+                newBlock->SetValue(v,val);
+              }
+
+            }
+            if(a==0){
+              m_Block[b] = newBlock;
+            }
+            else{
+              vector<NPL::InputBlock*>::iterator it = m_Block.begin();
+              m_Block.insert(it+b+a,newBlock);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+////////////////////////////////////////////////////////////////////////////////
+void NPL::InputParser::ReadFile(std::string filename,bool ExitOnError){
+  Clear();
   std::ifstream file(filename.c_str());
   if(!file.is_open()){
-    std::cout <<"ERROR : file " << filename << " not found " << std::endl;
-    exit(1);
+    std::ostringstream message;
+    message << "file " << filename << " not found " << std::endl;
+
+    if(ExitOnError)
+      NPL::SendErrorAndExit("NPL::InputParser", message.str());
+    else{
+      NPL::SendWarning("NPL::InputParser", message.str());
+      return;
+    }
   }
 
   std::string line;
-  InputBlock* block = 0;
+  NPL::InputBlock* block = 0;
   while(!file.eof()){
     getline(file,line);
     if(IsNotComment(line) && GetLevel(line)==0) {
       if(block)
         m_Block.push_back(block);
 
-      block = new InputBlock(line);
+      block = new NPL::InputBlock(line);
       if(!file.eof())
         getline(file,line);
     }
@@ -359,7 +442,17 @@ void InputParser::ReadFile(std::string filename){
   // Add the last block
   if(block)
     m_Block.push_back(block);
+  TreatAliases();
 }
+////////////////////////////////////////////////////////////////////////////////
+void NPL::InputParser::Clear(){
+  for(unsigned int i = 0 ; m_Block.size() ; i++)
+    delete m_Block[i];
+
+  m_Block.clear();
+  m_Aliases.clear();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 double NPL::ApplyUnit(double value, std::string unit){
   if(unit=="void") // apply no unit

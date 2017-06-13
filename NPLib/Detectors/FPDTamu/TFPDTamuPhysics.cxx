@@ -40,6 +40,9 @@ using namespace std;
 //   ROOT
 #include "TChain.h"
 
+// by Shuya 170417.
+#include "TMath.h"
+
 ClassImp(TFPDTamuPhysics)
 
 
@@ -66,6 +69,37 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+//Copied Greg's function from Analysis.cxx by Shuya 170417.
+double TFPDTamuPhysics::calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
+{
+	vector<double> X, Z;
+	for(int i=0; i< len; ++i) {
+		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
+	}
+
+	Long64_t N = X.size();
+	double meanZ = TMath::Mean(N, &Z[0]);
+	double meanX = TMath::Mean(N, &X[0]);
+	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
+	for(size_t i=0; i< N; ++i) {
+		meanZ2 += Z[i]*Z[i];
+		meanX2 += X[i]*X[i];
+		meanXZ += Z[i]*X[i];
+	}
+	meanZ2 /= N;
+	meanXZ /= N;
+
+	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
+	R2 = pow(meanXZ - meanX*meanZ, 2) / 
+		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
+
+	/// TODO::: R2 doesn't seem to make sense... look into it!
+	
+	return slope;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 void TFPDTamuPhysics::BuildPhysicalEvent() {
@@ -85,6 +119,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
   // fill the vectors, calculate positions   
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
   for (UShort_t e = 0; e < mysizeE ; e++) {
+        MicroDetNumber.push_back(m_PreTreatedData->Get_Micro_E_DetNbr(e));
         MicroRowNumber.push_back(m_PreTreatedData->Get_Micro_E_RowNbr(e));
         MicroColNumber.push_back(m_PreTreatedData->Get_Micro_E_ColNbr(e));
         //Calculate position in X and Z for each of the pads
@@ -225,31 +260,15 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
   }
 //  cout << " end of plastic " << endl ;
    
-/*
-  //model
-  // match energy and time together
-  unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
-  unsigned int mysizeT = m_PreTreatedData->Get_Delta_Time_Mult();
-  cout << " " << mysizeE << " " << mysizeT << endl ; 
-  for (UShort_t e = 0; e < mysizeE ; e++) {
-  for (UShort_t t = 0; t < mysizeT ; t++) {
-  if (m_PreTreatedData->Get_Delta_E_DetectorNbr(e) == m_PreTreatedData->Get_Delta_T_DetectorNbr(t)) {
-  DeltaDetNumber.push_back(m_PreTreatedData->Get_Delta_E_DetectorNbr(e));
-  DeltaEnergy.push_back(m_PreTreatedData->Get_Delta_Energy(e));
-  DeltaTime.push_back(m_PreTreatedData->Get_Delta_Time(t));
-  }
-  }
-  }
-  */
-
 }
 
-double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol){
+double TFPDTamuPhysics::GetMicroGroupEnergy(int detector, int lrow, int hrow, int lcol, int hcol){
 
-  int dummy,row,col; 
+  int dummy,row,col,det; 
   double energy = 0;  
 
   //avoid zeros
+  if (detector < 1 || detector > m_NumberOfMicro) return 0; 
   if (lrow==0 || hrow==0 || lcol==0 || hcol==0)
     cout << " \033[1;311mWARNING: '0' value detected, TFPDTamuPhysics::GetMicroGroupEnergy() uses values >=1 " << endl;
   //check validity
@@ -266,19 +285,25 @@ double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hc
 
   // group energies
   for (UShort_t e = 0; e < MicroRowNumber.size() ; e++) {
+    det = MicroDetNumber.at(e);
     row = MicroRowNumber.at(e)+1;
     col = MicroColNumber.at(e)+1;
-    if ( (row>=lrow && row<=hrow) && (col>=lcol && col<=hcol) )
+    if ( (det == detector) && (row>=lrow && row<=hrow) && (col>=lcol && col<=hcol) ){
       energy += MicroEnergy.at(e);
+    }
   } 
 
   return energy ; 
 }
 
-double TFPDTamuPhysics::GetMicroRowGeomEnergy(int lrow, int hrow){
+//by Shuya 170516
+//double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
+double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col){
+
+  if (det < 1 || det > m_NumberOfMicro) return 0; 
 
   int dummy; 
-  double energy = 0;
+  double energy = 0.;
   int sample = 0;   
 
   //avoid zeros
@@ -290,16 +315,27 @@ double TFPDTamuPhysics::GetMicroRowGeomEnergy(int lrow, int hrow){
     lrow = hrow;
     hrow = dummy;
   }
+
   // group energies
   for (int r = lrow; r < hrow ; r++) {
-    double esample = GetMicroGroupEnergy(r,r,1,7);
+//by Shuya 170516
+    //double esample = GetMicroGroupEnergy(det, r,r,1,7);
+    double esample;
+    if(col>=1 && col<=7)	esample = GetMicroGroupEnergy(det,r,r,col,col);
+    else esample = GetMicroGroupEnergy(det, r,r,1,7);
+
+//by Shuya 170418
+	if(r == lrow)	energy = 1.;
+
     if( esample > 0 ){
       sample++;  
       energy *= esample ;
     }
   } 
 
-  return pow(energy,1./sample) ; 
+//by Shuya 170517
+  if(sample>0)	return pow(energy,1./sample) ; 
+  else return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -343,14 +379,17 @@ void TFPDTamuPhysics::PreTreat() {
   mysize = m_EventData->Get_Micro_Energy_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Micro_Energy(i) > m_E_RAW_Threshold) {
-      name = "FPDTamu/Micro_R" ;
+      name = "FPDTamu/Micro" ;
+      name+= NPL::itoa( m_EventData->Get_Micro_E_DetNbr(i)) ; // Det number >=1
+      name+= "_R" ;
       name+= NPL::itoa( m_EventData->Get_Micro_E_RowNbr(i)+1) ;
       name+= "_C" ;
       name+= NPL::itoa( m_EventData->Get_Micro_E_ColNbr(i)+1) ;
       name+= "_E" ;
       Double_t Energy = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->Set_Micro_E(m_EventData->Get_Micro_E_RowNbr(i),m_EventData->Get_Micro_E_ColNbr(i), Energy);
+        m_PreTreatedData->Set_Micro_E(m_EventData->Get_Micro_E_DetNbr(i),
+          m_EventData->Get_Micro_E_RowNbr(i),m_EventData->Get_Micro_E_ColNbr(i), Energy);
       }
     }
   }
@@ -358,14 +397,17 @@ void TFPDTamuPhysics::PreTreat() {
   mysize = m_EventData->Get_Micro_Time_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Micro_Time(i) > m_T_RAW_Threshold) {
-      name = "FPDTamu/Micro_R" ;
+      name = "FPDTamu/Micro" ;
+      name+= NPL::itoa( m_EventData->Get_Micro_T_DetNbr(i)+1) ;
+      name = "_R" ;
       name+= NPL::itoa( m_EventData->Get_Micro_T_RowNbr(i)+1) ;
       name+= "_C" ;
       name+= NPL::itoa( m_EventData->Get_Micro_T_ColNbr(i)+1) ;
       name+= "_T" ;
       Double_t Time = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Time(i));
       if (Time > m_T_Threshold) {
-        m_PreTreatedData->Set_Micro_T(m_EventData->Get_Micro_T_RowNbr(i),m_EventData->Get_Micro_T_ColNbr(i), Time);
+        m_PreTreatedData->Set_Micro_T(m_EventData->Get_Micro_T_DetNbr(i),
+          m_EventData->Get_Micro_T_RowNbr(i),m_EventData->Get_Micro_T_ColNbr(i), Time);
       }
     }
   }
@@ -511,6 +553,7 @@ void TFPDTamuPhysics::Clear() {
   DeltaEnergy.clear();
   DeltaTime.clear();
   //Micromega
+  MicroDetNumber.clear();
   MicroRowNumber.clear();
   MicroColNumber.clear();
 	MicroTimeRowNumber.clear();
@@ -579,6 +622,10 @@ void TFPDTamuPhysics::Dump() const {
   cout << "  ...oooOOOooo...   Micromega  ...oooOOOooo...   " << endl;
   // Energy
   mysize = MicroRowNumber.size();
+  cout << " Det :" <<endl; 
+  for (size_t i = 0 ; i < MicroDetNumber.size() ; i++)
+    cout << " " << MicroDetNumber[i];
+  cout<<endl;
   cout << " Row Charge:" <<endl; 
   for (size_t i = 0 ; i < MicroRowNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
@@ -587,18 +634,13 @@ void TFPDTamuPhysics::Dump() const {
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroColNumber[i];
   cout<<endl;
-    cout << " Row TAC:" << endl;
+  cout << " energy: "<<endl; 
+  for (size_t i = 0 ; i < MicroEnergy.size() ; i++)
+    cout << " " << MicroEnergy[i];
+  cout<<endl;
+  cout << " Row TAC:" << endl;
   for (size_t i = 0 ; i < MicroTimeRowNumber.size() ; i++)
     cout << " " << MicroTimeRowNumber[i];
-  cout<<endl;
-      cout << " energy: "<<endl; 
-
-  for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
-    cout << " " << MicroRowNumber[i];
-  cout<<endl;
-  cout << " energy: " << endl;
-  for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
-    cout << " " << MicroRowNumber[i];
   cout<<endl;
 
   cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
@@ -751,20 +793,6 @@ map< string , TH1*> TFPDTamuPhysics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TFPDTamuPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TFPDTamuPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();
@@ -783,13 +811,18 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         "Delta_R"+ NPL::itoa(i+1)+"_C1_T");
   }
 
-  for (int i = 0; i < m_NumberOfMicro; ++i) { // in case there's 2 micromega add up the rows
-    for (int iRow = 0; iRow < 4; ++iRow) {
-      for (int iCol = 0; iCol < 7; ++iCol) {
-        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
-            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
-        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
-            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+  for (int iDet = 0; iDet < m_NumberOfMicro; ++iDet) { // in case there's 2 micromega add up the rows
+    for (int iRow = 0; iRow < 4; ++iRow) { // 4 rows
+      for (int iCol = 0; iCol < 7; ++iCol) { // 7 columns
+          int det = iDet+1;
+          int row = iRow+1;
+          int col = iCol+1;
+        Cal->AddParameter("FPDTamu", 
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_E",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_E");
+        Cal->AddParameter("FPDTamu", 
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T");      
       }
     }
   }
@@ -835,6 +868,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "DeltaCharge" , true );
   inputChain->SetBranchStatus( "DeltaEnergy" , true );
   //Micromega
+  inputChain->SetBranchStatus( "MicroDetNumber" , true );
   inputChain->SetBranchStatus( "MicroRowNumber" , true );
   inputChain->SetBranchStatus( "MicroColNumber" , true );
   inputChain->SetBranchStatus( "MicroTimeRowNumber" , true );

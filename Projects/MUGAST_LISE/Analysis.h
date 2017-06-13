@@ -29,6 +29,7 @@
 #include "TMust2Physics.h"
 #include "GaspardTracker.h"
 #include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
 #include <TRandom3.h>
 #include <TVector3.h>
 #include <TMath.h>
@@ -92,6 +93,7 @@ class Analysis: public NPL::VAnalysis{
   TMust2Physics* M2;
   GaspardTracker* GD;
   TInitialConditions* myInit ;
+  TInteractionCoordinates* Coord;
 
 };
 #endif

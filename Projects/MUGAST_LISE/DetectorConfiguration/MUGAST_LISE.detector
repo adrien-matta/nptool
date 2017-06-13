@@ -14,25 +14,36 @@ AnnularS1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker Trapezoid
  R= -90 mm
+ THETA= 90 deg
+ PHI= 90 deg
+ BETA= 0 0 0 deg
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GaspardTracker Trapezoid
+ R= -90 mm
  THETA= 60 deg
  PHI= 0 deg
- BETA= -60 0 -90 deg
+ BETA= 0 0 0 deg
  FIRSTSTAGE= 1
  SECONDSTAGE= 0
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 45 deg
  BETA= -60 0 -90 deg
  FIRSTSTAGE= 1
- SECONDSTAGE= -1
+ SECONDSTAGE= 0 
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 90 deg
@@ -42,7 +53,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 135 deg
@@ -52,7 +63,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 180 deg
@@ -62,7 +73,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 225 deg
@@ -72,7 +83,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 270 deg
@@ -82,7 +93,7 @@ GaspardTracker Trapezoid
  THIRDSTAGE= 0
  VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-GaspardTracker Trapezoid
+%GaspardTracker Trapezoid
  R= -90 mm
  THETA= 60 deg
  PHI= 315 deg

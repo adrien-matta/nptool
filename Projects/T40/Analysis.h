@@ -102,17 +102,31 @@ class Analysis: public NPL::VAnalysis{
   //FPD
 	static const Int_t kNumAw = 4; // number of wires
   double Delta_E      ;
-  double Micro_E_row1 ;   
-  double Micro_E_col4 ; 
-  double Micro_E      ;
-	double Micro_E_row1_2;
-	double Micro_E_row3_6;
+  double Micro1_E_row1 ;   
+  double Micro1_E_col4 ; 
+  double Micro1_E_row1_2;
+  double Micro2_E      ;
+	double Micro2_E_row1_2;
   double Plast_E      ;
 	double Aw_X[kNumAw] ;
 	double Aw_Z[kNumAw] ;
 	double Aw_Theta1_2  ; // Theta calculated from wire 1 & wire 2
 	double Aw_ThetaFit  ; // Theta calculated from FITTING all wires
 	double Aw_ThetaFit_R2; // Goodness of fit value of theta from fitting
+  //by Shuya 170516
+  double Micro1_E_col1 ; 
+  double Micro1_E_col2 ; 
+  double Micro1_E_col3 ; 
+  double Micro1_E_col5 ; 
+  double Micro1_E_col6 ; 
+  double Micro1_E_col7 ; 
+  double Micro2_E_col1 ; 
+  double Micro2_E_col2 ; 
+  double Micro2_E_col3 ; 
+  double Micro2_E_col4 ; 
+  double Micro2_E_col5 ; 
+  double Micro2_E_col6 ; 
+  double Micro2_E_col7 ; 
 	
   //TACS
   double TacSiGeOR ;
@@ -124,5 +138,10 @@ class Analysis: public NPL::VAnalysis{
   
 	// Other
 	int RunNumber;
+	// by Shuya 170524
+	Long_t 	EntryNumber;
+	Long_t	entry;
+	string	currentfilename;
+
 };
 #endif

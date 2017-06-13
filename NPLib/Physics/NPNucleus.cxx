@@ -259,60 +259,57 @@ void Nucleus::GetNucleusName() {
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::EnergyToBrho()
-{
-  fBrho = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass()) * 1e6 * e_SI / (c_light*1e6) / (GetZ() * e_SI);
+void Nucleus::EnergyToBrho(double Q){
+  if(Q==-1000)
+     Q=GetZ();
+
+  fBrho = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass()) * 1e6 * e_SI / (c_light*1e6) / (Q * e_SI);
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::EnergyToTof() // second/meter
-{
+void Nucleus::EnergyToTof(){
   fTimeOfFlight = 1/sqrt(1-(Mass()*Mass())/(fKineticEnergy+Mass())/(fKineticEnergy+Mass()))/(c_light*1e6);
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::TofToEnergy() 
-{
+void Nucleus::TofToEnergy() {
   double Energy =  sqrt( Mass()*Mass()/(1-pow((1/((c_light*1e6)*fTimeOfFlight)),2)) );
   fKineticEnergy = Energy - Mass();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::BrhoToEnergy()
-{
-  fKineticEnergy =  sqrt( pow((fBrho*(c_light*1e6)*GetZ()*e_SI)/(1e6*e_SI),2) + pow(Mass(),2) ) - Mass();
+void Nucleus::BrhoToEnergy(double Q ){
+ if(Q==-1000)
+    Q=GetZ();
+
+  fKineticEnergy =  sqrt( pow((fBrho*(c_light*1e6)*Q*e_SI)/(1e6*e_SI),2) + pow(Mass(),2) ) - Mass();
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::EnergyToBeta()
-{
+void Nucleus::EnergyToBeta(){
   fBeta = sqrt(pow(fKineticEnergy,2) + 2*fKineticEnergy*Mass())/(fKineticEnergy + Mass());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::BetaToEnergy()
-{
+void Nucleus::BetaToEnergy(){
   fKineticEnergy = Mass()/sqrt(1-pow(fBeta,2)) - Mass();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::BetaToGamma()
-{
+void Nucleus::BetaToGamma(){
   fGamma = 1/sqrt(1-pow(fBeta,2));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-void Nucleus::BetaToVelocity() // in cm/ns
-{
+void Nucleus::BetaToVelocity(){
   fVelocity = (c_light*1e6)*fBeta*1e-7;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-double Nucleus::DopplerCorrection(double EnergyLabGamma, double ThetaLabGamma)
-{
+double Nucleus::DopplerCorrection(double EnergyLabGamma, double ThetaLabGamma){
   double EnergyGammaCorrected = EnergyLabGamma*(1-fBeta*cos(ThetaLabGamma))/( sqrt(1-pow(fBeta,2)) );
 
   return EnergyGammaCorrected;
@@ -320,8 +317,7 @@ double Nucleus::DopplerCorrection(double EnergyLabGamma, double ThetaLabGamma)
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double Nucleus::GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost)
-{
+double Nucleus::GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost){
     SetKineticEnergy(EnergyLab);
     double EnergyCM;
     double ImpulsionLab;
@@ -349,8 +345,7 @@ double Nucleus::GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, do
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost)
-{
+double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost){
     SetKineticEnergy(EnergyLab);
     double EnergyCM;
     double ThetaCM;

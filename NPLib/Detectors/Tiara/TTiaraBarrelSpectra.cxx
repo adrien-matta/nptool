@@ -171,14 +171,14 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     name = "INNER_BARREL_US_HIT_RAW";
     family = BaseFamily+"HIT";
 
-    GetHisto(family,name)
-      ->Fill((RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontUpstreamEStripNbr(i));
 
     family = BaseFamily+"E";
     name = "INNER_BARREL_US_E_RAW";
-    GetHisto(family,name)
-      ->Fill((RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetFrontUpstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontUpstreamEStripNbr(i),RawData->GetFrontUpstreamEEnergy(i));
   }
   // INNER_BARREL_DS_HIT_RAW
@@ -186,14 +186,14 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     name = "INNER_BARREL_DS_HIT_RAW";
     family = BaseFamily+"HIT";
 
-    GetHisto(family,name)
-      ->Fill((RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontDownstreamEStripNbr(i));
 
     name = "INNER_BARREL_DS_E_RAW";
     family = BaseFamily+"E";
-    GetHisto(family,name)
-      ->Fill((RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetFrontDownstreamEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetFrontDownstreamEStripNbr(i),RawData->GetFrontDownstreamEEnergy(i));
   }
 
@@ -202,13 +202,13 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     name = "INNER_BARREL_BACK_HIT_RAW";
     family = BaseFamily+"HIT";
 
-    GetHisto(family,name)
-      ->Fill((RawData->GetBackEDetectorNbr(i)-1));
+    FillSpectra(family,name
+      ,(RawData->GetBackEDetectorNbr(i)-1));
 
     name = "INNER_BARREL_BACK_E_RAW";
     family = BaseFamily+"E";
-    GetHisto(family,name)
-      ->Fill((RawData->GetBackEDetectorNbr(i)-1), RawData->GetBackEEnergy(i));
+    FillSpectra(family,name
+      ,(RawData->GetBackEDetectorNbr(i)-1), RawData->GetBackEEnergy(i));
   }
 
   // OUTER_BARREL_STRIP_HIT_RAW
@@ -216,14 +216,14 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
     name = "OUTER_BARREL_STRIP_HIT_RAW";
     family = BaseFamily+"HIT";
 
-    GetHisto(family,name)
-      ->Fill((RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetOuterEStripNbr(i));
     
     family = BaseFamily+"E";
     name = "OUTER_BARREL_STRIP_E_RAW";
-    GetHisto(family,name)
-      ->Fill((RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
+    FillSpectra(family,name
+      ,(RawData->GetOuterEDetectorNbr(i)-1)*fInnerBarrelStrip
           +RawData->GetOuterEStripNbr(i),RawData->GetOuterEEnergy(i));
   }
   
@@ -238,8 +238,8 @@ void TTiaraBarrelSpectra::FillRawSpectra(TTiaraBarrelData* RawData){
       int DoStreamStrNbr = RawData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
        name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS"+NPL::itoa(UpStreamStrNbr)+"_RAW"; 
-       GetHisto(family,name)
-        ->Fill(RawData->GetFrontUpstreamEEnergy(i),RawData->GetFrontDownstreamEEnergy(j));
+       FillSpectra(family,name
+        ,RawData->GetFrontUpstreamEEnergy(i),RawData->GetFrontDownstreamEEnergy(j));
       } 
     }
   }
@@ -265,14 +265,14 @@ string BaseFamily = "TIARA/BARREL/CAL/";
       int DoStreamStrNbr = PreTreatedData->GetFrontDownstreamEStripNbr(j);
      if(UpStreamDetNbr==DoStreamDetNbr && UpStreamStrNbr==DoStreamStrNbr){
       name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS"+NPL::itoa(UpStreamStrNbr)+"_CAL"; 
-       GetHisto(family,name)
-         ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
+       FillSpectra(family,name
+         ,PreTreatedData->GetFrontUpstreamEEnergy(i),PreTreatedData->GetFrontDownstreamEEnergy(j));
      
         for (unsigned int k = 0; k < sizeB; k++) {
           if(UpStreamDetNbr == PreTreatedData->GetBackEDetectorNbr(k)){     
             name = "IB"+NPL::itoa(UpStreamDetNbr)+"_VS_BACK_CAL"; 
-            GetHisto(family,name)
-              ->Fill(PreTreatedData->GetFrontUpstreamEEnergy(i)
+            FillSpectra(family,name
+              ,PreTreatedData->GetFrontUpstreamEEnergy(i)
                       +PreTreatedData->GetFrontDownstreamEEnergy(j),
                       PreTreatedData->GetBackEEnergy(k));
           }
@@ -290,19 +290,19 @@ void TTiaraBarrelSpectra::FillPhysicsSpectra(TTiaraBarrelPhysics* Physics){
   // Inner Barrel
   //unsigned int size = Physics->Strip_E.size();
   for(unsigned int i  = 0 ; i < Physics->Strip_E.size() ; i++){
-    name ="IB"+NPL::itoa(Physics->DetectorNumber[i])+"_EPOS"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
-    GetHisto(family,name)
-      ->Fill(Physics->Strip_Pos[i],Physics->Strip_E[i]);
+    name ="IB"+NPL::itoa(Physics->Detector_N[i])+"_EPOS"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
+    FillSpectra(family,name
+      ,Physics->Strip_Pos[i],Physics->Strip_E[i]);
 
-    name = "IB"+NPL::itoa(Physics->DetectorNumber[i])+"_ETHETA"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
+    name = "IB"+NPL::itoa(Physics->Detector_N[i])+"_ETHETA"+NPL::itoa(Physics->Strip_N[i])+"_CAL";
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
 
-    GetHisto(family,name)
-      ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
+    FillSpectra(family,name
+      ,Theta*rad/deg,Physics->Strip_E[i]);
 
     name = "IB_ETHETA_CAL";
-    GetHisto(family,name)
-      ->Fill(Theta*rad/deg,Physics->Strip_E[i]);
+    FillSpectra(family,name
+      ,Theta*rad/deg,Physics->Strip_E[i]);
   }
 }
 

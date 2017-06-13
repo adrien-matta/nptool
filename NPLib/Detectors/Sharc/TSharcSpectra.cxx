@@ -71,16 +71,11 @@ void TSharcSpectra::InitRawSpectra(){
   static string name;
   for (unsigned int i = 0; i < fNumberOfDetector; i++) { // loop on number of detectors
     name = "SharcRaw"+NPL::itoa(i+1);
-    TCanvas* c1 = new TCanvas(name.c_str(),name.c_str());
-    c1->Divide(3,2);
-    int i1 = 0;  
     // STR_FRONT_E_RAW
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_E_RAW";
     AddHisto2D(name, name, fStripFront, 1, fStripFront+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_FRONT_E")->Draw("colz");
 
     // STR_BACK_E_RAW
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_E_RAW";
     AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_BACK_E")->Draw("colz");
 
@@ -93,29 +88,24 @@ void TSharcSpectra::InitRawSpectra(){
     AddHisto2D(name, name, fStripBack, 1, fStripBack+1, 5000, 0, 1.5e6, "SHARC/RAW/STR_BACK_EMAX");
 
     // PAD_E_RAW
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_E_RAW";
     AddHisto1D(name, name, 500, 0, 2500, "SHARC/RAW/PAD_E")->Draw("");
 
     // STR_FRONT_RAW_MULT
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_RAW_MULT";
     AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
     gPad->SetLogy();
 
     // STR_BACK_RAW_MULT
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_RAW_MULT";
     AddHisto1D(name, name, fStripFront, 1, fStripFront+1, "SHARC/RAW/MULT")->Draw("");
     gPad->SetLogy();
 
     // PAD_RAW_MULT
-    c1->cd(++i1);
     name = "SHARC"+NPL::itoa(i+1)+"_PAD_RAW_MULT";
     AddHisto1D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/RAW/MULT")->Draw("");
     gPad->SetLogy();
 
-    AddCanvas(c1);  
   } // end loop on number of detectors
 }
 
@@ -196,14 +186,14 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
       DFMAX = RawData->GetFront_DetectorNbr(i);
     }
     
-    GetHisto(index)
-      -> Fill(RawData->GetFront_StripNbr(i), 
+    FillSpectra(index
+      ,RawData->GetFront_StripNbr(i), 
           RawData->GetFront_Energy(i));
   }
  
   if(DFMAX!=0){
     index = "SHARC/RAW/STR_FRONT_EMAX/SHARC"+NPL::itoa(DFMAX)+"_STR_FRONT_EMAX_RAW";
-    GetHisto(index)-> Fill(SFMAX, EFMAX);
+    FillSpectra(index,SFMAX, EFMAX);
   }
  
   // STR_BACK_E
@@ -220,14 +210,14 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
       DBMAX = RawData->GetBack_DetectorNbr(i);
     }
    
-    GetHisto(index)
-      -> Fill(RawData->GetBack_StripNbr(i),
+    FillSpectra(index
+      ,RawData->GetBack_StripNbr(i),
           RawData->GetBack_Energy(i));
   }
  
   if(DBMAX!=0){
     index = "SHARC/RAW/STR_BACK_EMAX/SHARC"+NPL::itoa(DBMAX)+"_STR_BACK_EMAX_RAW";
-    GetHisto(index)-> Fill(SBMAX, EBMAX);
+    FillSpectra(index,SBMAX, EBMAX);
   }
 
   // PAD_E
@@ -235,8 +225,8 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
   for (unsigned int i = 0; i < mysize; i++) {
     index = "SHARC/RAW/PAD_E/SHARC"+NPL::itoa(RawData->GetPAD_DetectorNbr(i))+"_PAD_E_RAW";
 
-    GetHisto(index)
-      -> Fill(RawData->GetPAD_Energy(i));
+    FillSpectra(index
+      ,RawData->GetPAD_Energy(i));
   }
 
   // STR_FRONT MULT
@@ -250,8 +240,8 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
 
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
     index = "SHARC/RAW/MULT/SHARC"+NPL::itoa(i+1)+"_STR_FRONT_RAW_MULT";
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    FillSpectra(index
+      ,myMULT[i]);
   }
 
   // STR_BACK MULT
@@ -266,8 +256,8 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
     index= "SHARC/RAW/MULT/SHARC"+NPL::itoa(i+1)+"_STR_BACK_RAW_MULT";
     
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    FillSpectra(index
+      ,myMULT[i]);
   }
 
   // PAD MULT
@@ -280,8 +270,8 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
 
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
   index="SHARC/RAW/MULT/SHARC"+NPL::itoa(i+1)+"_PAD_RAW_MULT";
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    FillSpectra(index
+      ,myMULT[i]);
   }
 
 }
@@ -289,7 +279,7 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   static string index;
-
+  static string name;
   // Front-Back
   unsigned int mysizeF = PreTreatedData->GetMultiplicityFront();
   unsigned int mysizeB = PreTreatedData->GetMultiplicityBack();
@@ -297,10 +287,11 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   for (unsigned int i = 0; i < mysizeF; i++) {
     for (unsigned int j = 0; j < mysizeB; j++) {
       if(PreTreatedData->GetFront_DetectorNbr(i)==PreTreatedData->GetBack_DetectorNbr(j)){
-        index="SHARC/CAL/FB/SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_FB_COR";
+        index="SHARC/CAL/FB/";
+        name="SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_FB_COR";
 
-      GetHisto(index)
-        -> Fill(PreTreatedData->GetFront_Energy(i),
+      FillSpectra(index, name
+        ,PreTreatedData->GetFront_Energy(i),
                 PreTreatedData->GetBack_Energy(j) );
       }
     }
@@ -309,28 +300,31 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   // STR_FRONT_E
   unsigned int mysize = PreTreatedData->GetMultiplicityFront();
   for (unsigned int i = 0; i < mysize; i++) {
-    index = "SHARC/CAL/STR_FRONT_E/SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_STR_FRONT_E_CAL";
+    index = "SHARC/CAL/STR_FRONT_E";
+    name="SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_STR_FRONT_E_CAL";
 
-    GetHisto(index)
-      -> Fill(PreTreatedData->GetFront_StripNbr(i), 
+    FillSpectra(index,name
+      ,PreTreatedData->GetFront_StripNbr(i), 
           PreTreatedData->GetFront_Energy(i));
   }
   // STR_BACK_E
   mysize = PreTreatedData->GetMultiplicityBack();
   for (unsigned int i = 0; i < mysize; i++) {
-   index = "SHARC/CAL/STR_BACK_E/SHARC"+NPL::itoa( PreTreatedData->GetBack_DetectorNbr(i))+"_STR_BACK_E_CAL";
+   index = "SHARC/CAL/STR_BACK_E";
+   string name = "SHARC"+NPL::itoa( PreTreatedData->GetBack_DetectorNbr(i))+"_STR_BACK_E_CAL";
 
-    GetHisto(index)
-      -> Fill(PreTreatedData->GetBack_StripNbr(i), 
+    FillSpectra(index,name
+      ,PreTreatedData->GetBack_StripNbr(i), 
           PreTreatedData->GetBack_Energy(i));
   }
   // PAD_E
   mysize = PreTreatedData->GetMultiplicityPAD();
   for (unsigned int i = 0; i < mysize ; i++) {
-    index= "SHARC/CAL/PAD_E/SHARC"+NPL::itoa(PreTreatedData->GetPAD_DetectorNbr(i))+"_PAD_E_CAL";
+    index= "SHARC/CAL/PAD_E";
+    name="SHARC"+NPL::itoa(PreTreatedData->GetPAD_DetectorNbr(i))+"_PAD_E_CAL";
 
-    GetHisto(index)
-      -> Fill(PreTreatedData->GetPAD_Energy(i));
+    FillSpectra(index,name
+      ,PreTreatedData->GetPAD_Energy(i));
   }
 
   // STR_FRONT MULT
@@ -344,9 +338,9 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   }
 
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
-    index= "SHARC/CAL/MULT/SHARC"+NPL::itoa(i+1)+"_STR_FRONT_CAL_MULT";
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    index= "SHARC/CAL/MULT";
+    name= "SHARC"+NPL::itoa(i+1)+"_STR_FRONT_CAL_MULT";
+    FillSpectra(index,name,myMULT[i]);
   }
 
   // STR_BACK MULT
@@ -359,9 +353,10 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   }
 
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
-    index= "SHARC/CAL/MULT/SHARC"+NPL::itoa(i+1)+"_STR_BACK_CAL_MULT";
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    index= "SHARC/CAL/MULT";
+    name = "SHARC"+NPL::itoa(i+1)+"_STR_BACK_CAL_MULT";
+    FillSpectra(index,name
+      ,myMULT[i]);
   }
 
   // PAD MULT
@@ -374,9 +369,10 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   }
 
   for( unsigned int i = 0; i < fNumberOfDetector; i++){
-    index = "SHARC/CAL/MULT/SHARC"+NPL::itoa(i+1)+"_PAD_CAL_MULT";
-    GetHisto(index)
-      -> Fill(myMULT[i]);
+    index = "SHARC/CAL/MULT/";
+    name="SHARC"+NPL::itoa(i+1)+"_PAD_CAL_MULT";
+    FillSpectra(index,name
+      ,myMULT[i]);
   }
 
   //E-PAD ID
@@ -386,10 +382,12 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
     for (unsigned int j = 0; j < mysizePAD; j++) {
 
       if(PreTreatedData->GetFront_DetectorNbr(i) == PreTreatedData->GetPAD_DetectorNbr(j)){ 
-        index = "SHARC/CAL/ID/SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_PAD_CAL_ID";
+        index = "SHARC/CAL/ID";
+        
+        name = "SHARC"+NPL::itoa(PreTreatedData->GetFront_DetectorNbr(i))+"_PAD_CAL_ID";
 
-        GetHisto(index)
-          -> Fill(PreTreatedData->GetPAD_Energy(j), 
+        FillSpectra(index,name
+          ,PreTreatedData->GetPAD_Energy(j), 
               PreTreatedData->GetFront_Energy(i));
       }
     }
@@ -400,8 +398,8 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::FillPhysicsSpectra(TSharcPhysics* Physics){
-  static string index;
-
+  static string index="SHARC/PHY";
+  static string name;
   // Kine plot
   unsigned int mysize = Physics->Strip_E.size();
   for(unsigned int i = 0 ; i < mysize ; i++){
@@ -410,15 +408,15 @@ void TSharcSpectra::FillPhysicsSpectra(TSharcPhysics* Physics){
     double Etot=Physics->Strip_E[i];
 
     if(Physics->PAD_E[i]>0){
-      index = "SHARC/PHY/SHARC_PAD_E_E";
+      name = "SHARC_PAD_E_E"; 
       Etot += Physics->PAD_E[i];
-      GetHisto(index)->Fill(Physics->PAD_E[i],Physics->Strip_E[i]);
-      index = "SHARC/PHY/SHARC"+NPL::itoa(Physics->DetectorNumber[i])+"_PAD_E_E";
-      GetHisto(index)->Fill(Physics->PAD_E[i],Physics->Strip_E[i]);
+      FillSpectra(index,name,Physics->PAD_E[i],Physics->Strip_E[i]);
+      name = "SHARC"+NPL::itoa(Physics->DetectorNumber[i])+"_PAD_E_E";
+      FillSpectra(index,name,Physics->PAD_E[i],Physics->Strip_E[i]);
 
     }
-    index = "SHARC/PHY/SHARC_THETA_E";
-    GetHisto(index)-> Fill(Theta,Etot);
+    name = "SHARC_THETA_E";
+    FillSpectra(index,name,Theta,Etot);
   }
 }
 

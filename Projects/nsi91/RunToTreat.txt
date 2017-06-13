@@ -1,0 +1,5 @@
+TTreeName
+  EGTree
+RootFileName
+  /projet/astronuc/data/p31he3t/2017/midas/converted/R167_0.root
+

@@ -71,6 +71,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> DeltaEnergy;
   vector<double> DeltaTime;//!
   //Micromega
+  vector<int>    MicroDetNumber;
   vector<int>    MicroRowNumber;
   vector<int>    MicroColNumber;
 	vector<int>    MicroTimeRowNumber;
@@ -114,6 +115,9 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     // same as BuildPhysicalEvent() method but with a simpler
     // treatment
     void BuildSimplePhysicalEvent();
+
+//to calculate particle angles from Awire positions. By Shuya 170417
+    double calculate_fit_slope(int len,double* Aw_X, double* Aw_Z, double& R2);
 
     // same as above but for online analysis
     void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
@@ -184,8 +188,10 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     TFPDTamuData* GetPreTreatedData() const {return m_PreTreatedData;}
     
     // Micromega specific used in analysis
-    double GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol) ; 
-    double GetMicroRowGeomEnergy(int lrow, int hrow);
+    double GetMicroGroupEnergy(int det, int lrow, int hrow, int lcol, int hcol) ; 
+//by Shuya 170516
+    //double GetMicroRowGeomEnergy(int det, int lrow, int hrow);
+    double GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col);	//"col" gives you an choice if you sum up all of signals in a row (col==0), otherwise just for one column.
   
   // parameters used in the analysis
   private:
@@ -226,7 +232,6 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   // spectra getter
   public:
     map<string, TH1*>   GetSpectra(); 
-    vector<TCanvas*>    GetCanvas();
 
   // Static constructor to be passed to the Detector Factory
   public:

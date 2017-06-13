@@ -70,10 +70,10 @@ namespace NPL {
     TLorentzVector fEnergyImpulsion;
     
   public:
-    void  EnergyToBrho();
+    void  EnergyToBrho(double Q=-1000);
     void  EnergyToTof();
     void	BetaToVelocity();
-    void  BrhoToEnergy();
+    void  BrhoToEnergy(double Q=-1000);
     void  BrhoToTof()    {BrhoToEnergy(); EnergyToTof();}
     void	TofToEnergy();
     void	TofToBrho()    {TofToEnergy(); EnergyToBrho();}

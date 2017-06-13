@@ -36,14 +36,6 @@ using namespace SSSD_LOCAL;
 //  ROOT
 #include "TChain.h"
 
-//  tranform an integer to a string
-string itoa(int value)
-{
-  char buffer [33];
-  sprintf(buffer,"%d",value);
-  return buffer;
-}
-
 ClassImp(TSSSDPhysics)
   ///////////////////////////////////////////////////////////////////////////
   TSSSDPhysics::TSSSDPhysics(){    
@@ -278,17 +270,18 @@ void TSSSDPhysics::ReadAnalysisConfig(){
 
 
 ///////////////////////////////////////////////////////////////////////////
-double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i )
-{
-  return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + NPL::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPL::itoa( EventData->GetEnergyStripNbr(i) ) +"_E",  
-      EventData->GetEnergy(i) );
+double SSSD_LOCAL::fSi_E( const TSSSDData* EventData , const int i ){
+
+  static string str;
+  str = "SSSD/Detector" + NPL::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPL::itoa( EventData->GetEnergyStripNbr(i) ) +"_E";
+  return CalibrationManager::getInstance()->ApplyCalibration( str, EventData->GetEnergy(i) );
 }
 
 
-double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i )
-{
-  return CalibrationManager::getInstance()->ApplyCalibration(  "SSSD/Detector" + NPL::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPL::itoa( EventData->GetEnergyStripNbr(i) ) +"_T",  
-      EventData->GetTime(i) );
+double SSSD_LOCAL::fSi_T( const TSSSDData* EventData , const int i ){
+  static string str;
+  str = "SSSD/Detector" + NPL::itoa( EventData->GetEnergyDetectorNbr(i) ) + "_Strip" + NPL::itoa( EventData->GetEnergyStripNbr(i) ) +"_T";
+  return CalibrationManager::getInstance()->ApplyCalibration( str, EventData->GetTime(i) );
 }  
 
 

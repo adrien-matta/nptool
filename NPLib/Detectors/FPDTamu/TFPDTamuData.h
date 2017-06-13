@@ -19,7 +19,7 @@
  *  The full setup consists from upstream to downstream:                     *
  *  - 2 x Delta E ionisation chamber (might not be used all)                 *
  *  - 4 x Resistive Avalanche wires                                          *
- *  - 28 x pad (MicroMega type ionasation chaamber)                          *
+ *  - 2 x (28 x pad = MicroMega type ionasation chamber)                     *
  *  - 1 Plastic scintillator read by 2 PMTs (Left and right                  *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -59,10 +59,12 @@ class TFPDTamuData : public TObject {
     
 	// MicroMega Plate
     // Energy
+    vector<UShort_t>   fFPDTamu_Micro_E_DetNbr; // Det >=1 
     vector<UShort_t>   fFPDTamu_Micro_E_RowNbr; // Row 0 upstream, Row 3 downstream
     vector<UShort_t>   fFPDTamu_Micro_E_ColNbr; // Col 0 Left, Col 6 Right
     vector<Double_t>   fFPDTamu_Micro_Energy;
     // Time
+    vector<UShort_t>   fFPDTamu_Micro_T_DetNbr; 
     vector<UShort_t>   fFPDTamu_Micro_T_RowNbr; 
     vector<UShort_t>   fFPDTamu_Micro_T_ColNbr; 
     vector<Double_t>   fFPDTamu_Micro_Time;
@@ -147,25 +149,31 @@ class TFPDTamuData : public TObject {
 
     // MicroMega Plate
     // Energy
+    inline void Set_Micro_E_DetNbr(const UShort_t& DetNbr)
+      {fFPDTamu_Micro_E_DetNbr.push_back(DetNbr);} //!
     inline void Set_Micro_E_RowNbr(const UShort_t& RowNbr)
       {fFPDTamu_Micro_E_RowNbr.push_back(RowNbr);} //!
     inline void Set_Micro_E_ColNbr(const UShort_t& ColNbr)
       {fFPDTamu_Micro_E_ColNbr.push_back(ColNbr);} //!
     inline void Set_Micro_Energy(const Double_t& Energy)
       {fFPDTamu_Micro_Energy.push_back(Energy);}//!
-    inline void Set_Micro_E(const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Energy) {
+    inline void Set_Micro_E(const UShort_t& DetNbr, const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Energy) {
+      Set_Micro_E_DetNbr(DetNbr);
       Set_Micro_E_RowNbr(RowNbr);
       Set_Micro_E_ColNbr(ColNbr);
       Set_Micro_Energy(Energy);
     };//!
     // Time
+    inline void Set_Micro_T_DetNbr(const UShort_t& DetNbr)
+      {fFPDTamu_Micro_T_DetNbr.push_back(DetNbr);} //!
     inline void Set_Micro_T_RowNbr(const UShort_t& RowNbr)
       {fFPDTamu_Micro_T_RowNbr.push_back(RowNbr);} //!
     inline void Set_Micro_T_ColNbr(const UShort_t& ColNbr)
       {fFPDTamu_Micro_T_ColNbr.push_back(ColNbr);} //!
     inline void Set_Micro_Time(const Double_t& Time)
       {fFPDTamu_Micro_Time.push_back(Time);}//!
-    inline void Set_Micro_T(const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Time) {
+    inline void Set_Micro_T(const UShort_t& DetNbr, const UShort_t& RowNbr, const UShort_t& ColNbr, const Double_t& Time) {
+      Set_Micro_T_DetNbr(DetNbr);
       Set_Micro_T_RowNbr(RowNbr);
       Set_Micro_T_ColNbr(ColNbr);
       Set_Micro_Time(Time);
@@ -232,6 +240,8 @@ class TFPDTamuData : public TObject {
 	// Energy
     inline UShort_t Get_Micro_Energy_Mult() const
       {return fFPDTamu_Micro_E_RowNbr.size();}
+    inline UShort_t Get_Micro_E_DetNbr(const unsigned int &i) const
+      {return fFPDTamu_Micro_E_DetNbr[i];} //!
     inline UShort_t Get_Micro_E_RowNbr(const unsigned int &i) const
       {return fFPDTamu_Micro_E_RowNbr[i];} //!
     inline UShort_t Get_Micro_E_ColNbr(const unsigned int &i) const
@@ -241,6 +251,8 @@ class TFPDTamuData : public TObject {
 	// Time
     inline UShort_t Get_Micro_Time_Mult() const
       {return fFPDTamu_Micro_T_RowNbr.size();}
+    inline UShort_t Get_Micro_T_DetNbr(const unsigned int &i) const
+      {return fFPDTamu_Micro_T_DetNbr[i];} //!
     inline UShort_t Get_Micro_T_RowNbr(const unsigned int &i) const
       {return fFPDTamu_Micro_T_RowNbr[i];} //!
     inline UShort_t Get_Micro_T_ColNbr(const unsigned int &i) const

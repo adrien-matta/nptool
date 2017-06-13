@@ -228,7 +228,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
                 density = 0.93*g/cm3;
             G4Material* material = new G4Material("NPS_"+Name, density,2);
             material->AddElement(GetElementFromLibrary("C"),1);
-            material->AddElement(GetElementFromLibrary("D"),2);
+            material->AddElement(GetElementFromLibrary("H"),2);
             m_Material[Name]=material;
             return material;
         }

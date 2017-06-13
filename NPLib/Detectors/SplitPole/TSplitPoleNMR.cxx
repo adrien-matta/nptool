@@ -86,6 +86,25 @@ TSplitPoleNMR::TSplitPoleNMR(const char* fileName, Double_t delay)
 
 
 
+TSplitPoleNMR::TSplitPoleNMR(const char* fileName, Double_t delay, bool largefield)
+   : fOpenFileTime(0),
+     fDelay(delay),
+     fFileName(fileName),
+     fRmnRelativeTime(new TGraph()),
+     fRmn(new TGraph()),
+     fIsRelativeTime(0),
+     fIsLargeField(largefield),
+     fMean(-1),
+     fMin(10),
+     fMax(-1),
+     fTMin(0),
+     fTMax(0)
+{
+   ReadRmnFile();
+}
+
+
+
 TSplitPoleNMR::~TSplitPoleNMR()
 {
   if (fRmnRelativeTime) delete fRmnRelativeTime;
