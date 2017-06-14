@@ -592,10 +592,10 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 		// Energy = RandGauss::shoot(Info[0], FWHM/2.334);
 
 		
-		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy);
-		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time);
-		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy);
-		m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, Time);
+		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
+		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
+		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
+		m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, Time/keV);
   }
 
   // clear map for next event
