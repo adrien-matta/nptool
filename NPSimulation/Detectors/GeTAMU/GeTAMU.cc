@@ -574,7 +574,7 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 
 		G4double* Info = *(HPGE_itr->second);
 
-		G4double Energy   =  Info[0];
+		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
 		G4double Time     =  Info[1];
 		G4int CloverNbr   = (int)Info[7];
 		G4int CrystalNbr  = (int)Info[8];
@@ -585,12 +585,6 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 		if(fabs(zpos) < 10)                         { SegmentNbr = 2; } // MIDDLE
 		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
 		else                                        { SegmentNbr = 3; } // LEFT
-		
-		
-		// These are just a guess at resolution, based on p. 430 in G.F. Knoll
-		// G4double FWHM = 0.00083*Energy + 0.0009;
-		// Energy = RandGauss::shoot(Info[0], FWHM/2.334);
-
 		
 		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
 		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
