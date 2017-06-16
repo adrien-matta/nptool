@@ -48,7 +48,7 @@ namespace GETAMU{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
   const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
-  const G4double EnergyThreshold = 0.4*MeV;
+  const G4double EnergyThreshold = 50.0*keV;
 }
 
 using namespace GETAMU ;
@@ -120,7 +120,7 @@ public:
   ///////////Event class to store Data////////////////
   ////////////////////////////////////////////////////
 private:
-  TGeTAMUData*    m_Event ;
+  TGeTAMUData*    m_GeTAMUData ;
   
   ////////////////////////////////////////////////////
   ///////////////// Scorer Related ///////////////////
@@ -135,8 +135,8 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate to the Silicon
-  //G4MultiFunctionalDetector*   m_GermaniumScorer ;
-  //G4MultiFunctionalDetector*   m_BGOScorer ;
+  G4MultiFunctionalDetector*   m_HPGeScorer ;
+
 private:
   //    Initialize material used in detector definition
   void InitializeMaterial();

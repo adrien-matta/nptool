@@ -54,9 +54,11 @@
 
 // NPS
 #include "GeTAMU.hh"
-//#include "GeTAMUScorers.hh"
+#include "NPSDetectorFactory.hh"
+#include "GeTAMUScorers.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPSHitsMap.hh"
 
 // NPL
 #include "NPOptionManager.h"
@@ -72,37 +74,37 @@ using namespace CLHEP;
 
 namespace {
 
-  // Ge crystal
-  // Cylindrical part
-  const G4double CrystalOuterRadius   = 30.0*mm; // outer radius for crystal
-  const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
-  const G4double CrystalLength        = 90.0*mm; // crystal length
-  const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
-  //const G4double CrystaHoleRadius 		= 0*cm;
-  //const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
+// Ge crystal
+// Cylindrical part
+const G4double CrystalOuterRadius   = 30.0*mm; // outer radius for crystal
+const G4double CrystalInnerRadius   =  5.0*mm; // inner radius for hole in crystal
+const G4double CrystalLength        = 90.0*mm; // crystal length
+const G4double CrystalHoleDepth     = 15.0*mm; // depth at which starts the hole
+//const G4double CrystaHoleRadius 		= 0*cm;
+//const G4double CrystalInterDistance =  0.6*mm; // Distance between two crystal
 
-  // Squared part
-  const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
+// Squared part
+const G4double CrystalWidth         = 56.5*mm;  	// Width of one crystal
 
-  // Exogam Stuff
-  const G4double CrystalEdgeOffset1  = 26.0*mm; // distance of the edge from the center of the crystal
-  const G4double CrystalEdgeOffset2  = 28.5*mm; // distance of the edge from the center of the crystal
+// Exogam Stuff
+const G4double CrystalEdgeOffset1  = 26.0*mm; // distance of the edge from the center of the crystal
+const G4double CrystalEdgeOffset2  = 28.5*mm; // distance of the edge from the center of the crystal
 
-  const G4double CapsuleWidth        = 1.5*mm;   // capsule width
-  const G4double CapsuleLength       = 110.*mm;   // capsule length
-  const G4double CapsuleEdgeDepth    = 3.3*cm;   // same as crystal !
-  const G4double CrystalToCapsule    = 7*mm;   // to be adjusted ..
+const G4double CapsuleWidth        = 1.5*mm;   // capsule width
+const G4double CapsuleLength       = 110.*mm;   // capsule length
+const G4double CapsuleEdgeDepth    = 3.3*cm;   // same as crystal !
+const G4double CrystalToCapsule    = 7*mm;   // to be adjusted ..
 
-  //const G4double BGOLength           = 120.0*mm;
-  //const G4double BGOWidth            = 25.0*mm;
+//const G4double BGOLength           = 120.0*mm;
+//const G4double BGOWidth            = 25.0*mm;
 
-  //const G4double CsILength           = 20.0*mm;
+//const G4double CsILength           = 20.0*mm;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // GeTAMU Specific Method
 GeTAMU::GeTAMU(){
   InitializeMaterial();
-  m_Event = new TGeTAMUData();
+  m_GeTAMUData = new TGeTAMUData();
 
   BlueVisAtt   = new G4VisAttributes(G4Colour(0, 0, 1)) ;
   GreenVisAtt  = new G4VisAttributes(G4Colour(0, 1, 0)) ;
@@ -115,7 +117,7 @@ GeTAMU::GeTAMU(){
 }
 
 GeTAMU::~GeTAMU(){
-  delete m_MaterialVacuum;
+//  delete m_MaterialVacuum;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -172,8 +174,8 @@ G4LogicalVolume* GeTAMU::ConstructCrystal(){
   BoxRotation2->rotate(22.5*deg,G4ThreeVector(0,1,0)); 
   G4SubtractionSolid* Crystal_Stage7= new G4SubtractionSolid("Crystal_Stage7",Crystal_Stage6,Crystal_Box1,BoxRotation2,G4ThreeVector(-20.54*mm-CrystalWidth*0.6,0,-45*mm));
 
-    G4LogicalVolume* logicCrystal =
-      new G4LogicalVolume(Crystal_Stage7,m_MaterialGe,"LogicCrystal", 0, 0, 0);
+	G4LogicalVolume* logicCrystal =
+		new G4LogicalVolume(Crystal_Stage7,m_MaterialGe,"LogicCrystal", 0, 0, 0);
 
   return  logicCrystal;
 }
@@ -185,44 +187,44 @@ G4LogicalVolume* GeTAMU::ConstructCapsule(){
   G4int nbslice = 7;
   const G4double widthface = 45.5*mm;
   G4double zSlice[7] = {  0.0*mm,
-    CapsuleWidth-0.1*mm,
-    CapsuleWidth,
-    CapsuleEdgeDepth,
-    CapsuleLength-CapsuleWidth,
-    CapsuleLength-CapsuleWidth-0.1*mm,
-    CapsuleLength  };
+													CapsuleWidth-0.1*mm,
+													CapsuleWidth,
+													CapsuleEdgeDepth,
+													CapsuleLength-CapsuleWidth,
+													CapsuleLength-CapsuleWidth-0.1*mm,
+													CapsuleLength  };
    
   G4double InnNullRad[7] = {0,0,0,0,0,0,0};
 
   G4double InnRad[7] = {  0.0*mm,
-    0.0*mm,
-    widthface-CapsuleWidth,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule - CapsuleWidth,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule - CapsuleWidth,
-    0.0*mm,
-    0.0*mm};
+													0.0*mm,
+													widthface-CapsuleWidth,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule - CapsuleWidth,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule - CapsuleWidth,
+													0.0*mm,
+													0.0*mm};
  
   G4double OutRad[7] = {  widthface-1.5*mm,
-    widthface,
-    widthface,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
-    CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule};
+													widthface,
+													widthface,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule,
+													CrystalEdgeOffset1 + CrystalEdgeOffset2 + CrystalToCapsule};
 
   // The whole volume of the Capsule, made of N2
   G4Polyhedra* caps = new G4Polyhedra(G4String("Capsule"), 45.*deg, 360.*deg, 4, nbslice, zSlice, InnNullRad, OutRad);
   G4LogicalVolume* LogicCapsule=
-  new G4LogicalVolume(caps,m_MaterialN2,"LogicCapsule", 0, 0, 0);
+		new G4LogicalVolume(caps,m_MaterialN2,"LogicCapsule", 0, 0, 0);
   LogicCapsule->SetVisAttributes(G4VisAttributes::Invisible);
 
   // The wall of the Capsule made of Al
   G4Polyhedra* capsWall = new G4Polyhedra(G4String("CapsuleWall"), 45.*deg, 360.*deg, 4, nbslice, zSlice, InnRad, OutRad);
   G4LogicalVolume* logicCapsuleWall =
-  new G4LogicalVolume(capsWall,m_MaterialAl,"LogicCapsuleWall", 0, 0, 0);
+		new G4LogicalVolume(capsWall,m_MaterialAl,"LogicCapsuleWall", 0, 0, 0);
 
   new G4PVPlacement(G4Transform3D(*(new G4RotationMatrix()), G4ThreeVector(0,0,0)),
-  logicCapsuleWall,"CapsuleWall",LogicCapsule,false,1);
+										logicCapsuleWall,"CapsuleWall",LogicCapsule,false,1);
   logicCapsuleWall->SetVisAttributes(TrGreyVisAtt);
 
   return LogicCapsule;
@@ -247,10 +249,10 @@ G4LogicalVolume* GeTAMU::ConstructDewar(){
   LogicN2->SetVisAttributes(GreenVisAtt);
   LogicN2CF->SetVisAttributes(GreenVisAtt);
   new G4PVPlacement(G4Transform3D(*(new G4RotationMatrix()), G4ThreeVector(0,0,0)),
-  LogicN2,"N2 Deware",LogicDewar,false,1);
+										LogicN2,"N2 Deware",LogicDewar,false,1);
  
   //new G4PVPlacement(G4Transform3D(*(new G4RotationMatrix()), G4ThreeVector(0,0,-90*mm)),
- // LogicN2CF,"N2 Deware",LogicDewar,false,1);
+	// LogicN2CF,"N2 Deware",LogicDewar,false,1);
 
   LogicDewar->SetVisAttributes(TrGreyVisAtt);
 
@@ -268,8 +270,7 @@ G4LogicalVolume* GeTAMU::ConstructBGO(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Return a clover in the configuration given by option (not use a the moment)
-void GeTAMU::ConstructClover(){
-
+void GeTAMU::ConstructClover(){	
   if(m_LogicClover==0){
     // Construct the clover itself
     m_LogicClover = ConstructCapsule();
@@ -282,25 +283,27 @@ void GeTAMU::ConstructClover(){
     G4RotationMatrix* CrystalRotation = new G4RotationMatrix(0,0,0);
     G4ThreeVector CrystalPositionB = G4ThreeVector(-CrystalOffset,+CrystalOffset,0.5*CrystalLength+7*mm);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPositionB),
-        logicCrystal,"LogicCrystalB",m_LogicClover,false,1);
+											logicCrystal,"LogicCrystalB",m_LogicClover,false,1);
     logicCrystal->SetVisAttributes(BlueVisAtt);
 
     CrystalRotation->rotate(-90*deg, G4ThreeVector(0,0,1));
     G4ThreeVector CrystalPositionG = G4ThreeVector(+CrystalOffset,+CrystalOffset,0.5*CrystalLength+7*mm);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPositionG),
-        logicCrystal,"LogicCrystalG",m_LogicClover,false,2);
+											logicCrystal,"LogicCrystalG",m_LogicClover,false,2);
 
     CrystalRotation->rotate(-90*deg, G4ThreeVector(0,0,1));
     G4ThreeVector CrystalPositionR = G4ThreeVector(+CrystalOffset,-CrystalOffset,0.5*CrystalLength+7*mm);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPositionR),
-        logicCrystal,"LogicCrystalR",m_LogicClover,false,3);
+											logicCrystal,"LogicCrystalR",m_LogicClover,false,3);
 
     CrystalRotation->rotate(-90*deg, G4ThreeVector(0,0,1));
     G4ThreeVector CrystalPositionW = G4ThreeVector(-CrystalOffset,-CrystalOffset,0.5*CrystalLength+7*mm);
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPositionW),
-        logicCrystal,"LogicCrystalW",m_LogicClover,false,4);
+											logicCrystal,"LogicCrystalW",m_LogicClover,false,4);
 
-  }
+		logicCrystal->SetSensitiveDetector(m_HPGeScorer);
+		// m_LogicClover->SetSensitiveDetector(m_HPGeScorer);
+	}
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -340,12 +343,12 @@ void GeTAMU::ConstructDetector(G4LogicalVolume* world){
     G4ThreeVector DetectorPosition = m_R[i]*W;
   
     new G4PVPlacement(G4Transform3D(*DetectorRotation, DetectorPosition),
-        m_LogicClover,"Clover",world,false,m_CloverId[i]);
+											m_LogicClover,"Clover",world,false,m_CloverId[i]);
   
     G4LogicalVolume* LogicDewar = ConstructDewar();
   
     new G4PVPlacement(G4Transform3D(*DetectorRotation, DetectorPosition+W*((90*mm+(145)*mm)+CapsuleLength*0.5+90*0.5*mm)),
-        LogicDewar,"Dewar",world,false,m_CloverId[i]);
+											LogicDewar,"Dewar",world,false,m_CloverId[i]);
 
 
   }
@@ -543,178 +546,74 @@ void GeTAMU::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   if(!pTree->FindBranch("GeTAMU")){
-   pTree->Branch("GeTAMU", "TGeTAMUData", &m_Event) ;
+		pTree->Branch("GeTAMU", "TGeTAMUData", &m_GeTAMUData) ;
   }  
-  pTree->SetBranchAddress("GeTAMU", &m_Event) ;    
+  pTree->SetBranchAddress("GeTAMU", &m_GeTAMUData) ;    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void GeTAMU::ReadSensitive(const G4Event* event){
-  event->GetHCofThisEvent(); // event should be used to remove compilation warning
-  /*m_Event->Clear();
+  m_GeTAMUData->Clear();
 
   ///////////
-  // BOX
-  NPS::HitsMap<G4double*>*     BOXHitMap;
-  std::map<G4int, G4double**>::iterator    BOX_itr;
+  // HPGE
+  NPS::HitsMap<G4double*>*     HPGEHitMap;
+  std::map<G4int, G4double**>::iterator    HPGE_itr;
 
-  G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("GeTAMU_BOXScorer/GeTAMUBOX");
-  BOXHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
+  G4int HPGECollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("GeTAMU_Scorer/GeTAMU");
+	if(HPGECollectionID == -1) {
+		G4cerr << "ERROR: No Collection found for HPGeScorer: Skipping processing of HPGe Hit" << G4endl;
+		return;
+	}
+  HPGEHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HPGECollectionID));
 
-  // Loop on the BOX map
-  for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
+  // Loop on the HPGE map
+  for (HPGE_itr = HPGEHitMap->GetMap()->begin() ; HPGE_itr != HPGEHitMap->GetMap()->end() ; HPGE_itr++){
 
-  G4double* Info = *(BOX_itr->second);
+		G4double* Info = *(HPGE_itr->second);
 
-  double Energy =  Info[0];
-  double Time  = Info[1];
-  int DetNbr =     (int) Info[2];
-  int StripFront = (int) Info[3];
-  int StripBack =  (int) Info[4];
+		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
+		G4double Time     =  Info[1];
+		G4int CloverNbr   = (int)Info[7];
+		G4int CrystalNbr  = (int)Info[8];
 
-  m_Event->SetFront_DetectorNbr(DetNbr);
-  m_Event->SetFront_StripNbr(StripFront);
-  m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-  m_Event->SetBack_DetectorNbr(DetNbr);
-  m_Event->SetBack_StripNbr(StripBack);
-  m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-
-  // Interraction Coordinates
-  ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-  ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-  ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-  ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-  ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-
+		// Figure out segment number
+		G4int SegmentNbr = 0;
+		G4double zpos = Info[4]; // mm
+		if(fabs(zpos) < 10)                         { SegmentNbr = 2; } // MIDDLE
+		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
+		else                                        { SegmentNbr = 3; } // LEFT
+		
+		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
+		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
+		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
+		m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, Time/keV);
   }
 
   // clear map for next event
-  BOXHitMap->clear();
-
-  ///////////
-  // PAD
-  NPS::HitsMap<G4double*>*     PADHitMap;
-  std::map<G4int, G4double**>::iterator    PAD_itr;
-
-  G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("GeTAMU_PADScorer/GeTAMUPAD");
-  PADHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
-
-  // Loop on the BOX map
-  for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
-
-  G4double* Info = *(PAD_itr->second);
-
-  double Energy =  Info[0];
-  double Time  = Info[1];
-  int DetNbr =     (int) Info[2];
-
-  m_Event->SetPAD_DetectorNbr(DetNbr);
-  m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-  }
-
-  // clear map for next event
-  PADHitMap->clear();
-
-  ///////////
-  // QQQ
-  NPS::HitsMap<G4double*>*     QQQHitMap;
-  std::map<G4int, G4double**>::iterator    QQQ_itr;
-
-  G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("GeTAMU_QQQScorer/GeTAMUQQQ");
-  QQQHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
-
-  // Loop on the BOX map
-  for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){
-
-    G4double* Info = *(QQQ_itr->second);
-
-    double Energy =  Info[0];
-    double Time  = Info[1];
-    int DetNbr =     (int) Info[2];
-    int StripFront = (int) Info[3];
-    int StripBack =  (int) Info[4];
-
-    m_Event->SetFront_DetectorNbr(DetNbr);
-    m_Event->SetFront_StripNbr(StripFront);
-    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-    m_Event->SetBack_DetectorNbr(DetNbr);
-    m_Event->SetBack_StripNbr(StripBack);
-    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-    // Interraction Coordinates
-    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-
-  }
-
-  // clear map for next event
-  QQQHitMap->clear();
-  */
+  HPGEHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GeTAMU::InitializeScorers(){
-  /*
-  //   Silicon Associate Scorer
-  m_BOXScorer = new G4MultiFunctionalDetector("GeTAMU_BOXScorer");
-  m_PADScorer = new G4MultiFunctionalDetector("GeTAMU_PADScorer");
-  m_QQQScorer = new G4MultiFunctionalDetector("GeTAMU_QQQScorer");
+	//Look for previous definition of the scorer (geometry reload)
+	//n.b. calls new G4MultiFunctionalDetector("GeTAMU_CoreScorer");
+  bool already_exist = false;
+  m_HPGeScorer = CheckScorer("GeTAMU_Scorer",already_exist);
 
-  G4VPrimitiveScorer* BOXScorer =
-  new  GeTAMU::PS_Silicon_Rectangle("GeTAMUBOX",
-  BOX_Wafer_Length,
-  BOX_Wafer_Width,
-  BOX_Wafer_Back_NumberOfStrip ,
-  BOX_Wafer_Front_NumberOfStrip,
-  EnergyThreshold);
-
-  G4VPrimitiveScorer* PADScorer =
-  new  GeTAMU::PS_Silicon_Rectangle("GeTAMUPAD",
-  PAD_Wafer_Length,
-  PAD_Wafer_Width,
-  1 ,
-  1,
-  EnergyThreshold);
-
-  G4VPrimitiveScorer* QQQScorer =
-  new  GeTAMU::PS_Silicon_Annular("GeTAMUQQQ",
-  QQQ_Wafer_Inner_Radius,
-  QQQ_Wafer_Outer_Radius,
-  QQQ_Wafer_Stopping_Phi-QQQ_Wafer_Starting_Phi,
-  QQQ_Wafer_NumberOf_RadialStrip,
-  QQQ_Wafer_NumberOf_AnnularStrip,
-  EnergyThreshold);
-
-
+	// if the scorer were created previously nothing else need to be made
+  if(already_exist) return;
+		
+  //   HPGe Associate Scorer
+  G4VPrimitiveScorer* HPGeScorer = new  GETAMUSCORERS::PS_GeTAMU("GeTAMU",0);
 
   //and register it to the multifunctionnal detector
-  m_BOXScorer->RegisterPrimitive(BOXScorer);
-  m_PADScorer->RegisterPrimitive(PADScorer);
-  m_QQQScorer->RegisterPrimitive(QQQScorer);
+  m_HPGeScorer->RegisterPrimitive(HPGeScorer);
 
-  //   Add All Scorer to the Global Scorer Manager
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_BOXScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_QQQScorer) ;*/
+	//   Add All Scorer to the Global Scorer Manager
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_HPGeScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -740,13 +639,13 @@ NPS::VDetector* GeTAMU::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy_nps_getamu{
-    public:
-      proxy_nps_getamu(){
-        NPS::DetectorFactory::getInstance()->AddToken("GeTAMU","GeTAMU");
-        NPS::DetectorFactory::getInstance()->AddDetector("GeTAMU",GeTAMU::Construct);
-      }
-  };
+class proxy_nps_getamu{
+public:
+	proxy_nps_getamu(){
+		NPS::DetectorFactory::getInstance()->AddToken("GeTAMU","GeTAMU");
+		NPS::DetectorFactory::getInstance()->AddDetector("GeTAMU",GeTAMU::Construct);
+	}
+};
 
-  proxy_nps_getamu p_nps_getamu;
+proxy_nps_getamu p_nps_getamu;
 }
