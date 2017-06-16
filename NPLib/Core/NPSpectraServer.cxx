@@ -138,7 +138,7 @@ void NPL::SpectraServer::FillSpectra(std::string name,double valx){
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::FillSpectra(std::string name,double valx,double valy){
   // Fill the local histo
-  ((TH1*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
+  ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
   
   std::map<TSocket*,NPL::DeltaSpectra >::iterator it;
   for(it = m_Delta.begin(); it!=m_Delta.end() ; it++){
@@ -149,3 +149,7 @@ void NPL::SpectraServer::FillSpectra(std::string name,double valx,double valy){
 void NPL::SpectraServer::AddSpectra(TH1* h){
   m_Spectra->Add(h);
 }
+////////////////////////////////////////////////////////////////////////////////
+//void NPL::SpectraServer::AddSpectra(TH2* h){
+//  m_Spectra->Add(h);
+//}
