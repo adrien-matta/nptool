@@ -295,9 +295,81 @@ void TExlSpectra::FillPhysicsSpectra(TExlPhysics* Physics){
   for (unsigned int i = 0 ; i < Physics->EXL_Energy.size(); i++){
     E += EXL_Energy[i];
     name = "EXL_CSI_2D_HITMAP";
-    double x = (Physics->CrystalNumber[i])%6;
-    double y = (Physics->CrystalNumber[i])/6;
-    FillSpectra(family,name,x,y);
+    switch (Physics->CrystalNumber[i]) {
+      case 1:
+        double x = 0;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+        break;
+      case 2:
+        double x = 1;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+      case 3:
+        double x = 4;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 4:
+        double x = 5;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 5:
+        double x = 1;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 6:
+        double x = 0;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 7:
+        double x = 4;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+      case 8:
+        double x = 5;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+      case 9:
+        double x = 2;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 10:
+        double x = 3;
+        double y = 0;
+        FillSpectra(family,name,x,y);
+      case 11:
+        double x = 0;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+      case 12:
+        double x = 1;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+      case 13:
+        double x = 2;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+      case 14:
+        double x = 3;
+        double y = 2;
+        FillSpectra(family,name,x,y);
+      case 15:
+        double x = 2;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+      case 16:
+        double x = 3;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+      case 17:
+        double x = 4;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+      case 18:
+        double x = 5;
+        double y = 1;
+        FillSpectra(family,name,x,y);
+    }
   }
 
   // AddBack
