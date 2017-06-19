@@ -19,7 +19,7 @@
 #include "/home/muvi/e748/nptool/NPLib/Detectors/MUST2/TMust2Data.h"
 #include "/home/muvi/e748/nptool/NPLib/include/RootInput.h"
 
-#define NBTELESCOPE	4
+#define NBTELESCOPE	8	
 #define	NBSTRIPS	128
 #define NBSILI     16
 
@@ -36,7 +36,7 @@ void ExtractMust2Histos(const char* fname = "run11")
    Chain->SetBranchAddress("MUST2",&rawMust2);
 
    // open the output ROOT file
-   TString outFileName = "/home/muvi/e748/nptool/Projects/e748/offline/";
+   TString outFileName = "./Histograms/";
    outFileName += fname;
    outFileName += "_RawMust2Histos.root";
    cout<< outFileName<< endl;
@@ -79,12 +79,14 @@ void ExtractMust2Histos(const char* fname = "run11")
       Chain->GetEntry(i);
       // get StripXE multiplicity
       Int_t multXE = rawMust2->GetMMStripXEMult();
+      //cout<< "multXE" << multXE<< endl;
       // loop on StripXE multiplicity and get information concerning the event
       // fill histograms
       for (Int_t j = 0; j < multXE; j++) {
          Int_t det    = rawMust2->GetMMStripXEDetectorNbr(j);
          Int_t stripX = rawMust2->GetMMStripXEStripNbr(j);
          Int_t energy = rawMust2->GetMMStripXEEnergy(j);
+	 //cout<<"FFFFFFFFF:"<< det << "\t" << stripX << "\t" << energy << endl;
          if ((det < NBTELESCOPE+1) && (stripX < NBSTRIPS+1)) {
             hStripXEnergy[det-1][stripX-1]->Fill(energy);
          }
@@ -110,22 +112,23 @@ void ExtractMust2Histos(const char* fname = "run11")
          }
       }
       // get SiLiE multiplicity
+      
       Int_t multSiLiE = rawMust2->GetMMSiLiEMult();
-      // loop on StripXE multiplicity and get information concerning the event
+     // loop on StripXE multiplicity and get information concerning the event
       // fill histograms
-      for (Int_t j = 0; j < multSiLiE; j++) {
-         Int_t det    = rawMust2->GetMMSiLiEDetectorNbr(j);
-         Int_t pad = rawMust2->GetMMSiLiEPadNbr(j);
-         Int_t energy = rawMust2->GetMMSiLiEEnergy(j);
-         if ((det < NBTELESCOPE+1) && (pad < NBSTRIPS+1)) {
-            hSiLiEnergy[det-1][pad-1]->Fill(energy);
-         }
-         else {
-            cout << "Error filling histograms: Must2_SiLi_E" << endl;
-            rawMust2->Dump();
-         }
+     for (Int_t j = 0; j < multSiLiE; j++) {
+        Int_t det    = rawMust2->GetMMSiLiEDetectorNbr(j);
+        Int_t pad = rawMust2->GetMMSiLiEPadNbr(j);
+        Int_t energy = rawMust2->GetMMSiLiEEnergy(j);
+        if ((det < NBTELESCOPE+1) && (pad < NBSTRIPS+1)) {
+          hSiLiEnergy[det-1][pad-1]->Fill(energy);
+       }
+        else {
+           cout << "Error filling histograms: Must2_SiLi_E" << endl;
+           rawMust2->Dump();
+        }
       }
-
+      
    }
 
    // write on disk output file and close it

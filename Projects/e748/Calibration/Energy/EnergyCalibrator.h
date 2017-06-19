@@ -37,14 +37,14 @@ EnergyLoss EL_Al("./EnergyLossTable/alpha_Al.G4table" , "G4Table", 100) ;
 EnergyLoss EL_Si("./EnergyLossTable/alpha_Si.G4table" , "G4Table", 100) ;
 // Information about the calibration condition (use Latex marks-up)
 
-const TString xy                  = "Y" ;
+const TString xy                  = "X" ;
 
-const TString Experiment          = "Test";
-const TString Run_Period          = "december 2013";
-const TString Operator            = "e628 e644 e657 teams";
+const TString Experiment          = "E748";
+const TString Run_Period          = "june 2017";
+const TString Operator            = "Freddy and the girls";
 const TString Source              = "3 alpha peaks $^{239}$Pu, $^{241}$Am, $^{244}$Cm";
 const TString Comment             = "Source at 0$^{\\circ}$ facing Telescope 1,2,3,4";
-const char* frun = "run_1007";
+const char* frun = "run11";
 
 //const TString Experiment          = "RIBF57";
 //const TString Run_Period          = "April 2010, Riken BigRIPS, Run 3";

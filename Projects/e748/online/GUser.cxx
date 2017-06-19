@@ -32,7 +32,7 @@ ClassImp (GUser);
 
 GUser::GUser (GDevice* DevIn, GDevice* DevOut):GAcq(DevIn,DevOut){
  NPOptionManager::getInstance()->Destroy();
- NPOptionManager* myOptionManager = NPOptionManager::getInstance("-D ../e748.detector -GH -C calibration.txt ");
+ NPOptionManager* myOptionManager = NPOptionManager::getInstance("-D ../e748.detector -GH -C ../Calibration.txt ");
 
   // Constructor/initialisator of Acquisition object
   //

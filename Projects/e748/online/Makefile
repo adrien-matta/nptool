@@ -1,15 +1,16 @@
  # This Makefile shows nicely how to compile and link applications
  CLASSNAME := GUser
  GUSERDIR := ./
- G2RCORE := $(GANIL2ROOT)Core/
- G2RLIB := $(GANIL2ROOT)lib/
+ G2RCORE := $(GANIL2ROOT)/Core/
+ G2RINC := $(GANIL2ROOT)/include/
+ G2RLIB := $(GANIL2ROOT)/lib/
  LIBDIR := $(GRUDIR)/lib/
  VIGRUDIR := $(GRUDIR)/vigru/
  GTDIR := $(GRUDIR)/GTape/
  GGRUDIR := $(GRUDIR)/GGRU/
  GSOAPDIR := $(GRUDIR)/gsoap/
  MFM_DIR := $(GRUDIR)/MFMlib/
- GRUFLAGS := -I$(GRUDIR)/include/ -I$(LIBDIR) -I$(VIGRUDIR) -I$(GTDIR) -I$(GGRUDIR) -I$(GSOAPDIR) -I$(MFM_DIR) -I$(G2RLIB) -I$(G2RCORE) -I$(NPTOOL)/NPLib/include/
+ GRUFLAGS := -I$(GRUDIR)/include/ -I$(LIBDIR) -I$(VIGRUDIR) -I$(GTDIR) -I$(GGRUDIR) -I$(GSOAPDIR) -I$(MFM_DIR) -I$(G2RINC) -I$(NPTOOL)/NPLib/include/
  INCLIST := General.h GAcq.h GDevice.h
  # Extensions des fichiers
  ObjSuf = o
