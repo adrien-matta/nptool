@@ -169,8 +169,8 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   RootInput::getInstance(runToReadfileName);
 
   // Now that the detector are all added, they can initialise their Branch to the Root I/O
-  InitializeRootInput();
-  InitializeRootOutput();
+  //InitializeRootInput();
+  //InitializeRootOutput();
 
   // If Requiered, they can also instiantiate their control histogramm
   if(NPOptionManager::getInstance()->GetGenerateHistoOption())
@@ -276,6 +276,10 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(string name){
     cout << endl;
     cout << "**********************************       Error       **********************************" << endl;
     cout << " No Detector " << name << " found in the Detector Manager" << endl;
+		cout << " Available Detectors: " << endl;
+		for(map<string,VDetector*>::iterator i = m_Detector.begin(); i != m_Detector.end(); ++i) {
+			cout << "\t" << i->first << endl;
+		}
     cout << "***************************************************************************************" << endl;
     cout << endl;
     exit(1);

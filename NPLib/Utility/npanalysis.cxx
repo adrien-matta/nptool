@@ -72,7 +72,8 @@ int main(int argc , char** argv){
   // Instantiate the detector using a file
   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
-
+  myDetector->InitializeRootInput();
+  myDetector->InitializeRootOutput();
   // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();

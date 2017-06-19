@@ -48,18 +48,18 @@ string itoa(int value)
 ClassImp(TExlPhysics)
 ///////////////////////////////////////////////////////////////////////////
 TExlPhysics::TExlPhysics()
-   {      
+   {
       NumberOfCrystal = 0;
       EventData = new TExlData ;
       EventPhysics = this ;
 // Raw Threshold
       m_E_RAW_Threshold = 0;
    }
-   
+
 ///////////////////////////////////////////////////////////////////////////
 TExlPhysics::~TExlPhysics()
    {}
-   
+
 ///////////////////////////////////////////////////////////////////////////
 void TExlPhysics::Clear()
    {
@@ -67,12 +67,12 @@ void TExlPhysics::Clear()
       EXL_Energy.clear() ;
       EXL_Time=-1000 ;
    }
-   
+
 ///////////////////////////////////////////////////////////////////////////
 void TExlPhysics::ReadConfiguration(NPL::InputParser parser) {
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("EXL");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
 
   vector<string> token= {"POS"};
   vector<TVector3> Center_CsI_Crystals;
@@ -102,25 +102,25 @@ void TExlPhysics::AddEXL(vector <TVector3> Center_CsI_Crystals)
 TVector3 TExlPhysics::GetPositionOfInteraction(int N)
    {
       TVector3 Position = TVector3 (CsIPosition.at(N).X(),CsIPosition.at(N).Y(),CsIPosition.at(N).Z()) ;
-      
-      return(Position) ;   
-   
+
+      return(Position) ;
+
    }
 
 ///////////////////////////////////////////////////////////////////////////
 void TExlPhysics::AddParameterToCalibrationManager()
    {
       CalibrationManager* Cal = CalibrationManager::getInstance();
-      
+
       for(unsigned int i = 0 ; i < NumberOfCrystal ; i++)
          {
             Cal->AddParameter("EXL", "_E_"+ NPL::itoa(i+1),"EXL_E_"+ NPL::itoa(i+1))   ;
             Cal->AddParameter("EXL", "_T_"+ NPL::itoa(i+1),"EXL_T_"+ NPL::itoa(i+1))   ;
          }
    }
-   
+
 ///////////////////////////////////////////////////////////////////////////
-void TExlPhysics::InitializeRootInputRaw() 
+void TExlPhysics::InitializeRootInputRaw()
    {
       TChain* inputChain = RootInput::getInstance()->GetChain()     ;
       inputChain->SetBranchStatus ( "Exl"       , true )        ;
@@ -155,7 +155,7 @@ void TExlPhysics::BuildSimplePhysicalEvent(){
 	if(EventData->GetMult()>0){
 		for(unsigned int i = 0 ; i < EventData->GetMult() ; i++){
 			if(EventData->GetEnergy(i)>m_E_RAW_Threshold){
-				CrystalNumber.push_back( EventData->GetExlNumber(i))   ;
+				CrystalNumber.push_back( EventData->GetCrystalNumber(i))   ;
 				EXL_Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("EXL/_E_" + NPL::itoa( EventData->GetExlNumber(i) ),EventData->GetEnergy(i) ) );
 			}
 		}
@@ -184,8 +184,8 @@ double TExlPhysics::DopplerCorrection(double E, double Theta, double beta)
   double E_corr = 0;
   double gamma = 1./sqrt(1-beta*beta);
 
-  E_corr = gamma*E*(1.-beta*cos(Theta*Pi/180.)); 
-  
+  E_corr = gamma*E*(1.-beta*cos(Theta*Pi/180.));
+
   return(E_corr);
 
 }
@@ -211,4 +211,3 @@ class proxy_exl{
 
 proxy_exl p;
 }
-
