@@ -47,15 +47,20 @@ class TExlData : public TObject {
    inline double   GetEnergy(const int& i)    const { return fExl_Energy[i] ;}
    inline double   GetTime(const int& i)      const { return fExl_Time[i] ;}
    inline int      GetExlNumber(const int& i) const { return fExl_Number[i] ;}
+
+   /////////////////////           SETTERS           ////////////////////////
+   inline void   SetEnergy(double E)    { fExl_Energy.push_back(E) ;}
+   inline void   SetTime(double T)      { fExl_Time.push_back(T) ;}
+   inline void   SetExlNumber(int N)    { fExl_Number.push_back(N) ;}
    
    //Mult
    inline double   GetMult()    const { return fExl_Energy.size() ;}
    
    /////////////////////           SETTERS           ////////////////////////
    inline void SetEandTime(const int& N,const double& E,const double& T){
-   fExl_Energy.push_back(E) ;
-   fExl_Time.push_back(T) ;
-   fExl_Number.push_back(N) ;
+	   SetEnergy(E);  
+	   SetTime(T);   
+	   SetExlNumber(N); 
    }
    
    ClassDef(TExlData,1)  // ExlData structure

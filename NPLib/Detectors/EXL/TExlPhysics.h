@@ -88,7 +88,7 @@ class TExlPhysics : public TObject, public NPL::VDetector
       void AddEXL(vector <TVector3> Center_CsI_Crystals);
 
       //Get Position Of Interaction
-      TVector3 GetPositionOfInteraction(int N);   
+      TVector3 GetPositionOfInteraction(int det, int cry);   
 
       // Give and external TExlData object to TExlPhysics. Needed for online analysis for example.
       void SetRawDataPointer(TExlData* rawDataPointer) {EventData = rawDataPointer;}
