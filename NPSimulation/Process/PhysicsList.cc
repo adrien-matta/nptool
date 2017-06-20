@@ -37,6 +37,8 @@
 #include "G4UnitsTable.hh"
 #include "G4ProcessManager.hh"
 #include "G4FastSimulationManagerProcess.hh"
+#include "G4RadioactiveDecay.hh"
+#include "G4NuclideTable.hh"
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
@@ -260,6 +262,19 @@ void PhysicsList::ConstructParticle(){
 void PhysicsList::ConstructProcess(){
     // Transportation
     AddTransportation();
+
+	//Radioactive decay
+	G4RadioactiveDecay* radioactiveDecay = new G4RadioactiveDecay();
+
+	radioactiveDecay->SetARM(false);               //Atomic Rearangement
+
+	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();  
+	ph->RegisterProcess(radioactiveDecay, G4GenericIon::GenericIon());
+
+	// mandatory for G4NuclideTable
+	//
+	G4NuclideTable::GetInstance()->SetThresholdOfHalfLife(0.1*picosecond);
+	G4NuclideTable::GetInstance()->SetLevelTolerance(1.0*eV);  
     
     // Electromagnetic physics
     emPhysicsList -> ConstructProcess();

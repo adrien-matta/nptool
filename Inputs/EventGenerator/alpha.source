@@ -4,13 +4,13 @@
 %      Energy are given in MeV , Position in mm      % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
- EnergyLow= 0.5 MeV
- EnergyHigh= 0.5 MeV
+ EnergyLow= 10. MeV
+ EnergyHigh= 10. MeV
  HalfOpenAngleMin= 0 deg
  HalfOpenAngleMax= 180 deg
  x0= 0 mm
  y0= 0 mm
- z0= 0 mm
+ z0= -50 mm
  Particle= alpha
  ExcitationEnergy= 0 MeV
 

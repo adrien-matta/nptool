@@ -99,6 +99,7 @@ Sage::Sage()
 	m_Event = new TSageData() ;
 	m_SageScorer = 0;
 	m_SiliconDetector = 0;
+
     fieldIsInitialized = false;
 	G4String fieldFileName = "SageEMField.table";//TODO make this a user set variable
 	fHVFieldStrength = 0.7;//TODO make this a user set variable
@@ -970,12 +971,11 @@ void Sage::ConstructEMField(G4String fieldFileName)
 
 	/*Choose the stepper here*/
 	pStepper = new G4CashKarpRKF45( pEquation, nvar );
-
-//	pStepper = new G4ClassicalRK4( pEquation, nvar );
-	pStepper = new G4SimpleHeum( pEquation, nvar );
-	pStepper = new G4SimpleRunge( pEquation, nvar );
-	pStepper = new G4ExplicitEuler( pEquation, nvar );
-	pStepper = new G4ImplicitEuler( pEquation, nvar );
+	//pStepper = new G4ClassicalRK4( pEquation, nvar );
+	//pStepper = new G4SimpleHeum( pEquation, nvar );
+	//pStepper = new G4SimpleRunge( pEquation, nvar );
+	//pStepper = new G4ExplicitEuler( pEquation, nvar );
+	//pStepper = new G4ImplicitEuler( pEquation, nvar );
 
 
 	G4double minStep  = 0.01*mm;

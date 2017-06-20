@@ -1,5 +1,5 @@
-#ifndef Sage_h
-#define Sage_h 1
+#ifndef Spede_h
+#define Spede_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Sage simulation                                     *
+ *  This class describe  Spede simulation                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -35,21 +35,21 @@ using namespace std;
 
 // NPTool header
 #include "NPSVDetector.hh"
-#include "TSageData.h"
+#include "TSpedeData.h"
 #include "NPInputParser.h"
 
 #include "G4ElectroMagneticField.hh"
 
-#include "SageHVField.hh"
+#include "SpedeHVField.hh"
+class SpedeHVField;
 
-
-class Sage : public NPS::VDetector{
+class Spede : public NPS::VDetector{
   ////////////////////////////////////////////////////
   /////// Default Constructor and Destructor /////////
   ////////////////////////////////////////////////////
   public:
-    Sage() ;
-    virtual ~Sage() ;
+    Spede() ;
+    virtual ~Spede() ;
 
     ////////////////////////////////////////////////////
     /////// Specific Function of this Class ///////////
@@ -60,20 +60,27 @@ class Sage : public NPS::VDetector{
     // Spherical
     void AddDetector(double R,double Theta,double Phi,string Shape);  
 
-	void ConstructChamber(G4LogicalVolume* world);
+    G4LogicalVolume* BuildPixel(G4double,G4double,G4double,G4double,G4double);
+    //G4LogicalVolume* BuildFoil(G4double, G4RotationMatrix*, G4ThreeVector, G4LogicalVolume*);
+    G4LogicalVolume* BuildLadder(G4int);
+	G4LogicalVolume* BuildSiliconDetector();
+
+    void BuildFoil(G4double, G4RotationMatrix*, G4ThreeVector, G4LogicalVolume*);
+    void BuildPCB(G4double, G4double, G4RotationMatrix*, G4ThreeVector, G4LogicalVolume*);
+    void BuildChamber(G4LogicalVolume*);
 
 	void ConstructEMField(G4String fieldFileName);
-
-	G4LogicalVolume* BuildSiliconDetector();
   
   private:
-	G4LogicalVolume* m_SiliconDetector;
+    G4LogicalVolume* m_SiliconDetector;
+    G4LogicalVolume* m_Foil;
+    G4LogicalVolume* m_Ladder;
 
 	//Variables for electromagnetic field
 	G4bool fieldIsInitialized;
 	G4String fieldFileName;
 	G4double fHVFieldStrength;
-
+    
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
     ////////////////////////////////////////////////////
@@ -99,12 +106,12 @@ class Sage : public NPS::VDetector{
     void InitializeScorers() ;
 
     //   Associated Scorer
-    G4MultiFunctionalDetector* m_SageScorer ;
+    G4MultiFunctionalDetector* m_SpedeScorer ;
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
   private:
-    TSageData* m_Event ;
+    TSpedeData* m_Event ;
 
     ////////////////////////////////////////////////////
     ///////////////Private intern Data//////////////////

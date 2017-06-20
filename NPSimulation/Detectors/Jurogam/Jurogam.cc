@@ -165,21 +165,38 @@ Jurogam::~Jurogam()
 {
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Jurogam::AddDetector(G4ThreeVector POS, string  Shape)
+void Jurogam::AddDetector(G4ThreeVector POS, string  Shape, G4bool BGO)
 {
 	// Convert the POS value to R theta Phi as Spherical coordinate is easier in G4 
 	m_R.push_back(POS.mag());
 	m_Theta.push_back(POS.theta());
 	m_Phi.push_back(POS.phi());
 	m_Shape.push_back(Shape);
+	m_BGO.push_back(BGO);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Jurogam::AddDetector(double  R, double  Theta, double  Phi, string  Shape)
+void Jurogam::AddDetector(double  R, double  Theta, double  Phi, string  Shape, G4bool BGO)
 {
 	m_R.push_back(R);
 	m_Theta.push_back(Theta);
 	m_Phi.push_back(Phi);
 	m_Shape.push_back(Shape);
+	m_BGO.push_back(BGO);
+	m_X.push_back(0);
+	m_Y.push_back(0);
+	m_Z.push_back(0);
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Jurogam::AddDetector(G4ThreeVector POS, double  Theta, double  Phi, string  Shape, G4bool BGO)
+{
+	m_R.push_back(0);
+	m_Theta.push_back(Theta);
+	m_Phi.push_back(Phi);
+	m_Shape.push_back(Shape);
+	m_BGO.push_back(BGO);
+	m_X.push_back(POS.getX());
+	m_Y.push_back(POS.getY());
+	m_Z.push_back(POS.getZ());
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Jurogam::SetPosition(G4ThreeVector thisPos)
@@ -1210,7 +1227,7 @@ void Jurogam::PhaseIPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 {
 	cout << "Placing phase I at\n";
 	cout << "X " << position.getX() << " Y " << position.getY() << " Z " << position.getZ() << "\n";
-	cout << "Phi " << rotation.getPhi() << " Theta " << rotation.getTheta() << " Psi " << rotation.getPsi() << "\n\n";
+	cout << "Theta " << rotation.getTheta() << " Phi " << rotation.getPhi() << " Psi " << rotation.getPsi() << "\n\n";
 	physiAlCap_PhaseI = new G4PVPlacement(//&rotation,G4ThreeVector(position.x(),position.y(),position.z()),
 			G4Transform3D(rotation, position),
 			logicAlCap_PhaseI, //its logical volume
@@ -1769,26 +1786,45 @@ void Jurogam::ReadConfiguration(NPL::InputParser parser)
 	if(NPOptionManager::getInstance()->GetVerboseLevel())
 		cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-	vector<string> cart = {"POS","Shape"};
-	vector<string> sphe = {"R","Theta","Phi","Shape"};
+	vector<string> cart = {"POS","Shape","BGO"};
+	vector<string> sphe = {"R","Theta","Phi","Shape","BGO"};
+	vector<string> combi = {"Loc","Theta","Phi","Shape","BGO"};
 
 	for(unsigned int i = 0 ; i < blocks.size() ; i++){
 		if(blocks[i]->HasTokenList(cart)){
 			if(NPOptionManager::getInstance()->GetVerboseLevel())
-				cout << endl << "////  Jurogam " << i+1 <<  endl;
+				cout << endl << "////  Jurogam cart" << i+1 <<  endl;
 
 			G4ThreeVector Pos = NPS::ConvertVector(blocks[i]->GetTVector3("POS","mm"));
 			string Shape = blocks[i]->GetString("Shape");
-			AddDetector(Pos,Shape);
+			int BGO_int = blocks[i]->GetInt("BGO");
+			G4bool BGO = false;
+			if (BGO_int == 1) BGO = true;
+			AddDetector(Pos,Shape,BGO);
 		}
 		else if(blocks[i]->HasTokenList(sphe)){
 			if(NPOptionManager::getInstance()->GetVerboseLevel())
-				cout << endl << "////  Jurogam " << i+1 <<  endl;
+				cout << endl << "////  Jurogam sphe " << i+1 <<  endl;
 			double R = blocks[i]->GetDouble("R","mm");
 			double Theta = blocks[i]->GetDouble("Theta","deg");
 			double Phi = blocks[i]->GetDouble("Phi","deg");
 			string Shape = blocks[i]->GetString("Shape");
-			AddDetector(R,Theta,Phi,Shape);
+			int BGO_int = blocks[i]->GetInt("BGO");
+			G4bool BGO = false;
+			if (BGO_int == 1) BGO = true;
+			AddDetector(R,Theta,Phi,Shape,BGO);
+		}
+		else if(blocks[i]->HasTokenList(combi)){
+			if(NPOptionManager::getInstance()->GetVerboseLevel())
+				cout << endl << "////  Jurogam combi" << i+1 <<  endl;
+			G4ThreeVector Loc = NPS::ConvertVector(blocks[i]->GetTVector3("Loc","mm"));
+			double Theta = blocks[i]->GetDouble("Theta","deg");
+			double Phi = blocks[i]->GetDouble("Phi","deg");
+			string Shape = blocks[i]->GetString("Shape");
+			int BGO_int = blocks[i]->GetInt("BGO");
+			G4bool BGO = false;
+			if (BGO_int == 1) BGO = true;
+			AddDetector(Loc,Theta,Phi,Shape,BGO);
 		}
 		else{
 			cout << "ERROR: check your input file formatting " << endl;
@@ -1809,9 +1845,19 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 
 	for (unsigned short i = 0 ; i < m_R.size() ; i++)
 	{
-		G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
-		G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
-		G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
+		G4double wX,wY,wZ;
+		if (m_R[i] !=0)
+		{
+		wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
+		wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
+		wZ = m_R[i] * cos(m_Theta[i] ) ;
+		}
+		else
+		{
+		wX = m_X[i];
+		wY = m_Y[i];
+		wZ = m_Z[i];
+		}
 		G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
 		// So the face of the detector is at R instead of the middle
 		//Det_pos+=Det_pos.unit()*Jurogam_NS::Thickness*0.5;
@@ -1828,14 +1874,12 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 
 		G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
 
-
 		if(m_Shape[i] == "PhaseI")
 		{
 			G4double radius = m_R[i]* mm;
 			G4ThreeVector translation(radius*sin(m_Theta[i])*cos(m_Phi[i]),
 					radius*sin(m_Theta[i])*sin(m_Phi[i]),
 					radius*cos(m_Theta[i]));
-
 
 			G4double sradius = radius - 23.80*mm-35.*mm;
 			G4ThreeVector stranslation(sradius*sin(m_Theta[i])*cos(m_Phi[i]),
@@ -1844,10 +1888,25 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 			SetRotation(*Rot);
 			SetPosition(translation);
 
+			if (m_R[i] < 1 )
+			{
+			SetPosition(Det_pos);
+			translation.setX(m_X[i]*mm);
+			translation.setY(m_Y[i]*mm);
+			translation.setZ(m_Z[i]*mm);
+
+			//G4RotationMatrix* tempRot= new G4RotationMatrix(m_Phi[i],m_Theta[i],0);
+			G4RotationMatrix* tempRot= new G4RotationMatrix(0,0,0);
+			//tempRot->setTheta(m_Theta[i]);
+			tempRot->setPhi(m_Theta[i]);
+			//tempRot->setPsi();
+			SetRotation(*tempRot);
+			}
+
 			PhaseIPlacement(i,world,false);
 
 			SetPosition(stranslation);
-			PhaseIBGOPlacement(i,world,false);
+			if (m_BGO[i]) PhaseIBGOPlacement(i,world,false);
 
 
 		}
@@ -1861,6 +1920,21 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 			SetRotation(*Rot);
 			SetPosition(translation);
 
+			if (m_R[i] < 1 )
+			{
+			SetPosition(Det_pos);
+			translation.setX(m_X[i]*mm);
+			translation.setY(m_Y[i]*mm);
+			translation.setZ(m_Z[i]*mm);
+
+			//G4RotationMatrix* tempRot= new G4RotationMatrix(m_Phi[i],m_Theta[i],0);
+			G4RotationMatrix* tempRot= new G4RotationMatrix(0,0,0);
+			tempRot->setTheta(m_Theta[i]);
+			tempRot->setPsi(m_Phi[i]);
+			//tempRot->setPsi(0);
+			SetRotation(*tempRot);
+			}
+
 			CloverPlacement(i,world,false);
 			
 			G4double sradius = (m_R[i] - 72.)* mm;
@@ -1868,7 +1942,7 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 					sradius*sin(m_Theta[i])*sin(m_Phi[i]),
 					sradius*cos(m_Theta[i]));
 			SetPosition(stranslation);
-			CloverBGOPlacement(i,world,false);
+			if (m_BGO[i]) CloverBGOPlacement(i,world,false);
 
 		}
 

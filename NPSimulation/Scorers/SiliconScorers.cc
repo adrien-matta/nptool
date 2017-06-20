@@ -415,7 +415,7 @@ G4bool PS_Silicon_Pixel::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	double intX = abs(m_Position.x());	
 	double intY = abs(m_Position.y());	
 	double intRadius = sqrt(intX*intX+intY*intY);
-
+	
 	//Find interaction angle and convert to degrees
 	double intPhi = atan2(m_Position.x(),m_Position.y());
 	intPhi+=1*M_PI;
@@ -425,9 +425,15 @@ G4bool PS_Silicon_Pixel::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	//TODO expand this to include inter-pixel dead layer
 
 	if ( intRadius < m_PixelInnerRadius[0] )//sanity check
-		cout << "Interaction point has smaller radius than defined detector\n";
+	{
+		//cout << "Interaction point has smaller radius than defined detector\n";
+		return TRUE;
+	}
 	else if (intRadius > m_PixelOuterRadius[int(m_PixelOuterRadius.size())-1] )//sanity check
-		cout << "Interaction point has larger radius than defined detector\n";
+	{
+		//cout << "Interaction point has larger radius than defined detector\n";
+		return TRUE;
+	}
 	else
 	{
 		//Find which pixel it is in

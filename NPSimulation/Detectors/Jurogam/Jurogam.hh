@@ -56,9 +56,11 @@ class Jurogam : public NPS::VDetector{
 		////////////////////////////////////////////////////
 	public:
 		// Cartesian
-		void AddDetector(G4ThreeVector POS, string Shape);
+		void AddDetector(G4ThreeVector POS, string Shape, G4bool BGO);
 		// Spherical
-		void AddDetector(double R,double Theta,double Phi,string Shape);  
+		void AddDetector(double R,double Theta,double Phi,string Shape, G4bool BGO);  
+		// Spherical with offset
+		void AddDetector(G4ThreeVector POS,double Theta,double Phi, string Shape, G4bool BGO);  
 
 		//Generic positioning and rotating for all detectors
 		void SetPosition( G4ThreeVector );
@@ -129,10 +131,15 @@ class Jurogam : public NPS::VDetector{
 		vector<double>  m_R; 
 		vector<double>  m_Theta;
 		vector<double>  m_Phi; 
+		vector<double>  m_X;
+		vector<double>  m_Y;
+		vector<double>  m_Z;
 
 		//   Shape type
-		vector<string> m_Shape ;
+		vector<string> m_Shape;
 
+		// BGO placement flag
+		vector<G4bool> m_BGO;
 		//General materials....
 		Materials*   fMat;
 

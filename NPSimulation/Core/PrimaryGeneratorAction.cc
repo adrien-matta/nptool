@@ -42,6 +42,7 @@
 // Event Generator Class
 #include "EventGeneratorTwoBodyReaction.hh"
 #include "EventGeneratorIsotropic.hh"
+#include "EventGeneratorRadioactiveDecay.hh"
 #include "EventGeneratorpBUU.hh"
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
@@ -90,6 +91,14 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   blocks = parser.GetAllBlocksWithToken("Isotropic");
   if (blocks.size()>0) {
     NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
+    myEventGenerator->ReadConfiguration(parser);
+    myEventGenerator->InitializeRootOutput();
+    m_EventGenerator.push_back(myEventGenerator);
+  }
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithToken("Radioactive");
+  if (blocks.size()>0) {
+    NPS::VEventGenerator* myEventGenerator = new EventGeneratorRadioactiveDecay();
     myEventGenerator->ReadConfiguration(parser);
     myEventGenerator->InitializeRootOutput();
     m_EventGenerator.push_back(myEventGenerator);

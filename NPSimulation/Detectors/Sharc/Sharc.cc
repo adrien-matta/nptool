@@ -123,7 +123,9 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
  
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
 
-    if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
+	  cout << blocks[i]->GetMainValue() << " foo foo\n";
+    if(/*blocks[i]->GetMainValue()=="QQQ" &&*/ blocks[i]->HasTokenList(tokenQQQ))
+	{
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
@@ -161,7 +163,7 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
 void Sharc::ConstructDetector(G4LogicalVolume* world){
   ConstructBOXDetector(world);
   ConstructQQQDetector(world);
-  ConstructTargetFan(world);
+  //ConstructTargetFan(world);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
