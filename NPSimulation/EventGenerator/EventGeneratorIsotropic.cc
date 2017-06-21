@@ -67,37 +67,37 @@ void EventGeneratorIsotropic::ReadConfiguration(NPL::InputParser parser){
 
   vector<string> token = {"EnergyLow","EnergyHigh","HalfOpenAngleMin","HalfOpenAngleMax","x0","y0","z0","Particle"};
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(token)){
-      m_EnergyLow         =blocks[i]->GetDouble("EnergyLow","MeV");
-      m_EnergyHigh        =blocks[i]->GetDouble("EnergyHigh","MeV");
-      m_HalfOpenAngleMin  =blocks[i]->GetDouble("HalfOpenAngleMin","deg");
-      m_HalfOpenAngleMax  =blocks[i]->GetDouble("HalfOpenAngleMax","deg");
-      m_x0                =blocks[i]->GetDouble("x0","mm");
-      m_y0                =blocks[i]->GetDouble("y0","mm");
-      m_z0                =blocks[i]->GetDouble("z0","mm");
-      vector<string> particleName =blocks[i]->GetVectorString("Particle");
-      for(unsigned int j = 0 ; j < particleName.size() ; j++){
-        if(particleName[j]=="proton"){ m_particleName.push_back("1H")  ;} 
-        else if(particleName[j]=="deuton"){ m_particleName.push_back("2H")  ; }
-        else if(particleName[j]=="triton"){ m_particleName.push_back("3H")  ; }
-        else if(particleName[j]=="3He" || particleName[j]=="He3") { m_particleName.push_back("3He") ; }
-        else if(particleName[j]=="alpha") { m_particleName.push_back("4He") ; }
-        else if(particleName[j]=="gamma") { m_particleName.push_back("gamma") ;}
-        else if(particleName[j]=="neutron") {m_particleName.push_back("neutron") ;}
-        else if(particleName[j]=="e-") {m_particleName.push_back("e-") ;}
-      }
+	  if(blocks[i]->HasTokenList(token)){
+		  m_EnergyLow         =blocks[i]->GetDouble("EnergyLow","MeV");
+		  m_EnergyHigh        =blocks[i]->GetDouble("EnergyHigh","MeV");
+		  m_HalfOpenAngleMin  =blocks[i]->GetDouble("HalfOpenAngleMin","deg");
+		  m_HalfOpenAngleMax  =blocks[i]->GetDouble("HalfOpenAngleMax","deg");
+		  m_x0                =blocks[i]->GetDouble("x0","mm");
+		  m_y0                =blocks[i]->GetDouble("y0","mm");
+		  m_z0                =blocks[i]->GetDouble("z0","mm");
+		  vector<string> particleName =blocks[i]->GetVectorString("Particle");
+		  for(unsigned int j = 0 ; j < particleName.size() ; j++){
+			  if(particleName[j]=="proton"){ m_particleName.push_back("1H")  ;} 
+			  else if(particleName[j]=="deuton"){ m_particleName.push_back("2H")  ; }
+			  else if(particleName[j]=="triton"){ m_particleName.push_back("3H")  ; }
+			  else if(particleName[j]=="3He" || particleName[j]=="He3") { m_particleName.push_back("3He") ; }
+			  else if(particleName[j]=="alpha") { m_particleName.push_back("4He") ; }
+			  else if(particleName[j]=="gamma") { m_particleName.push_back("gamma") ;}
+			  else if(particleName[j]=="neutron") {m_particleName.push_back("neutron") ;}
+			  else if(particleName[j]=="e-") {m_particleName.push_back("e-") ;}
+		  }
 
-      if(blocks[i]->HasToken("ExcitationEnergy"))
-        m_ExcitationEnergy =blocks[i]->GetVectorDouble("ExcitationEnergy","MeV");
-        
-      if(blocks[i]->HasToken("SigmaX"))
-        m_SigmaX=blocks[i]->GetDouble("SigmaX","mm");
-      if(blocks[i]->HasToken("SigmaY"))
-        m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
-      if(blocks[i]->HasToken("Multiplicity"))
-        m_Multiplicty=blocks[i]->GetVectorInt("Multiplicity");
-    }
-    else{
+	  }
+	  if(blocks[i]->HasToken("ExcitationEnergy"))
+		  m_ExcitationEnergy =blocks[i]->GetVectorDouble("ExcitationEnergy","MeV");
+
+	  if(blocks[i]->HasToken("SigmaX"))
+		  m_SigmaX=blocks[i]->GetDouble("SigmaX","mm");
+	  if(blocks[i]->HasToken("SigmaY"))
+		  m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
+	  if(blocks[i]->HasToken("Multiplicity"))
+		  m_Multiplicty=blocks[i]->GetVectorInt("Multiplicity");
+	  else{
       cout << "ERROR: check your input file formatting \033[0m" << endl; 
       exit(1);
     }

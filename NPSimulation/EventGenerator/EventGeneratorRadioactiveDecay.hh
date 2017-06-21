@@ -69,6 +69,8 @@ class EventGeneratorRadioactiveDecay: public NPS::VEventGenerator{
       G4double               m_SigmaY           ;
       G4double               m_HalfOpenAngleMin ;  // Min Half open angle of the source
       G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
+      G4int                  m_Z                ;
+      G4int                  m_A                ;
   };
 
 #endif

@@ -45,13 +45,15 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorRadioactiveDecay::EventGeneratorRadioactiveDecay()
 {
-    m_EnergyLow    =  0  ;
-    m_EnergyHigh   =  0  ;
-    m_x0           =  0  ;
-    m_y0           =  0  ;
-    m_z0           =  0  ;
-    m_SigmaX       = 0   ;
-    m_SigmaY       = 0   ;
+    m_EnergyLow    = 0;
+    m_EnergyHigh   = 0;
+    m_x0           = 0;
+    m_y0           = 0;
+    m_z0           = 0;
+    m_SigmaX       = 0;
+    m_SigmaY       = 0;
+    m_Z            = 0;
+    m_A            = 0;
     m_ParticleStack = ParticleStack::getInstance();
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -66,12 +68,14 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
     // if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << endl << "\033[1;35m//// Radioactive decay reaction found " << endl; 
 
-    vector<string> token = {"EnergyLow","EnergyHigh"};
+    vector<string> token = {"Z","A","EnergyLow","EnergyHigh","x0","y0","z0","HalfOpenAngleMin","HalfOpenAngleMax"};
 
     for(unsigned int i = 0 ; i < blocks.size() ; i++)
     {
         if(blocks[i]->HasTokenList(token))
         {
+            m_Z                 =blocks[i]->GetInt("Z");
+            m_A                 =blocks[i]->GetInt("A");
             m_EnergyLow         =blocks[i]->GetDouble("EnergyLow","MeV");
             m_EnergyHigh        =blocks[i]->GetDouble("EnergyHigh","MeV");
             m_x0                =blocks[i]->GetDouble("x0","mm");
@@ -80,6 +84,10 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
             m_HalfOpenAngleMin  =blocks[i]->GetDouble("HalfOpenAngleMin","deg");
             m_HalfOpenAngleMax  =blocks[i]->GetDouble("HalfOpenAngleMax","deg");
         }
+	  if(blocks[i]->HasToken("SigmaX"))
+		  m_SigmaX=blocks[i]->GetDouble("SigmaX","mm");
+	  if(blocks[i]->HasToken("SigmaY"))
+		  m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
     }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -96,6 +104,9 @@ void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
     G4double momentum_x = sin(theta) * cos(phi)  ;
     G4double momentum_y = sin(theta) * sin(phi)  ;
     G4double momentum_z = cos(theta)             ;
+
+    G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
+    G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
 
     /*//Testing for generating a single electron
     Particle TestElectron(G4ParticleTable::GetParticleTable()->FindParticle("e-"),//particle
@@ -118,7 +129,7 @@ void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
 */
 
 
-    G4int Z = 56, A = 133;
+    G4int Z = m_Z, A = m_A;
     G4double ionCharge   = 0.*eplus;
     G4double excitEnergy = 0.*keV;
 
