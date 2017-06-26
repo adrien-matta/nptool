@@ -855,6 +855,8 @@ void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::LoadCanvasList(TList* Spectra){
+  if(!Spectra)
+    return;
   NPL::InputParser parser("CanvasList.txt",false);
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
   vector<std::string> token = {"Path","Divide","Histo"};

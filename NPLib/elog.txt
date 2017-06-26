@@ -1,0 +1,20 @@
+elog
+  host= caeelog.in2p3.fr 
+  port= 443
+  ssl= 0
+  logbook= MUST2
+  username= matta
+  password= adrien!
+attribute Author
+  values= e748
+attribute Subject
+  values= Online
+attribute ExpNbr
+  values= e748 TEST
+attribute Type
+  values= ONLINE MUST2 CATS CHIO DAQ OFFLINE EXL VACUUM TARGET MECH BEAM OTHER
+attribute Category
+  values= General Social
+attribute Status
+  values= Fixed Pending Ongoing
+
