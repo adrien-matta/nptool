@@ -36,38 +36,6 @@ using namespace std;
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
 
-////// INTERNAL FUNCTIONS //////////
-namespace {
-double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
-{
-	vector<double> X, Z;
-	for(int i=0; i< len; ++i) {
-		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
-		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
-	}
-
-	Long64_t N = X.size();
-	double meanZ = TMath::Mean(N, &Z[0]);
-	double meanX = TMath::Mean(N, &X[0]);
-	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
-	for(size_t i=0; i< N; ++i) {
-		meanZ2 += Z[i]*Z[i];
-		meanX2 += X[i]*X[i];
-		meanXZ += Z[i]*X[i];
-	}
-	meanZ2 /= N;
-	meanXZ /= N;
-
-	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
-	R2 = pow(meanXZ - meanX*meanZ, 2) /
-		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
-
-	/// TODO::: R2 doesn't seem to make sense... look into it!
-
-	return slope;
-} }
-
-
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
