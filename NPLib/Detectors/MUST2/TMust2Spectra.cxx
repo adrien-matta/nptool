@@ -74,25 +74,26 @@ TMust2Spectra::~TMust2Spectra(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::InitRawSpectra(){
+
   string name;
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     TString nbr = NPL::itoa(i+1);
     
     // STRX_E_RAW
     name = "MM"+NPL::itoa(i+1)+"_STRX_E_RAW";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXE")->Draw("colz");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 8192, 16384,  "MUST2/RAW/STRXE");
     
     // STRY_E_RAW
     name = "MM"+NPL::itoa(i+1)+"_STRY_E_RAW";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE")->Draw("colz");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYE");
 
     // STRX_T_RAW
     name = "MM"+NPL::itoa(i+1)+"_STRX_T_RAW";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT")->Draw("colz");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "MUST2/RAW/STRXT");
 
     // STRY_T_RAW
     name = "MM"+NPL::itoa(i+1)+"_STRY_T_RAW";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT")->Draw("colz");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "MUST2/RAW/STRYT");
     
     // SILI_E_RAW
     name = "MM"+NPL::itoa(i+1)+"_SILI_E_RAW";
@@ -126,11 +127,13 @@ void TMust2Spectra::InitRawSpectra(){
     name = "MM"+NPL::itoa(i+1)+"_CSI_RAW_MULT";
     AddHisto1D(name, name, fCrystalCsI, 1, fCrystalCsI+1, "MUST2/RAW/MULT");
   } // end loop on number of detectors
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::InitPreTreatedSpectra()
 {
+
   string name;
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_CAL
@@ -187,10 +190,12 @@ void TMust2Spectra::InitPreTreatedSpectra()
      AddHisto2D(name, name,1024,0,16384,500,0,50, "MUST2/CAL/ID");
     }
   }  // end loop on number of detectors
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::InitPhysicsSpectra(){
+
   string name;
   // X-Y Impact Matrix
   name = "MM_IMPACT_MATRIX";
@@ -242,12 +247,14 @@ void TMust2Spectra::InitPhysicsSpectra(){
     name = "MM"+NPL::itoa(i+1)+"_Etot_E";
     AddHisto2D(name, name,500,0,500,500,0,50,"MUST2/PHY");
   }
+
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
+
   string name;
   string family;
 
@@ -258,7 +265,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     FillSpectra(family,name
       ,RawData->GetMMStripXEStripNbr(i), 
-          RawData->GetMMStripXEEnergy(i) - 8192);
+          RawData->GetMMStripXEEnergy(i));
   }
 
   // STRY_E
@@ -268,7 +275,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     FillSpectra(family,name
       ,RawData->GetMMStripYEStripNbr(i),
-          8192 - RawData->GetMMStripYEEnergy(i));
+          RawData->GetMMStripYEEnergy(i));
   }
 
   // STRX_T
@@ -278,7 +285,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     FillSpectra(family,name
       ,RawData->GetMMStripXTStripNbr(i),
-          8192 - RawData->GetMMStripXTTime(i));
+          RawData->GetMMStripXTTime(i));
   }
   // STRY_T
   for (unsigned int i = 0; i < RawData->GetMMStripYTMult(); i++) {
@@ -287,7 +294,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
     FillSpectra(family,name
       ,RawData->GetMMStripYTStripNbr(i),
-          RawData->GetMMStripYTTime(i) - 8192);
+          RawData->GetMMStripYTTime(i));
   }
 
   // SILI_E
@@ -396,6 +403,7 @@ void TMust2Spectra::FillRawSpectra(TMust2Data* RawData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
+
   string name ;
   string family;
   // STRX_E
@@ -554,6 +562,7 @@ void TMust2Spectra::FillPreTreatedSpectra(TMust2Data* PreTreatedData){
 
 ////////////////////////////////////////////////////////////////////////////////
 void TMust2Spectra::FillPhysicsSpectra(TMust2Physics* Physics){
+
   string name;
   string family= "MUST2/PHY";
   // X-Y Impact Matrix

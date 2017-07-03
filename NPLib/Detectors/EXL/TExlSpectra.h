@@ -1,20 +1,20 @@
-#ifndef NPSPECTRASERVER_H
-#define NPSPECTRASERVER_H
+#ifndef TEXLSPECTRA_H
+#define TEXLSPECTRA_H
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
+ * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta   contact address: matta@lpccaen.in2p3.fr   *
+ * Original Author: R. Wilkinson   contact address: r.wilkinson@surrey.ac.uk *
  *                                                                           *
- * Creation Date  :                                                          *
+ * Creation Date  : June 2017                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *                                                                           *
+ *  This class holds all the online spectra needed for EXL                   *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -22,45 +22,36 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "TSocket.h"
-#include "TServerSocket.h"
-#include "TMonitor.h"
-#include "TMessage.h"
-#include "TList.h"
-#include "TH1.h"
-#include "TH2.h"
-#include "NPDeltaSpectra.h"
-#include <string>
-#include <map>
+// NPLib headers
+#include "NPVSpectra.h"
+#include "TExlData.h"
+#include "TExlPhysics.h"
 
-namespace NPL{
-  class SpectraServer{
-    public:
-      static SpectraServer* getInstance();
-      void Destroy();
- 
-    private:
-      SpectraServer();
-      ~SpectraServer();
+// ForwardDeclaration
+class TExlPhysics ;
 
-    private:
-      static SpectraServer* instance;
+class TExlSpectra:public VSpectra{
+  public:
+    // constructor and destructor
+    TExlSpectra();
+    TExlSpectra(unsigned int NumberOfDetector);
+    ~TSpectra();
 
-    public:
-      void HandleSocket(TSocket* s);
-      void AddSpectra(TH1* h);
-      //void AddSpectra(TH2* h);
-      void FillSpectra(std::string name,double valx);
-      void FillSpectra(std::string name,double valx, double valy);
-      void CheckRequest();
+  private:
+    // Initialization methods
+    void InitRawSpectra();
+    void InitPreTreatedSpectra();
+    void InitPhysicsSpectra();
 
-    private:
-      bool m_stop;
-      TServerSocket* m_Server;     
-      TMonitor* m_Monitor;     
-      std::map<TSocket*,NPL::DeltaSpectra > m_Delta;
-      TList* m_Sockets;
-      TList* m_Spectra;
-  };
-}
+  public:
+    // Filling methods
+    void FillRawSpectra(TExlData*);
+    void FillPreTreatedSpectra(TExlData*);
+    void FillPhysicsSpectra(TExlPhysics*);
+
+  private: // Information on EXL
+    unsigned int fNumberOfDetector;
+    unsigned int fNumberOfCrystal;
+};
+
 #endif

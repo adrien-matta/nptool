@@ -31,10 +31,11 @@ using namespace std ;
 class TExlData : public TObject {
  private:
    // ADC
-   vector<double>  fExl_Energy;   
-   vector<double>  fExl_Time;   
+   vector<double>  fExl_Energy;
+   vector<double>  fExl_Time;
    vector<short>   fExl_Number ;
-   
+   vector<short>   fExl_Crystal;
+
  public:
    TExlData();
    virtual ~TExlData();
@@ -44,20 +45,21 @@ class TExlData : public TObject {
    void   Dump() const;
 
    /////////////////////           GETTERS           ////////////////////////
-   inline double   GetEnergy(const int& i)    const { return fExl_Energy[i] ;}
-   inline double   GetTime(const int& i)      const { return fExl_Time[i] ;}
-   inline int      GetExlNumber(const int& i) const { return fExl_Number[i] ;}
-   
+   inline double   GetEnergy(const int& i)        const { return fExl_Energy[i] ;}
+   inline double   GetTime(const int& i)          const { return fExl_Time[i] ;}
+   inline int      GetExlNumber(const int& i)     const { return fExl_Number[i] ;}
+   inline int      GetCrystalNumber(const int& i) const { return fExl_Crystal[i] ;}
    //Mult
    inline double   GetMult()    const { return fExl_Energy.size() ;}
-   
+
    /////////////////////           SETTERS           ////////////////////////
-   inline void SetEandTime(const int& N,const double& E,const double& T){
-   fExl_Energy.push_back(E) ;
-   fExl_Time.push_back(T) ;
-   fExl_Number.push_back(N) ;
+   inline void SetEandTime(const int& N,const int& C,const double& E,const double& T){
+     fExl_Energy.push_back(E);
+     fExl_Time.push_back(T);    	   
+     fExl_Number.push_back(N) ; 	   
+     fExl_Crystal.push_back(C); 	   
    }
-   
+
    ClassDef(TExlData,1)  // ExlData structure
 };
 
