@@ -111,14 +111,20 @@ void Analysis::Init(){
 //Copied from Momo's Slack 170222.
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  //LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+  LightTarget = NPL::EnergyLoss("He4_"+TargetMaterial+".SRIM","SRIM",10 );
 //by Shuya 170505
 //Note when you analyze the triple alpha calibration run, use He4_Al and He4_Si
-  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  //LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
   //LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
-  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
-  //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
+
+//by Shuya 170530
+  //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
+
+  //BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss("He4_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -225,7 +231,9 @@ void Analysis::TreatEvent(){
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH; // calibration for hyball is in MeV
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // 0.1 um of Aluminum
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
+//by Shuya 170530
+    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( Energy ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
    /////////////////////////////
