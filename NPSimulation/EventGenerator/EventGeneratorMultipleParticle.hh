@@ -1,5 +1,5 @@
-#ifndef EventGeneratorpBUU_h
-#define EventGeneratorpBUU_h
+#ifndef EventGeneratorMultipleParticle_h
+#define EventGeneratorMultipleParticle_h
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This event Generator is used to simulated ion Source from pBUU simulation         *
+ *  This event Generator is used to simulated data from transport model outputs         *
  *  Very usefull to figure out Geometric Efficacity of experimental Set-Up   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -39,10 +39,10 @@ using namespace CLHEP;
 #include "TH2F.h"
 #include "TFile.h"
 
-class EventGeneratorpBUU : public NPS::VEventGenerator{
+class EventGeneratorMultipleParticle : public NPS::VEventGenerator{
 public:     // Constructor and destructor
-    EventGeneratorpBUU();
-    virtual ~EventGeneratorpBUU();
+    EventGeneratorMultipleParticle();
+    virtual ~EventGeneratorMultipleParticle();
   
 public:     // Inherit from VEventGenerator Class
     void ReadConfiguration(NPL::InputParser)              ;
@@ -50,19 +50,22 @@ public:     // Inherit from VEventGenerator Class
     void InitializeRootOutput()                  ;
   
 private:    // Source parameter from input file
-    G4double               m_x0               ;  // Vertex Position X
-    G4double               m_y0               ;  // Vertex Position Y
-    G4double               m_z0               ;  // Vertex Position Z
-    G4double               m_SigmaX           ;
-    G4double               m_SigmaY           ;
-    G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot 
-    G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
-    string                 m_particleName     ;
-    ParticleStack*         m_ParticleStack    ;
-    
-    //TH1F* fAngleHist;
-    //TH1F* fEnergyHist;
-    TH2F* fAngleEnergyHist;
+    G4double                m_x0               ;  // Vertex Position X
+    G4double                m_y0               ;  // Vertex Position Y
+    G4double                m_z0               ;  // Vertex Position Z
+    G4double                m_SigmaX           ;
+    G4double                m_SigmaY           ;
+    unsigned int            m_Events;
+    string                  m_FileName;
+    string                  m_File;
+    G4ParticleDefinition*   m_particle         ;  // Kind of particle to shoot
+    vector<int>             m_Event;
+    vector<int>             m_Multiplicity;
+    vector<vector<string>>  m_particleName     ;
+    vector<vector<double>>  m_Energy;
+    vector<vector<double>>  m_Theta;
+    ParticleStack*          m_ParticleStack    ;
+
   
 };
 #endif

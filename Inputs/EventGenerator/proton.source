@@ -7,7 +7,7 @@ Isotropic
  EnergyLow=  0
  EnergyHigh= 200
   HalfOpenAngleMin= 0
- HalfOpenAngleMax= 180
+ HalfOpenAngleMax= 10
  x0= 0 
  y0= 0 
  z0= 0 

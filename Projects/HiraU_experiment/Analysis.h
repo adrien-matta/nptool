@@ -21,13 +21,14 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#include"NPVAnalysis.h"
-#include"TMicroballPhysics.h"
-#include"THiraPhysics.h"
+#include "NPVAnalysis.h"
+#include "TMicroballPhysics.h"
+#include "THiraPhysics.h"
 #include "TNeutronWallPhysics.h"
 #include "TForwardArrayPhysics.h"
-#include"TInitialConditions.h"
-#include"TInteractionCoordinates.h"
+#include "TInitialConditions.h"
+#include "TInteractionCoordinates.h"
+#include "NPNucleus.h"
 
 class Analysis: public NPL::VAnalysis{
   public:
@@ -48,16 +49,19 @@ private:
 	double PhiLabMB;
 	double ThetaLabHira;
 	double PhiLabHira;
-    double ThetaLabVW;
-    double PhiLabVW;
+    double ThetaLabNW;
+    double PhiLabNW;
+    double NWEnergy;
+    double NWTOF;
+    double NWELab;
     double ThetaLabFA;
     double PhiLabFA;
     int MBMultiplicity;
-    int VWMultiplicity;
-    double X;
-    double Y;
-    double Z;
-    double EF, E_CsI, ELab;
+    int NWMultiplicity;
+    double X_Hira;
+    double Y_Hira;
+    double Z_Hira;
+    double EF, E_CsI, HiraELab;
 
   private:
 	TMicroballPhysics* MB;
@@ -67,6 +71,8 @@ private:
 
 	TInitialConditions* InitialConditions;
 	TInteractionCoordinates* InteractionCoordinates;
+    
+    NPL::Nucleus* neutron;
 
 };
 #endif
