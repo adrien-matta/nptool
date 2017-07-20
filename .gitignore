@@ -38,4 +38,5 @@ Documentation/user_guide.log
 *.bbl
 *.blg
 *.SRIM
+*.sublime-*
 PhysicsListOption.txt
