@@ -8,14 +8,16 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Mohamad Moukaddam  contact address: m.moukaddam@surrey.ac.uk                        *
+ * Original Author: Mhd Moukaddam  contact address: m.moukaddam@surrey.ac.uk *
  *                                                                           *
- * Creation Date  : July 2017                                           *
+ * Creation Date  : July 2017                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Foil Spectra                                     *
- *                                                                           *
+ *  This class holds the spectra of a simple generic foil normally           *
+ *  used in experiments as a catcher before/after target or a screen of      *
+ *  other detectors e.g. the common Aluminum foil placed upstream the        *
+ *  TRIFOIL with SHARC experiments                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *   
