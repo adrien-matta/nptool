@@ -727,19 +727,28 @@ void MUST2Array::ReadSensitive(const G4Event* event){
   /////////////////////
   // Read the Scorer associate to the Silicon Strip
   SILICONSCORERS::PS_Silicon_Images* SiScorer = (SILICONSCORERS::PS_Silicon_Images*) m_StripScorer->GetPrimitive(0);
-
+        
+  bool SiScoredHit; // flag true if first stage scores a hit above threshold 
   set<int> trig; // list of telescope that got a Si trigger
   vector<unsigned int> indexes = SiScorer->GetIndexes();
   unsigned int size = indexes.size();
+  
   for(unsigned int i = 0 ;i<size;i++){
+    SiScoredHit= false;
     unsigned int index = indexes[i];
     double energy = SiScorer->GetEnergy(index);
     double energyX = RandGauss::shoot(energy, ResoStrip);
     double energyY= RandGauss::shoot(energy, ResoStrip);
     int detectorNbr = SiScorer->GetDetectorNbr(index); 
     double time = SiScorer->GetTime(index);
+    double InterPos_X = SiScorer->GetX(index) ;
+    double InterPos_Y = SiScorer->GetY(index) ;
+    double InterPos_Z = SiScorer->GetZ(index) ;
+    double InterPos_Theta = SiScorer->GetTheta(index) ;
+    double InterPos_Phi = SiScorer->GetPhi(index) ;
     // X
     if(energyX>0.1*keV){ // above threshold
+      SiScoredHit=true;
       // Pixel value at interaction point
       unsigned int a,r,g,b;
       //  pixel
@@ -781,6 +790,7 @@ void MUST2Array::ReadSensitive(const G4Event* event){
     }
     // Y
     if(energyY>0.1*keV){ // above threshold
+      SiScoredHit=true;
       // Pixel value at interaction point
       unsigned int a,r,g,b;
       //  pixel
@@ -817,6 +827,16 @@ void MUST2Array::ReadSensitive(const G4Event* event){
         }
       }
     }
+ 
+    // If event passes through first stage fill the Interaction Coordinates   
+    if (SiScoredHit){
+      ms_InterCoord->SetDetectedPositionX(InterPos_X) ;
+      ms_InterCoord->SetDetectedPositionY(InterPos_Y) ;
+      ms_InterCoord->SetDetectedPositionZ(InterPos_Z) ;
+      ms_InterCoord->SetDetectedAngleTheta(InterPos_Theta/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(InterPos_Phi/deg) ;
+    }
+    
   }
 
   // Si(Li)
@@ -857,7 +877,6 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       }
     }
   }
-
 
   SiScorer->clear();
   // clear map for next event
