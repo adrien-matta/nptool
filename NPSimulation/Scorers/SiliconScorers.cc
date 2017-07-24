@@ -199,8 +199,8 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     
     // contain Energy Time, DetNbr, StripFront and StripBack
     G4double* Infos = new G4double[10];
-    Infos[0] = aStep->GetTotalEnergyDeposit();
-    Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+    Infos[0]  = aStep->GetTotalEnergyDeposit();
+    Infos[1]  = aStep->GetPreStepPoint()->GetGlobalTime();
     
     m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
     m_Position  = aStep->GetPreStepPoint()->GetPosition();
@@ -268,7 +268,7 @@ void PS_Silicon_Rectangle::clear(){
     for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
         delete *(MapIterator->second);
     }
-    
+
     EvtMap->clear();
 }
 

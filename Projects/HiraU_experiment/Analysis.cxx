@@ -36,10 +36,10 @@ Analysis::~Analysis(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-    //MB= (TMicroballPhysics*) m_DetectorManager->GetDetector("Microball");
+    MB= (TMicroballPhysics*) m_DetectorManager->GetDetector("Microball");
 	Hira= (THiraPhysics*) m_DetectorManager->GetDetector("HiraTelescope");
-    //FA= (TForwardArrayPhysics*) m_DetectorManager->GetDetector("ForwardArray");
-    NW= (TNeutronWallPhysics*) m_DetectorManager->GetDetector("NeutronWall");
+    FA= (TForwardArrayPhysics*) m_DetectorManager->GetDetector("ForwardArray");
+    //NW= (TNeutronWallPhysics*) m_DetectorManager->GetDetector("NeutronWall");
 	InitialConditions = new TInitialConditions();
 	InteractionCoordinates = new TInteractionCoordinates();
 	
@@ -63,14 +63,14 @@ void Analysis::TreatEvent(){
     ////////////////////////
     // MicroBall Analysis //
     ///////////////////////
-	/*for(int i=0; i<MB->DetectorNumber.size(); i++){
+	for(int i=0; i<MB->DetectorNumber.size(); i++){
 		ThetaLabMB = InteractionCoordinates->GetDetectedAngleTheta(i);
 		PhiLabMB = InteractionCoordinates->GetDetectedAnglePhi(i);	
 	}
 	MBMultiplicity = MB->DetectorNumber.size();
 
 	if(PhiLabMB>0) PhiLabMB = 180-PhiLabMB;
-	else if(PhiLabMB<0) PhiLabMB = -PhiLabMB-180;*/
+	else if(PhiLabMB<0) PhiLabMB = -PhiLabMB-180;
     
     ///////////////////
     // Hira Analysis //
@@ -103,7 +103,7 @@ void Analysis::TreatEvent(){
     //////////////////////////
     // NeutronWall Analysis //
     //////////////////////////
-    for(int i=0; i<NW->NW_Energy.size(); i++){
+    /*for(int i=0; i<NW->NW_Energy.size(); i++){
         ThetaLabNW = InteractionCoordinates->GetDetectedAngleTheta(i);
         PhiLabNW = InteractionCoordinates->GetDetectedAnglePhi(i);
         
@@ -122,17 +122,20 @@ void Analysis::TreatEvent(){
     NWMultiplicity = NW->NW_Energy.size();
     
     if(PhiLabNW>0) PhiLabNW = 180-PhiLabNW;
-    else if(PhiLabNW<0) PhiLabNW = -PhiLabNW-180;
+    else if(PhiLabNW<0) PhiLabNW = -PhiLabNW-180;*/
 
     ///////////////////////////
     // ForwardArray Analysis //
     ///////////////////////////
-    /*for(int i=0; i<FA->Energy.size(); i++){
+    for(int i=0; i<FA->Energy.size(); i++){
         ThetaLabFA = InteractionCoordinates->GetDetectedAngleTheta(i);
         PhiLabFA = InteractionCoordinates->GetDetectedAnglePhi(i);
     }
+    
+    FAMultiplicity = FA->DetectorNumber.size();
+    
     if(PhiLabFA>0) PhiLabFA = 180-PhiLabFA;
-    else if(PhiLabFA<0) PhiLabFA = -PhiLabFA-180;*/
+    else if(PhiLabFA<0) PhiLabFA = -PhiLabFA-180;
 
 }
 
@@ -163,6 +166,7 @@ void Analysis::InitOutputBranch() {
     
     RootOutput::getInstance()->GetTree()->Branch("MBMultiplicity",&MBMultiplicity,"MBMultiplicity/I");
     RootOutput::getInstance()->GetTree()->Branch("NWMultiplicity",&NWMultiplicity,"NWMultiplicity/I");
+    RootOutput::getInstance()->GetTree()->Branch("FAMultiplicity",&FAMultiplicity,"FAMultiplicity/I");
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +200,10 @@ void Analysis::ReInitValue(){
     EF              = -100;
     HiraELab        = -100;
     E_CsI           = -100;
+    
+    FAMultiplicity  = -1;
+    NWMultiplicity  = -1;
+    MBMultiplicity  = -1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

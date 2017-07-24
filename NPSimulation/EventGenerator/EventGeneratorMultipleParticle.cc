@@ -95,21 +95,21 @@ void EventGeneratorMultipleParticle::ReadConfiguration(NPL::InputParser parser){
             exit(1);
         }
         
-        
-        
         ifstream evtfile;
         evtfile.open(m_File.c_str());
         string sMult, sParticle;
         int iMult;
         double dEnergy, dAngle;
-        vector<string> vParticle;
-        vector<double> vEnergy, vTheta;
         if(evtfile.is_open()){
             cout << "Event file found: " << m_FileName <<  " \033[0m" << endl;
-            while(!evtfile.eof()){
+            for(unsigned int i=0; i<m_Events; i++){
+            //while(!evtfile.eof()){
                 evtfile >> sMult >> iMult;
                 m_Multiplicity.push_back(iMult);
-                //cout << sMult << " " << iMult << endl;
+                
+                vector<string> vParticle;
+                vector<double> vEnergy, vTheta;
+                
                 for(int k=0; k<iMult; k++){
                     evtfile >> sParticle >> dEnergy >> dAngle;
                     if(sParticle=="proton"){vParticle.push_back("1H");}
@@ -133,36 +133,25 @@ void EventGeneratorMultipleParticle::ReadConfiguration(NPL::InputParser parser){
             cout << "ERROR: Event File for transport model not found \033[0m" << endl;
             exit(1);
         }
-        
         evtfile.close();
+        
         if(m_Multiplicity.size() != m_Events){
             cout << "\033[1;35m WARNING: Number of Events: " << m_Events << " different from what found in " << m_FileName << ": " << m_Multiplicity.size() << endl;
         }
     }
 }
 
-
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorMultipleParticle::GenerateEvent(G4Event* evt){
     
     unsigned int evtID = evt->GetEventID();
-    cout << " - evtID= " << evtID << endl;
-
-    
+ 
     if(evtID>m_Multiplicity.size()-1){
         int k = evtID/m_Multiplicity.size();
         if(k>0)evtID = evtID-k*m_Multiplicity.size();
-        cout << " - k= " << k << endl;
-        cout << " - new evtID= " << evtID << endl;
     }
     
-    cout << " - Mult= " << m_Multiplicity[evtID] << endl;
     for(int i=0; i<m_Multiplicity[evtID]; i++){
-        cout << "Particle Name: " << m_particleName[evtID][i] << endl;
-        cout << "Energy= " << m_Energy[evtID][i] << endl;
-        cout << "Theta= " << m_Theta[evtID][i] << endl;
         m_particle=NULL;
         if(m_particle==NULL){
             if(m_particleName[evtID][i]=="gamma" || m_particleName[evtID][i]=="neutron" ||  m_particleName[evtID][i]=="opticalphoton"){
@@ -175,11 +164,12 @@ void EventGeneratorMultipleParticle::GenerateEvent(G4Event* evt){
             }
         }
         
-        Double_t theta = m_Theta[evtID][i];
-        Double_t particle_energy= m_Energy[evtID][i];
-        theta = theta*deg;
+        G4double theta              = m_Theta[evtID][i];
+        G4double particle_energy    = m_Energy[evtID][i];
+        G4double phi                = RandFlat::shoot() * 2 * pi;
+        
+        theta           = theta*deg;
         particle_energy = particle_energy / MeV;
-        G4double phi             = RandFlat::shoot() * 2 * pi;
         
         // Direction of particle, energy and laboratory angle
         G4double momentum_x = sin(theta) * cos(phi)  ;

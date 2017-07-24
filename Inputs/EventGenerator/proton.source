@@ -7,13 +7,13 @@ Isotropic
  EnergyLow=  0
  EnergyHigh= 200
   HalfOpenAngleMin= 0
- HalfOpenAngleMax= 10
+ HalfOpenAngleMax= 180
  x0= 0 
  y0= 0 
  z0= 0 
   SigmaX= 0
   SigmaY= 0
-  Multiplicity= 1
+  Multiplicity= 4
  Particle= proton
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 
