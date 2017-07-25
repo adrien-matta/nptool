@@ -192,17 +192,28 @@ void Hira::ReadSensitive(const G4Event* event){
         // Loop on the ThickSi map
         for (ThickSi_itr = ThickSiHitMap->GetMap()->begin() ; ThickSi_itr != ThickSiHitMap->GetMap()->end() ; ThickSi_itr++){
             G4double* Info = *(ThickSi_itr->second);
-            double E_ThickSi = RandGauss::shoot(Info[0],ResoThickSi);
-            if(E_ThickSi>EnergyThreshold){
-                m_EventHira->SetHiraThickSiStripXEEnergy(E_ThickSi);
+            double EF = RandGauss::shoot(Info[0],ResoThickSi);
+            double EB = RandGauss::shoot(Info[0],ResoThickSi);
+            
+            // Interraction Coordinates
+            ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+            
+            if(EF>EnergyThreshold){
+                m_EventHira->SetHiraThickSiStripXEEnergy(EF);
                 m_EventHira->SetHiraThickSiStripXEDetectorNbr(Info[7]-1);
                 m_EventHira->SetHiraThickSiStripXEStripNbr(Info[8]-1);
                 
                 m_EventHira->SetHiraThickSiStripXTTime(Info[1]);
                 m_EventHira->SetHiraThickSiStripXTDetectorNbr(Info[7]-1);
                 m_EventHira->SetHiraThickSiStripXTStripNbr(Info[8]-1);
-                
-                m_EventHira->SetHiraThickSiStripYEEnergy(E_ThickSi);
+            }
+            
+            if(EB>EnergyThreshold){
+                m_EventHira->SetHiraThickSiStripYEEnergy(EB);
                 m_EventHira->SetHiraThickSiStripYEDetectorNbr(Info[7]-1);
                 m_EventHira->SetHiraThickSiStripYEStripNbr(Info[9]-1);
                 
@@ -210,12 +221,6 @@ void Hira::ReadSensitive(const G4Event* event){
                 m_EventHira->SetHiraThickSiStripYTDetectorNbr(Info[7]-1);
                 m_EventHira->SetHiraThickSiStripYTStripNbr(Info[9]-1);
                 
-                // Interraction Coordinates
-                ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-                ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-                ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-                ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-                ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
             }
         }
         // Clear Map for next event

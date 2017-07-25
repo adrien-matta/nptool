@@ -48,7 +48,7 @@ TMicroballPhysics::TMicroballPhysics()
      m_EventPhysics(this),
      m_Spectra(0),
      m_E_RAW_Threshold(0), // adc channels
-     m_E_Threshold(0),     // MeV
+     m_E_Threshold(0.5),     // MeV
      m_NumberOfDetectors(0) {
 }
 

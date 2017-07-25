@@ -152,12 +152,14 @@ namespace SILICONSCORERS {
       G4int HCID;
       NPS::HitsMap<G4double*>* EvtMap;
 
+
     private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
       G4ThreeVector m_Position  ;
       G4int m_DetectorNumber    ;
       G4int m_StripLengthNumber ;
       G4int m_StripWidthNumber  ;
       G4long m_Index             ;
+      
 
   };
 
@@ -211,7 +213,7 @@ namespace SILICONSCORERS {
     private: // inherited from G4VPrimitiveScorer
       G4int HCID;
       NPS::HitsMap<G4double*>* EvtMap;
-
+      
     private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
       G4ThreeVector m_Position    ;
       G4ThreeVector m_uz          ;
