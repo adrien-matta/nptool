@@ -51,9 +51,9 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   t_Phi = t_Position.phi();
 
   t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
-
-  t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
-  t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
+ 
+  t_PixelFront = m_ImageFront->GetPixelAtCoordinate(-t_Position.y(),-t_Position.x());
+  t_PixelBack = m_ImageBack->GetPixelAtCoordinate(-t_Position.y(),-t_Position.x());
 
   // If front and back are in inactive part of the wafer,
   // nothing is added to the map
