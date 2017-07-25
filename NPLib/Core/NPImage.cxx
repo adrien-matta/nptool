@@ -70,7 +70,7 @@ void NPL::Image::Print(double scale){
   m_Height = m_Image->GetHeight();
   for(unsigned int i = 0 ; i < m_Width ; i++){
     for(unsigned int j = 0 ; j < m_Height ; j++){
-      unsigned int index = i*m_Width+j;
+      unsigned int index = i*m_Width+j; //       unsigned int index = i*m_Width+j;
       unsigned int b = GetBlueAtPixel(i,j);
       unsigned int g = GetGreenAtPixel(i,j);
       unsigned int r = GetRedAtPixel(i,j);
@@ -106,19 +106,19 @@ unsigned int NPL::Image::GetRedAtCoordinate(double x, double y){
 unsigned int NPL::Image::GetGreenAtCoordinate(double x, double y){
   unsigned int xp = x/m_Xscaling+m_Width/2 ;
   unsigned int yp = y/m_Yscaling+m_Height/2 ;
-  return GetRedAtPixel(xp,yp);
+  return GetGreenAtPixel(xp,yp);
 }
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int NPL::Image::GetBlueAtCoordinate(double x, double y){
   unsigned int xp = x/m_Xscaling+m_Width/2 ;
   unsigned int yp = y/m_Yscaling+m_Height/2 ;
-  return GetRedAtPixel(xp,yp);
+  return GetBlueAtPixel(xp,yp);
 }
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int NPL::Image::GetAlphaAtCoordinate(double x, double y){
   unsigned int xp = x/m_Xscaling+m_Width/2 ;
   unsigned int yp = y/m_Yscaling+m_Height/2 ;
-  return GetRedAtPixel(xp,yp);
+  return GetAlphaAtPixel(xp,yp);
 }
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int NPL::Image::GetPixelAtCoordinate(double x, double y){
@@ -130,7 +130,7 @@ unsigned int NPL::Image::GetPixelAtCoordinate(double x, double y){
 
 ////////////////////////////////////////////////////////////////////////////////
 unsigned int NPL::Image::PixelToIndex(unsigned int x, unsigned int y){
-  unsigned int index = x*m_Width+y;
+  unsigned int index = x*m_Width+y; //unsigned int index = x*m_Width+y;
   if(index>m_Width*m_Height)// possible because of rounding
     index = m_Width*m_Height-1;
   return index;

@@ -9,17 +9,18 @@ Target
  Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Foil
- POS= 0 0 350 mm
- Shape= Square
+POS = 0 0 250 mm
+Shape= Square
+Height= 40 mm
+Width= 40 mm
+Thickness= 10 micrometer
+Material= Al
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Foil
- POS = 35 35 35 cm
- Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Foil
- R= 350 mm
- THETA= 90 deg
- PHI= 63 deg
- Shape= Cylindrical
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+R= 350 mm
+THETA= 90 deg
+PHI= 63 deg
+Shape= Cylindrical
+Radius= 30 mm
+Thickness= 2 mm
+Material= Cu

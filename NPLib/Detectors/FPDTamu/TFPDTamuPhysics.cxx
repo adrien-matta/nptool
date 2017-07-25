@@ -231,7 +231,8 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         // calculate position in X, Z is known
         double plast_length = 2*PlastLeftPos.X()/NPUNITS::cm; //check me!
         PlastCharge.push_back(sqrt(EnergyL*EnergyR));
-        PlastPositionX.push_back(plast_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
+        PlastPositionX.push_back(plast_length*(EnergyR-EnergyL)/(EnergyR+EnergyL));
+        PlastPositionXLog.push_back(plast_length*log(EnergyR/EnergyL));
         PlastPositionZ.push_back(PlastLeftPos.Z()/NPUNITS::cm); //check me!, directly from configuration
       }
     }

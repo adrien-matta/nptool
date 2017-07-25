@@ -73,7 +73,7 @@ void TFoilPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"X","Y","Z"};
+  vector<string> cart = {"POS"};
   vector<string> sphe = {"R","Theta","Phi"};
   vector<string> square= {"Shape","Height","Width","Thickness","Material"};
   vector<string> cylind= {"Shape","Radius","Thickness","Material"};
