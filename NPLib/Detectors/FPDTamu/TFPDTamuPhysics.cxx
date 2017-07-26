@@ -576,6 +576,7 @@ void TFPDTamuPhysics::Clear() {
   PlastRightTime.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
+  PlastPositionXLog.clear();
   PlastPositionZ.clear();
   //Calculated 
   PlastPositionX_AW = -99 ; //from AWire and Plastic Z
@@ -661,6 +662,10 @@ void TFPDTamuPhysics::Dump() const {
   cout << " XPos:"  ;
   for (size_t i = 0 ; i < PlastPositionX.size() ; i++)
     cout << " " << PlastPositionX[i];
+  cout<<endl;
+   cout << " XPos(Log):"  ;
+  for (size_t i = 0 ; i < PlastPositionXLog.size() ; i++)
+    cout << " " << PlastPositionXLog[i];
   cout<<endl;
   cout << " ZPos:"  ;
   for (size_t i = 0 ; i < PlastPositionZ.size() ; i++)
@@ -890,6 +895,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "PlastRightTime" , true );
   inputChain->SetBranchStatus( "PlastCharge" , true );
   inputChain->SetBranchStatus( "PlastPositionX" , true );
+  inputChain->SetBranchStatus( "PlastPositionXLog" , true );
   inputChain->SetBranchStatus( "PlastPositionZ" , true );
   //Calculated AWire and Plastic
   inputChain->SetBranchStatus( "PlastPositionX_AW" , true );
