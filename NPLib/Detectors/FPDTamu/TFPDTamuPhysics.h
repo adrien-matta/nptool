@@ -93,6 +93,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> PlastRightTime;
   vector<double> PlastCharge;
   vector<double> PlastPositionX;
+  vector<double> PlastPositionXLog;
   vector<double> PlastPositionZ;
 
   //Calculated AWire and Plastic

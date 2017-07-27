@@ -169,8 +169,8 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   RootInput::getInstance(runToReadfileName);
 
   // Now that the detector are all added, they can initialise their Branch to the Root I/O
-  InitializeRootInput();
-  InitializeRootOutput();
+  //InitializeRootInput();
+  //InitializeRootOutput();
 
   // If Requiered, they can also instiantiate their control histogramm
   if(NPOptionManager::getInstance()->GetGenerateHistoOption())

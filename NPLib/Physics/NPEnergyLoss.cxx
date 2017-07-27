@@ -87,7 +87,7 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
   }
 
 
-  if (Source == "G4Table"){
+  if (Source == "G4Table" || Source == "G4table" ){
     // Reading Data
     double energy, total;
     string dummy;

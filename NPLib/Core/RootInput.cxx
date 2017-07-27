@@ -77,8 +77,8 @@ RootInput::RootInput(string configFileName){
   pRootChain = new TChain();
 
   if (!inputConfigFile.is_open()) {
-    cout << "\033[1;31mError : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
-    exit(1);
+    cout << "\033[1;31mWarning : Run to Read file :" << configFileName << " not found\033[0m" << endl; 
+    //exit(1);
   }
 
   else {

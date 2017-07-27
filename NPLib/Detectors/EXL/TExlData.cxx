@@ -42,6 +42,7 @@ void TExlData::Clear()
     fExl_Energy.clear();
     fExl_Time.clear();
     fExl_Number.clear();
+    fExl_Crystal.clear();
 }
 
 
@@ -52,8 +53,8 @@ void TExlData::Dump() const
 
    for(unsigned short i = 0 ; i<fExl_Energy.size() ; i ++)
       {
-         cout << "Exl Number " << fExl_Number[i] << " Energy: " << fExl_Energy[i] << " Time: " << fExl_Time[i] << endl;
-      
+         cout << "Exl Number " << fExl_Number[i] << " Crystal Number " << fExl_Crystal[i] << " Energy: " << fExl_Energy[i] << " Time: " << fExl_Time[i] << endl;
+
       }
-   
+
 }

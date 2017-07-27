@@ -157,12 +157,16 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 
   canvas1->cd(3);
   hIncidentTheta->Draw();
+  hIncidentTheta->SetXTitle("Incident #theta (deg)");
 
   canvas1->cd(4);
   hIncidentPhi->Draw();
-
+  hIncidentPhi->SetXTitle("Incident #phi (deg)");
+  
   canvas1->cd(5);
   hEmittanceXY->Draw("colz");
+  hEmittanceXY->SetXTitle("Position on Target X (mm)");
+  hEmittanceXY->SetYTitle("Position on Target Y (mm)"); 
   TEllipse *target = new TEllipse(0,0,7.5,7.5);
   target->SetFillStyle(0000);
   target->SetLineStyle(2);
@@ -172,7 +176,7 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 
   canvas1->cd(6);
   hIncidentZ->Draw();
-  hIncidentZ->SetXTitle("Z {mm}");
+  hIncidentZ->SetXTitle("Z (mm)");
 
   // Display detector histograms
   canvas2 = new TCanvas("canvas2", "Emitted particle properties",500,500);
