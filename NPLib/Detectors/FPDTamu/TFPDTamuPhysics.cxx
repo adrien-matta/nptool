@@ -24,6 +24,7 @@
 #include "TFPDTamuPhysics.h"
 
 //   STL
+#include <algorithm>
 #include <sstream>
 #include <iostream>
 #include <cmath>
@@ -39,6 +40,8 @@ using namespace std;
 #include "NPOptionManager.h"
 //   ROOT
 #include "TChain.h"
+#include "TGraph.h"
+#include "TFitResult.h"
 
 // by Shuya 170417.
 #include "TMath.h"
@@ -69,35 +72,55 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 }
 
 
-///////////////////////////////////////////////////////////////////////////
-//Copied Greg's function from Analysis.cxx by Shuya 170417.
-double TFPDTamuPhysics::calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
+double TFPDTamuPhysics::CalculateFPPositionX(double FPPositionZ)
 {
-	vector<double> X, Z;
-	for(int i=0; i< len; ++i) {
-		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
-		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
-	}
+	if(fabs(AWireAngle - -99) < 1e-6) { return -99; }
 
-	Long64_t N = X.size();
-	double meanZ = TMath::Mean(N, &Z[0]);
-	double meanX = TMath::Mean(N, &X[0]);
-	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
-	for(size_t i=0; i< N; ++i) {
-		meanZ2 += Z[i]*Z[i];
-		meanX2 += X[i]*X[i];
-		meanXZ += Z[i]*X[i];
-	}
-	meanZ2 /= N;
-	meanXZ /= N;
+	auto it0 = std::find(AWireDetNumber.begin(), AWireDetNumber.end(), 0);
+	if(it0 == AWireDetNumber.end()) { return -99; }
 
-	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
-	R2 = pow(meanXZ - meanX*meanZ, 2) / 
-		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
+	const double X0 = AWirePositionX.at(it0 - AWireDetNumber.begin());
+	const double Z0 = AWirePositionZ.at(it0 - AWireDetNumber.begin());
+	return X0 + (FPPositionZ-Z0)*tan(AWireAngle);
+}
 
-	/// TODO::: R2 doesn't seem to make sense... look into it!
+double TFPDTamuPhysics::CalculateFPAngle()
+{
+	// calculate linear fit of FP using analytic formula
+	// formula taken from Wikipedia:
+	// https://en.wikipedia.org/wiki/Simple_linear_regression
+	AWireFitR2 = 0;
+	double angle = -99;
+
+	Long64_t N = AWirePositionX.size();			
+	if(N > 1) {
+		double meanZ = TMath::Mean(N, &AWirePositionZ[0]);
+		double meanX = TMath::Mean(N, &AWirePositionX[0]);
+				
+		double NUM = 0, DEN = 0;
+		for(int i=0; i< N; ++i) {
+			NUM += (AWirePositionZ[i] - meanZ)*(AWirePositionX[i] - meanX);
+			DEN += pow(AWirePositionZ[i] - meanZ, 2);
+		}
+
+		if(DEN != 0) {
+			double slope = NUM/DEN;
+			double offset = meanX - slope*meanZ;
 	
-	return slope;
+			// calculate R2 using Wikipedia algorithm
+			// https://en.wikipedia.org/wiki/Coefficient_of_determination
+			double SSres = 0, SStot = 0;
+			for(int i=0; i< N; ++i) {
+				SSres += pow(AWirePositionX[i] - (slope*AWirePositionZ[i] + offset), 2);
+				SStot += pow(AWirePositionX[i] - meanX, 2);
+			}
+		
+			AWireFitR2 = SStot != 0 ? 1 - SSres / SStot : 0;
+			angle = atan(slope);
+		}
+	}
+	
+	return angle;
 }
 
 
@@ -181,6 +204,10 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
         }
       }
     }
+		// Calculate FP angle and virtual position
+		AWireAngle = CalculateFPAngle();
+		AWireFPPositionX = CalculateFPPositionX(AWireFPPositionZ);
+		
     // Calculate beam direction from X and Z position //check me!
     double a = 1, b = 0, Zplast = +547; // X = aZ + b // check me!
     IonDirection.SetXYZ(1,0,a); //(1,a) is the direction vector in the plane X,Z. no information about Y 
@@ -569,6 +596,9 @@ void TFPDTamuPhysics::Clear() {
   AWireRightCharge.clear();
   AWirePositionX.clear();
   AWirePositionZ.clear();
+	AWireAngle = -99 ;
+	AWireFitR2 = -99 ;
+	AWireFPPositionX = -99;
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
@@ -685,6 +715,7 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
   vector<string> token_micro = {"UPSTREAM-LEFT","UPSTREAM-RIGHT"};
   vector<string> token_awire = {"LEFT","RIGHT"};
   vector<string> token_plast = {"UPSTREAM-LEFT","UPSTREAM-RIGHT"};
+	vector<string> token_focus = {"POS"};
 
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
@@ -725,6 +756,19 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
         TVector3 left = blocks[i]->GetTVector3("LEFT","mm");
         TVector3 right = blocks[i]->GetTVector3("RIGHT","mm");  
         AddAWire(left,right);
+      }
+
+      else{
+        cout << "Warning: check your input file formatting " << endl;
+      }
+    }
+    else if(blocks[i]->GetMainValue() == "FOCUS"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "//// Focal plane " << i+1 << endl; 
+
+      if(blocks[i]->HasTokenList(token_focus)){
+				double fpPos = blocks[i]->GetDouble("POS","mm");
+				AWireFPPositionZ = fpPos / NPUNITS::cm;
       }
 
       else{

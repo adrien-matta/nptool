@@ -86,6 +86,10 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> AWireRightCharge;
   vector<double> AWirePositionX;
   vector<double> AWirePositionZ;
+	double AWireAngle;
+	double AWireFitR2;
+	double AWireFPPositionX;
+	double AWireFPPositionZ;
   //Plastic scintillator
   vector<double> PlastLeftCharge;
   vector<double> PlastRightCharge;
@@ -116,9 +120,6 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     // same as BuildPhysicalEvent() method but with a simpler
     // treatment
     void BuildSimplePhysicalEvent();
-
-//to calculate particle angles from Awire positions. By Shuya 170417
-    double calculate_fit_slope(int len,double* Aw_X, double* Aw_Z, double& R2);
 
     // same as above but for online analysis
     void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
@@ -177,6 +178,12 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     
     void Dump() const;
 
+		// calculate virtual focal plane x-position
+		double CalculateFPPositionX(double FPPositionZ);
+		// calculate angle at FP by doing a linear fit to all 4 wire positions
+		double CalculateFPAngle();
+
+		
   // objects are not written in the TTree
   private:
     TFPDTamuData*         m_EventData;        //!
