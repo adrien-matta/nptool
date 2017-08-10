@@ -253,12 +253,13 @@ double CalibrationManager::ApplyResistivePositionCalibration(const string& Param
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
   it = fCalibrationCoeff.find(ParameterPath)  ;
-  vector<double> Coeff = it->second  ;
 
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
     return DeltaRawValue ;
   }
+
+  vector<double> Coeff = it->second  ;
 
   // Check that the number of coeff is ok
   if(it->second.size()!=2) 
