@@ -903,7 +903,7 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
 void TFPDTamuPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus("FpdTAMU",  true );
-  inputChain->SetBranchStatus("fFPD*" , true )   ;
+//  inputChain->SetBranchStatus("fFPD*" , true )   ;
   inputChain->SetBranchAddress("FpdTAMU", &m_EventData );
 }
 
