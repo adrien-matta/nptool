@@ -124,8 +124,18 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       StripSector_E.push_back(Sector_E) ;
       StripSector_T.push_back(Sector_T) ;
 
+//by Shuya 170703
+/*
       if(m_Take_E_Ring)
         Strip_E.push_back(Ring_E) ;
+      else
+        Strip_E.push_back(Sector_E) ;
+*/
+      if(m_Take_E_Ring)
+	{
+		if(Ring_E)	Strip_E.push_back(Ring_E) ;
+		else	Strip_E.push_back(Sector_E) ;
+	}
       else
         Strip_E.push_back(Sector_E) ;
 

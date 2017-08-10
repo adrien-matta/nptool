@@ -36,6 +36,38 @@ using namespace std;
 #include "TFitResult.h"
 #include "TFitResultPtr.h"
 
+////// INTERNAL FUNCTIONS //////////
+namespace {
+double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
+{
+	vector<double> X, Z;
+	for(int i=0; i< len; ++i) {
+		if(Aw_X[i] != -1000) { X.push_back(Aw_X[i]); }
+		if(Aw_Z[i] != -1000) { Z.push_back(Aw_Z[i]); }
+	}
+
+	Long64_t N = X.size();
+	double meanZ = TMath::Mean(N, &Z[0]);
+	double meanX = TMath::Mean(N, &X[0]);
+	double meanZ2 = 0, meanXZ = 0, meanX2 = 0;
+	for(size_t i=0; i< N; ++i) {
+		meanZ2 += Z[i]*Z[i];
+		meanX2 += X[i]*X[i];
+		meanXZ += Z[i]*X[i];
+	}
+	meanZ2 /= N;
+	meanXZ /= N;
+
+	double slope = (meanXZ - meanX*meanZ) / (meanZ2 - meanZ*meanZ);
+	R2 = pow(meanXZ - meanX*meanZ, 2) /
+		((meanZ2 - meanZ*meanZ) * (meanX2 - meanX*meanX));
+
+	/// TODO::: R2 doesn't seem to make sense... look into it!
+
+	return slope;
+} }
+
+
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -59,7 +91,7 @@ void Analysis::Init(){
   cout << "Original Beam energy (entrance of target): " << OriginalBeamEnergy << endl ;
 
   // target thickness
-  TargetThickness = 0*m_DetectorManager->GetTargetThickness();
+  TargetThickness = m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
 
   // energy losses
@@ -79,20 +111,18 @@ void Analysis::Init(){
 //Copied from Momo's Slack 170222.
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  //LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
-  LightTarget = NPL::EnergyLoss("He4_"+TargetMaterial+".SRIM","SRIM",10 );
+  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
 //by Shuya 170505
 //Note when you analyze the triple alpha calibration run, use He4_Al and He4_Si
-  //LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
   //LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
-  //LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
-  LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
+  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
 
 //by Shuya 170530
   //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
 
-  //BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
-  BeamTarget = NPL::EnergyLoss("He4_"+TargetMaterial+".SRIM","SRIM",10);
+  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -180,7 +210,9 @@ void Analysis::TreatEvent(){
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+	//by Shuya 170807 (from 22Ne(d,d))
+      TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
@@ -201,7 +233,7 @@ void Analysis::TreatEvent(){
     // Correct for energy loss using the thickness of the target and the dead layer
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
 //by Shuya 170530
-    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( Energy ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
+    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
    /////////////////////////////
@@ -210,6 +242,9 @@ void Analysis::TreatEvent(){
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
+
+//by Shuya 170703
+    Ex_Hyball = Ex;
 
     /////////////////////////////
     // Part 5 : Implementing randomised position impact matrix for the Hyball
@@ -227,7 +262,9 @@ void Analysis::TreatEvent(){
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+	//by Shuya 170807 (from 22Ne(d,d))
+      TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
       //Angle of emission wrt to beam
       ThetaLab = HitDirection.Angle( BeamDirection );
@@ -259,11 +296,13 @@ void Analysis::TreatEvent(){
 
     // Evaluate energy using the thickness, Target and Si dead layer Correction
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
-    //ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction -> ReconstructRelativistic( ELab , ThetaLab );
+//by Shuya 170703
+    Ex_Barrel = Ex;
 
     //////////////////////////////
     // Part 4 : Theta CM Calculation
@@ -460,6 +499,9 @@ void Analysis::ReInitValue(){
   ThetaLab = -1000;
   ThetaCM = -1000;
   LightParticleDetected = false ;
+//by Shuya 170703
+  Ex_Hyball = -1000 ;
+  Ex_Barrel = -1000 ;
 
   //Simu
   //Original_ELab = -1000;
@@ -514,6 +556,10 @@ void Analysis::ReInitValue(){
 void Analysis::InitOutputBranch() {
   //Tiara
   RootOutput::getInstance()->GetTree()->Branch("Ex",&Ex,"Ex/D");
+//by Shuya 170703
+  RootOutput::getInstance()->GetTree()->Branch("Ex_Hyball",&Ex_Hyball,"Ex_Hyball/D");
+  RootOutput::getInstance()->GetTree()->Branch("Ex_Barrel",&Ex_Barrel,"Ex_Barrel/D");
+
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
