@@ -278,14 +278,15 @@ double CalibrationManager::ApplyResistivePositionCalibrationDebug(const string& 
   //   Find the good parameter in the Map
   // Using Find method of stl is the fastest way
   it = fCalibrationCoeff.find(ParameterPath)  ;
-  vector<double> Coeff = it->second  ;
-
+	
   // If the find methods return the end iterator it's mean the parameter was not found
   if(it == ite ){
       cout << " PARAMETER " << ParameterPath << " IS NOT FOUND IN THE CALIBRATION DATA BASE  " << endl ;
     return DeltaRawValue ;
   }
 
+	vector<double> Coeff = it->second  ;
+	
   // Check that the number of coeff is ok
   if(Coeff.size()!=2){
       cout << " NUMBER OF COEFF " << Coeff.size() << " IS DIFFERENT THAN TWO " << endl ;
