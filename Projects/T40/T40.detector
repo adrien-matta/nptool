@@ -71,6 +71,10 @@ FPDTamu AWIRE
  LEFT=  +200   +00   +497 mm
  RIGHT= -200   +00   +497 mm
 %%%%%%%%%%%%%%%%%%%%%
+% Focal Plane
+FPDTamu FOCUS
+ POS= +30 mm
+%%%%%%%%%%%%%%%%%%%%%
 % All Plastic detectors
 FPDTamu PLAST
  UPSTREAM-LEFT=    +198   +00   +547 mm

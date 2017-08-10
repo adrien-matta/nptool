@@ -423,9 +423,8 @@ void Analysis::TreatEvent(){
 	for(int i=0; i< kNumAw; ++i) {
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
-
-			double slope = TF->calculate_fit_slope(kNumAw, Aw_X, Aw_Z, Aw_ThetaFit_R2); // slope of X vs. Z
-			Aw_ThetaFit = TMath::ATan(slope)*(180/TMath::Pi());
+			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
+			Aw_ThetaFit_R2 = TF->AWireFitR2;
 			break;
 		}
 	}

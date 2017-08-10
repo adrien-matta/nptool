@@ -513,7 +513,7 @@ void TTiaraHyballPhysics::AddParameterToCalibrationManager(){
 void TTiaraHyballPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain()   ;
   inputChain->SetBranchStatus( "TiaraHyball" , true )               ;
-  inputChain->SetBranchStatus( "fTiaraHyball_*" , true )               ;
+//  inputChain->SetBranchStatus( "fTiaraHyball_*" , true )               ;
   inputChain->SetBranchAddress( "TiaraHyball" , &m_EventData )      ;
 }
 

@@ -377,7 +377,7 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
 void TTiaraBarrelPhysics::InitializeRootInputRaw(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus( "TiaraBarrel" , true );
-  inputChain->SetBranchStatus( "fTiaraBarrel_*" , true );
+//  inputChain->SetBranchStatus( "fTiaraBarrel_*" , true );
   inputChain->SetBranchAddress( "TiaraBarrel" , &m_EventData );
 }
 
