@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--   GDML materials definition from the file : "PlungerKammerMiniballray"
+	Processed the 28/06/2017 at 14h07 by the GDML module of Fastrad 3.7.0.0 -->
+
+<materials>
+	<element name="videRef" formula="VACUUM" Z="1">
+		<atom value="1"/>
+	</element>
+	<element name="aluminum" formula="Al" Z="13">
+		<atom value="26.981539"/>
+	</element>
+	<element name="silicon" formula="Si" Z="14">
+		<atom value="28.085500"/>
+	</element>
+
+	<material name="VACUUM" formula="VACUUM">
+		<D value ="1E-25" unit="g/cm3"/>
+		<fraction n="1.0" ref="videRef"/>
+	</material>
+	<material name="ALUMINUM" formula="ALUMINUM">
+		<D value ="2.700000" unit="g/cm3"/>
+		<fraction n="1.000000" ref="aluminum"/>
+	</material>
+	<material name="SILICON" formula="SILICON">
+		<D value ="2.330000" unit="g/cm3"/>
+		<fraction n="1.000000" ref="silicon"/>
+	</material>
+</materials>
+
