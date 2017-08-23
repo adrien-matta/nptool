@@ -53,13 +53,31 @@ class Miniball : public NPS::VDetector{
     // Cylindric plastic
     void AddMiniball(double R,
         double Theta,
-        double Phi);  
+        double Phi,
+        double Alpha);  
 
-    G4AssemblyVolume* BuildClusterDetector();
+
+    G4AssemblyVolume* BuildClusterDetector(double Alpha);
+    G4AssemblyVolume* BuildClusterDetectorRotation();
   
   private:
     G4GDMLParser m_gdmlparser;
     G4AssemblyVolume* m_ClusterDetector;
+    vector <G4AssemblyVolume*> ClusterDetectorHolder;
+    int ClusterDetectorCounter;
+
+    G4LogicalVolume* m_LogicalGDML;
+    //G4VPhysicalVolume* m_PhysicalGDML;
+
+    G4String m_GDMLPath;
+    G4String m_GDMLName;
+    G4String m_GDMLWorld;
+    G4bool constructChamber;
+
+    // Little trick to avoid warning in compilation: Use a PVPlacement "buffer".
+    // If don't you will have a Warning unused variable 'myPVP'
+    G4VPhysicalVolume* PVPBuffer ;
+
     double m_NumberOfPlacedVolume;    
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
@@ -72,6 +90,9 @@ class Miniball : public NPS::VDetector{
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method
     void ConstructDetector(G4LogicalVolume* world) ;
+
+    // Adding the "plunger" coulex chamber
+    void BuildChamber(G4LogicalVolume*);
 
     // Add Detector branch to the EventTree.
     // Called After DetecorConstruction::AddDetector Method
@@ -101,6 +122,7 @@ class Miniball : public NPS::VDetector{
     vector<double>  m_R; 
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
+    vector<double>  m_Alpha; 
     
     //   Shape type
     vector<string> m_Shape ;

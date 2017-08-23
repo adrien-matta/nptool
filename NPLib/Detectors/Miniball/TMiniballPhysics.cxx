@@ -198,7 +198,8 @@ void TMiniballPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"R","Theta","Phi"};
+  vector<string> token = {"R","Theta","Phi","Alpha"};
+  vector<string> chamberToken = {"GDMLFilePath","GDMLFileName","GDMLWorldName"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
@@ -207,8 +208,11 @@ void TMiniballPhysics::ReadConfiguration(NPL::InputParser parser) {
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
+      double Alpha = blocks[i]->GetDouble("Alpha","deg");
 
 //      AddDetector(R,Theta,Phi);
+    }
+    else if (blocks[i]->HasTokenList(chamberToken)){
     }
 
     else{
