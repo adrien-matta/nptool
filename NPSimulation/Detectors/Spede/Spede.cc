@@ -72,6 +72,9 @@
 #include "G4CashKarpRKF45.hh"
 #include "G4RKG3_Stepper.hh"
 
+// CADMESH //
+#include "CADMesh.hh"
+
 using namespace std;
 using namespace CLHEP;
 
@@ -84,7 +87,7 @@ namespace Spede_NS{
   const double ResoEnergy = 2.7*keV ;//Sigma not actual resolution// 2.7*2.2 ~6keV
   //const double Radius = 50*mm ; 
   //const double Width = 100*mm ;
-  const double Thickness = 1*mm ;
+  const double Thickness = 1.0*mm ;
   //const string Material = "BC400";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -244,17 +247,18 @@ G4LogicalVolume* Spede::BuildLadder(G4int)
     G4VisAttributes *ladderVA = new G4VisAttributes(G4Colour(1.0,0.65,0.));
     m_Ladder -> SetVisAttributes(ladderVA);
 
+
     return m_Ladder;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Build PCB
 void Spede::BuildPCB(G4double si_thickness,
     G4double pcb_thickness,
-    G4RotationMatrix *Rot,
+    G4RotationMatrix *Rot_old,
     G4ThreeVector Det_pos,
     G4LogicalVolume *world)
 {
-  G4Tubs* SPEDE_pcb= new G4Tubs("SPEDE pcb",
+  /*G4Tubs* SPEDE_pcb= new G4Tubs("SPEDE pcb",
         8.5*mm,
         70.*mm,
         pcb_thickness/2*mm,
@@ -266,12 +270,12 @@ void Spede::BuildPCB(G4double si_thickness,
     G4VisAttributes *pcbVA = new G4VisAttributes(G4Colour(0.0,0.3,0.0));
     m_SPEDE_pcb -> SetVisAttributes(pcbVA);
   
-	G4ThreeVector pcb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness/2);
-	new G4PVPlacement(G4Transform3D(*Rot,pcb_pos),
-			m_SPEDE_pcb,
-			"SPEDE pcb", world, false,0);
+	//G4ThreeVector pcb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness/2);
+//	new G4PVPlacement(G4Transform3D(*Rot,pcb_pos),
+//			m_SPEDE_pcb,
+//			"SPEDE pcb", world, false,0);
 
-	G4double cb_thickness = 3.;
+	//G4double cb_thickness = 3.;
 	G4Tubs* spede_cb = new G4Tubs("SpedeCoolingBlock",20./2.*mm,74./2.*mm,cb_thickness/2*mm,0,360*deg);
 	G4Material* CoolingBlockMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Cu");
 
@@ -280,12 +284,159 @@ void Spede::BuildPCB(G4double si_thickness,
 	G4VisAttributes *cbVA = new G4VisAttributes(G4Colour(1.0,0.3,0.0));
 	m_SPEDE_cb -> SetVisAttributes(cbVA);
 
-	G4ThreeVector cb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness+cb_thickness/2);
+	//G4ThreeVector cb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness+cb_thickness/2);
 
-	new G4PVPlacement(G4Transform3D(*Rot,cb_pos),
-			m_SPEDE_cb,
-			"SPEDE cb", world, false,0);
+	//new G4PVPlacement(G4Transform3D(*Rot,cb_pos),
+	//		m_SPEDE_cb,
+	//		"SPEDE cb", world, false,0);
+*/
 
+	//TESTING for target interactions
+	/*
+	G4double target_thickness = 10.;//in um
+	G4Tubs* spede_target = new G4Tubs("SpedeTarget",0.*mm,2./2.*mm,target_thickness/2*um,0,360*deg);
+	G4Material* TargetMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Au");
+
+	G4LogicalVolume* m_SPEDE_target = new G4LogicalVolume(spede_target, TargetMaterial, "SPEDE_target_log");
+
+	G4VisAttributes *targetVA = new G4VisAttributes(G4Colour(1.0,0.3,0.0));
+	m_SPEDE_target -> SetVisAttributes(targetVA);
+
+	G4ThreeVector target_pos = G4ThreeVector(0,0,0);
+
+	new G4PVPlacement(G4Transform3D(*Rot,target_pos),
+			m_SPEDE_target,
+			"SPEDE target", world, false,0);//*/
+
+    G4RotationMatrix* rot = new G4RotationMatrix();
+    rot->rotateY(180*deg);
+    G4ThreeVector offset;
+    offset = G4ThreeVector(0, 0, -21.5*mm);//Sets centre to 0 on Z axis
+
+	string filename;
+	CADMesh * mesh;
+	G4VSolid* cad_solid;
+	G4LogicalVolume* cad_logical;
+
+	
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_pcb.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/Untitled.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("PCB"),
+			"Spede_pcb", 0, 0, 0);
+
+	G4ThreeVector pcb_pos = Det_pos + Det_pos.unit()*(si_thickness/2);
+	//Place
+	new G4PVPlacement(rot, pcb_pos, cad_logical,
+                                     "SPEDE_PCB", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.0, 0.3, 0., 1.0));
+
+    offset = G4ThreeVector(0, 0, -20.6*mm);//Sets centre to 0 on Z axis
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_preamps.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/Untitled.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Cu"),
+			"spede_preamps", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, pcb_pos, cad_logical,
+                                     "SPEDE_preamps", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.8, 0.7, 0., 1.0));
+
+	G4double cb_thickness = 1.;
+    offset = G4ThreeVector(0, 0, -23.1*mm);//Sets centre to 0 on Z axis
+	G4ThreeVector cb_pos = Det_pos + Det_pos.unit()*(si_thickness+pcb_thickness+cb_thickness);
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_cb.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/Untitled.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Cu"),
+			"spede_coolingblock", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, cb_pos, cad_logical,
+                                     "SPEDE_coolingblock", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(1.0, 0.7, 0., 1.0));
+
+	G4ThreeVector connector_pos = cb_pos + Det_pos.unit()*(15.);
+    offset = G4ThreeVector(0, 0, -38.1*mm);//Sets centre to 0 on Z axis
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_connectors_al.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/Untitled.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Al"),
+			"spede_connectors_al", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, connector_pos, cad_logical,
+                                     "SPEDE_connectors_al", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.8, 0.8, 0.8, 1.0));
+
+	connector_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness+cb_thickness/2+10.5);
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_connectors_plastic.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/Untitled.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    //mesh->SetOffset(offset-pcb_pos);
+    mesh->SetOffset(G4ThreeVector(0,0,0));
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("PCB"),
+			"spede_connectors_plastic", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_connectors_plastic", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.0, 0.3, 0., 1.0));
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Build chamber
@@ -378,6 +529,7 @@ void Spede::BuildChamber(G4LogicalVolume *world)
 
     G4Material* ChamberMaterial= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
 
+/*
     G4LogicalVolume* Chamber_log
       = new G4LogicalVolume(TCBody, ChamberMaterial, "TargetChamber_log");
 
@@ -395,7 +547,123 @@ void Spede::BuildChamber(G4LogicalVolume *world)
 
     position.set(0, 0, -TCWidth-62.*mm);
     new G4PVPlacement(0,position, TCPol2_log, "TC_pol2_phys", world, false, 0);
+*/
+    // CAD model rotation and position
+    G4RotationMatrix * rot = new G4RotationMatrix();
+    rot->rotateY(180*deg);
+    G4ThreeVector offset;
+    offset = G4ThreeVector(0, 0, 0);//Places chamber front face of target is 0
 
+	string filename;
+	CADMesh * mesh;
+	G4VSolid* cad_solid;
+	G4LogicalVolume* cad_logical;
+
+	
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_al.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Al"),
+			"spede_chamber", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_chamber", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.8, 0.8, 0.8, 0.7));
+
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_brass.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Brass"),
+			"spede_brass", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_brass", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.86, 0.78, 0., 1));
+
+	//Read in file
+	/*filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_cu.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Cu"),
+			"cad_logical", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_copper", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(1.0, 0.5, 0., 1));
+	*/
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_pb.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Pb"),
+			"spede_pb", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_lead", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.4, 0.4, 0.4, 1));
+
+	//Read in file
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_w.stl";
+
+	//Create the mesh
+    mesh = new CADMesh((char*) filename.c_str());
+    mesh->SetScale(mm);
+    mesh->SetOffset(offset);
+    mesh->SetReverse(false);
+	
+	//Attach to solid and logical
+	cad_solid = mesh->TessellatedMesh();
+	cad_logical = new G4LogicalVolume(cad_solid,
+			MaterialManager::getInstance()->GetMaterialFromLibrary("W"),
+			"spede_w", 0, 0, 0);
+
+	//Place
+	new G4PVPlacement(rot, G4ThreeVector(), cad_logical,
+                                     "SPEDE_tungsten", world, false, 0);
+	//colour
+    cad_logical->SetVisAttributes(G4Color(0.6, 0.6, 0.6, 1));
 }
 void Spede::ConstructEMField(G4String fieldFileName)
 {
@@ -453,13 +721,15 @@ void Spede::ConstructEMField(G4String fieldFileName)
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
-void Spede::ReadConfiguration(NPL::InputParser parser){
+void Spede::ReadConfiguration(NPL::InputParser parser)
+{
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Spede");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
   vector<string> cart = {"POS","Shape"};
   vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> field = {"Field"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(cart)){
@@ -479,6 +749,11 @@ void Spede::ReadConfiguration(NPL::InputParser parser){
       string Shape = blocks[i]->GetString("Shape");
       AddDetector(R,Theta,Phi,Shape);
     }
+	else if(blocks[i]->HasTokenList(field)){
+        cout << endl << "////  Spede " << i+1 <<  endl;
+		string fieldName = blocks[i]->GetString("Field");
+		ConstructEMField(fieldName);
+	}
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);
@@ -493,7 +768,7 @@ void Spede::ReadConfiguration(NPL::InputParser parser){
 // Called After DetecorConstruction::AddDetector Method
 void Spede::ConstructDetector(G4LogicalVolume* world){
 
-	ConstructEMField("130617SPEDE+CD.TABLE");
+	//ConstructEMField("130617SPEDE+CD.TABLE");
 
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
 
@@ -519,7 +794,7 @@ void Spede::ConstructDetector(G4LogicalVolume* world){
     if(m_Shape[i] == "Silicon")
     {
       double si_thickness = Spede_NS::Thickness;
-      double pcb_thickness = 1.;
+      double pcb_thickness = 0.3;
      
       BuildPCB(si_thickness, pcb_thickness, Rot, Det_pos, world);
 	  BuildChamber(world);
