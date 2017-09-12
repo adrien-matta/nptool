@@ -78,7 +78,9 @@ void TMiniballData::Dump() const {
  
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fMiniball_A_DetectorNbr[i]
-         << " Angle: " << fMiniball_Angle[i];
+         << " Angle: Theta: " << fMiniball_Angle[i].Px()
+         << " Angle: Phi: " << fMiniball_Angle[i].Py()
+         << " Angle: Alpha: " << fMiniball_Angle[i].Pz();
   }
   
 

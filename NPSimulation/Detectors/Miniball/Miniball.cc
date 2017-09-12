@@ -99,7 +99,6 @@ void Miniball::BuildChamber(G4LogicalVolume* world)
 		G4RotationMatrix* LRot = VPV->GetRotation();
 
 		name = LV->GetSolid()->GetName();
-		cout << name << endl;
 
 		if (name != "Tessellated_Shape_6") PVPBuffer = new G4PVPlacement(LRot, LTrans, LV, name, world, false, 0 );
 	}
@@ -138,7 +137,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
 					HPGE->SetVisAttributes(Red);
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
-					//cout << "A " << Rot->getTheta()/M_PI*180 << " " << Rot->getPhi()/M_PI*180 << "\n";
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
@@ -151,7 +149,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
 					HPGE->SetVisAttributes(Green);
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
-					//cout << "B " << Rot->getTheta()/M_PI*180 << " " << Rot->getPhi()/M_PI*180 << "\n";
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
@@ -164,7 +161,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
 					HPGE->SetVisAttributes(Blue);
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
-					//cout << "C " << Rot->getTheta()/M_PI*180 << " " << Rot->getPhi()/M_PI*180 << "\n";
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
@@ -176,7 +172,6 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					G4LogicalVolume* Capsule= VPV->GetLogicalVolume(); 
 					Capsule->SetVisAttributes(Caps);
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
-					cout << "nozzle " << Rot->getTheta()/M_PI*180 << " " << Rot->getPhi()/M_PI*180 << "\n";
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
@@ -331,10 +326,24 @@ void Miniball::ReadSensitive(const G4Event* event){
 		if(Energy>Miniball_NS::EnergyThreshold){
 			double Time = RandGauss::shoot(Info[1],Miniball_NS::ResoTime);
 			int DetectorNbr = (int) Info[7];
-			double Angle = RandGauss::shoot(Info[5]/deg,Miniball_NS::ResoAngle);
+			TVector3 Angle;  
+			//Angle.SetX(RandGauss::shoot(Info[5]/deg,Miniball_NS::ResoAngle));
+			//Angle.SetY(RandGauss::shoot(Info[6]/deg,Miniball_NS::ResoAngle));
+			//Angle.SetZ(0.);
+			Angle.SetX(m_Theta[DetectorNbr-1]);
+			Angle.SetY(m_Phi[DetectorNbr-1]);
+			Angle.SetZ(m_Alpha[DetectorNbr-1]);
+
 			m_Event->SetEnergy(DetectorNbr,Energy);
 			m_Event->SetAngle(DetectorNbr,Angle);
 			m_Event->SetTime(DetectorNbr,Time); 
+
+			// Interraction Coordinates
+			ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+			ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+			ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+			ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+			ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
 		}
 	}
 	// clear map for next event

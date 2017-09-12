@@ -105,7 +105,7 @@ void TMiniballPhysics::PreTreat() {
   
   // Angle
   for (UShort_t i = 0; i < m_EventData->GetMultAngle(); ++i) {
-    Double_t Angle = m_EventData->Get_Angle(i);
+    TVector3 Angle = m_EventData->Get_Angle(i);
     m_PreTreatedData->SetAngle(m_EventData->GetA_DetectorNbr(i), Angle);
   }
   

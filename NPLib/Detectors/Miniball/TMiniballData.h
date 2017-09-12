@@ -28,6 +28,7 @@ using namespace std;
 
 // ROOT
 #include "TObject.h"
+#include "TVector3.h"
 
 class TMiniballData : public TObject {
   //////////////////////////////////////////////////////////////
@@ -40,7 +41,7 @@ class TMiniballData : public TObject {
 
     // Angle
     vector<UShort_t>   fMiniball_A_DetectorNbr;
-    vector<Double_t>   fMiniball_Angle;
+    vector<TVector3>   fMiniball_Angle;
 
     // Time
     vector<UShort_t>   fMiniball_T_DetectorNbr;
@@ -83,10 +84,10 @@ class TMiniballData : public TObject {
     // Angle
     inline void SetA_DetectorNbr(const UShort_t& DetNbr)
       {fMiniball_A_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_Angle(const Double_t& Angle)
+    inline void Set_Angle(const TVector3& Angle)
       {fMiniball_Angle.push_back(Angle);}//!
     // Prefer global setter so that all vectors have the same size
-    inline void SetAngle(const UShort_t& DetNbr,const Double_t& Angle) {
+    inline void SetAngle(const UShort_t& DetNbr,const TVector3& Angle) {
       SetA_DetectorNbr(DetNbr);
       Set_Angle(Angle);
     };//!
@@ -118,7 +119,7 @@ class TMiniballData : public TObject {
       {return fMiniball_A_DetectorNbr.size();}
     inline UShort_t GetA_DetectorNbr(const unsigned int &i) const 
       {return fMiniball_A_DetectorNbr[i];}//!
-    inline Double_t Get_Angle(const unsigned int &i) const 
+    inline TVector3 Get_Angle(const unsigned int &i) const 
       {return fMiniball_Angle[i];}//!
 
 
