@@ -83,10 +83,10 @@ namespace Sage_NS
 	// Energy and time Resolution
 	const double EnergyThreshold = 10.0*keV;
 	const double ResoTime = 100.*ns ;
-	const double ResoEnergy = 6.0*keV ;
+	const double ResoEnergy = 2.7*keV ;
 	//const double Radius = 24*mm ;//Radius of SAGE detector
 	//const double Width = 100*mm ;
-	const double Thickness = 1*mm ;//Thickness of SAGE detector
+	//const double Thickness = 1*mm ;//Thickness of SAGE detector
 	const double SageRotation = 3.2*deg;
 	//const string Material = "Silicon";
 }
@@ -104,6 +104,10 @@ Sage::Sage()
 	G4String fieldFileName = "SageEMField.table";//TODO make this a user set variable
 	fHVFieldStrength = 0.7;//TODO make this a user set variable
 	//fField.Put(0);
+
+	CarbonFoils = 0;
+	InnerDiameter = 39.*mm;
+	SiThickness = 1.*mm;
 
 	// RGB Color + Transparency
 	m_VisSilicon = new G4VisAttributes(G4Colour(0, 0.5, 0));   
@@ -135,7 +139,7 @@ G4LogicalVolume* Sage::BuildSiliconDetector()
 {
 	if(!m_SiliconDetector)
 	{
-		G4Tubs* tub = new G4Tubs("SageSilicon",0,24.*mm,Sage_NS::Thickness*0.5,0,360*deg);
+		G4Tubs* tub = new G4Tubs("SageSilicon",0,24.*mm,SiThickness*0.5,0,360*deg);
 
 		G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
 		m_SiliconDetector = new G4LogicalVolume(tub,DetectorMaterial,"logic_Sage_silicon",0,0,0);
@@ -229,7 +233,7 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	/*----------------------------------Chamber----------------------------------*/
 
 	G4Box* OuterChamber = new G4Box("Outer Chamber", 480.76/2*mm, 492.76/2*mm, 256.76/2*mm);
-	G4Box* InnerChamber = new G4Box("Outer Chamber", 476./2*mm, 490./2*mm, 252./2*mm);
+	G4Box* InnerChamber = new G4Box("Inner Chamber", 476./2*mm, 490./2*mm, 252./2*mm);
 	G4Tubs* Aperature = new G4Tubs("Aperature", 0, 167./2*mm, 4.76/2*mm, 0., 360.*deg);
 	G4Tubs* MagnetPipe = new G4Tubs("Magent Pipe", 148./2*mm, 167./2*mm, 567.2/2*mm, 0., 360.*deg);
 
@@ -607,10 +611,15 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	//G4Tubs* Target= new G4Tubs("Target", 0., 25.4*mm/2, 0.3*um/2.,0.,360.*deg);
 	//G4Tubs* RVTarget= new G4Tubs("RVTarget", 0., 26*mm/2, 0.58*um/2.,0.,360.*deg);
 	/*----------------------------------Connector----------------------------------*/
+	// ORIGINALS
+	//G4Tubs* Connector1 = new G4Tubs("Connector1", 39./2*mm, 47./2*mm,48.5/2*mm,0.,360.*deg);
+	//G4Tubs* Connector2 = new G4Tubs("Connector2", 44./2*mm, 63./2*mm,115.5/2*mm,0.,360.*deg);
+	//G4Cons* Connector3 = new G4Cons("Connector3", 100./2*mm, 108./2*mm, 44./2*mm, 63./2*mm, 119.5/2*mm, 0., 360.*deg);
+	//G4Tubs* Connector4 = new G4Tubs("Connector4", 109./2*mm, 148./2*mm, 2*mm, 0., 360.*deg);
 
-	G4Tubs* Connector1 = new G4Tubs("Connector1", 39./2*mm, 47./2*mm,48.5/2*mm,0.,360.*deg);
-	G4Tubs* Connector2 = new G4Tubs("Connector2", 44./2*mm, 63./2*mm,115.5/2*mm,0.,360.*deg);
-	G4Cons* Connector3 = new G4Cons("Connector3", 100./2*mm, 108./2*mm, 44./2*mm, 63./2*mm, 119.5/2*mm, 0., 360.*deg);
+	G4Tubs* Connector1 = new G4Tubs("Connector1", InnerDiameter/2, (InnerDiameter+8.*mm)/2,48.5/2*mm,0.,360.*deg);
+	G4Tubs* Connector2 = new G4Tubs("Connector2", (InnerDiameter+5.*mm)/2, (InnerDiameter+24*mm)/2,115.5/2*mm,0.,360.*deg);
+	G4Cons* Connector3 = new G4Cons("Connector3", 100./2*mm, 108./2*mm, (InnerDiameter+5.*mm)/2, (InnerDiameter+24.*mm)/2, 119.5/2*mm, 0., 360.*deg);
 	G4Tubs* Connector4 = new G4Tubs("Connector4", 109./2*mm, 148./2*mm, 2*mm, 0., 360.*deg);
 
 	G4ThreeVector Connector2Placement(0.,0.,-164./2*mm);
@@ -714,12 +723,12 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 	/*----------------------------------Coils----------------------------------*/
 
-	new G4PVPlacement(SageAngle,
-			UpstreamCoilPlacement,
-			UpstreamCoil_log,
-			"UpstreamCoil_phys",
-			world,
-			false, 0, Overlap);
+//	new G4PVPlacement(SageAngle,
+//			UpstreamCoilPlacement,
+//			UpstreamCoil_log,
+//			"UpstreamCoil_phys",
+//			world,
+//			false, 0, Overlap);
 
 	new G4PVPlacement(yRot180deg,
 			DownstreamCoilPlacement,
@@ -808,7 +817,7 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 	/*----------------------------------Carbon Foil Unit----------------------------------*/
 
-	//if (CarbonFoils==true) 
+	if (CarbonFoils==1) 
 	{
 		G4cout << "Carbon foils in" << endl;
 		new G4PVPlacement(SageAngle,
@@ -892,8 +901,8 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	DownstreamCoil_log-> SetVisAttributes(amberVA);
 
 	/*Target chamber*/
-	TargetChamber_log -> SetVisAttributes(greyVA);
-	//TargetChamber_log->SetVisAttributes (G4VisAttributes::Invisible);
+	//TargetChamber_log -> SetVisAttributes(greyVA);
+	TargetChamber_log->SetVisAttributes (G4VisAttributes::Invisible);
 
 	/*Back plate of the target chamber*/
 	//TgtChamberBackPlate_log -> SetVisAttributes(blackVA);
@@ -901,8 +910,8 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	//TgtChamberBackPlate_log->SetVisAttributes (G4VisAttributes::Invisible);
 
 	/*Target wheel*/
-	TgtWheel_log->SetVisAttributes(blueVA);
-	//TgtWheel_log->SetVisAttributes (G4VisAttributes::Invisible);
+	//TgtWheel_log->SetVisAttributes(blueVA);
+	TgtWheel_log->SetVisAttributes (G4VisAttributes::Invisible);
 
 	/*Target frame*/
 	TgtFrame_log-> SetVisAttributes(redVA);
@@ -1005,6 +1014,7 @@ void Sage::ReadConfiguration(NPL::InputParser parser)
 
 	vector<string> cart = {"POS","Shape"};
 	vector<string> sphe = {"R","Theta","Phi","Shape"};
+	vector<string> foil = {"CarbonFoil","InnerDiameter","SiThickness"};
 
 	for(unsigned int i = 0 ; i < blocks.size() ; i++){
 		if(blocks[i]->HasTokenList(cart)){
@@ -1023,6 +1033,13 @@ void Sage::ReadConfiguration(NPL::InputParser parser)
 			double Phi = blocks[i]->GetDouble("Phi","deg");
 			string Shape = blocks[i]->GetString("Shape");
 			AddDetector(R,Theta,Phi,Shape);
+		}
+		else if(blocks[i]->HasTokenList(foil)){
+			if(NPOptionManager::getInstance()->GetVerboseLevel())
+				cout << endl << "////  Sage " << i+1 <<  endl;
+			CarbonFoils = blocks[i]->GetInt("CarbonFoil");
+			InnerDiameter = blocks[i]->GetDouble("InnerDiameter","mm");
+			SiThickness = blocks[i]->GetDouble("SiThickness","mm");
 		}
 		else{
 			cout << "ERROR: check your input file formatting " << endl;
@@ -1045,7 +1062,7 @@ void Sage::ConstructDetector(G4LogicalVolume* world)
 		G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
 		G4ThreeVector Det_pos = G4ThreeVector(-sin(Sage_NS::SageRotation)*(wZ+wX), wY, cos(Sage_NS::SageRotation)*wZ) ;
 
-		Det_pos+=Det_pos.unit()*Sage_NS::Thickness*0.5;
+		Det_pos+=Det_pos.unit()*SiThickness*0.5;
 
 		if(m_Shape[i] == "Silicon")
 		{

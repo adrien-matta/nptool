@@ -117,6 +117,11 @@ class Sage : public NPS::VDetector{
     
     //   Shape type
     vector<string> m_Shape ;
+
+	// Specific flags
+	int CarbonFoils;
+	double InnerDiameter;
+	double SiThickness;
    
     // Visualisation Attribute
     G4VisAttributes* m_VisSilicon;
