@@ -42,16 +42,16 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   t_DetectorNbr = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   t_Position  = aStep->GetPreStepPoint()->GetPosition();
-
+  
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  // N.B: Theta and phi are calculated with respect to (0,0,0)
   t_X = t_Position.x();
   t_Y = t_Position.y();
   t_Z = t_Position.z();
   t_Theta = t_Position.theta();
   t_Phi = t_Position.phi();
-
+  // transforming the position to the local volume
   t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
-
   t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
   t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
 
