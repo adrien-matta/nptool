@@ -32,6 +32,7 @@ npsimulation
 *.detector
 *.source
 NPData/*
+Projects/T40/*
 Inputs/EnergyLoss/*.G4table
 .ls_return
 Documentation/user_guide.log

@@ -458,6 +458,14 @@ double NPL::ApplyUnit(double value, std::string unit){
   if(unit=="void") // apply no unit
     return value;
 
+  else if(unit=="g/cm3"){
+  return value*NPUNITS::g/NPUNITS::cm3; 
+  }
+
+  else if(unit=="kg/cm3"){
+  return value*NPUNITS::kg/NPUNITS::cm3;  
+  }
+  
   else if(unit=="millimeter"){
     return value*NPUNITS::millimeter;
   }
