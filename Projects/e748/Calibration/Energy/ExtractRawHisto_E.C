@@ -23,7 +23,7 @@
 #define	NBSTRIPS	128
 #define NBSILI     16
 
-void ExtractMust2Histos(const char* fname = "run11")
+void ExtractMust2Histos(const char* fname = "run_0019")
 {
 	
 	RootInput* Input = RootInput::getInstance("RunToTreat.txt");
@@ -45,6 +45,7 @@ void ExtractMust2Histos(const char* fname = "run11")
    // prepare output histograms for Must2
    TH1F* hStripXEnergy[NBTELESCOPE][NBSTRIPS];
    TH1F* hStripYEnergy[NBTELESCOPE][NBSTRIPS];
+   //from i=4 because I wanted only the T5,T8
    for (Int_t i = 0; i < NBTELESCOPE; i++) {
       for (Int_t j = 0; j < NBSTRIPS; j++) {
          // strips XE

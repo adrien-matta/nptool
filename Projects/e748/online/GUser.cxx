@@ -79,7 +79,6 @@ GUser::GUser (GDevice* DevIn, GDevice* DevOut):GAcq(DevIn,DevOut){
 //  }
 
 
-
 }
 
 //_____________________________________________________________________________
@@ -92,19 +91,30 @@ GUser::~GUser()  {
 //______________________________________________________________
 
 void GUser::InitUser(){
-  // Initialisation for global  user treatement
-  // In this method , we can make histograms (prevously declared in GUser.h)
-  // Ex : in  GUser.h we have declared           TH1I *fMyHisto ;
-  //      in this methode we make it             fHisto = new TH1I ("MyHisto","MyHisto",1024,0,1024);
-  //      we can include it in database          GetSpectra()->AddSpectrum(fMyHisto,"MyFamily");
+  m_G2RDetectorManager->Init(GetEvent()->GetDataParameters());
+  // Add the modular label spectra
+  map<string, TH1S*>::iterator it;
+   map<string, TH1S*> MLS = m_G2RDetectorManager->GetModularLabelSpectra();
+      for (it = MLS.begin(); it != MLS.end(); ++it) {   // loop on map
+         string family = it->first.substr(0, it->first.find_last_of("/",  string::npos));
+         GetSpectra()->AddSpectrum(it->second, family.c_str());
+      } 
+
+  h_TPLCATS1_corr = new TH2F("h_TPLCATS1_corr","h_TPLCATS1_corr",512,0,16384,512,0,16384);
+  h_TPLCATS1_corr->GetXaxis()->SetTitle("Time PL-CATS1 in VXI M2");
+  h_TPLCATS1_corr->GetXaxis()->CenterTitle();
+  h_TPLCATS1_corr->GetYaxis()->SetTitle("Time PL-CATS1 in VXI Chio");
+  h_TPLCATS1_corr->GetYaxis()->CenterTitle();
+  GetSpectra()->AddSpectrum(h_TPLCATS1_corr ,"ModularLabel"); 
+
+
 }
 //______________________________________________________________
 
 void GUser::InitUserRun(){
   // Initialisation for user treatemeant for each  run
   // For specific user treatement
-  m_G2RDetectorManager->Init(GetEvent()->GetDataParameters());
-}
+  }
 
 //______________________________________________________________
 void GUser::User(){
@@ -124,6 +134,10 @@ count++;
   m_NPDetectorManager->BuildPhysicalEvent();
 //  if(count%1000==0)
 //   m_NPDetectorManager->CheckSpectraServer();
+
+  
+  h_TPLCATS1_corr->Fill(m_G2RDetectorManager->GetModularLabelValue("T_PL_CATS1"),
+              m_G2RDetectorManager->GetModularLabelValue("T_PLchCATS1"));
 
   // Fill the nptool tree
   //m_NPTree->Fill();
