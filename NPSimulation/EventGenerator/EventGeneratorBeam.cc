@@ -94,9 +94,10 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   G4double Beam_theta, Beam_phi, FinalBeamEnergy, InitialBeamEnergy, x0, y0, z0, Beam_thetaX, Beam_phiY;
 
   m_Beam->GenerateRandomEvent(InitialBeamEnergy, x0, y0, z0, Beam_thetaX, Beam_phiY);
-  G4double Xdir = sin(Beam_thetaX);
-  G4double Ydir = sin(Beam_phiY);
-  G4double Zdir = cos(Beam_thetaX) + cos(Beam_phiY);
+  //Set the direction cosines: alpha=90-Beam_thetaX, beta=90-Beam_phiY
+  G4double Xdir = sin(Beam_thetaX); // cos(90-x) = sin(x)
+  G4double Ydir = sin(Beam_phiY); 
+  G4double Zdir = sqrt(1-Xdir*Xdir-Ydir*Ydir); // alpha^2 + beta^2 + gamma^2 = 1
   G4ThreeVector BeamDir(Xdir,Ydir,Zdir);
   G4ThreeVector BeamPos(x0,y0,z0);
   Beam_theta = BeamDir.theta()    ;
