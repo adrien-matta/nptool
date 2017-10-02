@@ -37,7 +37,7 @@ TH1F* Read1DProfile(string filename,string HistName)
   
   // test whether file format is ASCII or ROOT
   bool type = OpenASCIIorROOTFile(filename, ASCII , ROOT);
-  
+
   // ASCII File case
   if (type) {
     string LineBuffer;
@@ -80,7 +80,7 @@ TH1F* Read1DProfile(string filename,string HistName)
   else{
     h = (TH1F*) gDirectory->FindObjectAny(HistName.c_str());
     if(!h){
-      cout << "Error: Histogramm " << HistName << " not found in file " << filename << endl;
+      cout << "Error: Histogram " << HistName << " not found in file " << filename << endl;
       exit(1);
     }
   }
