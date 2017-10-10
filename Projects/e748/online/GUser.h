@@ -53,6 +53,8 @@ class GUser : public  GAcq{
     virtual void EndUser();
     virtual void InitTTreeUser(); 
     ClassDef (GUser ,1); // User Treatment of Data
+    
+    TH2F* h_TPLCATS1_corr;
 
 #ifndef __MAKECINT__
   private: // NPTool  

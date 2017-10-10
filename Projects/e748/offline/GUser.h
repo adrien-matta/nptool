@@ -57,11 +57,13 @@ class GUser : public  GAcq{
 #ifndef __MAKECINT__
   private: // NPTool  
     NPL::DetectorManager* m_NPDetectorManager;
-    TTree* m_NPTree;
+    TTree* m_NPShiftedTree;
   private: // Ganil2Root
     G2R::DetectorManager* m_G2RDetectorManager;
 #endif
 
+  private: // AGAVA
+    ULong64_t m_AGAVA_LTS;
 };
 
 #endif
