@@ -52,7 +52,11 @@ class Analysis: public NPL::VAnalysis{
     static NPL::VAnalysis* Construct();
     
   private:
-  double Ex;
+	double Ex;
+//by Shuya 170703
+  double Ex_Hyball;
+  double Ex_Barrel;
+
   double ELab;
   double ThetaLab;
   double ThetaCM;
