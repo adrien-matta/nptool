@@ -246,24 +246,38 @@ void Tiara::ReadSensitive(const G4Event* event){
     double EF = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EF>EnergyThreshold){
       int RingNumber=Info[8];
-      RingNumber=abs(RingNumber-17);    
+	//by Shuya 171009
+      RingNumber=abs(RingNumber);    
+      //RingNumber=abs(RingNumber-17);    
       Info[8]=RingNumber; 
       m_EventHyball->SetRingE(Info[7],Info[8],EF);
       m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 
     }
 
     // Back Energy
-    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyHyball);
+//by Shuya 171009. Infor[1] is Timing data... no make sense.
+    //double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyHyball);
+    double EB = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EB>EnergyThreshold){
-      m_EventHyball->SetSectorE(Info[7],Info[9],EF);
+//by Shuya 171009
+      //m_EventHyball->SetSectorE(Info[7],Info[9],EF);
+      m_EventHyball->SetSectorE(Info[7],Info[9],EB);
       m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
     }
     // Interaction Coordinates
+//by Shuya 171009
+/*
     ms_InterCoord->SetDetectedPositionX(Info[5]) ;
     ms_InterCoord->SetDetectedPositionY(Info[6]) ;
     ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
     ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
     ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+*/
+    ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
   }
   // Clear Map for next event
   HyballHitMap->clear();
