@@ -36,52 +36,54 @@ PS_Silicon_Images::PS_Silicon_Images(G4String name, string imageFront,string ima
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-    // contain Energy Time, DetNbr, PixelFront and PixelBack
-    t_Energy = aStep->GetTotalEnergyDeposit();
-    t_Time = aStep->GetPreStepPoint()->GetGlobalTime();
-    
-    t_DetectorNbr = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
-    t_Position  = aStep->GetPreStepPoint()->GetPosition();
-    
-    // Interaction coordinates (used to fill the InteractionCoordinates branch)et vous re
-    t_X = t_Position.x();
-    t_Y = t_Position.y();
-    t_Z = t_Position.z();
-    t_Theta = t_Position.theta();
-    t_Phi = t_Position.phi();
-    
-    t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
-    
-    t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
-    t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
-    
-    // If front and back are in inactive part of the wafer,
-    // nothing is added to the map
-    if(t_PixelFront == m_IgnoreValue && t_PixelBack == m_IgnoreValue)
-        return FALSE;
-    
-    t_Index =  aStep->GetTrack()->GetTrackID() + t_DetectorNbr * 1e3 ;
-    // Check if the particle has interact before, if yes, add up the energies.
-    map<unsigned int, double>::iterator it;
-    it= m_Energy.find(t_Index);
-    if(it!=m_Energy.end()){
-        double dummy = it->second;
-        t_Energy+=dummy;
-    }
-    
-    m_Energy[t_Index] = t_Energy;
-    m_Time[t_Index] = t_Time;
-    m_DetectorNbr[t_Index] = t_DetectorNbr;
-    m_PixelFront[t_Index] = t_PixelFront;
-    m_PixelBack[t_Index] = t_PixelBack;
-    m_X[t_Index] = t_X;
-    m_Y[t_Index] = t_Y;
-    m_Z[t_Index] = t_Z;
-    m_Theta[t_Index] = t_Theta;
-    m_Phi[t_Index] = t_Phi;
-    
-    
-    return TRUE;
+
+  // contain Energy Time, DetNbr, PixelFront and PixelBack
+  t_Energy = aStep->GetTotalEnergyDeposit();
+  t_Time = aStep->GetPreStepPoint()->GetGlobalTime();
+
+  t_DetectorNbr = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
+  t_Position  = aStep->GetPreStepPoint()->GetPosition();
+  
+  // Interaction coordinates (used to fill the InteractionCoordinates branch)
+  // N.B: Theta and phi are calculated with respect to (0,0,0)
+  t_X = t_Position.x();
+  t_Y = t_Position.y();
+  t_Z = t_Position.z();
+  t_Theta = t_Position.theta();
+  t_Phi = t_Position.phi();
+  // transforming the position to the local volume
+  t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
+  t_PixelFront = m_ImageFront->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
+  t_PixelBack = m_ImageBack->GetPixelAtCoordinate(t_Position.x(),t_Position.y());
+
+  // If front and back are in inactive part of the wafer,
+  // nothing is added to the map
+  if(t_PixelFront == m_IgnoreValue && t_PixelBack == m_IgnoreValue)
+    return FALSE;
+
+  t_Index =  aStep->GetTrack()->GetTrackID() + t_DetectorNbr * 1e3 ;
+  // Check if the particle has interact before, if yes, add up the energies.
+  map<unsigned int, double>::iterator it;
+  it= m_Energy.find(t_Index);
+  if(it!=m_Energy.end()){
+    double dummy = it->second;
+    t_Energy+=dummy;
+  }
+
+  m_Energy[t_Index] = t_Energy; 
+  m_Time[t_Index] = t_Time;
+  m_DetectorNbr[t_Index] = t_DetectorNbr;
+  m_PixelFront[t_Index] = t_PixelFront;
+  m_PixelBack[t_Index] = t_PixelBack;
+  m_X[t_Index] = t_X;
+  m_Y[t_Index] = t_Y;
+  m_Z[t_Index] = t_Z;
+  m_Theta[t_Index] = t_Theta;
+  m_Phi[t_Index] = t_Phi;
+  
+
+  return TRUE;
+  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

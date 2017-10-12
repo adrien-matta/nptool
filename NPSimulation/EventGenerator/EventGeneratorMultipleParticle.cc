@@ -102,7 +102,7 @@ void EventGeneratorMultipleParticle::ReadConfiguration(NPL::InputParser parser){
         double dEnergy, dAngle;
         if(evtfile.is_open()){
             cout << "Event file found: " << m_FileName <<  " \033[0m" << endl;
-            for(unsigned int i=0; i<m_Events; i++){
+            for(unsigned int j=0; j<m_Events; j++){
             //while(!evtfile.eof()){
                 evtfile >> sMult >> iMult;
                 m_Multiplicity.push_back(iMult);

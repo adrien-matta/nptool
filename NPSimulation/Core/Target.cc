@@ -112,14 +112,17 @@ void Target::ReadConfiguration(NPL::InputParser parser){
 
   }
   else if(ctarget.size()==1){
-    cout << " Solid Target found " << endl;
+    m_TargetType=false;
+    cout << " Cryo Target found " << endl;
     vector<string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
     if(ctarget[0]->HasTokenList(token)){
       m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
       m_TargetAngle=ctarget[0]->GetDouble("Angle","deg");
-      m_TargetMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("Material"));
+      m_TargetMaterial= MaterialManager::getInstance()->GetMaterialFromLibrary(ctarget[0]->GetString("Material"),ctarget[0]->GetDouble("Density","g/cm3"));
       m_WindowsThickness= ctarget[0]->GetDouble("WindowsThickness","micrometer");
       m_WindowsMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("WindowsMaterial"));
+      m_TargetRadius=ctarget[0]->GetDouble("Radius","mm");
+      
       m_TargetX=ctarget[0]->GetDouble("X","mm");
       m_TargetY=ctarget[0]->GetDouble("Y","mm");
       m_TargetZ =ctarget[0]->GetDouble("Z","mm");

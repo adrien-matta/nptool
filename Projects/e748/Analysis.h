@@ -23,7 +23,8 @@
  *****************************************************************************/
 #include"NPVAnalysis.h"
 #include "TMust2Physics.h"
-#include "TInitialConditions.h"
+#include "TCATSPhysics.h"
+ #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
@@ -63,6 +64,9 @@ class Analysis: public NPL::VAnalysis{
     double Si_X_M2;
     double Si_Y_M2;
     double ZTarget;
+    double TimeCorr;
+    double BeamLength;
+    double ParticleLength;
     double TargetThickness;
     double OriginalThetaLab;
     double OriginalELab;
@@ -72,6 +76,39 @@ class Analysis: public NPL::VAnalysis{
     NPL::EnergyLoss Li11CD2 ;
 
     TMust2Physics* M2;
-    TInitialConditions* Initial;
+   TCATSPhysics* CATS;
+   TInitialConditions* Initial;
+    //other variables 
+   Short_t         vADC_CHIO_V15;
+   Short_t         vADC_VOIE_29;
+   Short_t         vCHIO;
+   Short_t         vCONFDEC;
+   Short_t         vCONFDEC_AGAVA;
+   Short_t         vDATATRIG;
+   Short_t         vDATATRIG_CHIO;
+   Short_t         vE1D6;
+   Short_t         vE2D6;
+   Short_t         vED4;
+   Short_t         vEXL_HF;
+   Short_t         vGALD4X;
+   Short_t         vGALD4Y;
+   Short_t         vGATCONF;
+   Short_t         vQCaviar;
+   Short_t         vQPlast;
+   Short_t         vTCAVHF;
+   Short_t         vTE1D6CAV;
+   Short_t         vTE1D6GAL;
+   Short_t         vTE1D6HF;
+   Short_t         vTED4HF;
+   Short_t         vTGALD4HF;
+   Short_t         vT_CATS1_2;
+   Short_t         vT_CATS1_CAV;
+   Short_t         vT_MUVI_CATS1;
+   Short_t         vT_PL_CATS1;
+   Short_t         vT_PL_CATS2;
+   Short_t         vT_PL_CHIO;
+   Short_t         vT_PLchCATS1;
+
+
 };
 #endif

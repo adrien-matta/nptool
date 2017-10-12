@@ -185,8 +185,8 @@ void Nucleus::Extract(string line){
     fLifeTime*=1e-18;
   else if(s_lt_units=="zs")
     fLifeTime*=1e-21;
-  else if(s_lt_units=="zs")
-    fLifeTime*=1e-23;
+  else if(s_lt_units=="ys")
+    fLifeTime*=1e-24;
   else if(s_lt_units=="m")
     fLifeTime*=60;
   else if(s_lt_units=="h")

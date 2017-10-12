@@ -968,13 +968,18 @@ void TMust2Physics::AddTelescope( TVector3 C_X1_Y1,
 
   m_NumberOfTelescope++;
 
+  //   Geometry Parameter
+  double Face = 97.3; //mm
+  double NumberOfStrip = 128;
+  double StripPitch = Face/NumberOfStrip ; //mm
+
   //   Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
   TVector3 U = C_X128_Y1 - C_X1_Y1 ;
-  double Ushift = (U.Mag()-98)/2.;
+  double Ushift = (U.Mag()-Face)/2.;
   U = U.Unit();
   //   Vector V on Telescope Face (parallele to X Strip)
   TVector3 V = C_X1_Y128 - C_X1_Y1 ;
-  double Vshift = (V.Mag() -98)/2. ;
+  double Vshift = (V.Mag() -Face)/2. ;
   V = V.Unit() ;
 
   //   Position Vector of Strip Center
@@ -982,10 +987,6 @@ void TMust2Physics::AddTelescope( TVector3 C_X1_Y1,
   //   Position Vector of X=1 Y=1 Strip
   TVector3 Strip_1_1;
 
-  //   Geometry Parameter
-  double Face = 98; //mm
-  double NumberOfStrip = 128;
-  double StripPitch = Face/NumberOfStrip ; //mm
   //   Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -1094,7 +1095,7 @@ void TMust2Physics::AddTelescope(   double theta,
   U.Rotate( beta_w * Pi/180. , W ) ;
   V.Rotate( beta_w * Pi/180. , W ) ;
 
-  double Face = 98                     ; //mm
+  double Face = 97.3                     ; //mm
   double NumberOfStrip = 128             ;
   double StripPitch = Face/NumberOfStrip   ; //mm
 
@@ -1143,9 +1144,7 @@ TVector3 TMust2Physics::GetPositionOfInteraction(const int i) const{
   TVector3 Position = TVector3 (   GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )    ,
       GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )      ,
       GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )      ) ;
-
   return(Position) ;
-
 }
 
 TVector3 TMust2Physics::GetTelescopeNormal( const int i) const{

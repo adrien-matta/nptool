@@ -753,11 +753,12 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       unsigned int a,r,g,b;
       //  pixel
       SiScorer->GetARGBFront(indexes[i],a,r,g,b);
+      b=b+2;
+      g=g+2;
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
         m_Event->SetStripXE(detectorNbr,b+1,energyX);
-
         // Time 
         m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
       }
@@ -768,8 +769,7 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           if(energyX>0.1*keV){
             trig.insert(detectorNbr);
             // Energy 
-            m_Event->SetStripXE(detectorNbr,b+1,energyX) ;
-
+            m_Event->SetStripXE(detectorNbr,b+1,energyX) ; 
             // Time 
             m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
           } 
@@ -781,7 +781,6 @@ void MUST2Array::ReadSensitive(const G4Event* event){
 
             // Energy 
             m_Event->SetStripXE(detectorNbr,g+1,energyX) ;  
-
             // Time 
             m_Event->SetStripXT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
           }
@@ -795,11 +794,12 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       unsigned int a,r,g,b;
       //  pixel
       SiScorer->GetARGBBack(indexes[i],a,r,g,b);
+      b=b+2;
+      g=g+2;
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
         m_Event->SetStripYE(detectorNbr,b+1,energyY);
-
         // Time 
         m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust)); 
       }
@@ -811,7 +811,6 @@ void MUST2Array::ReadSensitive(const G4Event* event){
 
           // Energy 
           m_Event->SetStripYE(detectorNbr,b+1,energyY1); 
-
           // Time 
           m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
         }
@@ -821,7 +820,6 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           double energyY2 = (1-rand)*energyY;
           // Energy 
           m_Event->SetStripYE(detectorNbr,g+1,energyY2);  
-
           // Time 
           m_Event->SetStripYT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
         }
@@ -830,6 +828,7 @@ void MUST2Array::ReadSensitive(const G4Event* event){
  
     // If event passes through first stage fill the Interaction Coordinates   
     if (SiScoredHit){
+      //Always calculated with respect to (0,0,0)
       ms_InterCoord->SetDetectedPositionX(InterPos_X) ;
       ms_InterCoord->SetDetectedPositionY(InterPos_Y) ;
       ms_InterCoord->SetDetectedPositionZ(InterPos_Z) ;
