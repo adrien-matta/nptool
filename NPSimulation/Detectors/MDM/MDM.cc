@@ -84,9 +84,11 @@ MDM::~MDM(){
   if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void MDM::AddDetector(double angle, double field, const string& rayin){
+void MDM::AddDetector(double angle, double field, double xaccept, double yaccept, const string& rayin){
   m_Angle = angle;
   m_Field = field;
+	m_Xaccept = xaccept;
+	m_Yaccept = yaccept;
   m_Rayin_file = rayin;
   
   m_Rayin = new Rayin(m_Rayin_file, false);
@@ -133,8 +135,10 @@ void MDM::ReadConfiguration(NPL::InputParser parser){
         cout << endl << "////  MDM " << i+1 <<  endl;
       double Angle = blocks[i]->GetDouble("Angle","deg");
       double Field = blocks[i]->GetDouble("Field","gauss");
+			double XA    = blocks[i]->GetDouble("XAccept","deg");
+			double YA    = blocks[i]->GetDouble("YAccept","deg");
       string Rayin = blocks[i]->GetString("Rayin");
-      AddDetector(Angle, Field, Rayin);
+      AddDetector(Angle, Field, XA, YA, Rayin);
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;
@@ -192,18 +196,28 @@ void MDM::ReadSensitive(const G4Event* event){
     double thetaX = atan(Mom.x() / Mom.z());
     double thetaY = atan(Mom.y() / Mom.z());
 
-    // Send Through MDM
-    m_Trace->SetScatteredMass(Mass/amu_c2);
-    m_Trace->SetScatteredCharge(Charge);
-    m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg);
-    m_Trace->SetScatteredEnergy(Ekin/MeV);
-    m_Trace->SetBeamPosition(Pos.x()/cm, Pos.y()/cm, Pos.z()/cm);
-    m_Trace->SendRay();
+		double x[4] = {1e10,1e10,1e10,1e10};
+		double y[4] = {1e10,1e10,1e10,1e10};
+		double a = 1e10;
+		double b = 1e10;
 
-    // Read wire1 position, angle
-    double x[4],y[4],a,b;
-    m_Trace->GetOxfordWirePositions(a,x[0],x[1],x[2],x[3],b,y[0],y[1],y[2],y[3]);
+		// check if within acceptance
+		// saves lots of time not tracking events outside of the
+		// acceptance
+		if(fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept)
+		{
+			// Send Through MDM
+			m_Trace->SetScatteredMass(Mass/amu_c2);
+			m_Trace->SetScatteredCharge(Charge);
+			m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg);
+			m_Trace->SetScatteredEnergy(Ekin/MeV);
+			m_Trace->SetBeamPosition(Pos.x()/cm, Pos.y()/cm, Pos.z()/cm);
+			m_Trace->SendRay();
 
+			// Read wire1 position, angle
+			m_Trace->GetOxfordWirePositions(a,x[0],x[1],x[2],x[3],b,y[0],y[1],y[2],y[3]);
+		}
+		
     // Set X, Y positions in TMDMData class
     for(int i=0; i< 4; ++i) {
       m_Event->SetXpos(i, x[i]);

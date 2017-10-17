@@ -47,8 +47,9 @@ public:
   /////// Specific Function of this Class ///////////
   ////////////////////////////////////////////////////
 public:
-  void AddDetector(double angle /*deg*/, double field /*Gauss*/, const std::string& rayin);
-
+  void AddDetector(double angle /*deg*/, double field /*Gauss*/, 
+									 double xaccept /*+/- deg*/, double yaccept /*+/- deg*/,
+									 const std::string& rayin);
 
   G4LogicalVolume* BuildSquareDetector();
   
@@ -94,6 +95,8 @@ private: // Geometry
   // Detector Coordinate 
   double  m_Angle;
   double  m_Field;
+	double  m_Xaccept;
+	double  m_Yaccept;
   std::string m_Rayin_file;
 
   MDMTrace* m_Trace;

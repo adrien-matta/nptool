@@ -229,7 +229,7 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> tokens = {"Angle","Field","Rayin"};
+  vector<string> tokens = {"Angle","Field","Xaccept","Yaccept","Rayin"};
 
   for(UInt_t i = 0 ; i < blocks.size() ; i++){
 		if(blocks[i]->HasTokenList(tokens)){
@@ -237,6 +237,8 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
         cout << endl << "////  MDM " << i+1 <<  endl;
       double Angle = blocks[i]->GetDouble("Angle","deg");
 			double Field = blocks[i]->GetDouble("Field","gauss");
+      double XA    = blocks[i]->GetDouble("XAccept","deg");
+      double YA    = blocks[i]->GetDouble("YAccept","deg");
       string Rayin = blocks[i]->GetString("Rayin");
       AddDetector();
     }
