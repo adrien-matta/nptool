@@ -192,13 +192,6 @@ void MDM::ReadSensitive(const G4Event* event){
     double thetaX = atan(Mom.x() / Mom.z());
     double thetaY = atan(Mom.y() / Mom.z());
 
-    std::cout << "Particle: " << indx << ", (x,y,z | theta ,phi, theta x, theta y | ekin) = [cm | deg | MeV]\n\t" <<
-      Pos.x()/cm << ", " << Pos.y()/cm << ", " << Pos.z()/cm << " | " <<
-      Mom.theta()/deg << ", " << Mom.phi()/deg << ", " <<
-      thetaX/deg << ", " << thetaY/deg << " | " <<
-      Ekin/MeV << "\n";
-    std::cout << "\tMass, Charge: " << Mass/amu_c2 << ", " << Charge << "\n";
-
     // Send Through MDM
     m_Trace->SetScatteredMass(Mass/amu_c2);
     m_Trace->SetScatteredCharge(Charge);
@@ -212,13 +205,10 @@ void MDM::ReadSensitive(const G4Event* event){
     m_Trace->GetOxfordWirePositions(a,x[0],x[1],x[2],x[3],b,y[0],y[1],y[2],y[3]);
 
     // Set X, Y positions in TMDMData class
-    std::cout << "FINAL:: [" << indx << "] ";
     for(int i=0; i< 4; ++i) {
-      std::cout << "x["<<i<<"]="<<x[i] << "\t" << "y["<<i<<"]="<<y[i] <<"\t";
       m_Event->SetXpos(i, x[i]);
       m_Event->SetYpos(i, y[i]);
     }
-    std::cout << "a="<<a << "\t" << "b="<<b << "\n";
   
     ++indx;
   }
@@ -226,46 +216,46 @@ void MDM::ReadSensitive(const G4Event* event){
   Hits->clear() ;
 }
 
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  ////////////////////////////////////////////////////////////////   
-  void MDM::InitializeScorers() { 
-    // This check is necessary in case the geometry is reloaded
-    bool already_exist = false; 
-    m_MDMScorer = CheckScorer("MDMScorer",already_exist) ;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////   
+void MDM::InitializeScorers() { 
+  // This check is necessary in case the geometry is reloaded
+  bool already_exist = false; 
+  m_MDMScorer = CheckScorer("MDMScorer",already_exist) ;
 
-    if(already_exist) { return ; }
+  if(already_exist) { return ; }
 
-    G4VPrimitiveScorer* ScorerMDM =
-      new MDMScorer("ScorerMDM", "MDM", 0);
+  G4VPrimitiveScorer* ScorerMDM =
+    new MDMScorer("ScorerMDM", "MDM", 0);
 
-    //and register it to the multifunctionnal detector
-    m_MDMScorer->RegisterPrimitive(ScorerMDM);
+  //and register it to the multifunctionnal detector
+  m_MDMScorer->RegisterPrimitive(ScorerMDM);
 
-    G4SDManager::GetSDMpointer()->AddNewDetector(m_MDMScorer) ;
-  }
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_MDMScorer) ;
+}
 
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  ////////////////////////////////////////////////////////////////////////////////
-  //            Construct Method to be pass to the DetectorFactory              //
-  ////////////////////////////////////////////////////////////////////////////////
-  NPS::VDetector* MDM::Construct(){
-    return  (NPS::VDetector*) new MDM();
-  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* MDM::Construct(){
+  return  (NPS::VDetector*) new MDM();
+}
 
-  //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  ////////////////////////////////////////////////////////////////////////////////
-  //            Registering the construct method to the factory                 //
-  ////////////////////////////////////////////////////////////////////////////////
-  extern"C" {
-    class proxy_nps_MDM{
-    public:
-      proxy_nps_MDM(){
-	NPS::DetectorFactory::getInstance()->AddToken("MDM","MDM");
-	NPS::DetectorFactory::getInstance()->AddDetector("MDM",MDM::Construct);
-      }
-    };
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_MDM{
+  public:
+    proxy_nps_MDM(){
+      NPS::DetectorFactory::getInstance()->AddToken("MDM","MDM");
+      NPS::DetectorFactory::getInstance()->AddDetector("MDM",MDM::Construct);
+    }
+  };
 
-    proxy_nps_MDM p_nps_MDM;
-  }
+  proxy_nps_MDM p_nps_MDM;
+}
