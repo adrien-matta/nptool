@@ -1,0 +1,4 @@
+[ libNPJurogam.dylib ]
+# List of selected classes
+class TJurogamPhysics
+header TJurogamPhysics.h

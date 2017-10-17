@@ -1,0 +1,4 @@
+[ libNPSage.dylib ]
+# List of selected classes
+class TSagePhysics
+header TSagePhysics.h

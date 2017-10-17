@@ -1,0 +1,4 @@
+[ libNPSpede.dylib ]
+# List of selected classes
+class TSpedePhysics
+header TSpedePhysics.h

@@ -79,7 +79,19 @@ Miniball::~Miniball(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Miniball::AddMiniball(double  R, double  Theta, double  Phi, double  Alpha){
 	m_R.push_back(R);
-	m_Theta.push_back(Theta);
+
+	G4RotationMatrix* temp = new G4RotationMatrix(0,0,0);
+	temp->setTheta(Theta);
+	temp->setPhi(Phi+90.*deg);
+	//temp->setPhi(Phi);
+	//temp->rotateY(-90.*deg);
+	//temp->rotateAxes(0.*deg,-90.*deg,0.*deg);
+
+	cout << Theta*TMath::RadToDeg() << " " << temp->getTheta()*TMath::RadToDeg() << " "  << Phi*TMath::RadToDeg()  << " " << temp->getPhi()*TMath::RadToDeg() << endl;
+
+	//m_Theta.push_back(temp->getTheta());
+	//m_Phi.push_back(temp->getPhi());
+	m_Theta.push_back(-Theta);// This makes it match the MINIBALL convention
 	m_Phi.push_back(Phi);
 	m_Alpha.push_back(Alpha);
 }
@@ -97,6 +109,7 @@ void Miniball::BuildChamber(G4LogicalVolume* world)
 		G4LogicalVolume* LV = m_LogicalGDML->GetDaughter(i)->GetLogicalVolume();
 		G4ThreeVector LTrans = VPV->GetTranslation();
 		G4RotationMatrix* LRot = VPV->GetRotation();
+		LRot->rotateY(180.*deg);
 
 		name = LV->GetSolid()->GetName();
 
@@ -123,15 +136,19 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 		G4VisAttributes* Red = new G4VisAttributes(G4Color(1,0.5,0.5));
 		G4VisAttributes* Green= new G4VisAttributes(G4Color(0.5,1,0.5));
 		G4VisAttributes* Blue = new G4VisAttributes(G4Color(0.5,0.5,1));
-		G4VisAttributes* Caps = new G4VisAttributes(G4Color(0.5,0.5,0.5,0.5));
+		//G4VisAttributes* Caps = new G4VisAttributes(G4Color(0.5,0.5,0.5,0.5));
+		G4VisAttributes* Caps = new G4VisAttributes(G4Color(0.5,0.5,0.5));
+
 
 		G4LogicalVolume* World = m_gdmlparser.GetVolume("MexpHall_log");  
 		string name;
 		{
 			double alpha = Alpha;
+			//double alpha = 0;
 			for(int i = 0 ; i < World->GetNoDaughters () ;i++){
 				G4VPhysicalVolume* VPV = World->GetDaughter(i);
 				name = VPV->GetLogicalVolume()->GetName();
+				VPV->GetLogicalVolume()->SetVisAttributes(G4VisAttributes::GetInvisible());
 				if(name == "cluster0_0_HPGe_A_0_det_env_log"){
 					G4LogicalVolume* HPGE = VPV->GetLogicalVolume(); 
 					HPGE->GetDaughter(0)->GetLogicalVolume()->SetSensitiveDetector(m_MiniballScorer);
@@ -140,6 +157,7 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
+					Pos.setZ(Pos.getZ()-88.37*mm);
 					G4Transform3D Trans(*Rot,Pos);
 					m_ClusterDetector->AddPlacedVolume(HPGE,Trans); 
 					m_NumberOfPlacedVolume++;
@@ -152,6 +170,7 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
+					Pos.setZ(Pos.getZ()-88.37*mm);
 					G4Transform3D Trans(*Rot,Pos);
 					m_ClusterDetector->AddPlacedVolume(HPGE,Trans); 
 					m_NumberOfPlacedVolume++;
@@ -164,6 +183,7 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
+					Pos.setZ(Pos.getZ()-88.37*mm);
 					G4Transform3D Trans(*Rot,Pos);
 					m_ClusterDetector->AddPlacedVolume(HPGE,Trans); 
 					m_NumberOfPlacedVolume++;
@@ -171,10 +191,12 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 				else if(name.compare(0,8,"cluster0")==0 || name == "nozzle_log"){
 					G4LogicalVolume* Capsule= VPV->GetLogicalVolume(); 
 					Capsule->SetVisAttributes(Caps);
+					//Capsule->SetVisAttributes(G4VisAttributes::GetInvisible());
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
 					Pos.rotateZ(alpha);
+					Pos.setZ(Pos.getZ()-88.37*mm);
 					G4Transform3D Trans(*Rot,Pos);
 					m_ClusterDetector->AddPlacedVolume(Capsule,Trans); 
 					m_NumberOfPlacedVolume++;
@@ -201,9 +223,9 @@ void Miniball::ReadConfiguration(NPL::InputParser parser){
 	if(NPOptionManager::getInstance()->GetVerboseLevel())
 		cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-	vector<string> token = {"R","Theta","Phi","Alpha"};
+	vector<string> token = {"R","Theta","Phi","Alpha","tempAlpha"};
 	vector<string> chamberToken = {"GDMLFilePath","GDMLFileName","GDMLWorldName"};
-
+	
 	for(unsigned int i = 0 ; i < blocks.size() ; i++){
 		if(blocks[i]->HasTokenList(token)){
 			if(NPOptionManager::getInstance()->GetVerboseLevel())
@@ -212,6 +234,8 @@ void Miniball::ReadConfiguration(NPL::InputParser parser){
 			double Theta = blocks[i]->GetDouble("Theta","deg");
 			double Phi = blocks[i]->GetDouble("Phi","deg");
 			double Alpha = blocks[i]->GetDouble("Alpha","deg");
+			double tempAlpha = blocks[i]->GetDouble("tempAlpha","deg");
+			Alpha += tempAlpha;
 
 			AddMiniball(R,Theta,Phi,Alpha);
 		}
@@ -237,42 +261,25 @@ void Miniball::ReadConfiguration(NPL::InputParser parser){
 // Called After DetecorConstruction::AddDetector Method
 void Miniball::ConstructDetector(G4LogicalVolume* world){
 	for (unsigned short i = 0 ; i < m_R.size() ; i++) {
-		//int counter = 0;
-		BuildClusterDetector(m_Alpha[i]);
-		//BuildClusterDetector(0);
+		// Invert alpha if detector is left of beamline, because that's the convention
+		if (m_Phi[i] < 180.) BuildClusterDetector(m_Alpha[i]);
+		if (m_Phi[i] > 180.) BuildClusterDetector(m_Alpha[i]+180.);
+		
+		G4ThreeVector DetPos (0, m_R[i], 0);// Start with detector above target
+		DetPos.rotateX(m_Phi[i]);
+		DetPos.rotateY(m_Theta[i]);
 
-		G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
-		G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
-		G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
-		G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
-		G4ThreeVector d = Det_pos.unit();
-		Det_pos= Det_pos-d*100*mm;
-		// Building Detector reference frame
-		G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
-		G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
-		G4double kk = -sin(m_Theta[i]);
-		G4ThreeVector Y(ii,jj,kk);
-		G4ThreeVector w = Det_pos.unit();
+		G4RotationMatrix* DetRot = new G4RotationMatrix(0,90*deg,0);// Rotate so detector points at target
+		DetRot->rotateX(m_Phi[i]);
+		DetRot->rotateY(m_Theta[i]);
 
-		G4ThreeVector u = w.cross(Y);
-		G4ThreeVector v = w.cross(u);
-		v = v.unit();
-		u = u.unit();
-
-		G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
-
-		// original
-		//m_ClusterDetector->MakeImprint(world,Det_pos, Rot,i+1);
-		ClusterDetectorHolder[i]->MakeImprint(world,Det_pos, Rot,i+1);
+		ClusterDetectorHolder[i]->MakeImprint(world,DetPos, DetRot,i+1);
 
 		// set a nicer name ORIGINAL
-		//std::vector< G4VPhysicalVolume * >::iterator it = m_ClusterDetector->GetVolumesIterator();
 		std::vector< G4VPhysicalVolume * >::iterator it = ClusterDetectorHolder[i]->GetVolumesIterator();
 
-		// original
-		//it+=m_ClusterDetector->GetImprintsCount()*m_NumberOfPlacedVolume-1;
 		it+= m_NumberOfPlacedVolume-1;
-		// unchanged
+		
 		for(unsigned int l = 0 ; l < m_NumberOfPlacedVolume-3 ; l++){
 			(*it)->SetName("Capsule");
 			(*it)->SetCopyNo(i+1);
