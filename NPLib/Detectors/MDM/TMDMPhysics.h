@@ -178,6 +178,8 @@ private:
 	double m_X_Threshold;     //!
 	double m_Y_Threshold;     //!
 
+	bool m_DoFit;
+	
   // number of detectors
 private:
 	int m_NumberOfDetectors;  //!

@@ -63,6 +63,7 @@ TMDMPhysics::TMDMPhysics()
 	m_Spectra(0),
 	m_X_Threshold(1000000), // junk value
 	m_Y_Threshold(1000000), // junk value
+	m_DoFit(false),
 	m_NumberOfDetectors(0) {
 	m_Rayin = 0;
 }
@@ -131,7 +132,9 @@ void TMDMPhysics::BuildPhysicalEvent() {
 		Yang *= (180/TMath::Pi());
 	}
 
-	MinimizeTarget();
+	if(m_DoFit) {
+		MinimizeTarget();
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -223,6 +226,12 @@ void TMDMPhysics::ReadAnalysisConfig() {
         m_Y_Threshold = atof(DataBuffer.c_str());
         cout << whatToDo << " " << m_Y_Threshold << endl;
       }
+
+			else if (whatToDo=="DO_FIT") {
+				AnalysisConfigFile >> DataBuffer;
+				m_DoFit = atoi(DataBuffer.c_str());
+				cout << whatToDo << " " << m_DoFit << endl;
+			}
 
       else {
         ReadingStatus = false;
