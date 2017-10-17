@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Greg Christian  contact address: gchristian@tamu.edu                        *
+ * Original Author: Greg Christian  contact address: gchristian@tamu.edu     *
  *                                                                           *
- * Creation Date  : October 2017                                           *
+ * Creation Date  : October 2017                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold MDM Treated  data                               *
+ *  This class hold MDM Treated  data                                        *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -37,39 +37,38 @@ using namespace std;
 #include "NPOptionManager.h"
 
 //   ROOT
+#include "TMath.h"
 #include "TChain.h"
 
 ClassImp(TMDMPhysics)
 
+namespace {
+
+const double ZPOS_[4] = { 2.0, 17.1, 33.4, 49.7 }; // cm
+
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 TMDMPhysics::TMDMPhysics()
-   : m_EventData(new TMDMData),
-     m_PreTreatedData(new TMDMData),
-     m_EventPhysics(this),
-     m_Spectra(0),
-     m_X_Threshold(1000000), // junk value
-     m_Y_Threshold(1000000), // junk value
-     m_NumberOfDetectors(0) {
+: m_EventData(new TMDMData),
+m_PreTreatedData(new TMDMData),
+m_EventPhysics(this),
+m_Spectra(0),
+m_X_Threshold(1000000), // junk value
+m_Y_Threshold(1000000), // junk value
+m_NumberOfDetectors(0) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
 /// A usefull method to bundle all operation to add a detector
-void TMDMPhysics::AddDetector(TVector3 , string ){
+void TMDMPhysics::AddDetector(){
   // In That simple case nothing is done
   // Typically for more complex detector one would calculate the relevant 
   // positions (stripped silicon) or angles (gamma array)
   m_NumberOfDetectors++;
 } 
 
-///////////////////////////////////////////////////////////////////////////
-void TMDMPhysics::AddDetector(double R, double Theta, double Phi, string shape){
-  // Compute the TVector3 corresponding
-  TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
-  // Call the cartesian method
-  AddDetector(Pos,shape);
-} 
-  
 ///////////////////////////////////////////////////////////////////////////
 void TMDMPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
@@ -82,18 +81,35 @@ void TMDMPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
 
-  // match energy and time together
+  // match x and y
   UInt_t mysizeX = m_PreTreatedData->GetMultX();
   UInt_t mysizeY = m_PreTreatedData->GetMultY();
+	UInt_t i0=-1, i1=-1;
   for (UShort_t ix = 0; ix < mysizeX ; ix++) {
     for (UShort_t iy = 0; iy < mysizeY ; iy++) {
       if (m_PreTreatedData->GetX_DetectorNbr(ix) == m_PreTreatedData->GetY_DetectorNbr(iy)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetX_DetectorNbr(ix));
-        Xpos.push_back(m_PreTreatedData->Get_Xpos(ix));
-        Ypos.push_back(m_PreTreatedData->Get_Ypos(iy));
+				int detno = m_PreTreatedData->GetX_DetectorNbr(ix);
+
+				if(detno >= 0 && detno < 4) {
+					DetectorNumber.push_back(detno);
+					Xpos.push_back(m_PreTreatedData->Get_Xpos(ix));
+					Ypos.push_back(m_PreTreatedData->Get_Ypos(iy));
+					Zpos.push_back(ZPOS_[detno]);
+				}
+						
+				if(detno == 0) { i0 = ix; }
+				if(detno == 1) { i1 = ix; }
       }
     }
   }
+
+	// calculate angles from first 2 wires
+	if(i0!=-1 && i1!=-1) {
+		Xang = atan((Xpos[i1] - Xpos[i0]) / (Zpos[i1] - Zpos[i0]));
+		Yang = atan((Ypos[i1] - Ypos[i0]) / (Zpos[i1] - Zpos[i0]));
+		Xang *= (180/TMath::Pi());
+		Yang *= (180/TMath::Pi());
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -132,7 +148,7 @@ void TMDMPhysics::PreTreat() {
 
 
 ///////////////////////////////////////////////////////////////////////////
- void TMDMPhysics::ReadAnalysisConfig() {
+void TMDMPhysics::ReadAnalysisConfig() {
   bool ReadingStatus = false;
 
   // path to file
@@ -200,6 +216,9 @@ void TMDMPhysics::Clear() {
   DetectorNumber.clear();
   Xpos.clear();
   Ypos.clear();
+	Zpos.clear();
+	Xang = -1000;
+	Yang = -1000;
 }
 
 
@@ -210,26 +229,16 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> tokens = {"Angle","Field","Rayin"};
 
   for(UInt_t i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
+		if(blocks[i]->HasTokenList(tokens)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  MDM " << i+1 <<  endl;
-    
-      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(Pos,Shape);
-    }
-    else if(blocks[i]->HasTokenList(sphe)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  MDM " << i+1 <<  endl;
-      double R = blocks[i]->GetDouble("R","mm");
-      double Theta = blocks[i]->GetDouble("Theta","deg");
-      double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(R,Theta,Phi,Shape);
+      double Angle = blocks[i]->GetDouble("Angle","deg");
+			double Field = blocks[i]->GetDouble("Field","gauss");
+      string Rayin = blocks[i]->GetString("Rayin");
+      AddDetector();
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;
@@ -335,11 +344,11 @@ NPL::VDetector* TMDMPhysics::Construct() {
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
 class proxy_MDM{
-  public:
-    proxy_MDM(){
-      NPL::DetectorFactory::getInstance()->AddToken("MDM","MDM");
-      NPL::DetectorFactory::getInstance()->AddDetector("MDM",TMDMPhysics::Construct);
-    }
+public:
+	proxy_MDM(){
+		NPL::DetectorFactory::getInstance()->AddToken("MDM","MDM");
+		NPL::DetectorFactory::getInstance()->AddDetector("MDM",TMDMPhysics::Construct);
+	}
 };
 
 proxy_MDM p_MDM;

@@ -42,7 +42,6 @@ using namespace std;
 class TMDMSpectra;
 
 
-
 class TMDMPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
   // constructor and destructor
@@ -61,14 +60,16 @@ class TMDMPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
   // data obtained after BuildPhysicalEvent() and stored in
   // output ROOT file
-  public:
+	public:
     vector<int>      DetectorNumber;
-    vector<double>   Xpos;
-    vector<double>   Ypos;
-
+    vector<double>   Xpos; // cm
+    vector<double>   Ypos; // cm
+		vector<double>   Zpos; // cm
+		double           Xang; // deg
+		double           Yang; // deg
+		
   /// A usefull method to bundle all operation to add a detector
-  void AddDetector(TVector3 POS, string shape); 
-  void AddDetector(double R, double Theta, double Phi, string shape); 
+		void AddDetector();
   
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
