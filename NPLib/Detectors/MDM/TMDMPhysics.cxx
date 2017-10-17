@@ -35,10 +35,16 @@ using namespace std;
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
 #include "NPOptionManager.h"
+#include "NPSystemOfUnits.h"
 
 //   ROOT
+#include "TF1.h"
 #include "TMath.h"
 #include "TChain.h"
+
+//   LOCAL
+#include "Rayin.h"
+#include "MDMTrace.h"
 
 ClassImp(TMDMPhysics)
 
@@ -52,20 +58,34 @@ const double ZPOS_[4] = { 2.0, 17.1, 33.4, 49.7 }; // cm
 ///////////////////////////////////////////////////////////////////////////
 TMDMPhysics::TMDMPhysics()
 : m_EventData(new TMDMData),
-m_PreTreatedData(new TMDMData),
-m_EventPhysics(this),
-m_Spectra(0),
-m_X_Threshold(1000000), // junk value
-m_Y_Threshold(1000000), // junk value
-m_NumberOfDetectors(0) {
+	m_PreTreatedData(new TMDMData),
+	m_EventPhysics(this),
+	m_Spectra(0),
+	m_X_Threshold(1000000), // junk value
+	m_Y_Threshold(1000000), // junk value
+	m_NumberOfDetectors(0) {
+	m_Rayin = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////
+TMDMPhysics::~TMDMPhysics(){
+	if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
 }
 
 ///////////////////////////////////////////////////////////////////////////
 /// A usefull method to bundle all operation to add a detector
-void TMDMPhysics::AddDetector(){
+void TMDMPhysics::AddDetector(double angle, double field, const std::string& rayin){
   // In That simple case nothing is done
   // Typically for more complex detector one would calculate the relevant 
   // positions (stripped silicon) or angles (gamma array)
+
+	m_Angle = angle;
+	m_Field = field;
+	m_Rayin = new Rayin(rayin, false);
+	m_Trace = MDMTrace::Instance();
+	m_Trace->SetMDMAngle(angle/NPUNITS::mrad);  // mrad
+  m_Trace->SetMDMDipoleField(field/NPUNITS::gauss); // gauss
+	
   m_NumberOfDetectors++;
 } 
 
@@ -110,6 +130,9 @@ void TMDMPhysics::BuildPhysicalEvent() {
 		Xang *= (180/TMath::Pi());
 		Yang *= (180/TMath::Pi());
 	}
+
+	double ekin,ata,bta;
+	MinimizeTarget(&Xpos[0], &Ypos[0], ekin, ata, bta);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -240,7 +263,7 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
       double XA    = blocks[i]->GetDouble("XAccept","deg");
       double YA    = blocks[i]->GetDouble("YAccept","deg");
       string Rayin = blocks[i]->GetString("Rayin");
-      AddDetector();
+      AddDetector(Angle,Field,Rayin);
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;
@@ -356,3 +379,80 @@ public:
 proxy_MDM p_MDM;
 }
 
+///////////////////////////////////////////////////////////////////////////
+//   TARGET MINIMIZATION                                                 //
+///////////////////////////////////////////////////////////////////////////
+
+namespace {
+
+double XMEAS_[4];
+double YMEAS_[4];
+double CHARGE_;
+double MASS_;
+
+double chi2_wire(const double* p){
+	double thetaX = p[0]; // deg
+	double thetaY = p[1]; // deg
+	double Ekin   = p[2]; // MeV
+
+	MDMTrace::Instance()->SetScatteredCharge(CHARGE_);
+	MDMTrace::Instance()->SetScatteredMass(MASS_);
+	MDMTrace::Instance()->SetScatteredAngle(thetaX, thetaY); // deg
+	MDMTrace::Instance()->SetScatteredEnergy(Ekin);
+
+	MDMTrace::Instance()->SendRay();
+
+	double xw[4] = {1e10,1e10,1e10,1e10};
+	double yw[4] = {1e10,1e10,1e10,1e10};
+	double a = 1e10;
+	double b = 1e10;
+	MDMTrace::Instance()->GetOxfordWirePositions(a,xw[0],xw[1],xw[2],xw[3],b,yw[0],yw[1],yw[2],yw[3]);
+
+	double chi2 = 0;
+	for(int i=0; i< 4; ++i) {
+		chi2 += pow(XMEAS_[i] - xw[i], 2) / pow(XMEAS_[i], 2);
+		chi2 += pow(YMEAS_[i] - yw[i], 2) / pow(YMEAS_[i], 2);
+	}
+
+	return chi2;
+} }
+
+#include "Minuit2/Minuit2Minimizer.h"
+#include "Math/Functor.h"
+
+void TMDMPhysics::MinimizeTarget(const double* xwire, const double* ywire, // inputs, len 4 array, cm
+																 double& ekin, double& ata, double& bta){  // outputs, MeV, deg
+
+	CHARGE_ = 8;
+	MASS_ = 14;
+	for(int i=0; i< 4; ++i) {
+		XMEAS_[i] = xwire[i];
+		YMEAS_[i] = ywire[i];
+	}
+	
+	ROOT::Minuit2::Minuit2Minimizer min ( ROOT::Minuit2::kMigrad );
+ 
+	min.SetMaxFunctionCalls(10000);
+	min.SetMaxIterations(1000);
+	min.SetTolerance(0.001);
+ 
+	ROOT::Math::Functor f(&chi2_wire,3); 
+	double step[3] = {0.01,0.01,0.01};
+	double variable[3] = {0,0,515};
+ 
+	min.SetFunction(f);
+ 
+	// Set the free variables to be minimized!
+	min.SetVariable(0,"thetax",variable[0],step[0]);
+	min.SetVariable(1,"thetay",variable[1],step[1]);
+	min.SetVariable(2,"ekin"  ,variable[2],step[2]);
+ 
+	min.Minimize(); 
+ 
+	const double *xs = min.X();
+	ata = xs[0];
+	bta = xs[1];
+	ekin = xs[2];
+
+	cout << XMEAS_[0] << " " << YMEAS_[0] << " | " << ata << " " << bta << " " << ekin << "\n";
+}
