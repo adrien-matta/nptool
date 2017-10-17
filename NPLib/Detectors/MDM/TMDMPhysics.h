@@ -68,7 +68,10 @@ public:
 	std::vector<double>   Zpos; // cm
 	double                Xang; // deg
 	double                Yang; // deg
-
+	double                Target_Xang;
+	double                Target_Yang;
+	double                Target_Ekin;
+	
 private:
 	double m_Angle;
 	double m_Field;
@@ -156,8 +159,7 @@ public:
 	void SetRawDataPointer(TMDMData* rawDataPointer) {m_EventData = rawDataPointer;}
 
 	// do chi2 minimization to find most likely energy, angle parameters @target
-	void MinimizeTarget(const double* xwire, const double* ywire, // inputs, len 4 array, cm
-											double& ekin, double& ata, double& bta);  // outputs, MeV, deg
+	void MinimizeTarget();
     
   // objects are not written in the TTree
 private:

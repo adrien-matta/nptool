@@ -131,8 +131,7 @@ void TMDMPhysics::BuildPhysicalEvent() {
 		Yang *= (180/TMath::Pi());
 	}
 
-	double ekin,ata,bta;
-	MinimizeTarget(&Xpos[0], &Ypos[0], ekin, ata, bta);
+	MinimizeTarget();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -242,6 +241,9 @@ void TMDMPhysics::Clear() {
 	Zpos.clear();
 	Xang = -1000;
 	Yang = -1000;
+	Target_Xang = -1000;
+	Target_Yang = -1000;
+	Target_Ekin = -1000;
 }
 
 
@@ -420,14 +422,15 @@ double chi2_wire(const double* p){
 #include "Minuit2/Minuit2Minimizer.h"
 #include "Math/Functor.h"
 
-void TMDMPhysics::MinimizeTarget(const double* xwire, const double* ywire, // inputs, len 4 array, cm
-																 double& ekin, double& ata, double& bta){  // outputs, MeV, deg
+void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, deg
 
 	CHARGE_ = 8;
 	MASS_ = 14;
-	for(int i=0; i< 4; ++i) {
-		XMEAS_[i] = xwire[i];
-		YMEAS_[i] = ywire[i];
+	for(int i=0; i< Xpos.size(); ++i) {
+		int iDet = DetectorNumber.at(i);
+		if(iDet < 0 || iDet > 3) { break; }
+		XMEAS_[iDet] = Xpos[i];
+		YMEAS_[iDet] = Ypos[i];
 	}
 	
 	ROOT::Minuit2::Minuit2Minimizer min ( ROOT::Minuit2::kMigrad );
@@ -450,9 +453,7 @@ void TMDMPhysics::MinimizeTarget(const double* xwire, const double* ywire, // in
 	min.Minimize(); 
  
 	const double *xs = min.X();
-	ata = xs[0];
-	bta = xs[1];
-	ekin = xs[2];
-
-	cout << XMEAS_[0] << " " << YMEAS_[0] << " | " << ata << " " << bta << " " << ekin << "\n";
+	Target_Xang  = xs[0];
+	Target_Yang  = xs[1];
+	Target_Ekin = xs[2];
 }
