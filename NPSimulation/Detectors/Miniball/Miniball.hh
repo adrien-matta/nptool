@@ -123,7 +123,7 @@ class Miniball : public NPS::VDetector{
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
     vector<double>  m_Alpha; 
-    
+
     //   Shape type
     vector<string> m_Shape ;
    
