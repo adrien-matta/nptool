@@ -36,21 +36,19 @@ class VSpectra {
   public:
     // constructor and destructor
     VSpectra();
-    virtual ~VSpectra();
+    virtual ~VSpectra(){};
 
   public:
     // Instantiate and register histo to maps
     TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
     TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
         Int_t nbinsy, Double_t ylow, Double_t yup, string family);
-    // Add a Canvas to the online
-    void AddCanvas(TCanvas* c );
 
   public:
     // Initialization methods
-    virtual void InitRawSpectra()         = 0;
-    virtual void InitPreTreatedSpectra()  = 0;
-    virtual void InitPhysicsSpectra()     = 0;
+    virtual void InitRawSpectra()        {};
+    virtual void InitPreTreatedSpectra() {};
+    virtual void InitPhysicsSpectra()    {};
 
   public:
     // Filling methods
@@ -62,17 +60,23 @@ class VSpectra {
   public:
     // get map histo which will be used for GSpectra in GUser
     map< string, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetHisto(const string& family, const string& name);    
-    TH1* GetHisto(const string& FamilyAndName);    
+    TH1* GetSpectra(const string& family, const string& name);    
+    TH1* GetSpectra(const string& FamilyAndName);    
+    // TEMP FIX
+//    TH1* GetHisto(const string& family, const string& name){return GetSpectra(family,name);};    
+//    TH1* GetHisto(const string& FamilyAndName){return GetSpectra(FamilyAndName);};    
+
+    void FillSpectra(const string& family, const string& name, double val);
+    void FillSpectra(const string& family, const string& name, double x, double y);
+    void FillSpectra(const string& familyAndname, double val);
+    void FillSpectra(const string& familyAndname, double x, double y);
+
 
     void WriteSpectra(string filename = "VOID");      
-    // Return the canvases created for online display
-    vector<TCanvas*> GetCanvas();
      
-  private:
+  protected:
     // map holding histo pointers and their family names
     map< string, TH1* > fMapHisto;
-    vector<TCanvas*> m_Canvas;
     
   private: // Name of the Detector
    string m_name;

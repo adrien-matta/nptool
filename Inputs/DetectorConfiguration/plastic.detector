@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
- THICKNESS= 100 micrometer
+ THICKNESS= 1 micrometer
  ANGLE= 0 deg
  RADIUS=	7.5 mm
  MATERIAL= CH2
@@ -17,7 +17,7 @@ Plastic
  Height= 22 mm
  Width= 22 mm
  Radius= 0 mm
- Scintillator= BC400
+ Scintillator= Cu
  LeadThickness= 0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

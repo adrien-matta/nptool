@@ -1,2 +1,2 @@
-add_library(NPSEventGenerator OBJECT EventGeneratorParticleDecay.cc EventGeneratorBeam.cc EventGeneratorTwoBodyReaction.cc EventGeneratorpBUU.cc EventGeneratorGammaDecay.cc EventGeneratorIsotropic.cc EventGeneratorRadioactiveDecay.cc VEventGenerator.cc) 
+add_library(NPSEventGenerator OBJECT EventGeneratorParticleDecay.cc EventGeneratorBeam.cc EventGeneratorTwoBodyReaction.cc EventGeneratorMultipleParticle.cc EventGeneratorGammaDecay.cc EventGeneratorIsotropic.cc EventGeneratorRadioactiveDecay.cc VEventGenerator.cc) 
 #target_link_libraries(NPSEventGenerator ${ROOT_LIBRARIES} ${Geant4_LIBRARIES} ${NPLib_LIBRARIES} -lNPInitialConditions -lNPInteractionCoordinates )

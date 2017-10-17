@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Copyright (C) 2009-2106     this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016     this file is part of the NPTool Project       *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
@@ -61,6 +61,10 @@
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
+// ROOT
+#include "TH1D.h"
+#include "TF1.h"
+
 using namespace std;
 using namespace CLHEP;
 
@@ -81,7 +85,9 @@ namespace Chio_NS{
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Chio Specific Method
 Chio::Chio(){
-  m_Event = new TChio_anData() ;
+  m_Event_an = new TChio_anData() ;
+  m_Event_dig = new TChio_digData() ;
+
   m_ChioScorer = 0;
   m_SquareDetector = 0;
   m_CylindricalDetector = 0;
@@ -147,10 +153,10 @@ G4LogicalVolume* Chio::BuildDetector(){
 
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      
     MPT->AddConstProperty("DE_PAIRENERGY",30*eV);
-    MPT->AddConstProperty("DE_YIELD",1e-1);
+    MPT->AddConstProperty("DE_YIELD",1e-2);
     //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
     MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
-    MPT->AddConstProperty("DE_DRIFTSPEED",8e-3*mm/ns);
+    MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/microsecond);
     MPT->AddConstProperty("DE_TRANSVERSALSPREAD",6e-5*mm2/ns);
     MPT->AddConstProperty("DE_LONGITUDINALSPREAD",4e-5*mm2/ns);
 
@@ -175,11 +181,11 @@ G4LogicalVolume* Chio::BuildDetector(){
         logicGas,
         "ChioGas",m_SquareDetector,false,0);
 
-    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(2.5*cm,0,0)),
+    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(-2.5*cm,0,0)),
         logicGrid,
         "ChioGrid",logicGas,false,0);
 
-    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(3*cm,0,0)),
+    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(3*cm-0.5*1*um,0,0)),
         logicCathode,
         "ChioCathode",logicGas,false,0);
 
@@ -298,41 +304,106 @@ void Chio::ConstructDetector(G4LogicalVolume* world){
 void Chio::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
-  if(!pTree->FindBranch("Chio")){
-    pTree->Branch("Chio", "TChioData", &m_Event) ;
+  if(!pTree->FindBranch("ChioAn")){
+    pTree->Branch("ChioAn", "TChio_anData", &m_Event_an) ;
   }
-  pTree->SetBranchAddress("Chio", &m_Event) ;
+  pTree->SetBranchAddress("ChioAn", &m_Event_an) ;
+
+ ///////////////
+ if(!pTree->FindBranch("ChioDig")){
+    pTree->Branch("ChioDig", "TChio_digData", &m_Event_dig) ;
+  }
+  pTree->SetBranchAddress("ChioDig", &m_Event_dig) ;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Chio::ReadSensitive(const G4Event* event){
-  m_Event->Clear();
+  m_Event_an->Clear();
 
   ///////////
-  // Cathoderimeter scorer
+  // Cathode analogic scorer
   NPS::HitsMap<G4double*>* CathodeHitMap;
   std::map<G4int, G4double**>::iterator Cathode_itr;
 
-  G4int CathodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ChioScorer/Cathode");
+  G4int CathodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ChioScorer/Cathode_an");
   CathodeHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CathodeCollectionID));
 
   // Loop on the Cathode map
   for (Cathode_itr = CathodeHitMap->GetMap()->begin() ; Cathode_itr != CathodeHitMap->GetMap()->end() ; Cathode_itr++){
-
     G4double* Info = *(Cathode_itr->second);
     double Count= Info[0];
     if(Count>Chio_NS::ChargeThreshold-1){
       double Time = RandGauss::shoot(Info[1],Chio_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
-      //cout << Count << " " << Time/ns << endl;
-      //m_Event->SetEnergy(DetectorNbr,Energy);
-      //m_Event->SetTime(DetectorNbr,Time); 
+      m_Event_an->SetEnergyAndTime(Count,Time,Info[2]);
     }
   }
   // clear map for next event
   CathodeHitMap->clear();
+
+  m_Event_dig->Clear();
+
+  ///////////
+  CathodeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ChioScorer/Cathode_dig");
+  CathodeHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CathodeCollectionID));
+
+  // Loop on the Cathode map
+  TH1D* h = new TH1D("h","h",25000,0,25000);
+  for (Cathode_itr = CathodeHitMap->GetMap()->begin() ; Cathode_itr != CathodeHitMap->GetMap()->end() ; Cathode_itr++){
+    G4double* Info = *(Cathode_itr->second);
+    if(Info[0]){
+      h->Fill(Info[1],Info[0]);
+    }
+  }
+
+  vector<double> E,T;
+  for(int i = 0 ; i < h->GetNbinsX() ; i++){
+    double count = h->GetBinContent(i);
+    double time  = h->GetBinCenter(i);
+    if(count)
+  //  m_Event_dig->AddEnergyPoint(count,time);
+    E.push_back(count);
+    T.push_back(time+500);
+  }
+
+  SimulateDigitizer(E,T,1.40*microsecond,0,8750,25,5);
+
+  delete h;
+  // clear map for next event
+  CathodeHitMap->clear();
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Chio::SimulateDigitizer(vector<double> E, vector<double> T, double fallTime,double start,double stop, double step,double noise){
+
+  static string formula; 
+  formula= "";
+  static string Es,Ts,var,cond;
+  static string fall;
+  fall=std::to_string(fallTime);
+
+  for(unsigned int i = 0 ; i < E.size() ; i++){
+    if(E[i]!=0 && T[i]!=0){
+      Es = std::to_string(E[i]);
+      Ts = std::to_string(T[i]);
+      cond = ")*(x>"+Ts+")+";
+      var = "(x-"+Ts+")";
+      formula += Es+"*-1*exp(-"+var+"/"+fall+cond;
+    }
+  }
+  formula+="0";
+  TF1* f = new TF1("f",formula.c_str(),start,stop);  
+  unsigned int size = (stop-start)/step;
+  for(unsigned int i = 0 ; i < size ; i++){
+    double time = start+i*step;
+    double energy = f->Eval(time)+noise*(1-2*G4UniformRand());
+    m_Event_dig->AddEnergyPoint(energy,time);
+  }
+  
+  delete f;  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -346,9 +417,13 @@ void Chio::InitializeScorers() {
     return ;
 
   // Otherwise the scorer is initialised
-  G4VPrimitiveScorer* Cathode= new DRIFTELECTRONSCORERS::PS_DriftElectron("Cathode",0) ;
+  G4VPrimitiveScorer* Cathode_an= new DRIFTELECTRONSCORERS::PS_DECathode("Cathode_an",0) ;
+  G4VPrimitiveScorer* Cathode_dig= new DRIFTELECTRONSCORERS::PS_DEDigitizer("Cathode_dig",0) ;
+
   //and register it to the multifunctionnal detector
-  m_ChioScorer->RegisterPrimitive(Cathode);
+  m_ChioScorer->RegisterPrimitive(Cathode_an);
+  m_ChioScorer->RegisterPrimitive(Cathode_dig);
+
   G4SDManager::GetSDMpointer()->AddNewDetector(m_ChioScorer) ;
 }
 

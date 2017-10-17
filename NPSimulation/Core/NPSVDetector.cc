@@ -31,8 +31,8 @@ TInteractionCoordinates* NPS::VDetector::ms_InterCoord = 0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Constructor
 NPS::VDetector::VDetector(){
-  if (ms_InterCoord == 0) ms_InterCoord = new TInteractionCoordinates();
-  InitializeRootOutput();
+    if (ms_InterCoord == 0) ms_InterCoord = new TInteractionCoordinates();
+    InitializeRootOutput();
 }
 
 
@@ -42,23 +42,23 @@ NPS::VDetector::~VDetector(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void NPS::VDetector::InitializeRootOutput(){
-  TTree* Tree = RootOutput::getInstance()->GetTree();
-  if(!Tree->FindBranch("InteractionCoordinates")){
-    Tree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
-  }
-  Tree->SetBranchAddress("InteractionCoordinates", &ms_InterCoord);
+    TTree* Tree = RootOutput::getInstance()->GetTree();
+    if(!Tree->FindBranch("InteractionCoordinates")){
+        Tree->Branch("InteractionCoordinates", "TInteractionCoordinates", &ms_InterCoord);
+    }
+    Tree->SetBranchAddress("InteractionCoordinates", &ms_InterCoord);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4MultiFunctionalDetector* NPS::VDetector::CheckScorer(string name,bool &exist){
-  exist = true;
-  G4MultiFunctionalDetector* ptr =
+    exist = true;
+    G4MultiFunctionalDetector* ptr =
     (G4MultiFunctionalDetector*) G4SDManager::GetSDMpointer()->FindSensitiveDetector(name.c_str(),false);
-
-  if(!ptr){ 
-    ptr = new G4MultiFunctionalDetector(name.c_str());
-    exist = false;
-  }
-
-  return ptr;
+    
+    if(!ptr){
+        ptr = new G4MultiFunctionalDetector(name.c_str());
+        exist = false;
+    }
+    
+    return ptr;
 }

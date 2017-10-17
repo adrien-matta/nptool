@@ -238,7 +238,7 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
                 density = 0.93*g/cm3;
             G4Material* material = new G4Material("NPS_"+Name, density,2);
             material->AddElement(GetElementFromLibrary("C"),1);
-            material->AddElement(GetElementFromLibrary("D"),2);
+            material->AddElement(GetElementFromLibrary("H"),2);
             m_Material[Name]=material;
             return material;
         }
@@ -315,6 +315,30 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
+				else  if(Name == "He_gas"){
+            if(!density)
+							density = 0.0001665*g/cm3; // room temp, 1 atm
+            G4Material* material = new G4Material("NPS_"+Name, density,1);
+            material->AddElement(GetElementFromLibrary("He"),1);
+            m_Material[Name]=material;
+            return material;
+				}
+				else  if(Name == "O2_gas"){
+            if(!density)
+							density = 0.001331*g/cm3; // room temp, 1 atm
+            G4Material* material = new G4Material("NPS_"+Name, density,1);
+            material->AddElement(GetElementFromLibrary("O"),2);
+            m_Material[Name]=material;
+            return material;
+				}
+				else  if(Name == "Ti"){
+            if(!density)
+							density = 4.5189*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name, density,1);
+            material->AddElement(GetElementFromLibrary("Ti"),1);
+            m_Material[Name]=material;
+            return material;
+				}
          
         // Usual detector material
         else  if(Name == "Si"){

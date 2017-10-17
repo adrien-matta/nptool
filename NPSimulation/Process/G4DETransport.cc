@@ -117,7 +117,7 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   if(step_length<100*micrometer){     
     return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
-
+  
   // Get the material table
    const G4Material* aMaterial = aTrack.GetMaterial();
 
@@ -150,35 +150,41 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   // Normalised the drift direction
   driftDir = driftDir.unit();
   G4double v_drift = aMaterialPropertiesTable->GetConstProperty("DE_DRIFTSPEED"); 
-   // Should be equal to delta length
-  G4double step = step_length/v_drift;
- 
+
   G4double sigmaTrans  = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_TRANSVERSALSPREAD")/v_drift);
   G4double sigmaLong   = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_LONGITUDINALSPREAD")/v_drift);
 
   G4double d_long  = G4RandGauss::shoot(0,sigmaLong);
   G4double d_trans = G4RandGauss::shoot(0,sigmaTrans);
-    
+  G4double d_drift = step_length+d_long;  
+ 
   G4ThreeVector trans(G4RandGauss::shoot(0,d_trans),0,0);
   trans.rotateY(twopi*G4UniformRand());
-  G4ThreeVector d_Pos = (step_length+d_long)*driftDir+trans;  
+  G4ThreeVector d_Pos = (d_drift)*driftDir+trans;  
 
-  // New particle Position with matching time
+  // Should be equal to delta length
+  G4double step = (d_drift)/v_drift;
+ 
+ // New particle Position with matching time
   G4ThreeVector pos = x0 + d_Pos;
   G4double time = t0 + step; 
+  
   // Garanty that the electron does not jump outside the current volume
   G4double safety = m_SafetyHelper->ComputeSafety(x0,d_Pos.mag());  
 
+  // If the distance travelled if above safety, the step is not taken
   if(d_Pos.mag()>safety){
-    pos = x0+safety*d_Pos.unit();
+    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
   aParticleChange.ProposeMomentumDirection(d_Pos.unit());
   aParticleChange.ProposeEnergy(Energy);
   aParticleChange.ProposePosition(pos);
   aParticleChange.ProposeGlobalTime(time);
-  aParticleChange.ProposeVelocity(v_drift/c_light);
+  aParticleChange.ProposeLocalTime(time);
 
+  aParticleChange.ProposeVelocity(v_drift/c_light);
+  m_SafetyHelper->ReLocateWithinVolume(pos);
   return &aParticleChange;
 }
 

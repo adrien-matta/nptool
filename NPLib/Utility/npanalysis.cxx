@@ -72,7 +72,8 @@ int main(int argc , char** argv){
   // Instantiate the detector using a file
   NPL::DetectorManager* myDetector = new NPL::DetectorManager();
   myDetector->ReadConfigurationFile(detectorfileName);
-
+  myDetector->InitializeRootInput();
+  myDetector->InitializeRootOutput();
   // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
   string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
@@ -134,11 +135,12 @@ int main(int argc , char** argv){
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
+
           bool first = true;
-          while(!Chain || first){
+          if(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
-            RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
+           RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
             new_nentries = Chain->GetEntries();
@@ -166,21 +168,27 @@ int main(int argc , char** argv){
     if(!IsPhysics){ 
       for (unsigned int i = 0 ; i < nentries; i++) { 
         // Get the raw Data
+	//cout << "!" << endl;
         Chain -> GetEntry(i);
+	//cout << "!!" << endl;
         // Build the current event
         myDetector->BuildPhysicalEvent();
+	//cout << "!!!" << endl;
         // User Analysis
         UserAnalysis->TreatEvent();
+	//cout << "!!!!" << endl;
         // Fill the tree      
         tree->Fill();
       
+	//cout << "!!!!!" << endl;
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
+        
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
           bool first = true;
           while(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
             RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    
@@ -210,10 +218,11 @@ int main(int argc , char** argv){
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         if(myOptionManager->GetOnline() && i%10000==0){
+          myDetector->CheckSpectraServer();
+
           bool first = true;
           while(!Chain || first){
             first = false;
-            myDetector->CheckSpectraServer();
             RootInput::getInstance()->GetFile()->ReadKeys(kTRUE);
 
             Chain = (TChain*)  RootInput::getInstance()->GetFile()->FindKeyAny(ChainName)->ReadObj();    

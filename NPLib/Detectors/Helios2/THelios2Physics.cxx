@@ -360,20 +360,6 @@ map< string , TH1*> THelios2Physics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> THelios2Physics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void THelios2Physics::WriteSpectra() {
   m_Spectra->WriteSpectra();

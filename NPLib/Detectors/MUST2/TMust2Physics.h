@@ -150,8 +150,8 @@ class TMust2Physics : public TObject, public NPL::VDetector{
     void PreTreat();
 
     //   Return false if the channel is disabled by user
-    //   Frist argument is either "X","Y","SiLi","CsI"
-    bool IsValidChannel(const string DetectorType, const int telescope , const int channel);
+    //   Frist argument is either 0 for X,1 Y,2 SiLi, 3 CsI
+    bool IsValidChannel(const int& DetectorType, const int& telescope , const int& channel) ;
 
     //   Initialize the standard parameter for analysis
     //   ie: all channel enable, maximum multiplicity for strip = number of telescope
@@ -178,7 +178,7 @@ class TMust2Physics : public TObject, public NPL::VDetector{
     void ReadCalibrationRun();
 
     // Give and external TMustData object to TMust2Physics. Needed for online analysis for example.
-    void SetRawDataPointer(TMust2Data* rawDataPointer) {m_EventData = rawDataPointer;}
+    void SetRawDataPointer(void* rawDataPointer) {m_EventData = (TMust2Data*) rawDataPointer;}
     // Retrieve raw and pre-treated data
     TMust2Data* GetRawData()        const {return m_EventData;}
     TMust2Data* GetPreTreatedData() const {return m_PreTreatedData;}
@@ -289,25 +289,22 @@ class TMust2Physics : public TObject, public NPL::VDetector{
 
 namespace MUST2_LOCAL
 {
-
-  //   tranform an integer to a string
-  string itoa(int value);
   //   DSSD
   //   X
-  double fSi_X_E(const TMust2Data* Data, const int i);
-  double fSi_X_T(const TMust2Data* Data, const int i);
+  double fSi_X_E(const TMust2Data* Data, const int& i);
+  double fSi_X_T(const TMust2Data* Data, const int& i);
 
   //   Y
-  double fSi_Y_E(const TMust2Data* Data, const int i);
-  double fSi_Y_T(const TMust2Data* Data, const int i);
+  double fSi_Y_E(const TMust2Data* Data, const int& i);
+  double fSi_Y_T(const TMust2Data* Data, const int& i);
 
   //   SiLi
-  double fSiLi_E(const TMust2Data* Data, const int i);
-  double fSiLi_T(const TMust2Data* Data, const int i);
+  double fSiLi_E(const TMust2Data* Data, const int& i);
+  double fSiLi_T(const TMust2Data* Data, const int& i);
 
   //   CsI
-  double fCsI_E(const TMust2Data* Data, const int i);
-  double fCsI_T(const TMust2Data* Data, const int i);
+  double fCsI_E(const TMust2Data* Data, const int& i);
+  double fCsI_T(const TMust2Data* Data, const int& i);
 
 }
 

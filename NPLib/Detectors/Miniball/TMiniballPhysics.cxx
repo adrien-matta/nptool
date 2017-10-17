@@ -265,20 +265,6 @@ map< string , TH1*> TMiniballPhysics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TMiniballPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TMiniballPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();

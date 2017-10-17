@@ -44,22 +44,26 @@ public:     // Inherit from VEventGenerator Class
     void ReadConfiguration(NPL::InputParser)               ;
     void GenerateEvent(G4Event*) ;
     void InitializeRootOutput()                  ;
-    
+	
 private:    // Source parameter from input file
-    G4double               m_EnergyLow        ;  // Lower limit of energy range
-    G4double               m_EnergyHigh       ;  // Upper limit of energy range
-    G4double               m_HalfOpenAngleMin ;  // Min Half open angle of the source
-    G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
-    G4double               m_x0               ;  // Vertex Position X
-    G4double               m_y0               ;  // Vertex Position Y
-    G4double               m_z0               ;  // Vertex Position Z
-    G4double               m_SigmaX           ;
-    G4double               m_SigmaY           ;
-    G4ParticleDefinition*  m_particle         ;  // Kind of particle to shoot isotropically
-    vector<G4double>       m_ExcitationEnergy ;  // Excitation energy of the emitted particle
-    vector<string>         m_particleName     ;
-    ParticleStack*         m_ParticleStack    ;
-    vector<G4int>          m_Multiplicty;
+	struct SourceParameters {
+		SourceParameters()                          ;
+    G4double                 m_EnergyLow        ;  // Lower limit of energy range
+    G4double                 m_EnergyHigh       ;  // Upper limit of energy range
+    G4double                 m_HalfOpenAngleMin ;  // Min Half open angle of the source
+    G4double                 m_HalfOpenAngleMax ;  // Max Half open angle of the source
+    G4double                 m_x0               ;  // Vertex Position X
+    G4double                 m_y0               ;  // Vertex Position Y
+    G4double                 m_z0               ;  // Vertex Position Z
+    G4double                 m_SigmaX           ;
+    G4double                 m_SigmaY           ;
+    G4ParticleDefinition*    m_particle         ;  // Kind of particle to shoot isotropically
+    vector<G4double>         m_ExcitationEnergy ;  // Excitation energy of the emitted particle
+    vector<string>           m_particleName     ;
+    vector<G4int>            m_Multiplicty      ;
+	};
+	  vector<SourceParameters> m_Parameters       ;
+    ParticleStack*           m_ParticleStack    ;
     
 };
 #endif

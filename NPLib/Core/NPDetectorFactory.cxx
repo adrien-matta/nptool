@@ -23,7 +23,7 @@
 
 
 #include"NPDetectorFactory.h"
-using namespace NPL;
+#include"NPCore.h"
 #include<dlfcn.h>
 #include<fstream>
 #include<iostream>
@@ -32,32 +32,33 @@ using namespace NPL;
 // NPTool
 #include "NPOptionManager.h"
 
-DetectorFactory* DetectorFactory::m_Instance = 0;
+NPL::DetectorFactory* NPL::DetectorFactory::m_Instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
-DetectorFactory::DetectorFactory(){
+NPL::DetectorFactory::DetectorFactory(){
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-DetectorFactory::~DetectorFactory(){
+NPL::DetectorFactory::~DetectorFactory(){
   m_Instance = 0 ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-DetectorFactory* DetectorFactory::getInstance(){
+NPL::DetectorFactory* NPL::DetectorFactory::getInstance(){
   if(!m_Instance){
-    m_Instance = new DetectorFactory();
+    m_Instance = new NPL::DetectorFactory();
   }
 
   return m_Instance;
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-void DetectorFactory::ReadClassList(std::string FileList){
+void NPL::DetectorFactory::ReadClassList(std::string FileList){
     std::ifstream InFile(FileList.c_str());
 
     if(!InFile.is_open()){
-      cout << "ERROR: Detector Class List file " << FileList << " Not found" << endl;
+      string error = "Detector Class List file " +FileList +" Not found";
+      NPL::SendErrorAndExit("NPL::NPL::DetectorFactory",error);
       exit(1);
     }
 
@@ -66,7 +67,7 @@ void DetectorFactory::ReadClassList(std::string FileList){
       m_TokenLib[Token] = LibName; 
 }
 ////////////////////////////////////////////////////////////////////////////////
-void DetectorFactory::CreateClassList(std::string FileList){
+void NPL::DetectorFactory::CreateClassList(std::string FileList){
   ofstream outFile(FileList.c_str());
   std::map<string,string>::iterator it;
 
@@ -77,7 +78,7 @@ void DetectorFactory::CreateClassList(std::string FileList){
 
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPL::VDetector* DetectorFactory::Construct(std::string Token){
+NPL::VDetector* NPL::DetectorFactory::Construct(std::string Token){
   std::map<std::string,ClassDetectorFactoryFn>::iterator it;
   if(m_Construct.find(Token)!=m_Construct.end())
     return  m_Construct[Token]();
@@ -107,11 +108,11 @@ NPL::VDetector* DetectorFactory::Construct(std::string Token){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void DetectorFactory::AddDetector(std::string Token, ClassDetectorFactoryFn fn){
+void NPL::DetectorFactory::AddDetector(std::string Token, ClassDetectorFactoryFn fn){
   m_Construct[Token] = fn;
 }
 ////////////////////////////////////////////////////////////////////////////////
-void DetectorFactory::AddToken(std::string Token, std::string LibName){
+void NPL::DetectorFactory::AddToken(std::string Token, std::string LibName){
   // Make sure the lib name is correct:
   // Strip it from lib and NP and extension
   std::string remword = "lib";

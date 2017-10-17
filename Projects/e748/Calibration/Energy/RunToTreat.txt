@@ -1,0 +1,19 @@
+TTreeName 
+	AutoTree
+RootFileName 
+
+/data/e748X/e748/acquisition/root/run_0019_0.root
+/data/e748X/e748/acquisition/root/run_0019_1.root
+/data/e748X/e748/acquisition/root/run_0019_2.root
+/data/e748X/e748/acquisition/root/run_0019_3.root
+/data/e748X/e748/acquisition/root/run_0019_4.root
+/data/e748X/e748/acquisition/root/run_0019_5.root
+/data/e748X/e748/acquisition/root/run_0019_6.root
+/data/e748X/e748/acquisition/root/run_0019_7.root
+/data/e748X/e748/acquisition/root/run_0019_8.root
+/data/e748X/e748/acquisition/root/run_0019_9.root
+/data/e748X/e748/acquisition/root/run_0019_10.root
+/data/e748X/e748/acquisition/root/run_0019_11.root
+/data/e748X/e748/acquisition/root/run_0019_12.root
+/data/e748X/e748/acquisition/root/run_0019_13.root
+/data/e748X/e748/acquisition/root/run_0019_14.root

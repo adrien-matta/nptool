@@ -30,10 +30,13 @@
 #include <cmath>
 #include <stdlib.h>
 
+// NPLib
+#include "NPSystemOfUnits.h"
 // Gaspard
 #include "TGaspardTrackerPhysics.h"
 
-
+//Root
+#include"TRotation.h"
 GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*> &Module,
                                                  TGaspardTrackerPhysics* EventPhysics) 
    : m_ModuleTest(Module),
@@ -41,12 +44,8 @@ GaspardTrackerTrapezoid::GaspardTrackerTrapezoid(map<int, GaspardTrackerModule*>
           m_EventData(0),
           m_PreTreatData(new TGaspardTrackerData),
           m_NumberOfModule(0),
-          // gaspHyde
-//          m_FirstStageBaseLarge(97.5),   // mm
-//          m_FirstStageHeight(113.5),   // mm
-          // mugast
           m_FirstStageBaseLarge(92.326),   // mm
-          m_FirstStageHeight(105),   // mm
+          m_FirstStageHeight(105.),   // mm
           m_NumberOfStripsX(128),
           m_NumberOfStripsY(128)
 {
@@ -87,7 +86,7 @@ void GaspardTrackerTrapezoid::ReadConfiguration(NPL::InputParser parser){
         double Phi = blocks[i]->GetDouble("PHI","deg");
         vector<double> beta = blocks[i]->GetVectorDouble("BETA","deg");
       
-        AddModule(R,Theta,Phi,beta[0],beta[1],beta[2]);
+        AddModule(Theta,Phi,R,beta[0],beta[1],beta[2]);
         m_ModuleTest[m_index["Trapezoid"] + m_NumberOfModule] = this;
       }
     }
@@ -289,10 +288,6 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
 {
    m_NumberOfModule++;
 
-   // convert from degree to radian:
-   theta *= M_PI/180.;
-   phi   *= M_PI/180.;
-
    // Vector U on Module Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
    TVector3 U ;
    // Vector V on Module Face (parallele to X Strip)
@@ -305,56 +300,48 @@ void GaspardTrackerTrapezoid::AddModule(double theta,
    C = TVector3(distance * sin(theta) * cos(phi),
                 distance * sin(theta) * sin(phi),
                 distance * cos(theta));
-
+  
   TVector3 YperpW = TVector3( cos(theta) * cos(phi),
                               cos(theta) * sin(phi),
                              -sin(theta));
-
    W = C.Unit();
    V = W.Cross(YperpW);
-   U = W.Cross(U);
+   U = V.Cross(W);
 
    U = U.Unit();
    V = V.Unit();
-
-   U.Rotate( beta_u * M_PI/180. , U ) ;
-   V.Rotate( beta_u * M_PI/180. , U ) ;
-
-   U.Rotate( beta_v * M_PI/180. , V ) ;
-   V.Rotate( beta_v * M_PI/180. , V ) ;
-
-   U.Rotate( beta_w * M_PI/180. , W ) ;
-   V.Rotate( beta_w * M_PI/180. , W ) ;
-
+   
+   TRotation R;
+   R.Rotate(beta_u,U);
+   R.Rotate(beta_v,V);
+   R.Rotate(beta_w,W); 
+  
+   U*=R;
+   V*=R;
+   W*=R;
 
    vector<double> lineX;
    vector<double> lineY;
    vector<double> lineZ;
 
-   vector< vector< double > >   OneModuleStripPositionX;
-   vector< vector< double > >   OneModuleStripPositionY;
-   vector< vector< double > >   OneModuleStripPositionZ;
-
-   double X, Y, Z;
+   vector< vector< double > > OneModuleStripPositionX;
+   vector< vector< double > > OneModuleStripPositionY;
+   vector< vector< double > > OneModuleStripPositionZ;
 
    // Moving C to the 1.1 corner:
-   C.SetX( C.X() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.X() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.X() )   ;
-   C.SetY( C.Y() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.Y() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.Y() )   ;
-   C.SetZ( C.Z() - ( m_FirstStageBaseLarge/2 - m_StripPitchX/2 ) * U.Z() - (m_FirstStageHeight/2 - m_StripPitchY/2 ) *V.Z() )   ;
-
-   for (int i = 0; i < m_NumberOfStripsX; i++) {
+   TVector3 Strip_1_1=
+    C-U*(0.5*m_FirstStageBaseLarge-0.5*m_StripPitchX)-V*(0.5*m_FirstStageHeight-0.5*m_StripPitchY);
+   
+   for(unsigned int i = 0; i < m_NumberOfStripsX; i++){
       lineX.clear();
       lineY.clear();
       lineZ.clear();
 
-      for (int j = 0; j < m_NumberOfStripsY; j++) {
-         X = C.X() + m_StripPitchX*U.X()*i + m_StripPitchY*V.X()*j ;
-         Y = C.Y() + m_StripPitchX*U.Y()*i + m_StripPitchY*V.Y()*j ;
-         Z = C.Z() + m_StripPitchX*U.Z()*i + m_StripPitchY*V.Z()*j ;
-
-         lineX.push_back(X);
-         lineY.push_back(Y);
-         lineZ.push_back(Z);
+      for(unsigned int j = 0; j < m_NumberOfStripsY; j++){
+        TVector3 Center = Strip_1_1 + i*m_StripPitchX*U + j*m_StripPitchY*V;
+        lineX.push_back(Center.X());
+        lineY.push_back(Center.Y());
+        lineZ.push_back(Center.Z());
       }
 
       OneModuleStripPositionX.push_back(lineX);

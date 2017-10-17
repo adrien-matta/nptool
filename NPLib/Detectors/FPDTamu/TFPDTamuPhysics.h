@@ -71,6 +71,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> DeltaEnergy;
   vector<double> DeltaTime;//!
   //Micromega
+  vector<int>    MicroDetNumber;
   vector<int>    MicroRowNumber;
   vector<int>    MicroColNumber;
 	vector<int>    MicroTimeRowNumber;
@@ -85,6 +86,10 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> AWireRightCharge;
   vector<double> AWirePositionX;
   vector<double> AWirePositionZ;
+	double AWireAngle;
+	double AWireFitR2;
+	double AWireFPPositionX;
+	double AWireFPPositionZ;
   //Plastic scintillator
   vector<double> PlastLeftCharge;
   vector<double> PlastRightCharge;
@@ -92,6 +97,7 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   vector<double> PlastRightTime;
   vector<double> PlastCharge;
   vector<double> PlastPositionX;
+  vector<double> PlastPositionXLog;
   vector<double> PlastPositionZ;
 
   //Calculated AWire and Plastic
@@ -172,6 +178,12 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     
     void Dump() const;
 
+		// calculate virtual focal plane x-position
+		double CalculateFPPositionX(double FPPositionZ);
+		// calculate angle at FP by doing a linear fit to all 4 wire positions
+		double CalculateFPAngle();
+
+		
   // objects are not written in the TTree
   private:
     TFPDTamuData*         m_EventData;        //!
@@ -184,8 +196,10 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
     TFPDTamuData* GetPreTreatedData() const {return m_PreTreatedData;}
     
     // Micromega specific used in analysis
-    double GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol) ; 
-    double GetMicroRowGeomEnergy(int lrow, int hrow);
+    double GetMicroGroupEnergy(int det, int lrow, int hrow, int lcol, int hcol) ; 
+//by Shuya 170516
+    //double GetMicroRowGeomEnergy(int det, int lrow, int hrow);
+    double GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col);	//"col" gives you an choice if you sum up all of signals in a row (col==0), otherwise just for one column.
   
   // parameters used in the analysis
   private:
@@ -226,7 +240,6 @@ class TFPDTamuPhysics : public TObject, public NPL::VDetector {
   // spectra getter
   public:
     map<string, TH1*>   GetSpectra(); 
-    vector<TCanvas*>    GetCanvas();
 
   // Static constructor to be passed to the Detector Factory
   public:

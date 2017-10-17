@@ -3,9 +3,9 @@ GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %0.5mg/cm2
 Target
- THICKNESS= 0.0 micrometer 
+ THICKNESS= 0.1132 micrometer 
  RADIUS=	5 mm
- MATERIAL= CD2
+ MATERIAL= 6LiF
  ANGLE= 0 deg
  X= 0 mm
  Y= 0 mm
@@ -52,6 +52,10 @@ FPDTamu DELTA
 FPDTamu MICRO
  UPSTREAM-LEFT=  +154 +00 +340 mm
  UPSTREAM-RIGHT= -154 +00 +340 mm
+% position of second micro not verified 
+FPDTamu MICRO
+ UPSTREAM-LEFT=  +154 +00 +360 mm
+ UPSTREAM-RIGHT= -154 +00 +360 mm
 %%%%%%%%%%%%%%%%%%%%%
 % All AWIRE detectors
 FPDTamu AWIRE
@@ -66,6 +70,10 @@ FPDTamu AWIRE
 FPDTamu AWIRE 
  LEFT=  +200   +00   +497 mm
  RIGHT= -200   +00   +497 mm
+%%%%%%%%%%%%%%%%%%%%%
+% Focal Plane
+FPDTamu FOCUS
+ POS= +30 mm
 %%%%%%%%%%%%%%%%%%%%%
 % All Plastic detectors
 FPDTamu PLAST

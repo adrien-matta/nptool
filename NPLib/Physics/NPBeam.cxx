@@ -131,7 +131,7 @@ void Beam::ReadConfigurationFile(NPL::InputParser parser){
   vector<string> energyA = {"Energy","SigmaEnergy"};
   vector<string> energyP = {"EnergyProfilePath"};
   vector<string> emmitA  = {"SigmaThetaX","SigmaPhiY","SigmaX","SigmaY","MeanThetaX","MeanPhiY","MeanX","MeanY"};
-  vector<string> emmitP  = {"EnergyProfilePath","XThetaXProfilePath","YPhiYProfilePath"};
+  vector<string> emmitP  = {"XThetaXProfilePath","YPhiYProfilePath"};
 
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
@@ -172,9 +172,9 @@ void Beam::ReadConfigurationFile(NPL::InputParser parser){
       // Emmitance profile
       else if(blocks[i]->HasTokenList(emmitP)){
         vector<string> XThetaX= blocks[i]->GetVectorString("XThetaXProfilePath");
-        SetEnergyHist( Read1DProfile(XThetaX[0], XThetaX[1]));
+        SetXThetaXHist( Read2DProfile(XThetaX[0], XThetaX[1]));
         vector<string> YPhiY= blocks[i]->GetVectorString("YPhiYProfilePath");
-        SetEnergyHist( Read1DProfile(YPhiY[0], YPhiY[1]));
+        SetYPhiYHist( Read2DProfile(YPhiY[0], YPhiY[1]));
 
       }
 

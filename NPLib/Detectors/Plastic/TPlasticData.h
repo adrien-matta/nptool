@@ -43,25 +43,25 @@ class TPlasticData : public TObject {
 
    /////////////////////           GETTERS           ////////////////////////
    // (E)
-   double   GetEnergy(int i) { return fPlastic_Energy[i] ;}
+   inline double   GetEnergy(const int& i) const { return fPlastic_Energy[i] ;}
    // (T)
-   double   GetTime(int i)   { return fPlastic_Time[i] ;}
+   inline double   GetTime(const int& i)   const { return fPlastic_Time[i] ;}
    // (N)
-   int    GetPlasticNumber(int i) { return fPlastic_Number[i] ;}
+   inline int      GetPlasticNumber(const int& i) const { return fPlastic_Number[i] ;}
    
    //Mult
    // E
-   double   GetEnergyMult() { return fPlastic_Energy.size() ;}
+   inline double   GetEnergyMult() const { return fPlastic_Energy.size() ;}
    // (T)
-   double   GetTimeMult()   { return fPlastic_Time.size() ;}
+   inline double   GetTimeMult()   const { return fPlastic_Time.size() ;}
    // (N)
-   int      GetPlasticNumberMult() { return fPlastic_Number.size() ;}
+   inline int      GetPlasticNumberMult() const { return fPlastic_Number.size() ;}
    
    /////////////////////           SETTERS           ////////////////////////
    // (E)
-   void   SetEnergy(double E) { fPlastic_Energy.push_back(E) ;}
-   void   SetTime(double T)   { fPlastic_Time.push_back(T) ;}
-   void   SetPlasticNumber(int N) { fPlastic_Number.push_back(N) ;}
+   inline void   SetEnergy(const double& E)     { fPlastic_Energy.push_back(E) ;}
+   inline void   SetTime(const double&  T)      { fPlastic_Time.push_back(T) ;}
+   inline void   SetPlasticNumber(const int& N) { fPlastic_Number.push_back(N) ;}
    //
    ClassDef(TPlasticData,1)  // PlasticData structure
 };

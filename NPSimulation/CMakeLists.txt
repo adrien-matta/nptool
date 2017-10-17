@@ -12,9 +12,14 @@ set (NPSIM_VERSION_DETS 29)
 
 set(CMAKE_BUILD_TYPE Release)
 
+
 # Finding NPLib
+message("Looking for nplib: ")
 find_package(NPLib)
 include(${NPLib_USE_FILE})
+message("  found: ${NPLIB}")
+message("  include directory: ${NPLib_INCLUDE_DIRS}")
+message("  detector list (empty if all): ${NPLib_DETECTOR_LIST}")
 
 #include the nptool standard CMake preamble 
 include("../NPLib/ressources/CMake/NPTool_CMake_Preamble.cmake")

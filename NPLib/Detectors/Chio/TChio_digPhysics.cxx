@@ -58,28 +58,21 @@ TChio_digPhysics::~TChio_digPhysics()
 
 // Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 void TChio_digPhysics::ReadConfiguration(NPL::InputParser parser){
- vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Chio");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"A","B","C","D"};
+  vector<string> token = {"POS"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
-      TVector3 A = blocks[i]->GetTVector3("A","mm");
-      TVector3 B = blocks[i]->GetTVector3("B","mm");
-      TVector3 C = blocks[i]->GetTVector3("C","mm");
-      TVector3 D = blocks[i]->GetTVector3("D","mm");
-
-     // AddChio(A,B,C,D);
+      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
     }
-
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);
     }
   }
-
 //  InitializeStandardParameter();
 //  ReadAnalysisConfig();
 }
@@ -99,9 +92,9 @@ void TChio_digPhysics::AddParameterToCalibrationManager()
 void TChio_digPhysics::InitializeRootInputRaw()
 {
   TChain* inputChain = RootInput::getInstance()->GetChain() ;
-  inputChain->SetBranchStatus("CHIO_DIG" , true)        ;
+  inputChain->SetBranchStatus("ChioDig" , true)        ;
   inputChain->SetBranchStatus("fChio_dig_*" , true)     ;
-  inputChain->SetBranchAddress("CHIO_DIG" , &EventData)           ;
+  inputChain->SetBranchAddress("ChioDig" , &EventData)           ;
 }
 
 //   Activated associated Branches and link it to the private member DetectorPhysics address
@@ -237,12 +230,7 @@ void TChio_digPhysics::BuildSimplePhysicalEvent()
   // this value is defined by RC cuircuit in pre-amplifier.
   // ask technitian for R and C values
 
-  // read digitizer data into "Energy" 
-  for(int ch=0;ch<Nch;ch++){
-    Energy.push_back((double)EventData->GetEnergy(ch));
-    // Energy[ch] = (int)EventData->GetEnergy(ch);
-    // cout << EventData->GetEnergy(ch) << endl;
-  }
+  Energy = EventData->GetEnergy();
 
   if(Nch!=0){
     int ch = 0;

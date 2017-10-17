@@ -191,8 +191,11 @@ void TPlasticPhysics::BuildSimplePhysicalEvent()
   for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
   {
     DetectorNumber.push_back( EventData->GetPlasticNumber(i) )   ;
-    Energy.push_back( CalibrationManager::getInstance()->ApplyCalibration("Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_E",EventData->GetEnergy(i) ) );
-    Time.push_back( CalibrationManager::getInstance()->ApplyCalibration(   "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_T",EventData->GetTime(i) ) );
+    static string str;
+    str = "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_E";
+    Energy.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetEnergy(i) ) );
+    str = "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_T";
+    Time.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetTime(i) ) );
   }
 
 }

@@ -56,6 +56,7 @@ class TSplitPoleNMR : public TObject
       TSplitPoleNMR();
       TSplitPoleNMR(const char* fileName);
       TSplitPoleNMR(const char* fileName, Double_t delay);
+      TSplitPoleNMR(const char* fileName, Double_t delay, bool largefield);
       virtual ~TSplitPoleNMR();
 
       void     SetDelay(Double_t delay) {fDelay = delay; ApplyDelay();}

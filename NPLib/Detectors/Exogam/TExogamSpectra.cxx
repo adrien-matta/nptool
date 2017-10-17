@@ -136,16 +136,16 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
   for (unsigned int i = 0; i < RawData->GetECCEMult(); i++){
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d", RawData->GetECCEClover(i)+1,RawData->GetECCECristal(i)+1);
     family = "Exogam/ERAW/ECC";
-    GetHisto(family,name)
-      -> Fill(RawData->GetECCEEnergy(i));
+    FillSpectra(family,name
+      ,RawData->GetECCEEnergy(i));
    }
 
   for (unsigned int i = 0; i < RawData->GetGOCCEEMult(); i++){
     name = Form("ExogamEnergyRaw_Clover%d_ECC%d_GOCCE%d", RawData->GetGOCCEEClover(i)+1,RawData->GetGOCCEECristal(i)+1,RawData->GetGOCCEESegment(i)+1);
     family = "Exogam/ERAW/GOCCE";
     
-  GetHisto(family,name)
-      -> Fill(RawData->GetGOCCEEEnergy(i));
+  FillSpectra(family,name
+      ,RawData->GetGOCCEEEnergy(i));
     }
 
   // Time
@@ -153,8 +153,8 @@ void TExogamSpectra::FillRawSpectra(TExogamData* RawData){
    name = Form("ExogamTimeRaw_Clover%d_ECC%d", RawData->GetECCTClover(i)+1,RawData->GetECCTCristal(i)+1);
     family = "Exogam/RAW";
 
-    GetHisto(family,name)
-      -> Fill(RawData->GetECCTTime(i));
+    FillSpectra(family,name
+      ,RawData->GetECCTTime(i));
   }
 }
 
@@ -167,24 +167,24 @@ void TExogamSpectra::FillPreTreatedSpectra(TExogamData* PreTreatedData){
     name = Form("ExogamEnergyCal_Clover%d_ECC%d", PreTreatedData->GetECCEClover(i)+1,PreTreatedData->GetECCECristal(i)+1);
     family = "Exogam/ECal/ECC";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetECCEEnergy(i));
+    FillSpectra(family,name
+      ,PreTreatedData->GetECCEEnergy(i));
   }
 
   for (unsigned int i = 0; i < PreTreatedData->GetGOCCEEMult(); i++) {   
     name = Form("ExogamEnergyCal_Clover%d_ECC%d_GOCCE%d", PreTreatedData->GetGOCCEEClover(i)+1,PreTreatedData->GetGOCCEECristal(i)+1,PreTreatedData->GetGOCCEESegment(i)+1);
     family = "Exogam/ECal/GOCCE";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetGOCCEEEnergy(i));
+    FillSpectra(family,name
+      ,PreTreatedData->GetGOCCEEEnergy(i));
     }
 
   for (unsigned int i = 0; i < PreTreatedData->GetECCTMult(); i++) {
     name = Form("ExogamTimeCal_Clover%d_ECC%d", PreTreatedData->GetECCTClover(i)+1,PreTreatedData->GetECCTCristal(i)+1);
     family = "Exogam/TCal/ECC";
 
-    GetHisto(family,name)
-      -> Fill(PreTreatedData->GetECCTTime(i));
+    FillSpectra(family,name
+      ,PreTreatedData->GetECCTTime(i));
 
   }
    
@@ -198,8 +198,8 @@ void TExogamSpectra::FillPhysicsSpectra(TExogamPhysics* Physics){
   name = "ExogamEnergyAddBack";
   family = "Exogam/DC";
   for (unsigned int i = 0; i < Physics->DopplerCorrectedEnergy.size(); i++) {
-    GetHisto(family,name)
-      -> Fill(Physics->DopplerCorrectedEnergy[i]);
+    FillSpectra(family,name
+      ,Physics->DopplerCorrectedEnergy[i]);
   }
 
 }

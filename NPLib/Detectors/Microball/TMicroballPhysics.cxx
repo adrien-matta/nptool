@@ -48,7 +48,7 @@ TMicroballPhysics::TMicroballPhysics()
      m_EventPhysics(this),
      m_Spectra(0),
      m_E_RAW_Threshold(0), // adc channels
-     m_E_Threshold(0),     // MeV
+     m_E_Threshold(0.5),     // MeV
      m_NumberOfDetectors(0) {
 }
 
@@ -260,20 +260,6 @@ map< string , TH1*> TMicroballPhysics::GetSpectra() {
     return empty;
   }
 }
-
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TMicroballPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
 
 ///////////////////////////////////////////////////////////////////////////
 void TMicroballPhysics::WriteSpectra() {

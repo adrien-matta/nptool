@@ -47,7 +47,7 @@ namespace MUST2
 
    const G4double AluStripThickness = 0.4*micrometer ;
    const G4double SiliconThickness  = 300*micrometer ;
-   const G4double SiliconFace       = 98*mm ;
+   const G4double SiliconFace       = 100.42*mm ;
    const G4double VacBoxThickness   = 3*cm ;
 
    const G4double SiLiThickness     = 5.1*mm;  // Must be checked

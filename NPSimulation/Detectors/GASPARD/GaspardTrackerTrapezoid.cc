@@ -57,7 +57,6 @@
 
 // CLHEP
 #include "CLHEP/Random/RandGauss.h"
-
 using namespace std;
 using namespace CLHEP;
 
@@ -304,6 +303,8 @@ void GaspardTrackerTrapezoid::ReadConfiguration(NPL::InputParser parser){
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->GetMainValue() == "Trapezoid" && blocks[i]->HasTokenList(token) ){
+      cout << "Gaspard Trapezoid " << i+1 << ":"  << endl; 
+
        
       bool first = blocks[i]->GetInt("FIRSTSTAGE");
       bool second = blocks[i]->GetInt("SECONDSTAGE");
@@ -396,9 +397,9 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          // w perpendicular to (u,v) plan and pointing ThirdStage
          // Phi is angle between X axis and projection in (X,Y) plan
          // Theta is angle between  position vector and z axis
-         G4double wX = m_R[i] * sin(Theta / rad) * cos(Phi / rad);
-         G4double wY = m_R[i] * sin(Theta / rad) * sin(Phi / rad);
-         G4double wZ = m_R[i] * cos(Theta / rad);
+         G4double wX = m_R[i] * sin(Theta) * cos(Phi);
+         G4double wY = m_R[i] * sin(Theta) * sin(Phi);
+         G4double wZ = m_R[i] * cos(Theta);
          MMw = G4ThreeVector(wX, wY, wZ);
 
          // vector corresponding to the center of the module
@@ -406,9 +407,9 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
 
          // vector parallel to one axis of silicon plane
          // in fact, this is vector u
-         G4double ii = cos(Theta / rad) * cos(Phi / rad);
-         G4double jj = cos(Theta / rad) * sin(Phi / rad);
-         G4double kk = -sin(Theta / rad);
+         G4double ii = cos(Theta) * cos(Phi);
+         G4double jj = cos(Theta) * sin(Phi);
+         G4double kk = -sin(Theta);
          G4ThreeVector Y = G4ThreeVector(ii, jj, kk);
 
          MMw = MMw.unit();
@@ -424,7 +425,8 @@ void GaspardTrackerTrapezoid::ConstructDetector(G4LogicalVolume* world)
          MMrot->rotate(m_beta_v[i], MMv);
          MMrot->rotate(m_beta_w[i], MMw);
          // translation to place Telescope
-         MMpos = MMw * Length * 0.5 + MMCenter;
+         MMpos = MMw * Length + MMCenter;
+
       }
 
       FirstStage  = m_wFirstStage[i];

@@ -1,5 +1,7 @@
 add_custom_command(OUTPUT TAsciiFileDict.cxx COMMAND  ../scripts/build_dict.sh TAsciiFile.h TAsciiFileDict.cxx TAsciiFile.rootmap libNPCore.so)  
+add_custom_command(OUTPUT NPDeltaSpectraDict.cxx COMMAND  ../scripts/build_dict.sh NPDeltaSpectra.h NPDeltaSpectraDict.cxx NPDeltaSpectra.rootmap libNPCore.so NPDeltaSpectraLinkdef.h)  
+
 add_custom_command(OUTPUT NPVDetectorDict.cxx COMMAND  ../scripts/build_dict.sh NPVDetector.h NPVDetectorDict.cxx NPVDetector.rootmap libNPCore.so NPCoreLinkdef.h)  
-add_library(NPCore SHARED NPVAnalysis.cxx NPAnalysisFactory.cxx NPCalibrationManager.cxx NPOptionManager.cxx RootOutput.cxx RootInput.cxx TAsciiFile.cxx TAsciiFileDict.cxx NPDetectorManager.cxx NPVDetector.cxx NPVDetectorDict.cxx NPVSpectra.cxx NPDetectorFactory.cxx NPSpectraServer.cxx NPInputParser.cxx)
+add_library(NPCore SHARED NPCore.cxx NPVAnalysis.cxx NPAnalysisFactory.cxx NPCalibrationManager.cxx NPOptionManager.cxx RootOutput.cxx RootInput.cxx TAsciiFile.cxx TAsciiFileDict.cxx NPDeltaSpectraDict.cxx NPDetectorManager.cxx NPVDetector.cxx NPVDetectorDict.cxx NPVSpectra.cxx NPDetectorFactory.cxx NPSpectraServer.cxx NPInputParser.cxx NPImage.cxx NPElog.cxx NPDeltaSpectra.cxx)
 target_link_libraries(NPCore ${ROOT_LIBRARIES}) 
-install(FILES NPVAnalysis.h NPAnalysisFactory.h  NPCalibrationManager.h NPOptionManager.h RootInput.h RootOutput.h TAsciiFile.h NPDetectorManager.h NPVDetector.h NPGlobalSystemOfUnits.h NPPhysicalConstants.h NPSystemOfUnits.h NPVSpectra.h NPDetectorFactory.h  NPSpectraServer.h NPInputParser.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+install(FILES NPCore.h NPVAnalysis.h NPAnalysisFactory.h  NPCalibrationManager.h NPOptionManager.h RootInput.h RootOutput.h TAsciiFile.h NPDetectorManager.h NPVDetector.h NPGlobalSystemOfUnits.h NPPhysicalConstants.h NPSystemOfUnits.h NPVSpectra.h NPDetectorFactory.h  NPSpectraServer.h NPInputParser.h NPImage.h NPElog.h NPDeltaSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

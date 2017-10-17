@@ -43,7 +43,7 @@
 #include "EventGeneratorTwoBodyReaction.hh"
 #include "EventGeneratorIsotropic.hh"
 #include "EventGeneratorRadioactiveDecay.hh"
-#include "EventGeneratorpBUU.hh"
+#include "EventGeneratorMultipleParticle.hh"
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
@@ -104,9 +104,9 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     m_EventGenerator.push_back(myEventGenerator);
   }
   blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("pBUU");
+  blocks = parser.GetAllBlocksWithToken("MultipleParticle");
   if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorpBUU();
+    NPS::VEventGenerator* myEventGenerator = new EventGeneratorMultipleParticle();
     myEventGenerator->ReadConfiguration(parser);
     myEventGenerator->InitializeRootOutput();
     m_EventGenerator.push_back(myEventGenerator);

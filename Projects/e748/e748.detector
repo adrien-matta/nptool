@@ -1,0 +1,145 @@
+%%%%%%%%%%%%%%%%%%%%%     
+Target
+ THICKNESS= 23.5 micrometer
+ ANGLE= 0 deg
+ RADIUS=  25 mm
+ MATERIAL= CD2
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+%%%%%%%%%%%%%%%%%%%%%     
+% T1      
+M2Telescope     
+ X128_Y128=  -12.2 104.3 146.4 mm
+ X128_Y1= -102.5  104.4 110.3 mm
+ X1_Y1= -114.3  12.4  139.4 mm
+ X1_Y128= -24. 12.2  175.6 mm
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+% T2      
+M2Telescope     
+ X128_Y128=  -114.5  -10.3 139.3
+ X128_Y1= -103.2  -102.7  110.7
+ X1_Y1= -12.9 -102.9  146.9
+ X1_Y128= -24.3 -10.5 175.5
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+% T3      
+M2Telescope     
+ X128_Y128=  13.3  -103.4  146.2
+ X128_Y1= 103.7 -103.5  110.3
+ X1_Y1= 115.2 -11.3 139.0
+ X1_Y128= 24.8  -11.1 174.9
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+% T4      
+M2Telescope     
+ X128_Y128=  115.2 10.9  139.6
+ X128_Y1= 103.8 103.2 110.3
+ X1_Y1= 13.7  103.5 146.3
+ X1_Y128= 25.1  11.2  175.6
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+% T5      
+M2Telescope     
+ X128_Y128=  170.8 -20.9 -65.4
+ X128_Y1= 137.1 -108.6  -40.4
+ X1_Y1= 79.8  -109.1  -118.9
+ X1_Y128= 113.4 -21.3 -143.9
+ SI= 1     
+ SILI= 1      
+ CSI= 0     
+ VIS= all     
+
+% T6      
+M2Telescope     
+ X128_Y128=  -154.5  -91.7 -34.0
+ X128_Y1= -145.8  -91.3 62.8
+ X1_Y1= -173.8  1.9 65.0
+ X1_Y128= -182.6  1.5 -31.9
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+
+% T7      
+M2Telescope     
+ X128_Y128=  -172.6  21.7  65.7
+ X128_Y1= -130.3  109.4 61.4
+ X1_Y1= -139.3  108.9 -35.2
+ X1_Y128= -181.6  21.2  -30.9
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+
+% T8      
+M2Telescope     
+ X128_Y128=  91.4  91.2  -127.4
+ X128_Y1= 148.6 91.0  -48.6
+ X1_Y1= 171.8 -2.0  -65.8
+ X1_Y128= 114.6 -1.8  -144.5
+ SI= 1     
+ SILI= 0      
+ CSI= 1     
+ VIS= all     
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+ X1_Y1= -35.86  -34.76  -1457 mm
+ X28_Y1= 35.26  -34.76  -1457 mm
+ X1_Y28= -35.86  36.36  -1457 mm
+ X28_Y28= 35.26 36.36  -1457 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+ X1_Y1= 34.86  -35.36   -949 mm
+ X28_Y1= -36.26  -35.36  -949 mm
+ X1_Y28= 34.66  35.76  -949 mm
+ X28_Y28= -36.26 35.76  -949 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Chio_dig 
+ Pos=       -30.  -30.   600. mm
+
+Chio_an 
+ Pos=       -30.  -30.   600. mm
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%ScintillatorPlastic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% warning all parameters need to be there for routine to exit
+%Plastic
+  THETA= 0 deg
+  PHI= 0 deg
+  R= 0 mm
+  Thickness= 20 mm
+  Shape= Square
+  Height= 30 mm
+  Width= 30 mm
+  Scintillator= BC400
+  LeadThickness= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+EXL
+  POS= -20 30 -20 cm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ModularLeaf
+ DefaultValue= -1000
+ Leafs= T_CATS1_CAV T_CATS1_2 T_MUVI_CATS1 T_PL_CATS2 EXL_HF T_PL_CHIO T_PL_CATS1
+

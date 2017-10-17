@@ -1,4 +1,4 @@
-#ifndef DriftElectronScorers_h
+#ifndef DECathodeScorers_h
 #define SiliconScorers_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
@@ -33,11 +33,11 @@ using namespace CLHEP;
 
 namespace DRIFTELECTRONSCORERS {
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......  
-  class PS_DriftElectron : public G4VPrimitiveScorer{
+  class PS_DECathode : public G4VPrimitiveScorer{
     
   public: // with description
-    PS_DriftElectron(G4String name,G4int depth=0);
-     ~PS_DriftElectron();
+    PS_DECathode(G4String name,G4int depth=0);
+     ~PS_DECathode();
     
   protected: // with description
      G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -58,7 +58,34 @@ private: // inherited from G4VPrimitiveScorer
       G4int m_Level;
       G4int m_DetectorNumber;
       G4ThreeVector m_Position;
-      G4double m_NumberOfDriftElectron;
+    
+  };
+//////////////////////////////////////////////////////////////////////////////// 
+  class PS_DEDigitizer : public G4VPrimitiveScorer{
+    
+  public: // with description
+    PS_DEDigitizer(G4String name,G4int depth=0);
+     ~PS_DEDigitizer();
+    
+  protected: // with description
+     G4bool ProcessHits(G4Step*, G4TouchableHistory*);
+    
+  public:
+    void Initialize(G4HCofThisEvent*);
+    void EndOfEvent(G4HCofThisEvent*);
+    void clear();
+    void DrawAll();
+    void PrintAll();
+  
+private: // inherited from G4VPrimitiveScorer
+      G4int HCID;
+      NPS::HitsMap<G4double*>* EvtMap;
+    
+  private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
+      G4int m_Index;
+      G4int m_Level;
+      G4int m_DetectorNumber;
+      G4ThreeVector m_Position;
     
   };
   

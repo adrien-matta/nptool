@@ -63,6 +63,17 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     //   Create associated branches and associated private member DetectorPhysics address
     void InitializeRootOutput() ;
 
+    //   Return false if the channel is disabled by user
+    //   First argument is either 0 for Cry,1 Seg
+    bool IsValidChannel(const int& DetectorType, const int& detector , const int& channel) ;
+
+    //   Initialize the standard parameter for analysis
+    //   ie: all channel enable, maximum multiplicity for strip = number of telescope
+    void InitializeStandardParameter();
+
+    //   Read the user configuration file; if no file found, load standard one
+    void ReadAnalysisConfig();
+
     //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
     void BuildPhysicalEvent() ;
 
@@ -86,11 +97,22 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TGeTAMUData* m_PreTreatedData;//!
     TGeTAMUPhysics* m_EventPhysics;//!
 
+  private: // Data Member
+    //singles sorting tools
+    map<int, vector <int> > Singles_CloverMap_CryEN; //! cry number energy
+    map<int, vector <int> > Singles_CloverMap_SegEN; //1 seg number
+    map<int, vector <double> > Singles_CloverMap_CryE; //! cry energy
+    map<int, vector <double> > Singles_CloverMap_SegE; //! seg energy 
+    map<int, vector <int> > Singles_CloverMap_CryTN; //! cry number time
+    map<int, vector <int> > Singles_CloverMap_SegTN; //! seg number
+    map<int, vector <double> > Singles_CloverMap_CryT; //! cry energy
+    map<int, vector <double> > Singles_CloverMap_SegT; //! seg energy 
+   
   public: // Data Member
-    //singles
-    vector<double> Singles_CoreE; 
-    vector<double> Singles_SegE;   
-    vector<double> Singles_DC;   
+    //sorting parameters
+    vector<double> Singles_E;    
+    vector<double> Singles_T;    
+    vector<double> Singles_DC;   // Doppler Corrected Energy (filled externaly)
     vector<double> Singles_Theta;
     vector<double> Singles_X;
     vector<double> Singles_Y;
@@ -98,11 +120,10 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> Singles_Clover;
     vector<int> Singles_Crystal;
     vector<int> Singles_Segment;
-
-    // add back by clover
+    // add back parameters
     vector<double> AddBack_E;   
     vector<double> AddBack_T;   
-    vector<double> AddBack_DC;   
+    vector<double> AddBack_DC;    // Doppler Corrected Energy
     vector<double> AddBack_Theta;
     vector<double> AddBack_X;
     vector<double> AddBack_Y;
@@ -110,12 +131,23 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> AddBack_Clover;
     vector<int> AddBack_Crystal;
     vector<int> AddBack_Segment;
-
     vector<double> GeTime; // OR of all time signals, can be used for array or or clover only
 
+  private:   //   Map of activated channel
+    map< int, vector<bool> > m_CryChannelStatus;//!
+    map< int, vector<bool> > m_SegChannelStatus;//!
+    double m_Cry_E_Threshold;
+    double m_Seg_E_Threshold;
+    int m_Cry_E_Raw_Threshold;
+    int m_Seg_E_Raw_Threshold;
+    int m_AddBackMode; 
+    bool m_LowGainCryIsSet; 
+    bool m_LowGainSegIsSet; 
+    bool m_ADCRandomBinIsSet; //Randomise the raw energy in the Raw data within a bin
+ 
   private: // use for anlysis
-   
     TLorentzVector m_GammaLV; //!
+
   public:
     TVector3 GetPositionOfInteraction(unsigned int& i);
     double GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta);
@@ -124,11 +156,12 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TVector3 GetCloverPosition(int& CloverNbr);
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
+    void AddBack(TVector3& beta);
+    void DCSingles(TVector3& beta);
     inline TVector3 GetCrystalPosition(int& CloverNbr, int& CoreNbr){return GetCorePosition(CloverNbr,CoreNbr);};
 
   private:
     map<unsigned int,TVector3> m_CloverPosition;//!
-
   public: // Static constructor to be passed to the Detector Factory
     static NPL::VDetector* Construct();
     ClassDef(TGeTAMUPhysics,1)  // GeTAMUPhysics structure

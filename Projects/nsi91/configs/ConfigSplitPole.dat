@@ -1,0 +1,5 @@
+ConfigSplitPole
+   MAGNETIC_FIELD_CORRECTION  ON
+   TIME_DELAY  3657
+   NMR_FILE_PATH  /projet/astronuc/data/p31he3t/2017/rmn
+   NMR_LARGE_FIELD   1

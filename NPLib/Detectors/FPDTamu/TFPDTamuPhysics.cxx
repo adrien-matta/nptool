@@ -17,13 +17,14 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *   
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
 #include "TFPDTamuPhysics.h"
 
 //   STL
+#include <algorithm>
 #include <sstream>
 #include <iostream>
 #include <cmath>
@@ -39,6 +40,11 @@ using namespace std;
 #include "NPOptionManager.h"
 //   ROOT
 #include "TChain.h"
+#include "TGraph.h"
+#include "TFitResult.h"
+
+// by Shuya 170417.
+#include "TMath.h"
 
 ClassImp(TFPDTamuPhysics)
 
@@ -51,7 +57,7 @@ TFPDTamuPhysics::TFPDTamuPhysics()
   m_Spectra(0),
   m_E_RAW_Threshold(0), // adc channels
   m_E_Threshold(0),     // MeV
-  m_NumberOfDetectors(0), 
+  m_NumberOfDetectors(0),
   m_NumberOfDelta(0),
   m_NumberOfMicro(0),
   m_NumberOfAWire(0),
@@ -66,12 +72,63 @@ void TFPDTamuPhysics::BuildSimplePhysicalEvent() {
 }
 
 
+double TFPDTamuPhysics::CalculateFPPositionX(double FPPositionZ)
+{
+	if(fabs(AWireAngle - -99) < 1e-6) { return -99; }
+
+	auto it0 = std::find(AWireDetNumber.begin(), AWireDetNumber.end(), 0);
+	if(it0 == AWireDetNumber.end()) { return -99; }
+
+	const double X0 = AWirePositionX.at(it0 - AWireDetNumber.begin());
+	const double Z0 = AWirePositionZ.at(it0 - AWireDetNumber.begin());
+	return X0 + (FPPositionZ-Z0)*tan(AWireAngle);
+}
+
+double TFPDTamuPhysics::CalculateFPAngle()
+{
+	// calculate linear fit of FP using analytic formula
+	// formula taken from Wikipedia:
+	// https://en.wikipedia.org/wiki/Simple_linear_regression
+	AWireFitR2 = 0;
+	double angle = -99;
+
+	Long64_t N = AWirePositionX.size();
+	if(N > 1) {
+		double meanZ = TMath::Mean(N, &AWirePositionZ[0]);
+		double meanX = TMath::Mean(N, &AWirePositionX[0]);
+
+		double NUM = 0, DEN = 0;
+		for(int i=0; i< N; ++i) {
+			NUM += (AWirePositionZ[i] - meanZ)*(AWirePositionX[i] - meanX);
+			DEN += pow(AWirePositionZ[i] - meanZ, 2);
+		}
+
+		if(DEN != 0) {
+			double slope = NUM/DEN;
+			double offset = meanX - slope*meanZ;
+
+			// calculate R2 using Wikipedia algorithm
+			// https://en.wikipedia.org/wiki/Coefficient_of_determination
+			double SSres = 0, SStot = 0;
+			for(int i=0; i< N; ++i) {
+				SSres += pow(AWirePositionX[i] - (slope*AWirePositionZ[i] + offset), 2);
+				SStot += pow(AWirePositionX[i] - meanX, 2);
+			}
+
+			AWireFitR2 = SStot != 0 ? 1 - SSres / SStot : 0;
+			angle = atan(slope);
+		}
+	}
+
+	return angle;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////
 void TFPDTamuPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-// cout << " start of BuildPhysicalEvent " << endl ; 
+// cout << " start of BuildPhysicalEvent " << endl ;
   //Delta
   // match the energy and time together (not implemented yet) and fill the vectors
   unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
@@ -82,31 +139,32 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
 
   //Micro
   // Time and energy can't be matched since we have only an OR on time
-  // fill the vectors, calculate positions   
+  // fill the vectors, calculate positions
   mysizeE = m_PreTreatedData->Get_Micro_Energy_Mult();
   for (UShort_t e = 0; e < mysizeE ; e++) {
+        MicroDetNumber.push_back(m_PreTreatedData->Get_Micro_E_DetNbr(e));
         MicroRowNumber.push_back(m_PreTreatedData->Get_Micro_E_RowNbr(e));
         MicroColNumber.push_back(m_PreTreatedData->Get_Micro_E_ColNbr(e));
         //Calculate position in X and Z for each of the pads
         int col = m_PreTreatedData->Get_Micro_E_ColNbr(e) ;
-        int row = m_PreTreatedData->Get_Micro_E_RowNbr(e) ; 
+        int row = m_PreTreatedData->Get_Micro_E_RowNbr(e) ;
         int det = row/4; // 4 rows in the detector
         MicroPositionX.push_back(((col-3)*44.0)/NPUNITS::cm); // 0.20 is the Col pitch
         MicroPositionZ.push_back((((row+0.5)*32.5)+MicroLeftPos[det].Z())/NPUNITS::cm);
-        //Pass the corresponding Energy, Charge 
+        //Pass the corresponding Energy, Charge
         MicroEnergy.push_back(m_PreTreatedData->Get_Micro_Energy(e)); //calibrated
         MicroCharge.push_back(m_EventData->Get_Micro_Energy(e)); //uncalibrated
-      }   
-            
+      }
+
    unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
     for (UShort_t t = 0; t< mysizeT ; t++) {
       MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
 			MicroTimeRowNumber.push_back(m_EventData->Get_Micro_T_RowNbr(t));
     }
-   
-// cout << " end of Micro " << endl ; 
+
+// cout << " end of Micro " << endl ;
    //AWire
-  //separate Left and right detectors 
+  //separate Left and right detectors
   vector<double> awireLeftDetNumber, awireRightDetNumber;
   vector<double> awireLeftCharge, awireRightCharge;
   mysizeE = m_PreTreatedData->Get_AWire_Energy_Mult();
@@ -114,7 +172,7 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     int side = m_PreTreatedData->Get_AWire_E_DetectorSide(e);
     int det = m_PreTreatedData->Get_AWire_E_DetectorNbr(e);
     double charge = m_PreTreatedData->Get_AWire_Energy(e);
-    if (side==1) { 
+    if (side==1) {
       awireRightDetNumber.push_back(det);
       awireRightCharge.push_back(charge);
     }
@@ -122,12 +180,12 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       awireLeftDetNumber.push_back(det);
       awireLeftCharge.push_back(charge);
     }
-  }   
+  }
   // match the left and right
   unsigned int mysizeL = awireLeftDetNumber.size();
   unsigned int mysizeR = awireRightDetNumber.size();
   //cout << " " << mysizeL << " " << mysizeR << endl ;
-  if (mysizeL==mysizeR){ 
+  if (mysizeL==mysizeR){
     for (UShort_t l = 0; l < mysizeL ; l++) {
       for (UShort_t r = 0; r < mysizeR ; r++) {
         if (awireLeftDetNumber.at(l) == awireRightDetNumber.at(r)) {
@@ -136,34 +194,38 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
           AWireDetNumber.push_back(det);
           // Pass the left charge, right charge
           double EnergyL = awireLeftCharge.at(l);
-          double EnergyR = awireRightCharge.at(r); 
+          double EnergyR = awireRightCharge.at(r);
           AWireLeftCharge.push_back(EnergyL);
           AWireRightCharge.push_back(EnergyR);
           // calculate position in X and Z
-          double wire_length = 2*fabs(AWireLeftPos[det].X())/NPUNITS::cm; 
+          double wire_length = 2*fabs(AWireLeftPos[det].X())/NPUNITS::cm;
           AWirePositionX.push_back(wire_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
           AWirePositionZ.push_back(AWireLeftPos[det].Z()/NPUNITS::cm);
         }
       }
     }
+		// Calculate FP angle and virtual position
+		AWireAngle = CalculateFPAngle();
+		AWireFPPositionX = CalculateFPPositionX(AWireFPPositionZ);
+
     // Calculate beam direction from X and Z position //check me!
     double a = 1, b = 0, Zplast = +547; // X = aZ + b // check me!
-    IonDirection.SetXYZ(1,0,a); //(1,a) is the direction vector in the plane X,Z. no information about Y 
-    IonDirection.Unit();  
+    IonDirection.SetXYZ(1,0,a); //(1,a) is the direction vector in the plane X,Z. no information about Y
+    IonDirection.Unit();
     //Calculate position on Plastic from AWire data provided Z of the Plastic
     PlastPositionX_AW = a*Zplast + b;
     //cout << " AWire Left and Right sizes are in agreement,  L: " << mysizeL << "  R: "<< mysizeR<<endl;
     //m_PreTreatedData->Dump();
     //cin.get();
   }
-  else { 
+  else {
     //cout << " AWire Left and Right sizes are not in agreement,  L: " << mysizeL << "  R: "<< mysizeR<<endl;
     //m_PreTreatedData->Dump();
     //cin.get();
   }
-// cout << " end of awire " << endl ; 
+// cout << " end of awire " << endl ;
   //Plastic
-  //separate Left and right detectors 
+  //separate Left and right detectors
   vector<double> plastLeftCharge, plastRightCharge;
   mysizeE = m_PreTreatedData->Get_Plast_Energy_Mult();
   for (UShort_t e = 0; e < mysizeE ; e++) {
@@ -172,51 +234,52 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
     double charge = m_PreTreatedData->Get_Plast_Energy(e);
 
     // skip values lower than a certain threshold
-    if (charge<100) 
-      continue;  
+    if (charge<100)
+      continue;
 
     //redistribute
     if (side==1)
       plastRightCharge.push_back(charge);
     else
       plastLeftCharge.push_back(charge);
-  }  
+  }
 
   // match the left and right
   mysizeL = plastLeftCharge.size();
   mysizeR = plastRightCharge.size();
-  if (mysizeL==mysizeR){ 
+  if (mysizeL==mysizeR){
     for (UShort_t l = 0; l < mysizeL ; l++) {
       for (UShort_t r = 0; r < mysizeR ; r++) {
         // Pass the left charge, right charge
         double EnergyL = plastLeftCharge.at(l);
-        double EnergyR = plastRightCharge.at(r); 
+        double EnergyR = plastRightCharge.at(r);
         PlastLeftCharge.push_back(EnergyL);
         PlastRightCharge.push_back(EnergyR);
         // calculate position in X, Z is known
         double plast_length = 2*PlastLeftPos.X()/NPUNITS::cm; //check me!
         PlastCharge.push_back(sqrt(EnergyL*EnergyR));
-        PlastPositionX.push_back(plast_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
+        PlastPositionX.push_back(plast_length*(EnergyR-EnergyL)/(EnergyR+EnergyL));
+        PlastPositionXLog.push_back(plast_length*log(EnergyR/EnergyL));
         PlastPositionZ.push_back(PlastLeftPos.Z()/NPUNITS::cm); //check me!, directly from configuration
       }
     }
   }
-  else{ 
+  else{
     //cout << " Plastic Left and Right sizes are not in agreement,  L: " << mysizeL << "  R: "<< mysizeR<<endl;
     //m_PreTreatedData->Dump();
     //cin.get();
   }
 
 
-// cout << " start of plastic " << endl ; 
-  //separate Left and right detectors 
+// cout << " start of plastic " << endl ;
+  //separate Left and right detectors
   mysizeT = m_PreTreatedData->Get_Plast_Time_Mult();
   for (UShort_t t = 0; t < mysizeT ; t++) {
     //collect info
     int side = m_PreTreatedData->Get_Plast_T_DetectorSide(t);
     double time = m_PreTreatedData->Get_Plast_Time(t);
     // skip values lower than a certain threshold
-    if (time<0) continue;  
+    if (time<0) continue;
     //redistribute
     if (side==1)
       PlastRightTime.push_back(time);
@@ -224,41 +287,25 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
       PlastLeftTime.push_back(time);
   }
 //  cout << " end of plastic " << endl ;
-   
-/*
-  //model
-  // match energy and time together
-  unsigned int mysizeE = m_PreTreatedData->Get_Delta_Energy_Mult();
-  unsigned int mysizeT = m_PreTreatedData->Get_Delta_Time_Mult();
-  cout << " " << mysizeE << " " << mysizeT << endl ; 
-  for (UShort_t e = 0; e < mysizeE ; e++) {
-  for (UShort_t t = 0; t < mysizeT ; t++) {
-  if (m_PreTreatedData->Get_Delta_E_DetectorNbr(e) == m_PreTreatedData->Get_Delta_T_DetectorNbr(t)) {
-  DeltaDetNumber.push_back(m_PreTreatedData->Get_Delta_E_DetectorNbr(e));
-  DeltaEnergy.push_back(m_PreTreatedData->Get_Delta_Energy(e));
-  DeltaTime.push_back(m_PreTreatedData->Get_Delta_Time(t));
-  }
-  }
-  }
-  */
 
 }
 
-double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hcol){
+double TFPDTamuPhysics::GetMicroGroupEnergy(int detector, int lrow, int hrow, int lcol, int hcol){
 
-  int dummy,row,col; 
-  double energy = 0;  
+  int dummy,row,col,det;
+  double energy = 0;
 
   //avoid zeros
+  if (detector < 1 || detector > m_NumberOfMicro) return 0;
   if (lrow==0 || hrow==0 || lcol==0 || hcol==0)
     cout << " \033[1;311mWARNING: '0' value detected, TFPDTamuPhysics::GetMicroGroupEnergy() uses values >=1 " << endl;
   //check validity
-  if (lrow>hrow) { 
+  if (lrow>hrow) {
     dummy = lrow;
     lrow = hrow;
     hrow = dummy;
   }
-  if (lcol>hcol) { 
+  if (lcol>hcol) {
     dummy = lcol;
     lcol = hcol;
     hcol = dummy;
@@ -266,40 +313,57 @@ double TFPDTamuPhysics::GetMicroGroupEnergy(int lrow, int hrow, int lcol, int hc
 
   // group energies
   for (UShort_t e = 0; e < MicroRowNumber.size() ; e++) {
+    det = MicroDetNumber.at(e);
     row = MicroRowNumber.at(e)+1;
     col = MicroColNumber.at(e)+1;
-    if ( (row>=lrow && row<=hrow) && (col>=lcol && col<=hcol) )
+    if ( (det == detector) && (row>=lrow && row<=hrow) && (col>=lcol && col<=hcol) ){
       energy += MicroEnergy.at(e);
-  } 
+    }
+  }
 
-  return energy ; 
+  return energy ;
 }
 
-double TFPDTamuPhysics::GetMicroRowGeomEnergy(int lrow, int hrow){
+//by Shuya 170516
+//double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow){
+double TFPDTamuPhysics::GetMicroRowGeomEnergy(int det, int lrow, int hrow, int col){
 
-  int dummy; 
-  double energy = 0;
-  int sample = 0;   
+  if (det < 1 || det > m_NumberOfMicro) return 0;
+
+  int dummy;
+  double energy = 0.;
+  int sample = 0;
 
   //avoid zeros
   if (lrow==0 || hrow==0 )
     cout << " \033[1;311mWARNING: '0' value detected, TFPDTamuPhysics::GetMicroRowGeomEnergy() uses values >=1 " << endl;
   //check validity
-  if (lrow>hrow) { 
+  if (lrow>hrow) {
     dummy = lrow;
     lrow = hrow;
     hrow = dummy;
   }
+
   // group energies
-  for (int r = lrow; r < hrow ; r++) {
-    double esample = GetMicroGroupEnergy(r,r,1,7);
+  for (int r = lrow; r <= hrow ; r++) {
+//by Shuya 170516
+    //double esample = GetMicroGroupEnergy(det, r,r,1,7);
+    double esample;
+    if(col>=1 && col<=7)	esample = GetMicroGroupEnergy(det,r,r,col,col);
+    else esample = GetMicroGroupEnergy(det, r,r,1,7);
+
+//by Shuya 170418
+	if(r == lrow)	energy = 1.;
+
     if( esample > 0 ){
-      sample++;  
+      sample++;
       energy *= esample ;
     }
-  } 
+  }
 
-  return pow(energy,1./sample) ; 
+//by Shuya 170517
+  if(sample>0)	return pow(energy,1./sample) ;
+  else return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -328,7 +392,7 @@ void TFPDTamuPhysics::PreTreat() {
       }
     }
   }
-  // Time 
+  // Time
   mysize = m_EventData->Get_Delta_Time_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     name = "FPDTamu/Delta_R" ;
@@ -343,29 +407,35 @@ void TFPDTamuPhysics::PreTreat() {
   mysize = m_EventData->Get_Micro_Energy_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Micro_Energy(i) > m_E_RAW_Threshold) {
-      name = "FPDTamu/Micro_R" ;
+      name = "FPDTamu/Micro" ;
+      name+= NPL::itoa( m_EventData->Get_Micro_E_DetNbr(i)) ; // Det number >=1
+      name+= "_R" ;
       name+= NPL::itoa( m_EventData->Get_Micro_E_RowNbr(i)+1) ;
       name+= "_C" ;
       name+= NPL::itoa( m_EventData->Get_Micro_E_ColNbr(i)+1) ;
       name+= "_E" ;
       Double_t Energy = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->Set_Micro_E(m_EventData->Get_Micro_E_RowNbr(i),m_EventData->Get_Micro_E_ColNbr(i), Energy);
+        m_PreTreatedData->Set_Micro_E(m_EventData->Get_Micro_E_DetNbr(i),
+          m_EventData->Get_Micro_E_RowNbr(i),m_EventData->Get_Micro_E_ColNbr(i), Energy);
       }
     }
   }
-  // Time 
+  // Time
   mysize = m_EventData->Get_Micro_Time_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Micro_Time(i) > m_T_RAW_Threshold) {
-      name = "FPDTamu/Micro_R" ;
+      name = "FPDTamu/Micro" ;
+      name+= NPL::itoa( m_EventData->Get_Micro_T_DetNbr(i)+1) ;
+      name = "_R" ;
       name+= NPL::itoa( m_EventData->Get_Micro_T_RowNbr(i)+1) ;
       name+= "_C" ;
       name+= NPL::itoa( m_EventData->Get_Micro_T_ColNbr(i)+1) ;
       name+= "_T" ;
       Double_t Time = Cal->ApplyCalibration(name, m_EventData->Get_Micro_Time(i));
       if (Time > m_T_Threshold) {
-        m_PreTreatedData->Set_Micro_T(m_EventData->Get_Micro_T_RowNbr(i),m_EventData->Get_Micro_T_ColNbr(i), Time);
+        m_PreTreatedData->Set_Micro_T(m_EventData->Get_Micro_T_DetNbr(i),
+          m_EventData->Get_Micro_T_RowNbr(i),m_EventData->Get_Micro_T_ColNbr(i), Time);
       }
     }
   }
@@ -386,7 +456,7 @@ void TFPDTamuPhysics::PreTreat() {
       }
     }
   }
-  // Time 
+  // Time
   mysize = m_EventData->Get_AWire_Time_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_AWire_Time(i) > m_T_RAW_Threshold) {
@@ -418,7 +488,7 @@ void TFPDTamuPhysics::PreTreat() {
       }
     }
   }
-  // Time 
+  // Time
   mysize = m_EventData->Get_Plast_Time_Mult();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Plast_Time(i) > m_T_RAW_Threshold) {
@@ -433,7 +503,7 @@ void TFPDTamuPhysics::PreTreat() {
     }
   }
 
-// cout << " end of pretreat " << endl ; 
+// cout << " end of pretreat " << endl ;
 }//end of function
 
 
@@ -468,7 +538,7 @@ void TFPDTamuPhysics::ReadAnalysisConfig() {
 
     // search for "header"
     string name = "ConfigFPDTamu";
-    if (LineBuffer.compare(0, name.length(), name) == 0) 
+    if (LineBuffer.compare(0, name.length(), name) == 0)
       ReadingStatus = true;
 
     // loop on tokens and data
@@ -511,6 +581,7 @@ void TFPDTamuPhysics::Clear() {
   DeltaEnergy.clear();
   DeltaTime.clear();
   //Micromega
+  MicroDetNumber.clear();
   MicroRowNumber.clear();
   MicroColNumber.clear();
 	MicroTimeRowNumber.clear();
@@ -525,6 +596,9 @@ void TFPDTamuPhysics::Clear() {
   AWireRightCharge.clear();
   AWirePositionX.clear();
   AWirePositionZ.clear();
+	AWireAngle = -99 ;
+	AWireFitR2 = -99 ;
+	AWireFPPositionX = -99;
   //Plastic scintillator
   PlastLeftCharge.clear();
   PlastRightCharge.clear();
@@ -532,8 +606,9 @@ void TFPDTamuPhysics::Clear() {
   PlastRightTime.clear();
   PlastCharge.clear();
   PlastPositionX.clear();
+  PlastPositionXLog.clear();
   PlastPositionZ.clear();
-  //Calculated 
+  //Calculated
   PlastPositionX_AW = -99 ; //from AWire and Plastic Z
   IonDirection.SetXYZ(0,0,0); // from AWire
 
@@ -579,7 +654,11 @@ void TFPDTamuPhysics::Dump() const {
   cout << "  ...oooOOOooo...   Micromega  ...oooOOOooo...   " << endl;
   // Energy
   mysize = MicroRowNumber.size();
-  cout << " Row Charge:" <<endl; 
+  cout << " Det :" <<endl;
+  for (size_t i = 0 ; i < MicroDetNumber.size() ; i++)
+    cout << " " << MicroDetNumber[i];
+  cout<<endl;
+  cout << " Row Charge:" <<endl;
   for (size_t i = 0 ; i < MicroRowNumber.size() ; i++)
     cout << " " << MicroRowNumber[i];
   cout<<endl;
@@ -587,18 +666,13 @@ void TFPDTamuPhysics::Dump() const {
   for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
     cout << " " << MicroColNumber[i];
   cout<<endl;
-    cout << " Row TAC:" << endl;
+  cout << " energy: "<<endl;
+  for (size_t i = 0 ; i < MicroEnergy.size() ; i++)
+    cout << " " << MicroEnergy[i];
+  cout<<endl;
+  cout << " Row TAC:" << endl;
   for (size_t i = 0 ; i < MicroTimeRowNumber.size() ; i++)
     cout << " " << MicroTimeRowNumber[i];
-  cout<<endl;
-      cout << " energy: "<<endl; 
-
-  for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
-    cout << " " << MicroRowNumber[i];
-  cout<<endl;
-  cout << " energy: " << endl;
-  for (size_t i = 0 ; i < MicroColNumber.size() ; i++)
-    cout << " " << MicroRowNumber[i];
   cout<<endl;
 
   cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
@@ -607,7 +681,7 @@ void TFPDTamuPhysics::Dump() const {
   for (size_t i = 0 ; i < PlastLeftCharge.size() ; i++)
     cout << " " << PlastLeftCharge[i];
   cout<<endl;
-  cout << " Right Charge:" ; 
+  cout << " Right Charge:" ;
   for (size_t i = 0 ; i < PlastRightCharge.size() ; i++)
     cout << " " << PlastRightCharge[i];
   cout<<endl;
@@ -618,6 +692,10 @@ void TFPDTamuPhysics::Dump() const {
   cout << " XPos:"  ;
   for (size_t i = 0 ; i < PlastPositionX.size() ; i++)
     cout << " " << PlastPositionX[i];
+  cout<<endl;
+   cout << " XPos(Log):"  ;
+  for (size_t i = 0 ; i < PlastPositionXLog.size() ; i++)
+    cout << " " << PlastPositionXLog[i];
   cout<<endl;
   cout << " ZPos:"  ;
   for (size_t i = 0 ; i < PlastPositionZ.size() ; i++)
@@ -631,52 +709,66 @@ void TFPDTamuPhysics::Dump() const {
 void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("FPDTamu");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
 
   vector<string> token_delta = {"UPSTREAM-LEFT","UPSTREAM-RIGHT"};
   vector<string> token_micro = {"UPSTREAM-LEFT","UPSTREAM-RIGHT"};
   vector<string> token_awire = {"LEFT","RIGHT"};
   vector<string> token_plast = {"UPSTREAM-LEFT","UPSTREAM-RIGHT"};
+	vector<string> token_focus = {"POS"};
 
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->GetMainValue() == "DELTA"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "//// Delta " << i+1 << endl; 
+        cout << endl << "//// Delta " << i+1 << endl;
 
       if(blocks[i]->HasTokenList(token_delta)){
         TVector3 left = blocks[i]->GetTVector3("UPSTREAM-LEFT","mm");
-        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");  
+        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");
         AddDelta(left,right);
       }
 
       else{
         cout << "Warning: check your input file formatting " << endl;
       }
-    } 
+    }
     else if(blocks[i]->GetMainValue() == "MICRO"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "//// Micromegas " << i+1 << endl; 
+        cout << endl << "//// Micromegas " << i+1 << endl;
 
 
       if(blocks[i]->HasTokenList(token_micro)){
         TVector3 left = blocks[i]->GetTVector3("UPSTREAM-LEFT","mm");
-        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");  
+        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");
         AddMicro(left,right);
       }
 
       else{
         cout << "Warning: check your input file formatting " << endl;
       }
-    } 
+    }
     else if(blocks[i]->GetMainValue() == "AWIRE"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "//// Anode Wire " << i+1 << endl; 
+        cout << endl << "//// Anode Wire " << i+1 << endl;
 
       if(blocks[i]->HasTokenList(token_awire)){
         TVector3 left = blocks[i]->GetTVector3("LEFT","mm");
-        TVector3 right = blocks[i]->GetTVector3("RIGHT","mm");  
+        TVector3 right = blocks[i]->GetTVector3("RIGHT","mm");
         AddAWire(left,right);
+      }
+
+      else{
+        cout << "Warning: check your input file formatting " << endl;
+      }
+    }
+    else if(blocks[i]->GetMainValue() == "FOCUS"){
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "//// Focal plane " << i+1 << endl;
+
+      if(blocks[i]->HasTokenList(token_focus)){
+				double fpPos = blocks[i]->GetDouble("POS","mm");
+				AWireFPPositionZ = fpPos / NPUNITS::cm;
       }
 
       else{
@@ -685,11 +777,11 @@ void TFPDTamuPhysics::ReadConfiguration(NPL::InputParser parser) {
     }
     else if(blocks[i]->GetMainValue() == "PLAST"){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "//// Plastic " << i+1 << endl; 
+        cout << endl << "//// Plastic " << i+1 << endl;
 
       if(blocks[i]->HasTokenList(token_plast)){
         TVector3 left = blocks[i]->GetTVector3("UPSTREAM-LEFT","mm");
-        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");  
+        TVector3 right = blocks[i]->GetTVector3("UPSTREAM-RIGHT","mm");
         AddPlast(left,right);
       }
 
@@ -751,20 +843,6 @@ map< string , TH1*> TFPDTamuPhysics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TFPDTamuPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TFPDTamuPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();
@@ -783,13 +861,18 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
         "Delta_R"+ NPL::itoa(i+1)+"_C1_T");
   }
 
-  for (int i = 0; i < m_NumberOfMicro; ++i) { // in case there's 2 micromega add up the rows
-    for (int iRow = 0; iRow < 4; ++iRow) {
-      for (int iCol = 0; iCol < 7; ++iCol) {
-        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
-            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
-        Cal->AddParameter("FPDTamu", "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
-            "Micro_R"+ NPL::itoa((4*i)+iRow+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+  for (int iDet = 0; iDet < m_NumberOfMicro; ++iDet) { // in case there's 2 micromega add up the rows
+    for (int iRow = 0; iRow < 4; ++iRow) { // 4 rows
+      for (int iCol = 0; iCol < 7; ++iCol) { // 7 columns
+          int det = iDet+1;
+          int row = iRow+1;
+          int col = iCol+1;
+        Cal->AddParameter("FPDTamu",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_E",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_E");
+        Cal->AddParameter("FPDTamu",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T",
+            "Micro"+NPL::itoa(det)+"_R"+ NPL::itoa(row)+"_C"+ NPL::itoa(col)+"_T");
       }
     }
   }
@@ -799,16 +882,16 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
       Cal->AddParameter("FPDTamu", "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
           "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
       Cal->AddParameter("FPDTamu", "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
-          "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+          "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T");
     }
   }
 
-  for (int i = 0; i < m_NumberOfPlast; ++i) { // Always 1 
+  for (int i = 0; i < m_NumberOfPlast; ++i) { // Always 1
     for (int iCol = 0; iCol < 2; ++iCol) { // 2 cols for left and right
       Cal->AddParameter("FPDTamu", "Plast_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_E",
           "Plast_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_E");
       Cal->AddParameter("FPDTamu", "Plast_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
-          "Plast_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T");      
+          "Plast_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T");
     }
   }
 
@@ -820,7 +903,7 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
 void TFPDTamuPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus("FpdTAMU",  true );
-  inputChain->SetBranchStatus("fFPD*" , true )   ;
+//  inputChain->SetBranchStatus("fFPD*" , true )   ;
   inputChain->SetBranchAddress("FpdTAMU", &m_EventData );
 }
 
@@ -835,6 +918,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "DeltaCharge" , true );
   inputChain->SetBranchStatus( "DeltaEnergy" , true );
   //Micromega
+  inputChain->SetBranchStatus( "MicroDetNumber" , true );
   inputChain->SetBranchStatus( "MicroRowNumber" , true );
   inputChain->SetBranchStatus( "MicroColNumber" , true );
   inputChain->SetBranchStatus( "MicroTimeRowNumber" , true );
@@ -855,6 +939,7 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "PlastRightTime" , true );
   inputChain->SetBranchStatus( "PlastCharge" , true );
   inputChain->SetBranchStatus( "PlastPositionX" , true );
+  inputChain->SetBranchStatus( "PlastPositionXLog" , true );
   inputChain->SetBranchStatus( "PlastPositionZ" , true );
   //Calculated AWire and Plastic
   inputChain->SetBranchStatus( "PlastPositionX_AW" , true );
@@ -925,4 +1010,3 @@ class proxy_FPDTamu{
 
 proxy_FPDTamu p_FPDTamu;
 }
-

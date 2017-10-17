@@ -25,9 +25,9 @@
 MyMagneticField::MyMagneticField(const G4ThreeVector& FieldVector)
 {
   
-  fFieldComponents[0]= FieldVector.x()*tesla;
-  fFieldComponents[1]= FieldVector.y()*tesla;
-  fFieldComponents[2]= FieldVector.z()*tesla;
+  fFieldComponents[0]= FieldVector.x();
+  fFieldComponents[1]= FieldVector.y();
+  fFieldComponents[2]= FieldVector.z();
 
   //rmax = std::sqrt(625.)*cm;
   rbore = 49.*cm; // bore radius  !! 49 instead of 50 to avoid issues at volume boundaries
@@ -41,7 +41,6 @@ MyMagneticField::MyMagneticField(const G4ThreeVector& FieldVector)
    Bz0=fFieldComponents[2]; // nominal field
    //G4cout << "FieldVector.z()=" << FieldVector.z() << G4endl;
    //G4cout << "tesla=" << tesla << " megavolt*ns/mm2" << G4endl;
-   G4cout << "Bz0=" << Bz0 << " megavolt*ns/mm2 (default units)" << G4endl;
    G4cout << "Bz0=" << Bz0/tesla << " tesla" << G4endl;
    //G4cout << "zbore=" << zbore << " mm (default units)" << G4endl;
    //G4cout << "rbore=" << rbore << " mm (default units)" << G4endl;

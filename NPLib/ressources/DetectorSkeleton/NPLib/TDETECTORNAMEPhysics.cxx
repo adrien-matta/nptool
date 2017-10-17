@@ -275,20 +275,6 @@ map< string , TH1*> TDETECTORNAMEPhysics::GetSpectra() {
   }
 }
 
-
-
-////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TDETECTORNAMEPhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
-
-
-
 ///////////////////////////////////////////////////////////////////////////
 void TDETECTORNAMEPhysics::WriteSpectra() {
   m_Spectra->WriteSpectra();
