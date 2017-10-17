@@ -123,7 +123,6 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
  
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
 
-	  cout << blocks[i]->GetMainValue() << " foo foo\n";
     if(/*blocks[i]->GetMainValue()=="QQQ" &&*/ blocks[i]->HasTokenList(tokenQQQ))
 	{
       if(NPOptionManager::getInstance()->GetVerboseLevel())
@@ -134,7 +133,7 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
         double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
         AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
     }
-    else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
+    else if(/*blocks[i]->GetMainValue()=="BOX" &&*/ blocks[i]->HasTokenList(tokenBOX)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc Box " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");

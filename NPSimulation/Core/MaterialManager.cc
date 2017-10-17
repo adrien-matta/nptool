@@ -107,6 +107,16 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             return material;
         }
         
+        else if(Name == "Brass"){
+            if(!density)
+                density = 8.73 * g / cm3;
+            // Actually taken value fron Epoxy
+            G4Material* material = new G4Material("NPS_"+Name,density,2);
+            material->AddElement(GetElementFromLibrary("Cu"),.65);
+            material->AddElement(GetElementFromLibrary("Zn"),.35);
+            m_Material[Name]=material;
+            return material;
+        }
         
         else if(Name == "PCB"){
             if(!density)
@@ -260,6 +270,16 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             return material;
         }
         
+        else  if(Name == "W"){
+            if(!density)
+                density = 10.25*g / cm3;
+            G4Material* material = new G4Material("NPS_"+Name, density,1);
+            material->AddElement(GetElementFromLibrary("W"),1);
+            m_Material[Name]=material;
+            
+            return material;
+        }
+
         else  if(Name == "Pb"){
             if(!density)
                 density = 11.342*g / cm3;

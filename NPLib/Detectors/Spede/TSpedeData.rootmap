@@ -1,4 +1,0 @@
-[ libNPSpede.dylib ]
-# List of selected classes
-class TSpedeData
-header TSpedeData.h

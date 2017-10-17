@@ -155,6 +155,11 @@ class Jurogam : public NPS::VDetector{
 		G4Material* Absorber1Material;
 		G4Material* Absorber2Material;
 
+		//Clover building flags
+		G4bool CloverConstructed = false;
+		G4bool CloverBGOConstructed = false;
+
+
 		G4ThreeVector        position;
 		G4RotationMatrix     rotation;
 
@@ -182,7 +187,7 @@ class Jurogam : public NPS::VDetector{
 		G4LogicalVolume*    logicVacuum_PhaseI;
 		G4VPhysicalVolume*  physiVacuum_PhaseI;
 		G4Polycone*         solidGe_PhaseI; //Ge
-		G4LogicalVolume*    logicGe_PhaseI;
+		G4LogicalVolume*    logicGe_PhaseI = 0;
 		G4VPhysicalVolume*  physiGe_PhaseI;
 		//G4String            sensitiveGeName;
 		G4double           fContact_dZ_PhaseI;  //dZ to position Passivated Ge
@@ -233,7 +238,7 @@ class Jurogam : public NPS::VDetector{
 		G4VSolid*           Phase1Absorber2;
 		//G4UnionSolid*           solidBGOShield;
 
-		G4LogicalVolume*     PhaseILogicBGOCrystal;
+		G4LogicalVolume*     PhaseILogicBGOCrystal = 0;
 		G4VPhysicalVolume*   PhaseIPhysiBGOCrystal;
 		G4LogicalVolume*     PhaseILogicBGOShield;
 		G4VPhysicalVolume*   PhaseIPhysiBGOShield;
@@ -320,6 +325,11 @@ class Jurogam : public NPS::VDetector{
 		G4VPhysicalVolume*   CloverAbsorber1_phys;
 		G4VPhysicalVolume*   CloverAbsorber2_phys;
 
+
+		//logicGe_PhaseI = 0;
+		//PhaseILogicBGOCrystal = 0;
+		//CloverConstructed = false;
+		//CloverBGOConstructed = false;
 		// Needed for dynamic loading of the library
 	public:
 		static NPS::VDetector* Construct();

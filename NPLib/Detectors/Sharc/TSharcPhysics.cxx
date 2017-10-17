@@ -162,7 +162,7 @@ void TSharcPhysics::PreTreat(){
   //   Front
   unsigned int sizeFront = m_EventData->GetMultiplicityFront();
   for(unsigned int i = 0 ; i < sizeFront ; i++){
-    if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
+    if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold /*&& IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i))*/ ){
       double Front_E = fStrip_Front_E(m_EventData , i);
       if( Front_E > m_StripFront_E_Threshold ){
         m_PreTreatedData->SetFront( m_EventData->GetFront_DetectorNbr(i),
@@ -179,7 +179,7 @@ void TSharcPhysics::PreTreat(){
   //  Back
   unsigned int sizeBack = m_EventData->GetMultiplicityBack() ;
   for(unsigned int i = 0 ; i < sizeBack ; i++){
-    if( m_EventData->GetBack_Energy(i)>m_StripBack_E_RAW_Threshold && IsValidChannel("Back", m_EventData->GetBack_DetectorNbr(i), m_EventData->GetBack_StripNbr(i)) ){
+    if( m_EventData->GetBack_Energy(i)>m_StripBack_E_RAW_Threshold/* && IsValidChannel("Back", m_EventData->GetBack_DetectorNbr(i), m_EventData->GetBack_StripNbr(i))*/ ){
       double Back_E = fStrip_Back_E(m_EventData , i);
       if( Back_E > m_StripBack_E_Threshold ){
         m_PreTreatedData->SetBack( m_EventData->GetBack_DetectorNbr(i),
@@ -194,7 +194,7 @@ void TSharcPhysics::PreTreat(){
   //  PAD
   unsigned int sizePAD = m_EventData->GetMultiplicityPAD();
   for(unsigned int i = 0 ; i < sizePAD ; i++){
-    if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold && IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1) ){
+    if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold/* && IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1)*/ ){
       double PAD_E = fPAD_E(m_EventData , i);
       if( PAD_E > m_PAD_E_Threshold ){
         m_PreTreatedData->SetPAD( m_EventData->GetPAD_DetectorNbr(i),
@@ -467,7 +467,7 @@ void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
  
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
 
-    if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
+    if(/*blocks[i]->GetMainValue()=="QQQ" &&*/ blocks[i]->HasTokenList(tokenQQQ)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");
@@ -476,7 +476,7 @@ void TSharcPhysics::ReadConfiguration(NPL::InputParser parser){
         double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
         AddQQQDetector(R,Phi,Z);
     }
-    else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
+    else if(/*blocks[i]->GetMainValue()=="BOX" &&*/ blocks[i]->HasTokenList(tokenBOX)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc Box " << i+1 <<  endl;
         double Z = blocks[i]->GetDouble("Z","mm");

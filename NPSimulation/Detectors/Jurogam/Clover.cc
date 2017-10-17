@@ -329,7 +329,7 @@ void Clover::Placement(G4int copyNo, G4VPhysicalVolume* physiMother, G4bool chec
   //define these here
   G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,0.9,0.9,1.0) );
   visAttAlCap->SetVisibility(true);
-  visAttAlCap->SetForceWireframe(true);
+  //visAttAlCap->SetForceWireframe(true);
 
   G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
   visAttGeVac->SetForceWireframe(true);

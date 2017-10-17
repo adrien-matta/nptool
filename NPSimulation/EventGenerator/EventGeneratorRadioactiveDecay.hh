@@ -71,6 +71,9 @@ class EventGeneratorRadioactiveDecay: public NPS::VEventGenerator{
       G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
       G4int                  m_Z                ;
       G4int                  m_A                ;
+      G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
+      G4String               m_PhotonEvaporation;
+      G4String               m_RadioactiveDecay ;
   };
 
 #endif

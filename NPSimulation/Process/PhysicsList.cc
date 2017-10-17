@@ -264,17 +264,17 @@ void PhysicsList::ConstructProcess(){
     AddTransportation();
 
 	//Radioactive decay
-	G4RadioactiveDecay* radioactiveDecay = new G4RadioactiveDecay();
+	//G4RadioactiveDecay* radioactiveDecay = new G4RadioactiveDecay();
 
-	radioactiveDecay->SetARM(false);               //Atomic Rearangement
+	//radioactiveDecay->SetARM(false);               //Atomic Rearangement
 
-	G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();  
-	ph->RegisterProcess(radioactiveDecay, G4GenericIon::GenericIon());
+	//G4PhysicsListHelper* ph = G4PhysicsListHelper::GetPhysicsListHelper();  
+	//ph->RegisterProcess(radioactiveDecay, G4GenericIon::GenericIon());
 
-	// mandatory for G4NuclideTable
-	//
-	G4NuclideTable::GetInstance()->SetThresholdOfHalfLife(0.1*picosecond);
-	G4NuclideTable::GetInstance()->SetLevelTolerance(1.0*eV);  
+	//// mandatory for G4NuclideTable
+	////
+	//G4NuclideTable::GetInstance()->SetThresholdOfHalfLife(0.1*picosecond);
+	//G4NuclideTable::GetInstance()->SetLevelTolerance(1.0*eV);  
     
     // Electromagnetic physics
     emPhysicsList -> ConstructProcess();

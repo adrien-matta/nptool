@@ -116,6 +116,19 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   
   m_ParticleStack->AddBeamParticleToStack(BeamParticle);
 
+
+  //for (int i = 0; i < 6; i++)
+  //{
+  //Particle FakeBeamParticle( m_particle,
+  //                      InitialBeamEnergy,
+  //                      InitialBeamEnergy,
+  //                      -BeamDir.unit(),
+  //                      G4ThreeVector(0,0,2*mm),
+  //                      1);
+  //m_ParticleStack->AddParticleToStack(FakeBeamParticle);
+  //}
+
+
   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventGeneratorBeam::InitializeRootOutput(){

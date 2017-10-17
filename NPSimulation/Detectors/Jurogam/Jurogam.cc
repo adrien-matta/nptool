@@ -69,9 +69,9 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace Jurogam_NS{
 	// Energy and time Resolution
-	const double EnergyThreshold = 40*keV;
+	const double EnergyThreshold = 1*keV;
 	const double ResoTime = 4.5*ns ;
-	const double ResoEnergy = 2.5*keV ;
+	const double ResoEnergy = 1.1*keV ;
 	const double BGOEnergyThreshold = 40*keV;
 	const double BGOResoTime = 4.5*ns ;
 	const double BGOResoEnergy = 2.5*keV ;
@@ -91,6 +91,8 @@ Jurogam::Jurogam()
 	//Initialising volumes to be sensitive volumes
 	logicGe_PhaseI = 0;
 	PhaseILogicBGOCrystal = 0;
+	CloverConstructed = false;
+	CloverBGOConstructed = false;
 
 	PhaseIBGOShieldLength = 251.75*mm;
 	PhaseIBGOShieldOuterRadius = 167.*mm/2.;
@@ -1180,44 +1182,186 @@ G4LogicalVolume* Jurogam::BuildPhaseIBGO()
 }
 G4LogicalVolume* Jurogam::BuildClover()
 {
-	logicEndCap = new G4LogicalVolume(solidEndCap, endCapMaterial,   "clover_EC",   0, 0, 0);
-	logicVacuum = new G4LogicalVolume(solidVacuum, vacuumMaterial,   "clover_Vac",  0, 0, 0);
+	if(!CloverConstructed){
+		logicEndCap = new G4LogicalVolume(solidEndCap, endCapMaterial,   "clover_EC",   0, 0, 0);
+		logicVacuum = new G4LogicalVolume(solidVacuum, vacuumMaterial,   "clover_Vac",  0, 0, 0);
 
-	for(G4int l = 0; l < 4; l++)
-	{
-		logicGeLeaf[l]     = new G4LogicalVolume(solidGeLeaf,     geMaterial,      "clover_Leaf",   0, 0, 0);
-		logicGeLeaf[l]->SetSensitiveDetector(m_JurogamScorer);
-		logicPassivated[l] = new G4LogicalVolume(solidPassivated,    geMaterial,      "passivatedGe",  0, 0, 0);
-		logicContact[l]    = new G4LogicalVolume(solidContact, contactMaterial, "inner_contact", 0, 0, 0);
-		logicBoreHole[l]   = new G4LogicalVolume(solidBoreHole,   vacuumMaterial,   "bore_hole",    0, 0, 0);
+		for(G4int l = 0; l < 4; l++)
+		{
+			logicGeLeaf[l]     = new G4LogicalVolume(solidGeLeaf,     geMaterial,      "clover_Leaf",   0, 0, 0);
+			logicGeLeaf[l]->SetSensitiveDetector(m_JurogamScorer);
+			logicPassivated[l] = new G4LogicalVolume(solidPassivated,    geMaterial,      "passivatedGe",  0, 0, 0);
+			logicContact[l]    = new G4LogicalVolume(solidContact, contactMaterial, "inner_contact", 0, 0, 0);
+			logicBoreHole[l]   = new G4LogicalVolume(solidBoreHole,   vacuumMaterial,   "bore_hole",    0, 0, 0);
+		}
+		CloverConstructed = true;
+	}
+	G4bool checkOverlaps = false;
+	G4int copyNo = 0;
+	G4double vacuum_PosZ = fVacuumPosZ;
+	G4double geLeaf_PosZ = fGeLeafPosZ;
+	physiVacuum = new G4PVPlacement(0,                   //rotation
+			G4ThreeVector(0.*mm,0.*mm,vacuum_PosZ),
+			logicVacuum, //its logical volume
+			"Clover_Vac",       //its name
+			logicEndCap, //its mother
+			false,                //no boolean operat
+			copyNo,              //copy number
+			checkOverlaps);               //overlap check
+
+	//define these here
+	G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,0.9,0.9,1.0) );
+	visAttAlCap->SetVisibility(true);
+	//visAttAlCap->SetForceWireframe(true);
+
+	G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
+	visAttGeVac->SetForceWireframe(true);
+	visAttGeVac->SetVisibility(false);
+
+	G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
+	//visAttActive->SetForceWireframe(true);
+	visAttActive->SetVisibility(true);
+	G4VisAttributes* visAttActive0 = new G4VisAttributes( G4Colour(1.0,0.5,0.5) );
+	//visAttActive->SetForceWireframe(true);
+	visAttActive->SetVisibility(true);
+	G4VisAttributes* visAttActive1 = new G4VisAttributes( G4Colour(0.5,1.0,0.5) );
+	//visAttActive->SetForceWireframe(true);
+	visAttActive->SetVisibility(true);
+	G4VisAttributes* visAttActive2 = new G4VisAttributes( G4Colour(0.5,0.5,1.0) );
+	//visAttActive->SetForceWireframe(true);
+	visAttActive->SetVisibility(true);
+	G4VisAttributes* visAttActive3 = new G4VisAttributes( G4Colour(0.0,1.0,1.0) );
+	//visAttActive->SetForceWireframe(true);
+	visAttActive->SetVisibility(true);
+
+	G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
+	visAttPassive->SetForceWireframe(true);
+	visAttPassive->SetVisibility(false);
+
+	G4VisAttributes* visAttLiContact = new G4VisAttributes(G4Colour(1.0,0.0,1.0) );
+	//visAttLiContact->SetVisibility(false);
+	visAttLiContact->SetVisibility(true);
+
+	G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
+	//visAttHole->SetVisibility(false);
+	visAttHole->SetVisibility(true);
+
+	logicEndCap->SetVisAttributes(visAttAlCap);
+	logicVacuum->SetVisAttributes(visAttGeVac);
+
+	//Now for the placement of the leaves in each clover......
+	G4RotationMatrix* rmC;
+	G4double dPos = fGeLeaf_dX + fGapBetweenLeaves/2.;
+	G4double leafX;
+	G4double leafY;
+	G4double leafZ;
+
+	for(G4int l = 0; l < 4; l++) {
+		//the rotation
+		rmC = new G4RotationMatrix;
+		rmC->set(0,0,0);
+		rmC->rotateZ(90.*degree*(4-l));
+		rmC->invert();
+		//the x-translation
+		if(l < 2) {
+			leafX = dPos;
+		} else {
+			leafX = -dPos;
+		}
+		//the y-translation
+		if(l == 0 || l == 3 ) {
+			leafY = dPos;
+		} else {
+			leafY = -dPos;
+		}
+		//the z-translation
+		leafZ = geLeaf_PosZ;
+
+
+		physiGeLeaf[l] = new G4PVPlacement(rmC,                       //rotation
+				G4ThreeVector(leafX,leafY,leafZ),
+				"Clover",                 //its name
+				logicGeLeaf[l],     //its logical volume
+				physiVacuum,        //its mother
+				true,                       //no boolean operat
+				copyNo*4+l,                     //copy number
+				checkOverlaps);                      //overlap check
+
+		physiPassivated[l] = new G4PVPlacement(0,                   //rotation
+				G4ThreeVector(-fHole_dX, -fHole_dY, fContact_dZ),
+				"GePassivated",
+				logicPassivated[l],
+				physiGeLeaf[l],
+				false,copyNo*4+l,checkOverlaps);
+
+		physiContact[l] = new G4PVPlacement(0,                   //rotation
+				G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
+			"LiContact",
+			logicContact[l],
+			physiPassivated[l],
+			false,copyNo*4+l,checkOverlaps);
+
+
+			physiBoreHole[l] = new G4PVPlacement(0,                   //rotation
+					G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
+				"BoreHole",
+				logicBoreHole[l],
+				physiContact[l],
+				false,copyNo*4+l,checkOverlaps);
+
+
+				//visual attributes
+				//logicGeLeaf[l]->SetVisAttributes(visAttActive);
+				switch (l) {
+					case 0:
+						logicGeLeaf[l]->SetVisAttributes(visAttActive0);
+						break;
+					case 1:
+						logicGeLeaf[l]->SetVisAttributes(visAttActive1);
+						break;
+					case 2:
+						logicGeLeaf[l]->SetVisAttributes(visAttActive2);
+						break;
+					case 3:
+						logicGeLeaf[l]->SetVisAttributes(visAttActive3);
+						break;
+					default:
+						logicGeLeaf[l]->SetVisAttributes(visAttActive);
+				}
+
+				logicPassivated[l]->SetVisAttributes(visAttPassive);
+				logicContact[l]->SetVisAttributes(visAttLiContact);
+				logicBoreHole[l]->SetVisAttributes(visAttHole);
 	}
 	return *logicGeLeaf;
 }
 G4LogicalVolume* Jurogam::BuildCloverBGO()
 {
-	CloverLogicBGOCrystal[0] = new G4LogicalVolume(CloverSolidBGOCrystal2, BGOMaterial,
-			"CloverBGOCrystal",0,0,0);
-	CloverLogicBGOCrystal[1] = new G4LogicalVolume(CloverSolidBGOCrystal, BGOMaterial,
-			"CloverBGOCrystal",0,0,0);
-	CloverLogicBGOCrystal[2] = new G4LogicalVolume(CloverSolidBGOCrystal3, BGOMaterial,
-			"CloverBGOCrystal",0,0,0);
-	CloverLogicBGOCrystal[3] = new G4LogicalVolume(CloverSolidBGOCrystal, BGOMaterial,
-			"CloverBGOCrystal",0,0,0);
-	for(G4int l = 0; l < 4; l++)
-	{
-		CloverLogicBGOCrystal[l]->SetSensitiveDetector(m_JurogamBGOScorer);
+	if(!CloverBGOConstructed){
+		CloverLogicBGOCrystal[0] = new G4LogicalVolume(CloverSolidBGOCrystal2, BGOMaterial,
+				"CloverBGOCrystal",0,0,0);
+		CloverLogicBGOCrystal[1] = new G4LogicalVolume(CloverSolidBGOCrystal, BGOMaterial,
+				"CloverBGOCrystal",0,0,0);
+		CloverLogicBGOCrystal[2] = new G4LogicalVolume(CloverSolidBGOCrystal3, BGOMaterial,
+				"CloverBGOCrystal",0,0,0);
+		CloverLogicBGOCrystal[3] = new G4LogicalVolume(CloverSolidBGOCrystal, BGOMaterial,
+				"CloverBGOCrystal",0,0,0);
+		for(G4int l = 0; l < 4; l++)
+		{
+			CloverLogicBGOCrystal[l]->SetSensitiveDetector(m_JurogamBGOScorer);
+		}
+
+
+		CloverLogicBGOShield = new G4LogicalVolume(CloverSolidBGOShield, ShieldMaterial,
+				"BGOShield", 0, 0, 0);
+
+		CloverLogicBGOHevimet = new G4LogicalVolume(CloverSolidBGOHevimet, HevimetMaterial,
+				"BGOHevimetColl", 0, 0, 0);
+
+		CloverAbsorber1_log = new G4LogicalVolume(CloverAbsorber1,Absorber1Material,"CloverAbsorber1_log",0,0,0);
+		CloverAbsorber2_log = new G4LogicalVolume(CloverAbsorber2,Absorber2Material,"CloverAbsorber2_log",0,0,0);
+		CloverBGOConstructed = true;
 	}
-
-
-	CloverLogicBGOShield = new G4LogicalVolume(CloverSolidBGOShield, ShieldMaterial,
-			"BGOShield", 0, 0, 0);
-
-	CloverLogicBGOHevimet = new G4LogicalVolume(CloverSolidBGOHevimet, HevimetMaterial,
-			"BGOHevimetColl", 0, 0, 0);
-
-	CloverAbsorber1_log = new G4LogicalVolume(CloverAbsorber1,Absorber1Material,"CloverAbsorber1_log",0,0,0);
-	CloverAbsorber2_log = new G4LogicalVolume(CloverAbsorber2,Absorber2Material,"CloverAbsorber2_log",0,0,0);
-
 	return *CloverLogicBGOCrystal;
 }
 //---------------------------------------------------------------------
@@ -1437,8 +1581,8 @@ void Jurogam::CloverPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 	//Do not know why, but the positioning seems to be with respect to the Taper-part :
 	//setting the z-position as endCapTaperL/2 puts the front face at z = 0 mm
 	//=================================================================================
-	G4double vacuum_PosZ = fVacuumPosZ;
-	G4double geLeaf_PosZ = fGeLeafPosZ;
+	//G4double vacuum_PosZ = fVacuumPosZ;
+	//G4double geLeaf_PosZ = fGeLeafPosZ;
 
 	physiEndCap = new G4PVPlacement(//&rotation, G4ThreeVector(position.x(),position.y(),position.z()),
 			G4Transform3D(rotation, position),
@@ -1449,139 +1593,139 @@ void Jurogam::CloverPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 			copyNo,             //copy number
 			checkOverlaps);              //overlap check
 
-	physiVacuum = new G4PVPlacement(0,                   //rotation
-			G4ThreeVector(0.*mm,0.*mm,vacuum_PosZ),
-			"Clover_Vac",       //its name
-			logicVacuum, //its logical volume
-			physiEndCap, //its mother
-			true,                //no boolean operat
-			copyNo,              //copy number
-			checkOverlaps);               //overlap check
+	//physiVacuum = new G4PVPlacement(0,                   //rotation
+	//		G4ThreeVector(0.*mm,0.*mm,vacuum_PosZ),
+	//		"Clover_Vac",       //its name
+	//		logicVacuum, //its logical volume
+	//		physiEndCap, //its mother
+	//		false,                //no boolean operat
+	//		copyNo,              //copy number
+	//		checkOverlaps);               //overlap check
 
-	//define these here
-	G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,0.9,0.9,1.0) );
-	visAttAlCap->SetVisibility(true);
-	visAttAlCap->SetForceWireframe(true);
+	////define these here
+	//G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,0.9,0.9,1.0) );
+	//visAttAlCap->SetVisibility(true);
+	////visAttAlCap->SetForceWireframe(true);
 
-	G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
-	visAttGeVac->SetForceWireframe(true);
-	visAttGeVac->SetVisibility(false);
+	//G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
+	//visAttGeVac->SetForceWireframe(true);
+	//visAttGeVac->SetVisibility(false);
 
-	G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
-	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
-	G4VisAttributes* visAttActive0 = new G4VisAttributes( G4Colour(1.0,0.5,0.5) );
-	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
-	G4VisAttributes* visAttActive1 = new G4VisAttributes( G4Colour(0.5,1.0,0.5) );
-	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
-	G4VisAttributes* visAttActive2 = new G4VisAttributes( G4Colour(0.5,0.5,1.0) );
-	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
-	G4VisAttributes* visAttActive3 = new G4VisAttributes( G4Colour(0.0,1.0,1.0) );
-	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	//G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
+	////visAttActive->SetForceWireframe(true);
+	//visAttActive->SetVisibility(true);
+	//G4VisAttributes* visAttActive0 = new G4VisAttributes( G4Colour(1.0,0.5,0.5) );
+	////visAttActive->SetForceWireframe(true);
+	//visAttActive->SetVisibility(true);
+	//G4VisAttributes* visAttActive1 = new G4VisAttributes( G4Colour(0.5,1.0,0.5) );
+	////visAttActive->SetForceWireframe(true);
+	//visAttActive->SetVisibility(true);
+	//G4VisAttributes* visAttActive2 = new G4VisAttributes( G4Colour(0.5,0.5,1.0) );
+	////visAttActive->SetForceWireframe(true);
+	//visAttActive->SetVisibility(true);
+	//G4VisAttributes* visAttActive3 = new G4VisAttributes( G4Colour(0.0,1.0,1.0) );
+	////visAttActive->SetForceWireframe(true);
+	//visAttActive->SetVisibility(true);
 
-	G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
-	visAttPassive->SetForceWireframe(true);
-	visAttPassive->SetVisibility(false);
+	//G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
+	//visAttPassive->SetForceWireframe(true);
+	//visAttPassive->SetVisibility(false);
 
-	G4VisAttributes* visAttLiContact = new G4VisAttributes(G4Colour(1.0,0.0,1.0) );
-	//visAttLiContact->SetVisibility(false);
-	visAttLiContact->SetVisibility(true);
+	//G4VisAttributes* visAttLiContact = new G4VisAttributes(G4Colour(1.0,0.0,1.0) );
+	////visAttLiContact->SetVisibility(false);
+	//visAttLiContact->SetVisibility(true);
 
-	G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
-	//visAttHole->SetVisibility(false);
-	visAttHole->SetVisibility(true);
+	//G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
+	////visAttHole->SetVisibility(false);
+	//visAttHole->SetVisibility(true);
 
-	logicEndCap->SetVisAttributes(visAttAlCap);
-	logicVacuum->SetVisAttributes(visAttGeVac);
+	//logicEndCap->SetVisAttributes(visAttAlCap);
+	//logicVacuum->SetVisAttributes(visAttGeVac);
 
-	//Now for the placement of the leaves in each clover......
-	G4RotationMatrix* rmC;
-	G4double dPos = fGeLeaf_dX + fGapBetweenLeaves/2.;
-	G4double leafX;
-	G4double leafY;
-	G4double leafZ;
+	////Now for the placement of the leaves in each clover......
+	//G4RotationMatrix* rmC;
+	//G4double dPos = fGeLeaf_dX + fGapBetweenLeaves/2.;
+	//G4double leafX;
+	//G4double leafY;
+	//G4double leafZ;
 
-	for(G4int l = 0; l < 4; l++) {
-		//the rotation
-		rmC = new G4RotationMatrix;
-		rmC->set(0,0,0);
-		rmC->rotateZ(90.*degree*(4-l));
-		rmC->invert();
-		//the x-translation
-		if(l < 2) {
-			leafX = dPos;
-		} else {
-			leafX = -dPos;
-		}
-		//the y-translation
-		if(l == 0 || l == 3 ) {
-			leafY = dPos;
-		} else {
-			leafY = -dPos;
-		}
-		//the z-translation
-		leafZ = geLeaf_PosZ;
-
-
-		physiGeLeaf[l] = new G4PVPlacement(rmC,                       //rotation
-				G4ThreeVector(leafX,leafY,leafZ),
-				"Clover",                 //its name
-				logicGeLeaf[l],     //its logical volume
-				physiVacuum,        //its mother
-				true,                       //no boolean operat
-				copyNo*4+l,                     //copy number
-				checkOverlaps);                      //overlap check
-
-		physiPassivated[l] = new G4PVPlacement(0,                   //rotation
-				G4ThreeVector(-fHole_dX, -fHole_dY, fContact_dZ),
-				"GePassivated",
-				logicPassivated[l],
-				physiGeLeaf[l],
-				false,copyNo*4+l,checkOverlaps);
-
-		physiContact[l] = new G4PVPlacement(0,                   //rotation
-				G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
-			"LiContact",
-			logicContact[l],
-			physiPassivated[l],
-			false,copyNo*4+l,checkOverlaps);
+	//for(G4int l = 0; l < 4; l++) {
+	//	//the rotation
+	//	rmC = new G4RotationMatrix;
+	//	rmC->set(0,0,0);
+	//	rmC->rotateZ(90.*degree*(4-l));
+	//	rmC->invert();
+	//	//the x-translation
+	//	if(l < 2) {
+	//		leafX = dPos;
+	//	} else {
+	//		leafX = -dPos;
+	//	}
+	//	//the y-translation
+	//	if(l == 0 || l == 3 ) {
+	//		leafY = dPos;
+	//	} else {
+	//		leafY = -dPos;
+	//	}
+	//	//the z-translation
+	//	leafZ = geLeaf_PosZ;
 
 
-			physiBoreHole[l] = new G4PVPlacement(0,                   //rotation
-					G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
-				"BoreHole",
-				logicBoreHole[l],
-				physiContact[l],
-				false,copyNo*4+l,checkOverlaps);
+	//	physiGeLeaf[l] = new G4PVPlacement(rmC,                       //rotation
+	//			G4ThreeVector(leafX,leafY,leafZ),
+	//			"Clover",                 //its name
+	//			logicGeLeaf[l],     //its logical volume
+	//			physiVacuum,        //its mother
+	//			true,                       //no boolean operat
+	//			copyNo*4+l,                     //copy number
+	//			checkOverlaps);                      //overlap check
+
+	//	physiPassivated[l] = new G4PVPlacement(0,                   //rotation
+	//			G4ThreeVector(-fHole_dX, -fHole_dY, fContact_dZ),
+	//			"GePassivated",
+	//			logicPassivated[l],
+	//			physiGeLeaf[l],
+	//			false,copyNo*4+l,checkOverlaps);
+
+	//	physiContact[l] = new G4PVPlacement(0,                   //rotation
+	//			G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
+	//		"LiContact",
+	//		logicContact[l],
+	//		physiPassivated[l],
+	//		false,copyNo*4+l,checkOverlaps);
 
 
-				//visual attributes
-				//logicGeLeaf[l]->SetVisAttributes(visAttActive);
-				switch (l) {
-					case 0:
-						logicGeLeaf[l]->SetVisAttributes(visAttActive0);
-						break;
-					case 1:
-						logicGeLeaf[l]->SetVisAttributes(visAttActive1);
-						break;
-					case 2:
-						logicGeLeaf[l]->SetVisAttributes(visAttActive2);
-						break;
-					case 3:
-						logicGeLeaf[l]->SetVisAttributes(visAttActive3);
-						break;
-					default:
-						logicGeLeaf[l]->SetVisAttributes(visAttActive);
-				}
+	//		physiBoreHole[l] = new G4PVPlacement(0,                   //rotation
+	//				G4ThreeVector(0.*mm,0.*mm, 0.0*mm),//-fContact_dZ),
+	//			"BoreHole",
+	//			logicBoreHole[l],
+	//			physiContact[l],
+	//			false,copyNo*4+l,checkOverlaps);
 
-				logicPassivated[l]->SetVisAttributes(visAttPassive);
-				logicContact[l]->SetVisAttributes(visAttLiContact);
-				logicBoreHole[l]->SetVisAttributes(visAttHole);
-	}
+
+	//			//visual attributes
+	//			//logicGeLeaf[l]->SetVisAttributes(visAttActive);
+	//			switch (l) {
+	//				case 0:
+	//					logicGeLeaf[l]->SetVisAttributes(visAttActive0);
+	//					break;
+	//				case 1:
+	//					logicGeLeaf[l]->SetVisAttributes(visAttActive1);
+	//					break;
+	//				case 2:
+	//					logicGeLeaf[l]->SetVisAttributes(visAttActive2);
+	//					break;
+	//				case 3:
+	//					logicGeLeaf[l]->SetVisAttributes(visAttActive3);
+	//					break;
+	//				default:
+	//					logicGeLeaf[l]->SetVisAttributes(visAttActive);
+	//			}
+
+	//			logicPassivated[l]->SetVisAttributes(visAttPassive);
+	//			logicContact[l]->SetVisAttributes(visAttLiContact);
+	//			logicBoreHole[l]->SetVisAttributes(visAttHole);
+	//}
 }
 void Jurogam::CloverBGOPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool checkOverlaps)
 {
@@ -1827,7 +1971,7 @@ void Jurogam::ReadConfiguration(NPL::InputParser parser)
 			AddDetector(Loc,Theta,Phi,Shape,BGO);
 		}
 		else{
-			cout << "ERROR: check your input file formatting " << endl;
+			cout << "ERROR: check your input file formatting foo" << endl;
 			exit(1);
 		}
 	}
@@ -1842,7 +1986,6 @@ void Jurogam::ConstructDetector(G4LogicalVolume* world)
 	BuildPhaseIBGO();
 	BuildClover();
 	BuildCloverBGO();
-
 	for (unsigned short i = 0 ; i < m_R.size() ; i++)
 	{
 		G4double wX,wY,wZ;

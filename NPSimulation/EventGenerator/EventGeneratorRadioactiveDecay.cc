@@ -33,11 +33,13 @@
 
 // C++ headers
 #include "cmath"
+#include <string>
 
 // G4 headers
 #include "G4UnitsTable.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
+#include "G4UIManager.hh"
 
 // CLHEP headers
 #include "Randomize.hh"
@@ -66,7 +68,7 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
     vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Radioactive");
 
     // if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << endl << "\033[1;35m//// Radioactive decay reaction found " << endl; 
+    cout << endl << "\033[1;35m//// Radioactive decay reaction found " << endl;
 
     vector<string> token = {"Z","A","EnergyLow","EnergyHigh","x0","y0","z0","HalfOpenAngleMin","HalfOpenAngleMax"};
 
@@ -88,6 +90,28 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
 		  m_SigmaX=blocks[i]->GetDouble("SigmaX","mm");
 	  if(blocks[i]->HasToken("SigmaY"))
 		  m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
+	  if(blocks[i]->HasToken("ExcitationEnergy"))
+		  m_ExcitationEnergy=blocks[i]->GetDouble("ExcitationEnergy","keV");
+
+	  if(blocks[i]->HasToken("PhotonEvaporation"))
+      {
+          G4String command = "/grdm/setPhotoEvaporationFile ";
+          G4String fileName = blocks[i]->GetString("PhotonEvaporation");
+          m_PhotonEvaporation=command+
+                  to_string(m_Z)+" "+
+                  to_string(m_A)+" "+
+                  fileName;
+          cout << "Reading file " << fileName << endl;
+      }
+	  if(blocks[i]->HasToken("RadioactiveDecay"))
+      {
+          G4String command = "/grdm/setRadioactiveDecayFile ";
+          G4String fileName = blocks[i]->GetString("RadioactiveDecay");
+          m_RadioactiveDecay=command+
+                  to_string(m_Z)+" "+
+                  to_string(m_A)+" "+
+                  fileName;
+      }
     }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -107,6 +131,7 @@ void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
 
     G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
     G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
+    G4double z0 = m_z0;
 
     /*//Testing for generating a single electron
     Particle TestElectron(G4ParticleTable::GetParticleTable()->FindParticle("e-"),//particle
@@ -131,13 +156,19 @@ void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
 
     G4int Z = m_Z, A = m_A;
     G4double ionCharge   = 0.*eplus;
-    G4double excitEnergy = 0.*keV;
+    G4double excitEnergy = m_ExcitationEnergy;
 
-    Particle Ion(G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy),
+    G4ParticleDefinition* ion = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
+
+    G4UImanager* UI = G4UImanager::GetUIpointer();
+    if (m_PhotonEvaporation) UI->ApplyCommand(m_PhotonEvaporation);
+    if (m_RadioactiveDecay)  UI->ApplyCommand(m_RadioactiveDecay);
+
+    Particle Ion(ion,
             theta,
             0,
             G4ThreeVector(momentum_x, momentum_y, momentum_z),//direction
-            G4ThreeVector(0.,0.,0.),//position
+            G4ThreeVector(x0,y0,z0),//position
             true);//shoot status
 
 
