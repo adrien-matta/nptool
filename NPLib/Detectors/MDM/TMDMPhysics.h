@@ -38,10 +38,11 @@
 #include "NPVDetector.h"
 #include "NPInputParser.h"
 #include "NPNucleus.h"
+// MDM Trace
+#include "MDMTrace.h"
+
 // forward declaration
 class TMDMSpectra;
-class Rayin;
-class MDMTrace;
 
 
 class TMDMPhysics : public TObject, public NPL::VDetector {
@@ -82,7 +83,7 @@ private:
 	NPL::Nucleus* m_Particle;
 	double m_Angle;
 	double m_Field;
-	Rayin* m_Rayin; //!
+	MDMTrace::Rayin* m_Rayin; //!
 	MDMTrace* m_Trace; //!
 
 public:
@@ -209,3 +210,4 @@ public:
 	ClassDef(TMDMPhysics,1)  // MDMPhysics structure
 };
 #endif
+

@@ -53,8 +53,6 @@
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
-#include "Rayin.h"
-#include "MDMTrace.h"
 
 using namespace std;
 using namespace CLHEP;
@@ -91,7 +89,7 @@ void MDM::AddDetector(double angle, double field, double xaccept, double yaccept
 	m_Yaccept = yaccept;
   m_Rayin_file = rayin;
   
-  m_Rayin = new Rayin(m_Rayin_file, false);
+  m_Rayin = new MDMTrace::Rayin(m_Rayin_file, false);
   m_Trace = MDMTrace::Instance();
 
   m_Trace->SetMDMAngle(angle/mrad);  // mrad

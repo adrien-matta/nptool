@@ -1,8 +1,21 @@
 #ifndef MDMTRACE_H
 #define MDMTRACE_H
 
+#include <string>
+
+
+
 class MDMTrace {
+public:
+	class Rayin {
  public:
+		Rayin(const std::string& filename, bool check=true);
+		~Rayin();
+ private:
+		bool isOwner;
+	};
+	
+public:
   static MDMTrace* Instance();
   void SetBeamEnergy(double);
   double GetBeamEnergy() const;
@@ -37,8 +50,8 @@ class MDMTrace {
   void GetOxfordWirePositions(double&,double&,double&,double&);
   void GetOxfordWirePositions(double&,double&,double&,double&,double&);
   void GetOxfordWirePositions(double&,double&,double&,double&,double&,
-			      double&,double&,double&,double&,double&);
- private:
+															double&,double&,double&,double&,double&);
+private:
   MDMTrace() {};
   static MDMTrace* instance_;
   static double jeffParams_[6];

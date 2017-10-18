@@ -42,9 +42,6 @@ using namespace std;
 #include "TMath.h"
 #include "TChain.h"
 
-//   LOCAL
-#include "Rayin.h"
-#include "MDMTrace.h"
 
 ClassImp(TMDMPhysics)
 
@@ -88,7 +85,7 @@ void TMDMPhysics::AddDetector(double angle, double field, const std::string& ray
 
 	m_Angle = angle;
 	m_Field = field;
-	m_Rayin = new Rayin(rayin, false);
+	m_Rayin = new MDMTrace::Rayin(rayin, false);
 	m_Trace = MDMTrace::Instance();
 	m_Trace->SetMDMAngle(angle/NPUNITS::mrad);  // mrad
   m_Trace->SetMDMDipoleField(field/NPUNITS::gauss); // gauss

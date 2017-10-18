@@ -31,9 +31,8 @@
 #include "NPSVDetector.hh"
 #include "TMDMData.h"
 #include "NPInputParser.h"
+#include "MDMTrace.h"
 
-class Rayin;
-class MDMTrace;
 
 class MDM : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -100,7 +99,7 @@ private: // Geometry
   std::string m_Rayin_file;
 
   MDMTrace* m_Trace;
-  Rayin* m_Rayin;
+	MDMTrace::Rayin* m_Rayin;
 
   G4VisAttributes* m_VisSquare;
 	
