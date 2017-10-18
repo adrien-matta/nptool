@@ -63,14 +63,20 @@ TMDMPhysics::TMDMPhysics()
 	m_Spectra(0),
 	m_X_Threshold(1000000), // junk value
 	m_Y_Threshold(1000000), // junk value
-	m_DoFit(false),
 	m_NumberOfDetectors(0) {
+
 	m_Rayin = 0;
+	m_FitMethod = 0;
+	m_ParticleA = 0;
+	m_ParticleZ = 0;
+	m_ParticleQ = 0;
+	m_Particle = 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
 TMDMPhysics::~TMDMPhysics(){
 	if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
+	if(m_Particle) { delete m_Particle; m_Particle = 0; }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -128,13 +134,9 @@ void TMDMPhysics::BuildPhysicalEvent() {
 	if(i0!=-1 && i1!=-1) {
 		Xang = atan((Xpos[i1] - Xpos[i0]) / (Zpos[i1] - Zpos[i0]));
 		Yang = atan((Ypos[i1] - Ypos[i0]) / (Zpos[i1] - Zpos[i0]));
-		Xang *= (180/TMath::Pi());
-		Yang *= (180/TMath::Pi());
 	}
 
-	if(m_DoFit) {
-		MinimizeTarget();
-	}
+	MinimizeTarget();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -196,6 +198,7 @@ void TMDMPhysics::ReadAnalysisConfig() {
   asciiConfig->AppendLine("");
   // read analysis config file
   string LineBuffer,DataBuffer,whatToDo;
+	bool haveQ = false;
   while (!AnalysisConfigFile.eof()) {
     // Pick-up next line
     getline(AnalysisConfigFile, LineBuffer);
@@ -205,6 +208,7 @@ void TMDMPhysics::ReadAnalysisConfig() {
     if (LineBuffer.compare(0, name.length(), name) == 0) 
       ReadingStatus = true;
 
+		cout << "Reading " << FileName << "...\n";
     // loop on tokens and data
     while (ReadingStatus ) {
       whatToDo="";
@@ -218,19 +222,38 @@ void TMDMPhysics::ReadAnalysisConfig() {
       else if (whatToDo=="X_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
         m_X_Threshold = atof(DataBuffer.c_str());
-        cout << whatToDo << " " << m_X_Threshold << endl;
+        cout << "\t" << whatToDo << " " << m_X_Threshold << endl;
       }
 
       else if (whatToDo=="Y_THRESHOLD") {
         AnalysisConfigFile >> DataBuffer;
         m_Y_Threshold = atof(DataBuffer.c_str());
-        cout << whatToDo << " " << m_Y_Threshold << endl;
+        cout << "\t" << whatToDo << " " << m_Y_Threshold << endl;
       }
 
-			else if (whatToDo=="DO_FIT") {
+			else if (whatToDo=="FIT_METHOD") {
 				AnalysisConfigFile >> DataBuffer;
-				m_DoFit = atoi(DataBuffer.c_str());
-				cout << whatToDo << " " << m_DoFit << endl;
+				m_FitMethod = atoi(DataBuffer.c_str());
+				cout << "\t" << whatToDo << " " << m_FitMethod << endl;
+			}
+
+			else if (whatToDo=="RECON_A") {
+				AnalysisConfigFile >> DataBuffer;
+				m_ParticleA = atoi(DataBuffer.c_str());
+				cout << "\t" << whatToDo << " " << m_ParticleA << endl;
+			}
+
+			else if (whatToDo=="RECON_Z") {
+				AnalysisConfigFile >> DataBuffer;
+				m_ParticleZ = atoi(DataBuffer.c_str());
+				cout << "\t" << whatToDo << " " << m_ParticleZ << endl;
+			}
+
+			else if (whatToDo=="RECON_Q") {
+				AnalysisConfigFile >> DataBuffer;
+				m_ParticleQ = atoi(DataBuffer.c_str());
+				haveQ = true;
+				cout << "\t" << whatToDo << " " << m_ParticleZ << endl;
 			}
 
       else {
@@ -238,6 +261,10 @@ void TMDMPhysics::ReadAnalysisConfig() {
       }
     }
   }
+	if(!haveQ) { 
+		m_ParticleQ = m_ParticleZ;
+		cout << "\t" << "No RECON_Q found, setting particle Q = Z (fully stripped)\n";
+	}
 }
 
 
@@ -253,6 +280,10 @@ void TMDMPhysics::Clear() {
 	Target_Xang = -1000;
 	Target_Yang = -1000;
 	Target_Ekin = -1000;
+	Fit_Chi2    = -1000;
+	for(int i=0; i< 4; ++i) {
+		Fit_Xpos[i] = -1000;
+	}
 }
 
 
@@ -281,6 +312,9 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
       exit(1);
     }
   }
+
+  ReadAnalysisConfig();
+	m_Particle = new NPL::Nucleus(m_ParticleZ, m_ParticleA);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -394,75 +428,175 @@ proxy_MDM p_MDM;
 //   TARGET MINIMIZATION                                                 //
 ///////////////////////////////////////////////////////////////////////////
 
-namespace {
-
-double XMEAS_[4];
-double YMEAS_[4];
-double CHARGE_;
-double MASS_;
-
-double chi2_wire(const double* p){
-	double thetaX = p[0]; // deg
-	double thetaY = p[1]; // deg
-	double Ekin   = p[2]; // MeV
-
-	MDMTrace::Instance()->SetScatteredCharge(CHARGE_);
-	MDMTrace::Instance()->SetScatteredMass(MASS_);
-	MDMTrace::Instance()->SetScatteredAngle(thetaX, thetaY); // deg
-	MDMTrace::Instance()->SetScatteredEnergy(Ekin);
-
-	MDMTrace::Instance()->SendRay();
-
-	double xw[4] = {1e10,1e10,1e10,1e10};
-	double yw[4] = {1e10,1e10,1e10,1e10};
-	double a = 1e10;
-	double b = 1e10;
-	MDMTrace::Instance()->GetOxfordWirePositions(a,xw[0],xw[1],xw[2],xw[3],b,yw[0],yw[1],yw[2],yw[3]);
-
-	double chi2 = 0;
-	for(int i=0; i< 4; ++i) {
-		chi2 += pow(XMEAS_[i] - xw[i], 2) / pow(XMEAS_[i], 2);
-		chi2 += pow(YMEAS_[i] - yw[i], 2) / pow(YMEAS_[i], 2);
-	}
-
-	return chi2;
-} }
-
+#include <memory>
 #include "Minuit2/Minuit2Minimizer.h"
 #include "Math/Functor.h"
 
-void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, deg
 
-	CHARGE_ = 8;
-	MASS_ = 14;
-	for(int i=0; i< Xpos.size(); ++i) {
-		int iDet = DetectorNumber.at(i);
-		if(iDet < 0 || iDet > 3) { break; }
-		XMEAS_[iDet] = Xpos[i];
-		YMEAS_[iDet] = Ypos[i];
+namespace {
+
+class FitFunctor : public ROOT::Math::IMultiGenFunction {
+protected:
+	FitFunctor(const TMDMPhysics* mdm):
+		m_MDM(mdm){
+		m_Mass   = m_MDM->GetParticle()->Mass()/amu_c2;
+		m_Charge = m_MDM->GetParticleQ();
+			
+			for(int i=0; i< 4; ++i) {
+				m_WireX[i] = m_WireY[i] = m_WireAngleX = m_WireAngleY = 1e10;
+			}
+		}
+
+	// send ray through mdm
+	void SendRay(double thetaX,double thetaY,double Ekin) const{
+			MDMTrace::Instance()->SetScatteredCharge(m_Charge);
+			MDMTrace::Instance()->SetScatteredMass(m_Mass);
+			MDMTrace::Instance()->SetScatteredAngle(thetaX, thetaY); // deg
+			MDMTrace::Instance()->SetScatteredEnergy(Ekin);
+			
+			MDMTrace::Instance()->SendRay();
+			MDMTrace::Instance()->
+				GetOxfordWirePositions(m_WireAngleX,m_WireX[0],m_WireX[1],m_WireX[2],m_WireX[3],
+															 m_WireAngleY,m_WireY[0],m_WireY[1],m_WireY[2],m_WireY[3]);
+		}
+
+	ROOT::Math::IMultiGenFunction*	Clone() const{
+		FitFunctor* out = new FitFunctor(m_MDM);
+		for(int i=0; i< 4; ++i){
+			out->m_WireX[i] = m_WireX[i];
+			out->m_WireY[i] = m_WireY[i];
+		}
+		out->m_WireAngleX = m_WireAngleX;
+		out->m_WireAngleY = m_WireAngleY;
+
+		return out;
 	}
 	
-	ROOT::Minuit2::Minuit2Minimizer min ( ROOT::Minuit2::kMigrad );
+	// overload w/ specific fit function
+	virtual unsigned int NDim() const { return 0; }
+private:
+	virtual double DoEval (const double*) const { return 0; }
+
+public:
+	mutable double m_WireX[4];
+	mutable double m_WireY[4];
+	mutable double m_WireAngleX;
+	mutable double m_WireAngleY;
+
+	double m_Charge;
+	double m_Mass;
+	const TMDMPhysics* m_MDM;
+};
+
+class Chi2WireX : public FitFunctor {
+public:
+	Chi2WireX(const TMDMPhysics* mdm):
+		FitFunctor(mdm) { }
+
+	double DoEval (const double* p) const{
+		double thetaX = p[0]; // deg
+		double Ekin   = p[1]; // MeV
+		SendRay(thetaX,m_MDM->Yang/deg,Ekin);
+
+		// calculate Chi2
+		double chi2 = 0;
+		assert(m_MDM->Xpos.size() == 4);
+
+		for(int i=0; i< 4; ++i) {
+		 	if(m_MDM->Xpos[i] != 0) {
+		 		double ch2 = pow(m_MDM->Xpos[i] - m_WireX[i], 2); // / pow(m_MDM->Xpos[i], 2);
+				chi2 += ch2;
+			}
+		}
+	
+		return chi2;
+	}
+
+	unsigned int NDim() const { return 2; }
+};
+
+class R2WireX : public FitFunctor {
+public:
+	R2WireX(const TMDMPhysics* mdm):
+		FitFunctor(mdm) { }
+
+	double DoEval (const double* p) const{
+		double thetaX = p[0]; // deg
+		double Ekin   = p[1]; // MeV
+		SendRay(thetaX,0,Ekin);
+
+		// calculate R2
+		double ybar = TMath::Mean(4, &(m_MDM->Xpos)[0]);
+		double SStot = 0, SSres = 0;
+	
+		for(int i=0; i< 4; ++i) {
+			SStot += pow(m_MDM->Xpos[i] - ybar,   2);
+			SSres += pow(m_MDM->Xpos[i] - m_WireX[i], 2);
+		}
+
+		double r2 = 1 - (SSres/SStot);
+		return -r2;
+	}
+
+	unsigned int NDim() const { return 2; }
+};
+
+} // namespace
+
+
+void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
+	
+	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad);
  
 	min.SetMaxFunctionCalls(10000);
 	min.SetMaxIterations(1000);
 	min.SetTolerance(0.001);
+
+	std::unique_ptr<FitFunctor> f (nullptr);
+	switch(m_FitMethod) {
+	case 1:
+		f.reset(new Chi2WireX(this));
+		break;
+	case 2:
+		f.reset(new R2WireX(this));
+		break;
+	default:
+		break;
+	}
+
+	Fit_Chi2 = 0;
+	for(int i=0; i< 4; ++i) {
+		Fit_Xpos[i] = 0;
+	}
+
+	double brho = (m_Field/tesla)*1.6; // tesla*meter
+	m_Particle->SetBrho(brho);
+	m_Particle->BrhoToEnergy(m_ParticleQ); // charge state
+	
+	Target_Ekin = m_Particle->GetEnergy()/MeV;
+	Target_Xang = -0.656*pow(Xang,2) + -0.414486*Xang; // RAD
+	Target_Yang = -3.97*Yang; // RAD
+
+	if(!f.get()) return;
+
+	double variable[3] = { Target_Xang, Target_Yang, Target_Ekin };
+	double step[3] = {0.01, 0.01, 0.01};
  
-	ROOT::Math::Functor f(&chi2_wire,3); 
-	double step[3] = {0.01,0.01,0.01};
-	double variable[3] = {0,0,515};
- 
-	min.SetFunction(f);
+	min.SetFunction(*f);
  
 	// Set the free variables to be minimized!
 	min.SetVariable(0,"thetax",variable[0],step[0]);
-	min.SetVariable(1,"thetay",variable[1],step[1]);
-	min.SetVariable(2,"ekin"  ,variable[2],step[2]);
- 
+	min.SetVariable(1,"ekin"  ,variable[2],step[2]);
+	
 	min.Minimize(); 
  
 	const double *xs = min.X();
-	Target_Xang  = xs[0];
-	Target_Yang  = xs[1];
-	Target_Ekin = xs[2];
+	Target_Xang  = xs[0]*deg; // RAD
+	Target_Ekin  = xs[1]*MeV; // MeV
+
+	for(int i=0; i< 4; ++i) {
+		Fit_Xpos[i] = f->m_WireX[i];
+	}
+	
+	Fit_Chi2 = (*f)(xs);
 }

@@ -37,6 +37,7 @@
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
 #include "NPInputParser.h"
+#include "NPNucleus.h"
 // forward declaration
 class TMDMSpectra;
 class Rayin;
@@ -71,8 +72,14 @@ public:
 	double                Target_Xang;
 	double                Target_Yang;
 	double                Target_Ekin;
+	double                Fit_Chi2;
+	double                Fit_Xpos[4];
 	
 private:
+	int m_ParticleA;
+	int m_ParticleZ;
+	int m_ParticleQ;
+	NPL::Nucleus* m_Particle;
 	double m_Angle;
 	double m_Field;
 	Rayin* m_Rayin; //!
@@ -82,6 +89,9 @@ public:
 	
 	double GetAngle() { return m_Angle; }
 	double GetField() { return m_Field; }
+	double GetParticleQ()  const { return m_ParticleQ; }
+	NPL::Nucleus* GetParticle() const { return m_Particle;  } 
+	MDMTrace* GetTrace() { return m_Trace; }
 	
   /// A usefull method to bundle all operation to add a detector
 	void AddDetector(double angle, double field, const std::string& rayin);
@@ -178,7 +188,7 @@ private:
 	double m_X_Threshold;     //!
 	double m_Y_Threshold;     //!
 
-	bool m_DoFit;
+	int m_FitMethod;
 	
   // number of detectors
 private:
