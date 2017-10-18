@@ -118,7 +118,7 @@ void TSageSpectra::FillRawSpectra(TSageData* RawData) {
     name = "Sage"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
     family = "Sage/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetE_PixelNbr(i), RawData->Get_Energy(i));
+    FillSpectra(family,name, RawData->GetE_PixelNbr(i), RawData->Get_Energy(i));
   }
 
   // Time
@@ -127,7 +127,7 @@ void TSageSpectra::FillRawSpectra(TSageData* RawData) {
     name = "Sage"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
     family = "Sage/RAW";
 
-    GetHisto(family,name) -> Fill(RawData->GetT_PixelNbr(i), RawData->Get_Time(i));
+    FillSpectra(family,name, RawData->GetT_PixelNbr(i), RawData->Get_Time(i));
   }
 }
 
@@ -142,7 +142,7 @@ void TSageSpectra::FillPreTreatedSpectra(TSageData* PreTreatedData) {
     name = "Sage"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
     family = "Sage/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetE_PixelNbr(i), PreTreatedData->Get_Energy(i));
+    FillSpectra(family,name,PreTreatedData->GetE_PixelNbr(i), PreTreatedData->Get_Energy(i));
   }
 
   // Time
@@ -151,7 +151,7 @@ void TSageSpectra::FillPreTreatedSpectra(TSageData* PreTreatedData) {
     name = "Sage"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
     family = "Sage/CAL";
 
-    GetHisto(family,name) -> Fill(PreTreatedData->GetT_PixelNbr(i), PreTreatedData->Get_Time(i));
+    FillSpectra(family,name,PreTreatedData->GetT_PixelNbr(i), PreTreatedData->Get_Time(i));
   }
 }
 
@@ -167,7 +167,7 @@ void TSageSpectra::FillPhysicsSpectra(TSagePhysics* Physics) {
   unsigned int sizeE = Physics->Energy.size();
   for(unsigned int i = 0 ; i < sizeE ; i++){
     name = "Sage_ENERGY_TIME";
-    GetHisto(family,name) -> Fill(Physics->Energy[i],Physics->Time[i]);
+    FillSpectra(family,name, Physics->Energy[i],Physics->Time[i]);
   }
 }
 

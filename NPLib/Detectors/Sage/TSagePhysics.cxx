@@ -281,14 +281,14 @@ map< string , TH1*> TSagePhysics::GetSpectra() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-vector<TCanvas*> TSagePhysics::GetCanvas() {
-  if(m_Spectra)
-    return m_Spectra->GetCanvas();
-  else{
-    vector<TCanvas*> empty;
-    return empty;
-  }
-}
+//vector<TCanvas*> TSagePhysics::GetCanvas() {
+//  if(m_Spectra)
+//    return m_Spectra->GetCanvas();
+//  else{
+//    vector<TCanvas*> empty;
+//    return empty;
+//  }
+//}
 
 
 
