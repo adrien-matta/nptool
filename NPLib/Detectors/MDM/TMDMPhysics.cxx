@@ -488,7 +488,7 @@ public:
 		for(int i=0; i< m_MDM->Xpos.size(); ++i) {
 
 			size_t iDet = m_MDM->DetectorNumber[i];
-			if(iDet > 3) { break; }
+			if(iDet > 3) { continue; }
 
 			double X = m_MDM->Xpos[i];				
 			double F = m_MDM->Fit_Xpos[iDet];
@@ -529,7 +529,7 @@ public:
 		double SStot = 0, SSres = 0;
 		for(int i=0; i< 4; ++i) {
 			size_t iDet = m_MDM->DetectorNumber[i];
-			if(iDet > 3) { break; }
+			if(iDet > 3) { continue; }
 
 			double X = m_MDM->Xpos[i];				
 			double F = m_MDM->Fit_Xpos[iDet];
