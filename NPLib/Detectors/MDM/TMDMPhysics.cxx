@@ -574,6 +574,9 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	case 2:
 		MinimizeWithXangle();
 		break;
+	case 3:
+		MinimizeUsingLightParticleAngle();
+		break;
 	default:
 		std::cerr << "Invalid fit method: " << m_FitMethod << ", defaulting to no fit...\n";
 		m_FitMethod = 0;
