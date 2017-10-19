@@ -501,7 +501,7 @@ public:
 
 		for(int i=0; i< 4; ++i) {
 		 	if(m_MDM->Xpos[i] != 0) {
-		 		double ch2 = pow(m_MDM->Xpos[i] - m_WireX[i], 2); // / pow(m_MDM->Xpos[i], 2);
+		 		double ch2 = pow(m_MDM->Xpos[i] - m_WireX[i], 2);
 				chi2 += ch2;
 			}
 		}
