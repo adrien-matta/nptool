@@ -551,55 +551,103 @@ public:
 
 
 void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
-	
-	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad);
- 
-	min.SetMaxFunctionCalls(10000);
-	min.SetMaxIterations(1000);
-	min.SetTolerance(0.001);
-
-	std::unique_ptr<FitFunctor> f (nullptr);
-	switch(m_FitMethod) {
-	case 1:
-		f.reset(new Chi2WireX(this));
-		break;
-	case 2:
-		f.reset(new R2WireX(this));
-		break;
-	default:
-		break;
-	}
-
+	// reset values
 	Fit_Chi2 = 0;
 	for(int i=0; i< 4; ++i) {
 		Fit_Xpos[i] = Fit_Ypos[i] = 0;
 	}
 	Fit_AngleX = Fit_AngleY = 0;
 
+	switch(m_FitMethod) {
+	case 0: // no fit
+		Target_Ekin = CalculateCentralEnergy();
+		Target_Ekin = CalculateCentralEnergy();
+		CalculateAnalyticAngles(Target_Xang, Target_Yang);
+		break;
+	case 1:
+		MinimizeWithXangle();
+		break;
+	case 2:
+		MinimizeWithXangle();
+		break;
+	default:
+		std::cerr << "Invalid fit method: " << m_FitMethod << ", defaulting to no fit...\n";
+		m_FitMethod = 0;
+		MinimizeTarget();
+		break;
+	}
+}
+
+// Fit both x-angle and energy to the wire spectra
+// take y-angle from "analytic" evaluation of RAYTRACE
+// correlations
+void TMDMPhysics::MinimizeWithXangle(){
+	Target_Ekin = CalculateCentralEnergy();
+	CalculateAnalyticAngles(Target_Xang, Target_Yang);
+
+	std::unique_ptr<FitFunctor> f (nullptr);
+	if(m_FitMethod == 1) {
+		f.reset(new Chi2WireX(this));
+	}
+	else if(m_FitMethod == 2) {
+		f.reset(new R2WireX(this));
+	}
+	else {
+		assert(0 && "Shouldn't get here!!!");
+	}
+
+	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
+	InitializeMinimizerWithDefaults(&min);
+	min.SetFunction(*f);
+	// Set the free variables to be minimized!
+	min.SetVariable(0,"thetax",Target_Xang, 0.01 /*step*/);
+	min.SetVariable(1,"ekin"  ,Target_Ekin, 0.01 /*step*/);
+	min.Minimize();
+
+	Target_Xang = min.X()[0] * deg; // rad
+	Target_Ekin = min.X()[1] * MeV; // MeV
+	Fit_Chi2 = f->operator()(min.X());
+}
+
+// Fit only the energy to the wire spectra
+// Take angle from the LIGHT particle and reaction
+// kinematics
+void TMDMPhysics::MinimizeUsingLightParticleAngle(){
+	Target_Ekin = CalculateCentralEnergy();
+	// Target_Xang =
+	// Target_Yang =
+
+	R2WireX f(this);
+	
+	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
+	InitializeMinimizerWithDefaults(&min);
+	min.SetFunction(f);
+	// Set the free variables to be minimized!
+	min.SetVariable(0,"ekin"  ,Target_Ekin, 0.01 /*step*/);
+	min.Minimize();
+
+	Target_Ekin = min.X()[0] * MeV; // MeV
+	Fit_Chi2 = f(min.X());
+}
+
+void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min){
+	min->SetMaxFunctionCalls(10000);
+	min->SetMaxIterations(1000);
+	min->SetTolerance(0.001);
+}
+
+
+double TMDMPhysics::CalculateCentralEnergy(){
 	double brho = (m_Field/tesla)*1.6; // tesla*meter
 	m_Particle->SetBrho(brho);
 	m_Particle->BrhoToEnergy(m_ParticleQ); // charge state
-	
-	Target_Ekin = m_Particle->GetEnergy()/MeV;
-	Target_Xang = -0.656*pow(Xang,2) + -0.414486*Xang; // RAD
-	Target_Yang = -3.97*Yang; // RAD
+	return m_Particle->GetEnergy()/MeV;
+}
 
-	if(!f.get()) return;
-
-	double variable[3] = { Target_Xang, Target_Yang, Target_Ekin };
-	double step[3] = {0.01, 0.01, 0.01};
- 
-	min.SetFunction(*f);
- 
-	// Set the free variables to be minimized!
-	min.SetVariable(0,"thetax",variable[0],step[0]);
-	min.SetVariable(1,"ekin"  ,variable[2],step[2]);
-	
-	min.Minimize(); 
- 
-	const double *xs = min.X();
-	Target_Xang  = xs[0]*deg; // RAD
-	Target_Ekin  = xs[1]*MeV; // MeV
-
-	Fit_Chi2 = (*f)(xs);
+void TMDMPhysics::CalculateAnalyticAngles(double& tx, double& ty){
+	// n.b. not sure if this is universal!!
+	// Taken from simulation of 14C(a,4n)14O @560 MeV
+	// detecting 14O in MDM
+	tx = -0.656*pow(Xang,2) + -0.414486*Xang; // RAD
+	ty = -3.97*Yang; // RAD
 }

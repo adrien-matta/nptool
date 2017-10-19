@@ -43,7 +43,7 @@
 
 // forward declaration
 class TMDMSpectra;
-
+namespace ROOT { namespace Math { class Minimizer; } }
 
 class TMDMPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
@@ -178,7 +178,14 @@ public:
 	// send ray through MDM using RAYTRACE
 	// UNITS: deg, MeV
 	void SendRay(double thetaX, double thetaY, double Ekin) const;
-    
+
+//	Minimization options & helpers
+	double CalculateCentralEnergy();
+	void   CalculateAnalyticAngles(double& tx, double& ty);
+	void   InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min);
+	void   MinimizeWithXangle();
+	void   MinimizeUsingLightParticleAngle();
+	
   // objects are not written in the TTree
 private:
 	TMDMData*         m_EventData;        //!
