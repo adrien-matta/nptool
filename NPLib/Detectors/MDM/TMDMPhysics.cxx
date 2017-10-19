@@ -629,8 +629,8 @@ void TMDMPhysics::MinimizeUsingLightParticleAngle(){
 		Target_Xang = 0;
 		Target_Yang = 0;
 	} else {
-		std::unique_ptr<TGraph> kin (m_Reaction->GetTheta3VsTheta4);
-		double ThetaHeavy = kin.Eval(m_Light_ThetaLab);
+		std::unique_ptr<TGraph> kin (m_Reaction->GetTheta3VsTheta4());
+		double ThetaHeavy = kin->Eval(m_Light_ThetaLab);
 		double PhiHeavy = m_Light_PhiLab - 180;
 		if(m_Light_PhiLab < 0) { PhiHeavy += 360; }
 
