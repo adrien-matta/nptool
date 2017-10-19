@@ -156,7 +156,9 @@ void Analysis::Init(){
 	Micro1_E_row1_2 = 0; // Energy from micromega rows 1 & 2 ("delta E in stopping mode")
 	Micro2_E_row1_2 = 0; // Energy from micromega rows 1-2  ("E in stopping mode")
   Micro1_E_row1 = 0 ;// Energy from micromega row 1
-  Micro1_E_col4 = 0 ;// energy from micromega col 4
+//by Shuya 170912
+  //Micro1_E_col4 = 0 ;// energy from micromega col 4
+  Micro1_E_col4_sum = 0 ;// energy from micromega col 4
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -166,19 +168,35 @@ void Analysis::Init(){
 	Aw_ThetaFit = -1000;
 	Aw_ThetaFit_R2 = -1000;
 //by Shuya 170516
-  Micro1_E_col1 = 0. ;// energy from micromega col 1
-  Micro1_E_col2 = 0. ;// energy from micromega col 2
-  Micro1_E_col3 = 0. ;// energy from micromega col 3
-  Micro1_E_col5 = 0. ;// energy from micromega col 5
-  Micro1_E_col6 = 0. ;// energy from micromega col 6
-  Micro1_E_col7 = 0. ;// energy from micromega col 7
-  Micro2_E_col1 = 0. ;// energy from micromega2 col 1
-  Micro2_E_col2 = 0. ;// energy from micromega2 col 2
-  Micro2_E_col3 = 0. ;// energy from micromega2 col 3
-  Micro2_E_col4 = 0. ;// energy from micromega2 col 3
-  Micro2_E_col5 = 0. ;// energy from micromega2 col 5
-  Micro2_E_col6 = 0. ;// energy from micromega2 col 6
-  Micro2_E_col7 = 0. ;// energy from micromega2 col 7
+//by Shuya 170912
+  Micro1_E_col1_sum = 0. ;// energy from micromega col 1
+  Micro1_E_col2_sum = 0. ;// energy from micromega col 2
+  Micro1_E_col3_sum = 0. ;// energy from micromega col 3
+  Micro1_E_col5_sum = 0. ;// energy from micromega col 5
+  Micro1_E_col6_sum = 0. ;// energy from micromega col 6
+  Micro1_E_col7_sum = 0. ;// energy from micromega col 7
+  Micro2_E_col1_sum = 0. ;// energy from micromega2 col 1
+  Micro2_E_col2_sum = 0. ;// energy from micromega2 col 2
+  Micro2_E_col3_sum = 0. ;// energy from micromega2 col 3
+  Micro2_E_col4_sum = 0. ;// energy from micromega2 col 3
+  Micro2_E_col5_sum = 0. ;// energy from micromega2 col 5
+  Micro2_E_col6_sum = 0. ;// energy from micromega2 col 6
+  Micro2_E_col7_sum = 0. ;// energy from micromega2 col 7
+//by Shuya 170912
+  Micro1_E_col1_mult = 0. ;// energy from micromega col 1
+  Micro1_E_col2_mult = 0. ;// energy from micromega col 2
+  Micro1_E_col3_mult = 0. ;// energy from micromega col 3
+  Micro1_E_col4_mult = 0. ;// energy from micromega col 3
+  Micro1_E_col5_mult = 0. ;// energy from micromega col 5
+  Micro1_E_col6_mult = 0. ;// energy from micromega col 6
+  Micro1_E_col7_mult = 0. ;// energy from micromega col 7
+  Micro2_E_col1_mult = 0. ;// energy from micromega2 col 1
+  Micro2_E_col2_mult = 0. ;// energy from micromega2 col 2
+  Micro2_E_col3_mult = 0. ;// energy from micromega2 col 3
+  Micro2_E_col4_mult = 0. ;// energy from micromega2 col 3
+  Micro2_E_col5_mult = 0. ;// energy from micromega2 col 5
+  Micro2_E_col6_mult = 0. ;// energy from micromega2 col 6
+  Micro2_E_col7_mult = 0. ;// energy from micromega2 col 7
 
   //TAC
   TacSiGeOR     = -1000;
@@ -210,14 +228,17 @@ void Analysis::TreatEvent(){
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      //TVector3 BeamImpact(XTarget,YTarget,0);
-	//by Shuya 170807 (from 22Ne(d,d))
-      TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
+      TVector3 BeamImpact(XTarget,YTarget,0);
+
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
       ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on Hyball
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
+
+	//by Shuya 171019
+      PhiLab = HitDirection.Phi();
+      PhiLab = PhiLab/(TMath::Pi())*180.0;
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -262,9 +283,8 @@ void Analysis::TreatEvent(){
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      //TVector3 BeamImpact(XTarget,YTarget,0);
-	//by Shuya 170807 (from 22Ne(d,d))
-      TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
+      TVector3 BeamImpact(XTarget,YTarget,0);
+
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
       //Angle of emission wrt to beam
       ThetaLab = HitDirection.Angle( BeamDirection );
@@ -274,6 +294,10 @@ void Analysis::TreatEvent(){
       int det = TB->Detector_N[countTiaraBarrel];
       NormalOnBarrel.RotateZ((3-det)*45*deg);
       ThetaTBSurface = HitDirection.Angle(NormalOnBarrel);
+
+	//by Shuya 171019
+      PhiLab = HitDirection.Phi();
+      PhiLab = PhiLab/(TMath::Pi())*180.0;
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -348,7 +372,8 @@ void Analysis::TreatEvent(){
 	if(TF->MicroRowNumber.size())
 	{
 		Micro1_E_row1 = TF->GetMicroGroupEnergy(1,1,1,1,7); // energy sum from the row 1
-		Micro1_E_col4 = TF->GetMicroGroupEnergy(1,1,4,4,4); // energy sum from the col 4
+		//by Shuya 170912
+		Micro1_E_col4_sum = TF->GetMicroGroupEnergy(1,1,4,4,4); // energy sum from the col 4
 		//by Shuya 170516. Since Micro2_E is dE detector, we always expect the particles penetrate through the whole rows. That is why you should use GetMicroRowGeomEnergy() instead of GetMicroGroupEnergy().
 		//Micro2_E      = TF->GetMicroGroupEnergy(2,1,4,1,7); // energy sum from all the pads
 		Micro2_E      = TF->GetMicroRowGeomEnergy(2,1,4,0); // energy sum from all the pads
@@ -356,42 +381,76 @@ void Analysis::TreatEvent(){
 		Micro2_E_row1_2 = TF->GetMicroGroupEnergy(2,1,2,1,7); // energy sum from row 3-6
 
 		//by Shuya 170516. For Micro1's energy sum, you need to choose which of GetMicroGroupEnergy() and GetMicroRowGeomEnergy(). If you're using the particles penetrate the Micro1, better to use GetMicroRowGeomEnergy().
-		Micro1_E_col1 = TF->GetMicroGroupEnergy(1,1,4,1,1); // energy sum from the col 1
-		Micro1_E_col2 = TF->GetMicroGroupEnergy(1,1,4,2,2); // energy sum from the col 2
-		Micro1_E_col3 = TF->GetMicroGroupEnergy(1,1,4,3,3); // energy sum from the col 3
-		Micro1_E_col5 = TF->GetMicroGroupEnergy(1,1,4,5,5); // energy sum from the col 5
-		Micro1_E_col6 = TF->GetMicroGroupEnergy(1,1,4,6,6); // energy sum from the col 6
-		Micro1_E_col7 = TF->GetMicroGroupEnergy(1,1,4,7,7); // energy sum from the col 7
+		//by Shuya 170912
+		Micro1_E_col1_sum = TF->GetMicroGroupEnergy(1,1,4,1,1); // energy sum from the col 1
+		Micro1_E_col2_sum = TF->GetMicroGroupEnergy(1,1,4,2,2); // energy sum from the col 2
+		Micro1_E_col3_sum = TF->GetMicroGroupEnergy(1,1,4,3,3); // energy sum from the col 3
+		Micro1_E_col5_sum = TF->GetMicroGroupEnergy(1,1,4,5,5); // energy sum from the col 5
+		Micro1_E_col6_sum = TF->GetMicroGroupEnergy(1,1,4,6,6); // energy sum from the col 6
+		Micro1_E_col7_sum = TF->GetMicroGroupEnergy(1,1,4,7,7); // energy sum from the col 7
+		Micro2_E_col1_mult      = TF->GetMicroRowGeomEnergy(2,1,4,1); // energy sum from the col1.
+		Micro2_E_col2_mult      = TF->GetMicroRowGeomEnergy(2,1,4,2); // energy sum from the col2.
+		Micro2_E_col3_mult      = TF->GetMicroRowGeomEnergy(2,1,4,3); // energy sum from the col3.
+		Micro2_E_col4_mult      = TF->GetMicroRowGeomEnergy(2,1,4,4); // energy sum from the col4.
+		Micro2_E_col5_mult      = TF->GetMicroRowGeomEnergy(2,1,4,5); // energy sum from the col5.
+		Micro2_E_col6_mult      = TF->GetMicroRowGeomEnergy(2,1,4,6); // energy sum from the col6.
+		Micro2_E_col7_mult      = TF->GetMicroRowGeomEnergy(2,1,4,7); // energy sum from the col7.
 
-		Micro2_E_col1      = TF->GetMicroRowGeomEnergy(2,1,4,1); // energy sum from the col1.
-		Micro2_E_col2      = TF->GetMicroRowGeomEnergy(2,1,4,2); // energy sum from the col2.
-		Micro2_E_col3      = TF->GetMicroRowGeomEnergy(2,1,4,3); // energy sum from the col3.
-		Micro2_E_col4      = TF->GetMicroRowGeomEnergy(2,1,4,4); // energy sum from the col4.
-		Micro2_E_col5      = TF->GetMicroRowGeomEnergy(2,1,4,5); // energy sum from the col5.
-		Micro2_E_col6      = TF->GetMicroRowGeomEnergy(2,1,4,6); // energy sum from the col6.
-		Micro2_E_col7      = TF->GetMicroRowGeomEnergy(2,1,4,7); // energy sum from the col7.
+		//by Shuya 170912
+		Micro1_E_col1_mult      = TF->GetMicroRowGeomEnergy(1,1,4,1); // energy sum from the col1.
+		Micro1_E_col2_mult      = TF->GetMicroRowGeomEnergy(1,1,4,2); // energy sum from the col2.
+		Micro1_E_col3_mult      = TF->GetMicroRowGeomEnergy(1,1,4,3); // energy sum from the col3.
+		Micro1_E_col4_mult      = TF->GetMicroRowGeomEnergy(1,1,4,4); // energy sum from the col4.
+		Micro1_E_col5_mult      = TF->GetMicroRowGeomEnergy(1,1,4,5); // energy sum from the col5.
+		Micro1_E_col6_mult      = TF->GetMicroRowGeomEnergy(1,1,4,6); // energy sum from the col6.
+		Micro1_E_col7_mult      = TF->GetMicroRowGeomEnergy(1,1,4,7); // energy sum from the col7.
+		Micro2_E_col1_sum = TF->GetMicroGroupEnergy(2,1,4,1,1); // energy sum from the col 1
+		Micro2_E_col2_sum = TF->GetMicroGroupEnergy(2,1,4,2,2); // energy sum from the col 2
+		Micro2_E_col3_sum = TF->GetMicroGroupEnergy(2,1,4,3,3); // energy sum from the col 3
+		Micro2_E_col4_sum = TF->GetMicroGroupEnergy(2,1,4,4,4); // energy sum from the col 3
+		Micro2_E_col5_sum = TF->GetMicroGroupEnergy(2,1,4,5,5); // energy sum from the col 5
+		Micro2_E_col6_sum = TF->GetMicroGroupEnergy(2,1,4,6,6); // energy sum from the col 6
+		Micro2_E_col7_sum = TF->GetMicroGroupEnergy(2,1,4,7,7); // energy sum from the col 7
 	}
 	else
 	{
 		Micro1_E_row1 = -1000;
-		Micro1_E_col4 = -1000;
+		//by Shuya 170912
+		Micro1_E_col4_sum = -1000;
 		Micro1_E_row1_2 = -1000;
 		Micro2_E_row1_2 = -1000;
 		Micro2_E      = -1000;
 		//by Shuya 170516
-		Micro1_E_col1 = -1000;
-		Micro1_E_col2 = -1000;
-		Micro1_E_col3 = -1000;
-		Micro1_E_col5 = -1000;
-		Micro1_E_col6 = -1000;
-		Micro1_E_col7 = -1000;
-		Micro2_E_col1 = -1000;
-		Micro2_E_col2 = -1000;
-		Micro2_E_col3 = -1000;
-		Micro2_E_col4 = -1000;
-		Micro2_E_col5 = -1000;
-		Micro2_E_col6 = -1000;
-		Micro2_E_col7 = -1000;
+		//by Shuya 170912
+		Micro1_E_col1_sum = -1000;
+		Micro1_E_col2_sum = -1000;
+		Micro1_E_col3_sum = -1000;
+		Micro1_E_col5_sum = -1000;
+		Micro1_E_col6_sum = -1000;
+		Micro1_E_col7_sum = -1000;
+		Micro2_E_col1_sum = -1000;
+		Micro2_E_col2_sum = -1000;
+		Micro2_E_col3_sum = -1000;
+		Micro2_E_col4_sum = -1000;
+		Micro2_E_col5_sum = -1000;
+		Micro2_E_col6_sum = -1000;
+		Micro2_E_col7_sum = -1000;
+
+		//by Shuya 170912
+		Micro1_E_col1_mult = -1000;
+		Micro1_E_col2_mult = -1000;
+		Micro1_E_col3_mult = -1000;
+		Micro1_E_col4_mult = -1000;
+		Micro1_E_col5_mult = -1000;
+		Micro1_E_col6_mult = -1000;
+		Micro1_E_col7_mult = -1000;
+		Micro2_E_col1_mult = -1000;
+		Micro2_E_col2_mult = -1000;
+		Micro2_E_col3_mult = -1000;
+		Micro2_E_col4_mult = -1000;
+		Micro2_E_col5_mult = -1000;
+		Micro2_E_col6_mult = -1000;
+		Micro2_E_col7_mult = -1000;
 	}
 
 	// Delta E ion chamber
@@ -423,9 +482,10 @@ void Analysis::TreatEvent(){
 	for(int i=0; i< kNumAw; ++i) {
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
-			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
-			Aw_ThetaFit_R2 = TF->AWireFitR2;
+ 			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
+ 			Aw_ThetaFit_R2 = TF->AWireFitR2;
 			break;
+
 		}
 	}
 
@@ -440,11 +500,16 @@ void Analysis::TreatEvent(){
 		TacSiMicro = TF->MicroTimeOR[0];
 
 		for(UInt_t ti = 0; ti< TF->MicroTimeOR.size(); ++ti) {
+			//by Shuya 170905 - uncomment the second one and comment out the first one if you want to have a MicroMegas_dE Timing data in an appropriate Tree (not PlastLeftTime). 
+			//Note with this, you can't get timing data in neither TacSiMicro_dE or TacSiMicro_E. Only TacSiMicro take the data equivalent to TacSiMicro_E, and TacSiMicro_dE goes to PlastLeftTime due to the setting in t40.txt configuration file.
 			switch(TF->MicroTimeRowNumber[ti]) {
+			//switch(TF->MicroTimeDetNumber[ti]) {
 			case 0:
+			//case 2:
 				TacSiMicro_dE = TF->MicroTimeOR[ti];
 				break;
 			case 5:
+			//case 1:
 				TacSiMicro_E  = TF->MicroTimeOR[ti];
 				break;
 			default:
@@ -453,6 +518,10 @@ void Analysis::TreatEvent(){
 		}
 	}
 
+//by Shuya 170912
+  if(TacSiMicro_dE<-1000 || TacSiMicro_dE>5000.0)	TacSiMicro_dE=-500.0;
+  if(TacSiMicro_E<-1000 || TacSiMicro_E>5000.0)	TacSiMicro_E=-500.0;
+
   // For the plastic there's two ways to calculate the times, both ar OR.
   // The two available time channels i.e. Plast Right and Plast left are used in this case
   if(TF->PlastRightTime.size()==1)
@@ -460,10 +529,16 @@ void Analysis::TreatEvent(){
   else
     TacSiPlastRight = -999;
 
+//by Shuya 170906
+  if(TacSiPlastRight<-999.0 || TacSiPlastRight>5000.0)	TacSiPlastRight=-500.0;
+
   if(TF->PlastLeftTime.size()==1)
       TacSiPlastLeft = TF->PlastLeftTime[0];
   else
     TacSiPlastLeft = -999;
+
+//by Shuya 170906
+  if(TacSiPlastLeft<-999.0 || TacSiPlastLeft>5000.0)	TacSiPlastLeft=-500.0;
 
 
 	if(TG->GeTime.size()==1)
@@ -501,6 +576,8 @@ void Analysis::ReInitValue(){
 //by Shuya 170703
   Ex_Hyball = -1000 ;
   Ex_Barrel = -1000 ;
+//by Shuya 171019
+  PhiLab = -1000;
 
   //Simu
   //Original_ELab = -1000;
@@ -509,25 +586,43 @@ void Analysis::ReInitValue(){
   //FPD
   Delta_E      = -1000;
   Micro1_E_row1 = -1000;
-  Micro1_E_col4 = -1000;
+//by Shuya 170912
+  Micro1_E_col4_sum = -1000;
  	Micro1_E_row1_2 = -1000;
 	Micro2_E_row1_2 = -1000;
 	Micro2_E      = -1000;
   Plast_E      = -1000;
 //by Shuya 170516
-  Micro1_E_col1 = -1000;
-  Micro1_E_col2 = -1000;
-  Micro1_E_col3 = -1000;
-  Micro1_E_col5 = -1000;
-  Micro1_E_col6 = -1000;
-  Micro1_E_col7 = -1000;
-  Micro2_E_col1 = -1000;
-  Micro2_E_col2 = -1000;
-  Micro2_E_col3 = -1000;
-  Micro2_E_col4 = -1000;
-  Micro2_E_col5 = -1000;
-  Micro2_E_col6 = -1000;
-  Micro2_E_col7 = -1000;
+//by Shuya 170912
+  Micro1_E_col1_sum = -1000;
+  Micro1_E_col2_sum = -1000;
+  Micro1_E_col3_sum = -1000;
+  Micro1_E_col5_sum = -1000;
+  Micro1_E_col6_sum = -1000;
+  Micro1_E_col7_sum = -1000;
+  Micro2_E_col1_sum = -1000;
+  Micro2_E_col2_sum = -1000;
+  Micro2_E_col3_sum = -1000;
+  Micro2_E_col4_sum = -1000;
+  Micro2_E_col5_sum = -1000;
+  Micro2_E_col6_sum = -1000;
+  Micro2_E_col7_sum = -1000;
+
+  Micro1_E_col1_mult = -1000;
+  Micro1_E_col2_mult = -1000;
+  Micro1_E_col3_mult = -1000;
+  Micro1_E_col4_mult = -1000;
+  Micro1_E_col5_mult = -1000;
+  Micro1_E_col6_mult = -1000;
+  Micro1_E_col7_mult = -1000;
+  Micro2_E_col1_mult = -1000;
+  Micro2_E_col2_mult = -1000;
+  Micro2_E_col3_mult = -1000;
+  Micro2_E_col4_mult = -1000;
+  Micro2_E_col5_mult = -1000;
+  Micro2_E_col6_mult = -1000;
+  Micro2_E_col7_mult = -1000;
+
 
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -562,6 +657,9 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
+//by Shuya 171019
+  RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
+
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixZ",&TiaraIMZ,"TiaraImpactMatrixZ/D");
@@ -574,7 +672,6 @@ void Analysis::InitOutputBranch() {
   //FPD
   RootOutput::getInstance()->GetTree()->Branch("Delta_E",&Delta_E,"Delta_E/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro1_E_row1",&Micro1_E_row1,"Micro1_E_row1/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col4",&Micro1_E_col4,"Micro1_E_col4/D");
 	RootOutput::getInstance()->GetTree()->Branch("Micro1_E_row1_2", &Micro1_E_row1_2, "Micro1_E_row1_2/D");
 	RootOutput::getInstance()->GetTree()->Branch("Micro2_E_row1_2", &Micro2_E_row1_2, "Micro2_E_row1_2/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E",&Micro2_E,"Micro2_E/D");
@@ -585,32 +682,54 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit",&Aw_ThetaFit,"Aw_ThetaFit/D");
   RootOutput::getInstance()->GetTree()->Branch("Aw_ThetaFit_R2",&Aw_ThetaFit_R2,"Aw_ThetaFit_R2/D");
   //by Shuya 170516
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col1",&Micro1_E_col1,"Micro1_E_col1/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col2",&Micro1_E_col2,"Micro1_E_col2/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col3",&Micro1_E_col3,"Micro1_E_col3/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col5",&Micro1_E_col5,"Micro1_E_col5/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col6",&Micro1_E_col6,"Micro1_E_col6/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col7",&Micro1_E_col7,"Micro1_E_col7/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col1",&Micro2_E_col1,"Micro2_E_col1/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col2",&Micro2_E_col2,"Micro2_E_col2/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col3",&Micro2_E_col3,"Micro2_E_col3/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col4",&Micro2_E_col4,"Micro2_E_col4/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5",&Micro2_E_col5,"Micro2_E_col5/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6",&Micro2_E_col6,"Micro2_E_col6/D");
-  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7",&Micro2_E_col7,"Micro2_E_col7/D");
+//by Shuya 170912
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col1_sum",&Micro1_E_col1_sum,"Micro1_E_col1_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col2_sum",&Micro1_E_col2_sum,"Micro1_E_col2_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col3_sum",&Micro1_E_col3_sum,"Micro1_E_col3_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col4_sum",&Micro1_E_col4_sum,"Micro1_E_col4_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col5_sum",&Micro1_E_col5_sum,"Micro1_E_col5_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col6_sum",&Micro1_E_col6_sum,"Micro1_E_col6_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col7_sum",&Micro1_E_col7_sum,"Micro1_E_col7_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col1_sum",&Micro2_E_col1_sum,"Micro2_E_col1_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col2_sum",&Micro2_E_col2_sum,"Micro2_E_col2_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col3_sum",&Micro2_E_col3_sum,"Micro2_E_col3_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col4_sum",&Micro2_E_col4_sum,"Micro2_E_col4_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5_sum",&Micro2_E_col5_sum,"Micro2_E_col5_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6_sum",&Micro2_E_col6_sum,"Micro2_E_col6_sum/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7_sum",&Micro2_E_col7_sum,"Micro2_E_col7_sum/D");
+
+  //by Shuya 170912
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col1_mult",&Micro1_E_col1_mult,"Micro1_E_col1_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col2_mult",&Micro1_E_col2_mult,"Micro1_E_col2_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col3_mult",&Micro1_E_col3_mult,"Micro1_E_col3_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col4_mult",&Micro1_E_col4_mult,"Micro1_E_col4_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col5_mult",&Micro1_E_col5_mult,"Micro1_E_col5_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col6_mult",&Micro1_E_col6_mult,"Micro1_E_col6_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro1_E_col7_mult",&Micro1_E_col7_mult,"Micro1_E_col7_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col1_mult",&Micro2_E_col1_mult,"Micro2_E_col1_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col2_mult",&Micro2_E_col2_mult,"Micro2_E_col2_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col3_mult",&Micro2_E_col3_mult,"Micro2_E_col3_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col4_mult",&Micro2_E_col4_mult,"Micro2_E_col4_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5_mult",&Micro2_E_col5_mult,"Micro2_E_col5_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6_mult",&Micro2_E_col6_mult,"Micro2_E_col6_mult/D");
+  RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7_mult",&Micro2_E_col7_mult,"Micro2_E_col7_mult/D");
 
 //TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro",&TacSiMicro,"TacSiMicro/D");
+
+
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_E",&TacSiMicro_E,"TacSiMicro_E/D");
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
-	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",& TacSiPlastLeft," TacSiPlastLeft/D");
-  RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",& TacSiPlastRight," TacSiPlastRight/D");
+
+	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",&TacSiPlastLeft,"TacSiPlastLeft/D");
+  	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",&TacSiPlastRight,"TacSiPlastRight/D");
+
 
 // Other
-	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber," RunNumber/I");
+	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber,"RunNumber/I");
 // by Shuya 170524.
-	RootOutput::getInstance()->GetTree()->Branch("EntryNumber", &EntryNumber," EntryNumber/I");
+	RootOutput::getInstance()->GetTree()->Branch("EntryNumber", &EntryNumber,"EntryNumber/I");
 
   //Simulation
   //RootOutput::getInstance()->GetTree()->Branch("Original_ELab",&Original_ELab,"Original_ELab/D");
