@@ -38,6 +38,7 @@
 #include "NPVDetector.h"
 #include "NPInputParser.h"
 #include "NPNucleus.h"
+#include "NPReaction.h"
 // MDM Trace
 #include "MDMTrace.h"
 
@@ -80,15 +81,20 @@ public:
 	mutable double        Fit_AngleY;
 	
 private:
-	int m_ParticleA;
-	int m_ParticleZ;
-	int m_ParticleQ;
-	NPL::Nucleus* m_Particle;
-	double m_Angle;
-	double m_Field;
+	int m_ParticleA; //!
+	int m_ParticleZ; //!
+	int m_ParticleQ; //!
+	NPL::Nucleus* m_Particle; //!
+	double m_Angle; //!
+	double m_Field; //!
 	MDMTrace::Rayin* m_Rayin; //!
 	MDMTrace* m_Trace; //!
 
+	// reaction / light particle stuff
+	double m_Light_ThetaLab;   //!
+	double m_Light_PhiLab;     //!
+	NPL::Reaction* m_Reaction; //!
+	
 public:
 	
 	double GetAngle() { return m_Angle; }
@@ -96,6 +102,10 @@ public:
 	double GetParticleQ()  const { return m_ParticleQ; }
 	NPL::Nucleus* GetParticle() const { return m_Particle;  } 
 	MDMTrace* GetTrace() { return m_Trace; }
+	NPL::Reaction* GetReaction() const { return m_Reaction; }
+	void SetReaction(NPL::Reaction* r) {m_Reaction=r;}
+	void SetLightParticleAngles(double theta,double phi)
+		{ m_Light_ThetaLab=theta; m_Light_PhiLab=phi; }
 	
   /// A usefull method to bundle all operation to add a detector
 	void AddDetector(double angle, double field, const std::string& rayin);

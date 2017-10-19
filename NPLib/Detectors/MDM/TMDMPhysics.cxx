@@ -41,6 +41,8 @@ using namespace std;
 #include "TF1.h"
 #include "TMath.h"
 #include "TChain.h"
+#include "TGraph.h"
+#include "TVector3.h"
 
 
 ClassImp(TMDMPhysics)
@@ -68,6 +70,8 @@ TMDMPhysics::TMDMPhysics()
 	m_ParticleZ = 0;
 	m_ParticleQ = 0;
 	m_Particle = 0;
+	m_Reaction = 0;
+	SetLightParticleAngles(0,0);
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -614,9 +618,30 @@ void TMDMPhysics::MinimizeWithXangle(){
 // kinematics
 void TMDMPhysics::MinimizeUsingLightParticleAngle(){
 	Target_Ekin = CalculateCentralEnergy();
-	// Target_Xang =
-	// Target_Yang =
+	if(m_Reaction == 0) {
+		static bool warn = true;
+		if(warn) {
+			warn = false;
+			std::cerr << "WARNING in TMDMPhysics::MinimizeUsingLightParticleAngle() :: " <<
+				"m_Reaction not set, defaulting to ZERO angle for Theta_X and Theta_Y at " <<
+				"the target...\n";
+		}
+		Target_Xang = 0;
+		Target_Yang = 0;
+	} else {
+		std::unique_ptr<TGraph> kin (m_Reaction->GetTheta3VsTheta4);
+		double ThetaHeavy = kin.Eval(m_Light_ThetaLab);
+		double PhiHeavy = m_Light_PhiLab - 180;
+		if(m_Light_PhiLab < 0) { PhiHeavy += 360; }
 
+		TVector3 v(sin(ThetaHeavy*deg)*cos(PhiHeavy*deg), 
+							 sin(ThetaHeavy*deg)*sin(PhiHeavy*deg), 
+							 cos(PhiHeavy*deg));
+
+		Target_Xang = atan(v.X()/v.Z())/deg;
+		Target_Yang = atan(v.Y()/v.Z())/deg;
+	}
+	
 	R2WireX f(this);
 	
 	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
@@ -635,7 +660,6 @@ void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min){
 	min->SetMaxIterations(1000);
 	min->SetTolerance(0.001);
 }
-
 
 double TMDMPhysics::CalculateCentralEnergy(){
 	double brho = (m_Field/tesla)*1.6; // tesla*meter
