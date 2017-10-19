@@ -396,6 +396,24 @@ void TMDMPhysics::InitializeRootOutput() {
 }
 
 
+///////////////////////////////////////////////////////////////////////////
+void TMDMPhysics::SendRay(double thetaX,double thetaY,double Ekin) const {
+  // send ray through mdm and read wires x, y, and theta_x, theta_y
+	// n.b. const due to requirements of ROOT::Math::IMultiGenFinction
+	// but it needs to change internal variables (Fit_***), so these are
+	// made muitable in their definition
+	//
+	m_Trace->SetScatteredMass(GetParticle()->Mass()/amu_c2);
+	m_Trace->SetScatteredCharge(GetParticleQ());
+	m_Trace->SetScatteredAngle(thetaX, thetaY); // deg
+	m_Trace->SetScatteredEnergy(Ekin);
+			
+	m_Trace->SendRay();
+	m_Trace->
+		GetOxfordWirePositions(Fit_AngleX,Fit_Xpos[0],Fit_Xpos[1],Fit_Xpos[2],Fit_Xpos[3],
+													 Fit_AngleY,Fit_Ypos[0],Fit_Ypos[1],Fit_Ypos[2],Fit_Ypos[3]);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
@@ -436,52 +454,20 @@ class FitFunctor : public ROOT::Math::IMultiGenFunction {
 protected:
 	FitFunctor(const TMDMPhysics* mdm):
 		m_MDM(mdm){
-		m_Mass   = m_MDM->GetParticle()->Mass()/amu_c2;
-		m_Charge = m_MDM->GetParticleQ();
-			
-			for(int i=0; i< 4; ++i) {
-				m_WireX[i] = m_WireY[i] = m_WireAngleX = m_WireAngleY = 1e10;
-			}
-		}
-
-	// send ray through mdm
-	void SendRay(double thetaX,double thetaY,double Ekin) const{
-			MDMTrace::Instance()->SetScatteredCharge(m_Charge);
-			MDMTrace::Instance()->SetScatteredMass(m_Mass);
-			MDMTrace::Instance()->SetScatteredAngle(thetaX, thetaY); // deg
-			MDMTrace::Instance()->SetScatteredEnergy(Ekin);
-			
-			MDMTrace::Instance()->SendRay();
-			MDMTrace::Instance()->
-				GetOxfordWirePositions(m_WireAngleX,m_WireX[0],m_WireX[1],m_WireX[2],m_WireX[3],
-															 m_WireAngleY,m_WireY[0],m_WireY[1],m_WireY[2],m_WireY[3]);
-		}
+	}
 
 	ROOT::Math::IMultiGenFunction*	Clone() const{
 		FitFunctor* out = new FitFunctor(m_MDM);
-		for(int i=0; i< 4; ++i){
-			out->m_WireX[i] = m_WireX[i];
-			out->m_WireY[i] = m_WireY[i];
-		}
-		out->m_WireAngleX = m_WireAngleX;
-		out->m_WireAngleY = m_WireAngleY;
-
 		return out;
 	}
 	
 	// overload w/ specific fit function
 	virtual unsigned int NDim() const { return 0; }
+
 private:
 	virtual double DoEval (const double*) const { return 0; }
 
 public:
-	mutable double m_WireX[4];
-	mutable double m_WireY[4];
-	mutable double m_WireAngleX;
-	mutable double m_WireAngleY;
-
-	double m_Charge;
-	double m_Mass;
 	const TMDMPhysics* m_MDM;
 };
 
@@ -493,7 +479,7 @@ public:
 	double DoEval (const double* p) const{
 		double thetaX = p[0]; // deg
 		double Ekin   = p[1]; // MeV
-		SendRay(thetaX,m_MDM->Yang/deg,Ekin);
+		m_MDM->SendRay(thetaX,m_MDM->Yang/deg,Ekin);
 
 		// calculate Chi2
 		double chi2 = 0;
@@ -501,7 +487,7 @@ public:
 
 		for(int i=0; i< 4; ++i) {
 		 	if(m_MDM->Xpos[i] != 0) {
-		 		double ch2 = pow(m_MDM->Xpos[i] - m_WireX[i], 2);
+		 		double ch2 = pow(m_MDM->Xpos[i] - m_MDM->Fit_Xpos[i], 2);
 				chi2 += ch2;
 			}
 		}
@@ -520,7 +506,7 @@ public:
 	double DoEval (const double* p) const{
 		double thetaX = p[0]; // deg
 		double Ekin   = p[1]; // MeV
-		SendRay(thetaX,0,Ekin);
+		m_MDM->SendRay(thetaX,0,Ekin);
 
 		// calculate R2
 		double ybar = TMath::Mean(4, &(m_MDM->Xpos)[0]);
@@ -528,7 +514,7 @@ public:
 	
 		for(int i=0; i< 4; ++i) {
 			SStot += pow(m_MDM->Xpos[i] - ybar,   2);
-			SSres += pow(m_MDM->Xpos[i] - m_WireX[i], 2);
+			SSres += pow(m_MDM->Xpos[i] - m_MDM->Fit_Xpos[i], 2);
 		}
 
 		double r2 = 1 - (SSres/SStot);
@@ -563,8 +549,9 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 
 	Fit_Chi2 = 0;
 	for(int i=0; i< 4; ++i) {
-		Fit_Xpos[i] = 0;
+		Fit_Xpos[i] = Fit_Ypos[i] = 0;
 	}
+	Fit_AngleX = Fit_AngleY = 0;
 
 	double brho = (m_Field/tesla)*1.6; // tesla*meter
 	m_Particle->SetBrho(brho);
@@ -591,9 +578,5 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	Target_Xang  = xs[0]*deg; // RAD
 	Target_Ekin  = xs[1]*MeV; // MeV
 
-	for(int i=0; i< 4; ++i) {
-		Fit_Xpos[i] = f->m_WireX[i];
-	}
-	
 	Fit_Chi2 = (*f)(xs);
 }

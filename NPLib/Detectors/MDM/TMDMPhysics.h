@@ -74,7 +74,10 @@ public:
 	double                Target_Yang;
 	double                Target_Ekin;
 	double                Fit_Chi2;
-	double                Fit_Xpos[4];
+	mutable double        Fit_Xpos[4];
+	mutable double        Fit_Ypos[4];
+	mutable double        Fit_AngleX;
+	mutable double        Fit_AngleY;
 	
 private:
 	int m_ParticleA;
@@ -171,6 +174,10 @@ public:
 
 	// do chi2 minimization to find most likely energy, angle parameters @target
 	void MinimizeTarget();
+
+	// send ray through MDM using RAYTRACE
+	// UNITS: deg, MeV
+	void SendRay(double thetaX, double thetaY, double Ekin) const;
     
   // objects are not written in the TTree
 private:
