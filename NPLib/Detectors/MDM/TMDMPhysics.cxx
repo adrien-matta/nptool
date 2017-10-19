@@ -485,9 +485,17 @@ public:
 		double chi2 = 0;
 		assert(m_MDM->Xpos.size() == 4);
 
-		for(int i=0; i< 4; ++i) {
-		 	if(m_MDM->Xpos[i] != 0) {
-		 		double ch2 = pow(m_MDM->Xpos[i] - m_MDM->Fit_Xpos[i], 2);
+		for(int i=0; i< m_MDM->Xpos.size(); ++i) {
+
+			size_t iDet = m_MDM->DetectorNumber[i];
+			if(iDet > 3) { break; }
+
+			double X = m_MDM->Xpos[i];				
+			double F = m_MDM->Fit_Xpos[iDet];
+
+			if(X > -20 && X < 20) {
+				double w = 1.; // "weight"
+				double ch2 = pow(X - F, 2) / w;
 				chi2 += ch2;
 			}
 		}
@@ -509,12 +517,27 @@ public:
 		m_MDM->SendRay(thetaX,0,Ekin);
 
 		// calculate R2
-		double ybar = TMath::Mean(4, &(m_MDM->Xpos)[0]);
+		int nnn = 0;
+		double ybar = 0;
+		for(const auto& x : m_MDM->Xpos) {
+			if(x > -20 && x < 20) {
+				++nnn;	ybar += x;
+			}
+		}
+		ybar /= nnn;
+
 		double SStot = 0, SSres = 0;
-	
 		for(int i=0; i< 4; ++i) {
-			SStot += pow(m_MDM->Xpos[i] - ybar,   2);
-			SSres += pow(m_MDM->Xpos[i] - m_MDM->Fit_Xpos[i], 2);
+			size_t iDet = m_MDM->DetectorNumber[i];
+			if(iDet > 3) { break; }
+
+			double X = m_MDM->Xpos[i];				
+			double F = m_MDM->Fit_Xpos[iDet];
+
+			if(X > -20 && X < 20) {
+				SStot += pow(X - ybar, 2);
+				SSres += pow(X - F, 2);
+			}
 		}
 
 		double r2 = 1 - (SSres/SStot);
