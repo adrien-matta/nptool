@@ -72,7 +72,7 @@ TMDMPhysics::TMDMPhysics()
 
 ///////////////////////////////////////////////////////////////////////////
 TMDMPhysics::~TMDMPhysics(){
-	if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
+//	if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
 	if(m_Particle) { delete m_Particle; m_Particle = 0; }
 }
 
