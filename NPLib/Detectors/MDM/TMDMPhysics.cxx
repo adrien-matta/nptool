@@ -551,6 +551,52 @@ public:
 	unsigned int NDim() const { return 2; }
 };
 
+
+class R2WireX1 : public FitFunctor {
+public:
+	double thetaX,thetaY;
+	R2WireX1(const TMDMPhysics* mdm, double thetax, double thetay):
+		FitFunctor(mdm) {
+		thetaX = thetax;
+		thetaY = thetay;
+	}
+
+	double DoEval (const double* p) const{
+		double Ekin   = p[0]; // MeV
+		m_MDM->SendRay(thetaX,thetaY,Ekin);
+
+		// calculate R2
+		int nnn = 0;
+		double ybar = 0;
+		for(const auto& x : m_MDM->Xpos) {
+			if(x > -20 && x < 20) {
+				++nnn;	ybar += x;
+			}
+		}
+		ybar /= nnn;
+
+		double SStot = 0, SSres = 0;
+		for(int i=0; i< 4; ++i) {
+			size_t iDet = m_MDM->DetectorNumber[i];
+			if(iDet > 3) { continue; }
+
+			double X = m_MDM->Xpos[i];				
+			double F = m_MDM->Fit_Xpos[iDet];
+
+			if(X > -20 && X < 20) {
+				SStot += pow(X - ybar, 2);
+				SSres += pow(X - F, 2);
+			}
+		}
+
+		double r2 = 1 - (SSres/SStot);
+		return -r2;
+	}
+
+	unsigned int NDim() const { return 1; }
+};
+
+
 } // namespace
 
 
@@ -645,7 +691,7 @@ void TMDMPhysics::MinimizeUsingLightParticleAngle(){
 		Target_Yang = atan(v.Y()/v.Z())/deg;
 	}
 	
-	R2WireX f(this);
+	R2WireX1 f(this,Target_Xang, Target_Yang);
 	
 	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
 	InitializeMinimizerWithDefaults(&min);
