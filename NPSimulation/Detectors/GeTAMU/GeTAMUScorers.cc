@@ -18,6 +18,7 @@ using namespace GETAMUSCORERS;
 PS_GeTAMU::PS_GeTAMU(G4String name,G4int Level,G4int depth)
   :G4VPrimitiveScorer(name, depth),HCID(-1){
 	m_Position = G4ThreeVector(-1000,-1000,-1000);
+  m_LocalPosition = G4ThreeVector(-1000,-1000,-1000);
 	m_CloverNumber  = -1;
 	m_CrystalNumber = -1;
 	m_Index = -1 ;
@@ -30,12 +31,15 @@ PS_GeTAMU::~PS_GeTAMU(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   // contain Energy Time, DetNbr, StripFront and StripBack
-  G4double* Infos = new G4double[10];
+  G4double* Infos = new G4double[12];
   Infos[0] = aStep->GetTotalEnergyDeposit();
   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
 
   m_CrystalNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
+  //from local position one should eb able to calculate the segments
+  m_LocalPosition = aStep->GetPreStepPoint()->GetTouchableHandle()
+                         ->GetHistory()->GetTopTransform().TransformPoint(m_Position);
 
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
   Infos[2] = m_Position.x();
@@ -51,6 +55,11 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	
 	Infos[7] = m_CloverNumber;
   Infos[8] = m_CrystalNumber;
+
+  //This will be used in the future to calculate the segments
+  Infos[9] = m_LocalPosition.x();
+  Infos[10] = m_LocalPosition.y();
+  Infos[11] = m_LocalPosition.z();
 
 	m_Index = m_CloverNumber * 1 + m_CrystalNumber * 1e3;
 
