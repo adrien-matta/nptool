@@ -589,7 +589,7 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 
 		// Figure out segment number
 		G4int SegmentNbr = 0;
-		if(fabs(InterPos_Z) < 10)                   { SegmentNbr = 2; } // MIDDLE
+		if(fabs(InterPos_Z) < 20*mm)                { SegmentNbr = 2; } // MIDDLE
 		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
 		else                                        { SegmentNbr = 3; } // LEFT
 		
