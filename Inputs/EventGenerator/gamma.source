@@ -4,13 +4,13 @@
 %      Energy are given in MeV , Position in mm % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Isotropic
- EnergyLow=  1.
- EnergyHigh= 1.
- HalfOpenAngleMin= 0
- HalfOpenAngleMax= 180
- x0= 0 
- y0= 0 
- z0= 0 
+ EnergyLow=  1. MeV
+ EnergyHigh= 1. MeV
+ HalfOpenAngleMin= 0 deg
+ HalfOpenAngleMax= 180 deg
+ x0= 0 mm
+ y0= 0 mm
+ z0= 0 mm
  particle= gamma
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Supported particle type: proton, neutron, deuton, triton, He3 , alpha 
