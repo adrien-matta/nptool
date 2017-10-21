@@ -1,7 +1,8 @@
+%%% file: OBSOLETE
+%%% Need an update 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %0.2mg/cm2
 Target
  THICKNESS= 5.1
@@ -16,50 +17,50 @@ Target
 Sharc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %Upstream CD
-  SharcQQQ
-    Z= -63.84834
-    R= 0
-    Phi= 2
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -63.84834
-    R= 0
-    Phi= 92
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -63.84834
-    R= 0
-    Phi= 182
-    ThicknessDector= 500
-  SharcQQQ
-    Z= -63.84834
-    R= 0
-    Phi= 272
-    ThicknessDector= 500
+SharcQQQ
+ Z= -63.84834
+  R= 0
+  Phi= 2
+ ThicknessDector= 500
+SharcQQQ
+ Z= -63.84834
+  R= 0
+  Phi= 92
+ ThicknessDector= 500
+SharcQQQ
+ Z= -63.84834
+  R= 0
+  Phi= 182
+ ThicknessDector= 500
+SharcQQQ
+ Z= -63.84834
+  R= 0
+  Phi= 272
+ ThicknessDector= 500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Upstream Box
-  SharcBOX
-    Z= -26.41038
-    ThicknessDector1= 500
-    ThicknessDector2= 500
-    ThicknessDector3= 500
-    ThicknessDector4= 500
-    ThicknessPAD1= 0
-    ThicknessPAD2= 0
-    ThicknessPAD3= 0
-    ThicknessPAD4= 0
+SharcBOX
+ Z= -26.41038
+ ThicknessDector1= 500
+ ThicknessDector2= 500
+ ThicknessDector3= 500
+ ThicknessDector4= 500
+ ThicknessPAD1= 0
+ ThicknessPAD2= 0
+ ThicknessPAD3= 0
+ ThicknessPAD4= 0
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Down Stream Box
-  SharcBOX
-    Z= 30
-    ThicknessDector1= 140
-    ThicknessDector2= 140
-    ThicknessDector3= 140
-    ThicknessDector4= 140
-    ThicknessPAD1= 1500
-    ThicknessPAD2= 1500
-    ThicknessPAD3= 1500
-    ThicknessPAD4= 1500
+SharcBOX
+ Z= 30
+ ThicknessDector1= 140
+ ThicknessDector2= 140
+ ThicknessDector3= 140
+ ThicknessDector4= 140
+ ThicknessPAD1= 1500
+ ThicknessPAD2= 1500
+ ThicknessPAD3= 1500
+ ThicknessPAD4= 1500
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%% 	
 %Tigress Array
@@ -67,68 +68,79 @@ Tigress
 %%%%%%%%%%%%%%%%%%%%
 %Corona(90) Ring
 %%%%%%%%%%%%%%%%%%%%
-TigressClover
-    CloverId= 5
-    R= 110
-    Phi= 22.5
-    Theta= 90
-TigressClover
-    CloverId= 6
-    R= 110 
-    Phi= 67.5
-    Theta= 90
-TigressClover
-    CloverId= 7
-    R= 110 
-    Phi= 112.5
-    Theta= 90
-TigressClover
-    CloverId= 8
-    R= 110 
-    Phi= 157.5
-    Theta= 90
-TigressClover
-    CloverId= 9
-    R= 110 
-    Phi= 202.5
-    Theta= 90
-TigressClover
-    CloverId= 10
-    R= 110 
-    Phi= 247.5
-    Theta= 90
-TigressClover
-    CloverId= 11
-    R= 110 
-    Phi= 292.5
-    Theta= 90
-TigressClover
-    CloverId= 12
-    R= 110 
-    Phi= 337.5
-    Theta= 90
+Tigress Clover
+  CloverID= 5
+  R= 110
+  Phi= 22.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 6
+  R= 110 
+  Phi= 67.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 7
+  R= 110 
+  Phi= 112.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 8
+  R= 110 
+  Phi= 157.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 9
+  R= 110 
+  Phi= 202.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 10
+  R= 110 
+  Phi= 247.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 11
+  R= 110 
+  Phi= 292.5
+  Theta= 90
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 12
+  R= 110 
+  Phi= 337.5
+  Theta= 90
 %%%%%%%%%%%%%%%%%%%%
 %Backwards(110) Ring
 %%%%%%%%%%%%%%%%%%%%
-TigressClover
-    CloverId= 13
-    R= 110 
-    Phi= 22.5
-    Theta= 135
-TigressClover
-    CloverId= 14
-    R= 110 
-    Phi= 112.5
-    Theta= 135
-TigressClover
-    CloverId= 15
-    R= 110 
-    Phi= 202.5
-    Theta= 135
-TigressClover
-    CloverId= 16
-    R= 110 
-    Phi= 292.5
-    Theta= 135
+Tigress Clover
+  CloverID= 13
+  R= 110 
+  Phi= 22.5
+  Theta= 135
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 14
+  R= 110 
+  Phi= 112.5
+  Theta= 135
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 15
+  R= 110 
+  Phi= 202.5
+  Theta= 135
+  Beta=    0 0 0 deg
+Tigress Clover
+  CloverID= 16
+  R= 110 
+  Phi= 292.5
+  Theta= 135
+  Beta=    0 0 0 deg
 %%%%%%%%%%%%%%%%%%%%
 Trifoil
