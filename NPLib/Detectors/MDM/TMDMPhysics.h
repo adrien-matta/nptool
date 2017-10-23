@@ -107,6 +107,8 @@ public:
 	void SetReaction(NPL::Reaction* r) {m_Reaction=r;}
 	void SetLightParticleAngles(double theta,double phi)
 		{ m_Light_ThetaLab=theta; m_Light_PhiLab=phi; }
+	void GetLightParticleAngles(double& t, double& p)
+		{ t = m_Light_ThetaLab; p = m_Light_PhiLab; }
 	
   /// A usefull method to bundle all operation to add a detector
 	void AddDetector(double angle, double field, const std::string& rayin);
@@ -231,6 +233,12 @@ private:
 	double m_Xhigh; //!
 	double m_Yhigh; //!
 
+public:
+	double GetXlow()  const { return m_Xlow;  }
+	double GetYlow()  const { return m_Ylow;  }
+	double GetXhigh() const { return m_Xhigh; }
+	double GetYhigh() const { return m_Yhigh; }
+	
   // number of detectors
 private:
 	int m_NumberOfDetectors;  //!
