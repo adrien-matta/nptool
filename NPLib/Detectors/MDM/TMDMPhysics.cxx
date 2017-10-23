@@ -683,15 +683,13 @@ void TMDMPhysics::MinimizeUsingLightParticleAngle(){
 		double PhiHeavy = m_Light_PhiLab - 180;
 		if(m_Light_PhiLab < 0) { PhiHeavy += 360; }
 
-		TVector3 v(sin(ThetaHeavy*deg)*cos(PhiHeavy*deg), 
-							 sin(ThetaHeavy*deg)*sin(PhiHeavy*deg), 
-							 cos(ThetaHeavy*deg));
-
+		TVector3 v;
+		v.SetMagThetaPhi(1,ThetaHeavy*deg,PhiHeavy*deg);
 		Target_Xang = atan(v.X()/v.Z())/deg;
 		Target_Yang = atan(v.Y()/v.Z())/deg;
 	}
 	
-	R2WireX1 f(this,Target_Xang, Target_Yang);
+	R2WireX1 f(this, Target_Xang, Target_Yang);
 	
 	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
 	InitializeMinimizerWithDefaults(&min);

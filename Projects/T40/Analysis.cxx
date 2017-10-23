@@ -239,6 +239,14 @@ void Analysis::TreatEvent(){
 	//by Shuya 171019
       PhiLab = HitDirection.Phi();
       PhiLab = PhiLab/(TMath::Pi())*180.0;
+
+	// GAC 171020
+			{
+				TVector3 v;
+				v.SetMagThetaPhi(1,ThetaLab*deg,PhiLab*deg);
+				ThetaXLab = atan(v.X()/v.Z()) / deg;
+				ThetaYLab = atan(v.Y()/v.z()) / deg;
+			}
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -298,6 +306,14 @@ void Analysis::TreatEvent(){
 	//by Shuya 171019
       PhiLab = HitDirection.Phi();
       PhiLab = PhiLab/(TMath::Pi())*180.0;
+	//GAC 171020
+			{
+				TVector3 v;
+				v.SetMagThetaPhi(1,ThetaLab*deg,PhiLab*deg);
+				ThetaXLab = atan(v.X()/v.Z()) / deg;
+				ThetaYLab = atan(v.Y()/v.z()) / deg;
+			}
+
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -578,6 +594,7 @@ void Analysis::ReInitValue(){
   Ex_Barrel = -1000 ;
 //by Shuya 171019
   PhiLab = -1000;
+	ThetaXLab = ThetaYLab = -1000;
 
   //Simu
   //Original_ELab = -1000;
@@ -659,6 +676,9 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
 //by Shuya 171019
   RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("ThetaXLab",&ThetaXLab,"ThetaXLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("ThetaYLab",&ThetaYLab,"ThetaYLab/D");
+	
 
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
