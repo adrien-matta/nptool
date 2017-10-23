@@ -607,34 +607,35 @@ public:
 
 
 void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
-	// reset values
-	Fit_Chi2 = 0;
-	for(int i=0; i< 4; ++i) {
-		Fit_Xpos[i] = Fit_Ypos[i] = 0;
-	}
-	Fit_AngleX = Fit_AngleY = 0;
+	DoMinimize();
+	// // reset values
+	// Fit_Chi2 = 0;
+	// for(int i=0; i< 4; ++i) {
+	// 	Fit_Xpos[i] = Fit_Ypos[i] = 0;
+	// }
+	// Fit_AngleX = Fit_AngleY = 0;
 
-	switch(m_FitMethod) {
-	case 0: // no fit
-		Target_Ekin = CalculateCentralEnergy();
-		Target_Ekin = CalculateCentralEnergy();
-		CalculateAnalyticAngles(Target_Xang, Target_Yang);
-		break;
-	case 1:
-		MinimizeWithXangle();
-		break;
-	case 2:
-		MinimizeWithXangle();
-		break;
-	case 3:
-		MinimizeUsingLightParticleAngle();
-		break;
-	default:
-		std::cerr << "Invalid fit method: " << m_FitMethod << ", defaulting to no fit...\n";
-		m_FitMethod = 0;
-		MinimizeTarget();
-		break;
-	}
+	// switch(m_FitMethod) {
+	// case 0: // no fit
+	// 	Target_Ekin = CalculateCentralEnergy();
+	// 	Target_Ekin = CalculateCentralEnergy();
+	// 	CalculateAnalyticAngles(Target_Xang, Target_Yang);
+	// 	break;
+	// case 1:
+	// 	MinimizeWithXangle();
+	// 	break;
+	// case 2:
+	// 	MinimizeWithXangle();
+	// 	break;
+	// case 3:
+	// 	MinimizeUsingLightParticleAngle();
+	// 	break;
+	// default:
+	// 	std::cerr << "Invalid fit method: " << m_FitMethod << ", defaulting to no fit...\n";
+	// 	m_FitMethod = 0;
+	// 	MinimizeTarget();
+	// 	break;
+	// }
 }
 
 void TMDMPhysics::DoMinimize(){

@@ -2,7 +2,7 @@
 
 
 TMDMPhysicsMinimizer::TMDMPhysicsMinimizer(unsigned int ndim, 
-																					 const TMDMPhysics* mdm):
+																					 TMDMPhysics* mdm):
 	m_NDim(ndim), m_MDM(mdm){
 }
 
