@@ -41,6 +41,7 @@
 #include "NPReaction.h"
 // MDM Trace
 #include "MDMTrace.h"
+#include "TMDMPhysicsMinimizer.h"
 
 // forward declaration
 class TMDMSpectra;
@@ -195,6 +196,13 @@ public:
 	void   InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min);
 	void   MinimizeWithXangle();
 	void   MinimizeUsingLightParticleAngle();
+	void   DoMinimize();
+
+public:
+	TMDMPhysicsMinimizer* m_MinimizerFunction;
+	std::string m_MinimizerName;
+	std::string m_AlgorithmName;
+	
 	
   // objects are not written in the TTree
 private:
@@ -235,3 +243,7 @@ public:
 };
 #endif
 
+
+// Local Variables:
+// mode: c++
+// End:

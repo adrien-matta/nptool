@@ -1,6 +1,6 @@
 include(CheckLanguage)
 
-add_custom_command(OUTPUT TMDMPhysicsDict.cxx COMMAND ../../scripts/build_dict.sh TMDMPhysics.h TMDMPhysicsDict.cxx TMDMPhysics.rootmap libNPMDM.dylib DEPENDS TMDMPhysics.h)
+add_custom_command(OUTPUT TMDMPhysicsDict.cxx COMMAND ../../scripts/build_dict.sh TMDMPhysics.h TMDMPhysicsDict.cxx TMDMPhysics.rootmap libNPMDM.dylib DEPENDS TMDMPhysics.h TMDMPhysicsMinimizer.h)
 add_custom_command(OUTPUT TMDMDataDict.cxx COMMAND ../../scripts/build_dict.sh TMDMData.h TMDMDataDict.cxx TMDMData.rootmap libNPMDM.dylib DEPENDS TMDMData.h)
 
 ## Check for FORTRAN compiler, if so
@@ -12,15 +12,15 @@ if("${CMAKE_GENERATOR}" STREQUAL "Unix Makefiles")
     add_definitions(-DUSE_RAYTRACE)
     enable_language(Fortran)
     set (CMAKE_Fortran_FLAGS "-finit-local-zero -falign-commons -fno-automatic")
-    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp RAYTKIN1.F)
+    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMPhysicsMinimizer TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp RAYTKIN1.F)
   else()
 ## No fortran support, compile "fake" c-version
     message(STATUS "No Fortran support, disabling RAYTRACE in libMDM")
-    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp)
+    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMPhysicsMinimizer TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp)
   endif()
 else()
     message(STATUS "Fortran support only included with Unix Makefile generator, disabling RAYTRACE in libMDM.")
-    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp)
+    add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMPhysicsMinimizer TMDMDataDict.cxx TMDMPhysicsDict.cxx MDMTrace.cpp)
 endif()      
 
 target_link_libraries(NPMDM ${ROOT_LIBRARIES} NPCore NPPhysics Minuit2) 

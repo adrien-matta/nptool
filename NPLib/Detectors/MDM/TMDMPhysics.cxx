@@ -28,6 +28,8 @@
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <cassert>
+#include <memory>
 using namespace std;
 
 //   NPL
@@ -43,6 +45,10 @@ using namespace std;
 #include "TChain.h"
 #include "TGraph.h"
 #include "TVector3.h"
+#include "Minuit2/Minuit2Minimizer.h"
+#include "Math/Minimizer.h"
+#include "Math/Factory.h"
+#include "Math/Functor.h"
 
 
 ClassImp(TMDMPhysics)
@@ -72,6 +78,10 @@ TMDMPhysics::TMDMPhysics()
 	m_Particle = 0;
 	m_Reaction = 0;
 	SetLightParticleAngles(0,0);
+
+	m_MinimizerFunction = 0;
+	m_MinimizerName = "Minuit2";
+	m_AlgorithmName = "Migrad";
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -447,10 +457,6 @@ proxy_MDM p_MDM;
 //   TARGET MINIMIZATION                                                 //
 ///////////////////////////////////////////////////////////////////////////
 
-#include <memory>
-#include "Minuit2/Minuit2Minimizer.h"
-#include "Math/Functor.h"
-
 
 namespace {
 
@@ -630,6 +636,46 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 		break;
 	}
 }
+
+void TMDMPhysics::DoMinimize(){
+//	https://root.cern.ch/root/html/tutorials/fit/NumericalMinimization.C.html
+	m_MinimizerName = "Minuit2";
+	m_AlgorithmName = "Migrad";
+	
+	// Set up minimizer
+	std::unique_ptr<ROOT::Math::Minimizer> min(
+		ROOT::Math::Factory::CreateMinimizer(m_MinimizerName, m_AlgorithmName.c_str()));
+	min->SetFunction(*m_MinimizerFunction);
+	MinParams_t par;
+	m_MinimizerFunction->Initialize(par);
+
+	// Set Initial parameters
+	size_t i=0;
+	std::string parnames[] = {"thetax","thetay","ekin"};
+	for(const auto& p : par){
+		if(p.first) {
+			min->SetVariable(i, parnames[i], p.second, 0.01);
+		}
+		++i;
+	}
+
+	// Do minimization
+	min->Minimize();
+
+	// Set outputs
+	size_t j=0;
+	if(par[0].first) { Target_Xang = min->X()[j++]; }
+	else             { Target_Xang = par[0].second ; }
+	
+	if(par[1].first) { Target_Yang = min->X()[j++]; }
+	else             { Target_Yang = par[1].second ; }
+
+	if(par[2].first) { Target_Ekin = min->X()[j++]; }
+	else             { Target_Ekin = par[2].second ; }
+
+	Fit_Chi2 = m_MinimizerFunction->operator()(min->X());
+}
+
 
 // Fit both x-angle and energy to the wire spectra
 // take y-angle from "analytic" evaluation of RAYTRACE
