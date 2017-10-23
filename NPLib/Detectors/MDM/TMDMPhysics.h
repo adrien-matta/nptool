@@ -190,19 +190,25 @@ public:
 	// UNITS: deg, MeV
 	void SendRay(double thetaX, double thetaY, double Ekin) const;
 
-//	Minimization options & helpers
+// Minimization options & helpers
 	double CalculateCentralEnergy();
-	void   CalculateAnalyticAngles(double& tx, double& ty);
-	void   InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min);
-	void   MinimizeWithXangle();
-	void   MinimizeUsingLightParticleAngle();
-	void   DoMinimize();
+	void   InitializeMinimizerWithDefaults(ROOT::Math::Minimizer& min);
+
+private:
+	TMDMPhysicsMinimizer* m_MinimizerFunction; //!
+	std::string m_MinimizerPluginFile;  //!
+	std::string m_MinimizerPluginClass; //!
+	std::string m_MinimizerName; //!
+	std::string m_MinimizerAlgorithm; //!
+	bool m_DoMinimization; //!
 
 public:
-	TMDMPhysicsMinimizer* m_MinimizerFunction;
-	std::string m_MinimizerName;
-	std::string m_AlgorithmName;
-	
+	TMDMPhysicsMinimizer* GetMinimizerFunction() const { return m_MinimizerFunction;    }
+	std::string GetMinimizerPluginFile()  const        { return m_MinimizerPluginFile;  }
+	std::string GetMinimizerPluginClass() const        { return m_MinimizerPluginClass; }
+	std::string GetMinimizerName() const               { return m_MinimizerName;        }
+	std::string GetAlgorithmName() const               { return m_MinimizerAlgorithm;   }
+	bool DoMinimization() const                        { return m_DoMinimization;       }		
 	
   // objects are not written in the TTree
 private:
@@ -221,8 +227,6 @@ private:
 	double m_X_Threshold;     //!
 	double m_Y_Threshold;     //!
 
-	int m_FitMethod;
-	
   // number of detectors
 private:
 	int m_NumberOfDetectors;  //!

@@ -44,8 +44,8 @@ using namespace std;
 #include "TMath.h"
 #include "TChain.h"
 #include "TGraph.h"
+#include "TROOT.h"
 #include "TVector3.h"
-#include "Minuit2/Minuit2Minimizer.h"
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
 #include "Math/Functor.h"
@@ -71,7 +71,6 @@ TMDMPhysics::TMDMPhysics()
 	m_NumberOfDetectors(0) {
 
 	m_Rayin = 0;
-	m_FitMethod = 0;
 	m_ParticleA = 0;
 	m_ParticleZ = 0;
 	m_ParticleQ = 0;
@@ -79,9 +78,12 @@ TMDMPhysics::TMDMPhysics()
 	m_Reaction = 0;
 	SetLightParticleAngles(0,0);
 
-	m_MinimizerFunction = 0;
-	m_MinimizerName = "Minuit2";
-	m_AlgorithmName = "Migrad";
+	m_DoMinimization       = false;
+	m_MinimizerName        = "Minuit2";
+	m_MinimizerAlgorithm   = "Migrad";
+	m_MinimizerPluginFile  = "";
+	m_MinimizerPluginClass = "";
+	m_MinimizerFunction    =  0;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -147,7 +149,7 @@ void TMDMPhysics::BuildPhysicalEvent() {
 		Yang = atan((Ypos[i1] - Ypos[i0]) / (Zpos[i1] - Zpos[i0]));
 	}
 
-	MinimizeTarget();
+	if(DoMinimization()) { MinimizeTarget(); }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -242,10 +244,35 @@ void TMDMPhysics::ReadAnalysisConfig() {
         cout << "\t" << whatToDo << " " << m_Y_Threshold << endl;
       }
 
-			else if (whatToDo=="FIT_METHOD") {
+			else if (whatToDo=="MINIMIZER_PLUGIN_FILE") {
 				AnalysisConfigFile >> DataBuffer;
-				m_FitMethod = atoi(DataBuffer.c_str());
-				cout << "\t" << whatToDo << " " << m_FitMethod << endl;
+				m_MinimizerPluginFile  = DataBuffer;
+				cout << "\t" << whatToDo << " " << m_MinimizerPluginFile << endl;
+			}
+
+			else if (whatToDo=="MINIMIZER_PLUGIN_CLASS") {
+				AnalysisConfigFile >> DataBuffer;
+				m_MinimizerPluginClass  = DataBuffer;
+				cout << "\t" << whatToDo << " " << m_MinimizerPluginClass << endl;
+			}
+
+			else if (whatToDo=="DO_MINIMIZATION") {
+				AnalysisConfigFile >> DataBuffer;
+				m_DoMinimization = DataBuffer == "true" ? true :
+					DataBuffer == "false" ? false : atoi(DataBuffer.c_str());
+				cout << "\t" << whatToDo << " " << m_DoMinimization << endl;
+			}
+
+			else if (whatToDo=="MINIMIZER_NAME") {
+				AnalysisConfigFile >> DataBuffer;
+				m_MinimizerName  = DataBuffer;
+				cout << "\t" << whatToDo << " " << m_MinimizerName << endl;
+			}
+
+			else if (whatToDo=="MINIMIZER_ALGORITHM") {
+				AnalysisConfigFile >> DataBuffer;
+				m_MinimizerAlgorithm  = DataBuffer;
+				cout << "\t" << whatToDo << " " << m_MinimizerAlgorithm << endl;
 			}
 
 			else if (whatToDo=="RECON_A") {
@@ -324,8 +351,26 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
     }
   }
 
+	// Read analysis config file & initialize relavant variables
   ReadAnalysisConfig();
+	
 	m_Particle = new NPL::Nucleus(m_ParticleZ, m_ParticleA);
+
+	if(DoMinimization()) {
+		gROOT->ProcessLine(Form(".L %s+", m_MinimizerPluginFile.c_str()));
+		m_MinimizerFunction = reinterpret_cast<TMDMPhysicsMinimizer*>(
+			gROOT->ProcessLineFast( 
+				Form("new %s((TMDMPhysics*)%p);",
+						 m_MinimizerPluginClass.c_str(),
+						 this)
+				));
+		if(!m_MinimizerFunction) {
+			cerr << "ERROR: Invalid minimizer plugin file or class name.\n" <<
+				"\tFile: "  << m_MinimizerPluginFile << "\n" <<
+				"\tClass: " << m_MinimizerPluginClass << "\n";
+			exit(1);
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -453,306 +498,59 @@ public:
 proxy_MDM p_MDM;
 }
 
-///////////////////////////////////////////////////////////////////////////
-//   TARGET MINIMIZATION                                                 //
-///////////////////////////////////////////////////////////////////////////
-
-
-namespace {
-
-class FitFunctor : public ROOT::Math::IMultiGenFunction {
-protected:
-	FitFunctor(const TMDMPhysics* mdm):
-		m_MDM(mdm){
-	}
-
-	ROOT::Math::IMultiGenFunction*	Clone() const{
-		FitFunctor* out = new FitFunctor(m_MDM);
-		return out;
-	}
-	
-	// overload w/ specific fit function
-	virtual unsigned int NDim() const { return 0; }
-
-private:
-	virtual double DoEval (const double*) const { return 0; }
-
-public:
-	const TMDMPhysics* m_MDM;
-};
-
-class Chi2WireX : public FitFunctor {
-public:
-	Chi2WireX(const TMDMPhysics* mdm):
-		FitFunctor(mdm) { }
-
-	double DoEval (const double* p) const{
-		double thetaX = p[0]; // deg
-		double Ekin   = p[1]; // MeV
-		m_MDM->SendRay(thetaX,m_MDM->Yang/deg,Ekin);
-
-		// calculate Chi2
-		double chi2 = 0;
-		assert(m_MDM->Xpos.size() == 4);
-
-		for(int i=0; i< m_MDM->Xpos.size(); ++i) {
-
-			size_t iDet = m_MDM->DetectorNumber[i];
-			if(iDet > 3) { continue; }
-
-			double X = m_MDM->Xpos[i];				
-			double F = m_MDM->Fit_Xpos[iDet];
-
-			if(X > -20 && X < 20) {
-				double w = 1.; // "weight"
-				double ch2 = pow(X - F, 2) / w;
-				chi2 += ch2;
-			}
-		}
-	
-		return chi2;
-	}
-
-	unsigned int NDim() const { return 2; }
-};
-
-class R2WireX : public FitFunctor {
-public:
-	R2WireX(const TMDMPhysics* mdm):
-		FitFunctor(mdm) { }
-
-	double DoEval (const double* p) const{
-		double thetaX = p[0]; // deg
-		double Ekin   = p[1]; // MeV
-		m_MDM->SendRay(thetaX,0,Ekin);
-
-		// calculate R2
-		int nnn = 0;
-		double ybar = 0;
-		for(const auto& x : m_MDM->Xpos) {
-			if(x > -20 && x < 20) {
-				++nnn;	ybar += x;
-			}
-		}
-		ybar /= nnn;
-
-		double SStot = 0, SSres = 0;
-		for(int i=0; i< 4; ++i) {
-			size_t iDet = m_MDM->DetectorNumber[i];
-			if(iDet > 3) { continue; }
-
-			double X = m_MDM->Xpos[i];				
-			double F = m_MDM->Fit_Xpos[iDet];
-
-			if(X > -20 && X < 20) {
-				SStot += pow(X - ybar, 2);
-				SSres += pow(X - F, 2);
-			}
-		}
-
-		double r2 = 1 - (SSres/SStot);
-		return -r2;
-	}
-
-	unsigned int NDim() const { return 2; }
-};
-
-
-class R2WireX1 : public FitFunctor {
-public:
-	double thetaX,thetaY;
-	R2WireX1(const TMDMPhysics* mdm, double thetax, double thetay):
-		FitFunctor(mdm) {
-		thetaX = thetax;
-		thetaY = thetay;
-	}
-
-	double DoEval (const double* p) const{
-		double Ekin   = p[0]; // MeV
-		m_MDM->SendRay(thetaX,thetaY,Ekin);
-
-		// calculate R2
-		int nnn = 0;
-		double ybar = 0;
-		for(const auto& x : m_MDM->Xpos) {
-			if(x > -20 && x < 20) {
-				++nnn;	ybar += x;
-			}
-		}
-		ybar /= nnn;
-
-		double SStot = 0, SSres = 0;
-		for(int i=0; i< 4; ++i) {
-			size_t iDet = m_MDM->DetectorNumber[i];
-			if(iDet > 3) { continue; }
-
-			double X = m_MDM->Xpos[i];				
-			double F = m_MDM->Fit_Xpos[iDet];
-
-			if(X > -20 && X < 20) {
-				SStot += pow(X - ybar, 2);
-				SSres += pow(X - F, 2);
-			}
-		}
-
-		double r2 = 1 - (SSres/SStot);
-		return -r2;
-	}
-
-	unsigned int NDim() const { return 1; }
-};
-
-
-} // namespace
-
 
 void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
-	DoMinimize();
-	// // reset values
-	// Fit_Chi2 = 0;
-	// for(int i=0; i< 4; ++i) {
-	// 	Fit_Xpos[i] = Fit_Ypos[i] = 0;
-	// }
-	// Fit_AngleX = Fit_AngleY = 0;
-
-	// switch(m_FitMethod) {
-	// case 0: // no fit
-	// 	Target_Ekin = CalculateCentralEnergy();
-	// 	Target_Ekin = CalculateCentralEnergy();
-	// 	CalculateAnalyticAngles(Target_Xang, Target_Yang);
-	// 	break;
-	// case 1:
-	// 	MinimizeWithXangle();
-	// 	break;
-	// case 2:
-	// 	MinimizeWithXangle();
-	// 	break;
-	// case 3:
-	// 	MinimizeUsingLightParticleAngle();
-	// 	break;
-	// default:
-	// 	std::cerr << "Invalid fit method: " << m_FitMethod << ", defaulting to no fit...\n";
-	// 	m_FitMethod = 0;
-	// 	MinimizeTarget();
-	// 	break;
-	// }
-}
-
-void TMDMPhysics::DoMinimize(){
-//	https://root.cern.ch/root/html/tutorials/fit/NumericalMinimization.C.html
-	m_MinimizerName = "Minuit2";
-	m_AlgorithmName = "Migrad";
-	
 	// Set up minimizer
 	std::unique_ptr<ROOT::Math::Minimizer> min(
-		ROOT::Math::Factory::CreateMinimizer(m_MinimizerName, m_AlgorithmName.c_str()));
+		ROOT::Math::Factory::CreateMinimizer(
+			m_MinimizerName, m_MinimizerAlgorithm.c_str()
+			)
+		);
+	InitializeMinimizerWithDefaults(*min);
 	min->SetFunction(*m_MinimizerFunction);
-	MinParams_t par;
-	m_MinimizerFunction->Initialize(par);
 
 	// Set Initial parameters
-	size_t i=0;
-	std::string parnames[] = {"thetax","thetay","ekin"};
-	for(const auto& p : par){
-		if(p.first) {
-			min->SetVariable(i, parnames[i], p.second, 0.01);
-		}
-		++i;
+	int ivar = 0;
+	m_MinimizerFunction->Initialize();
+	if(m_MinimizerFunction->GetFixedThetaX() == false) {
+		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX(), 0.01);
+	}
+	if(m_MinimizerFunction->GetFixedThetaY() == false) {
+		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY(), 0.01);
+	}
+	if(m_MinimizerFunction->GetFixedEkin() == false) {
+		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),   0.01);
 	}
 
 	// Do minimization
 	min->Minimize();
 
 	// Set outputs
-	size_t j=0;
-	if(par[0].first) { Target_Xang = min->X()[j++]; }
-	else             { Target_Xang = par[0].second ; }
-	
-	if(par[1].first) { Target_Yang = min->X()[j++]; }
-	else             { Target_Yang = par[1].second ; }
-
-	if(par[2].first) { Target_Ekin = min->X()[j++]; }
-	else             { Target_Ekin = par[2].second ; }
+	ivar = 0;
+	if(m_MinimizerFunction->GetFixedThetaX()) {
+		Target_Xang = m_MinimizerFunction->GetInitialThetaX();
+	}	else {
+		Target_Xang = min->X()[ivar++];
+	}
+	if(m_MinimizerFunction->GetFixedThetaY()) {
+		Target_Yang = m_MinimizerFunction->GetInitialThetaY();
+	}	else {
+		Target_Yang = min->X()[ivar++];
+	}
+	if(m_MinimizerFunction->GetFixedEkin()) {
+		Target_Ekin = m_MinimizerFunction->GetInitialEkin();
+	}	else {
+		Target_Ekin = min->X()[ivar++];
+	}
 
 	Fit_Chi2 = m_MinimizerFunction->operator()(min->X());
 }
 
 
-// Fit both x-angle and energy to the wire spectra
-// take y-angle from "analytic" evaluation of RAYTRACE
-// correlations
-void TMDMPhysics::MinimizeWithXangle(){
-	Target_Ekin = CalculateCentralEnergy();
-	CalculateAnalyticAngles(Target_Xang, Target_Yang);
-
-	std::unique_ptr<FitFunctor> f (nullptr);
-	if(m_FitMethod == 1) {
-		f.reset(new Chi2WireX(this));
-	}
-	else if(m_FitMethod == 2) {
-		f.reset(new R2WireX(this));
-	}
-	else {
-		assert(0 && "Shouldn't get here!!!");
-	}
-
-	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
-	InitializeMinimizerWithDefaults(&min);
-	min.SetFunction(*f);
-	// Set the free variables to be minimized!
-	min.SetVariable(0,"thetax",Target_Xang, 0.01 /*step*/);
-	min.SetVariable(1,"ekin"  ,Target_Ekin, 0.01 /*step*/);
-	min.Minimize();
-
-	Target_Xang = min.X()[0] * deg; // rad
-	Target_Ekin = min.X()[1] * MeV; // MeV
-	Fit_Chi2 = f->operator()(min.X());
-}
-
-// Fit only the energy to the wire spectra
-// Take angle from the LIGHT particle and reaction
-// kinematics
-void TMDMPhysics::MinimizeUsingLightParticleAngle(){
-	Target_Ekin = CalculateCentralEnergy();
-	if(m_Reaction == 0) {
-		static bool warn = true;
-		if(warn) {
-			warn = false;
-			std::cerr << "WARNING in TMDMPhysics::MinimizeUsingLightParticleAngle() :: " <<
-				"m_Reaction not set, defaulting to ZERO angle for Theta_X and Theta_Y at " <<
-				"the target...\n";
-		}
-		Target_Xang = 0;
-		Target_Yang = 0;
-	} else {
-		std::unique_ptr<TGraph> kin (m_Reaction->GetTheta3VsTheta4(0.1));
-		double ThetaHeavy = kin->Eval(m_Light_ThetaLab);
-		double PhiHeavy = m_Light_PhiLab - 180;
-		if(m_Light_PhiLab < 0) { PhiHeavy += 360; }
-
-		TVector3 v;
-		v.SetMagThetaPhi(1,ThetaHeavy*deg,PhiHeavy*deg);
-		Target_Xang = atan(v.X()/v.Z())/deg;
-		Target_Yang = atan(v.Y()/v.Z())/deg;
-	}
-	
-	R2WireX1 f(this, Target_Xang, Target_Yang);
-	
-	ROOT::Minuit2::Minuit2Minimizer min (ROOT::Minuit2::kMigrad); 
-	InitializeMinimizerWithDefaults(&min);
-	min.SetFunction(f);
-	// Set the free variables to be minimized!
-	min.SetVariable(0,"ekin"  ,Target_Ekin, 0.01 /*step*/);
-	min.Minimize();
-
-	Target_Ekin = min.X()[0] * MeV; // MeV
-	Fit_Chi2 = f(min.X());
-}
-
-void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer* min){
-	min->SetMaxFunctionCalls(10000);
-	min->SetMaxIterations(1000);
-	min->SetTolerance(0.001);
+void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer& min){
+	min.SetMaxFunctionCalls(10000);
+	min.SetMaxIterations(1000);
+	min.SetTolerance(0.001);
 }
 
 double TMDMPhysics::CalculateCentralEnergy(){
@@ -760,12 +558,4 @@ double TMDMPhysics::CalculateCentralEnergy(){
 	m_Particle->SetBrho(brho);
 	m_Particle->BrhoToEnergy(m_ParticleQ); // charge state
 	return m_Particle->GetEnergy()/MeV;
-}
-
-void TMDMPhysics::CalculateAnalyticAngles(double& tx, double& ty){
-	// n.b. not sure if this is universal!!
-	// Taken from simulation of 14C(a,4n)14O @560 MeV
-	// detecting 14O in MDM
-	tx = -0.656*pow(Xang,2) + -0.414486*Xang; // RAD
-	ty = -3.97*Yang; // RAD
 }
