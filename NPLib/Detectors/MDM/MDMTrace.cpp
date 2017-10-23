@@ -54,16 +54,19 @@ MDMTrace::Rayin::~Rayin()
   }
 }
 
+#ifdef USE_RAYTRACE
+#define EXT_ extern
+#else
+#define EXT_
+#endif
 
 extern "C" {
-  void raytrace_(int*);
-
-  extern struct {
+  EXT_ struct {
     double DATA[200][75];
     double ITITLE[200];
   } blck0_;
 
-  extern struct {
+  EXT_ struct {
     double XI[1000];
     double YI[1000];
     double ZI[1000];
@@ -73,7 +76,7 @@ extern "C" {
     double DELP[1000];
   } blck1_;
 
-  extern struct {
+  EXT_ struct {
     double XO[1000];
     double YO[1000];
     double ZO[1000];
@@ -84,14 +87,14 @@ extern "C" {
     double RLL[1000];
   } blck2_;
 
-  extern struct {
+  EXT_ struct {
     double ENERGY;
     double VEL;
     double PMASS;
     double Q0;
   } blck4_;
 
-  extern struct {
+  EXT_ struct {
     double THTSPEC;
     double TRGT1;
     double AM[4];
@@ -100,7 +103,23 @@ extern "C" {
     double THETACAL[10];
     double EKINE;
   } kineblck_;
-}
+
+EXT_ void raytrace_(int*)
+#ifdef USE_RAYTRACE
+	;
+#else
+{
+	blck2_.XO[0]   = 1e10;
+	blck2_.YO[0]   = 1e10;
+	blck2_.ZO[0]   = 1e10;
+	blck2_.VXO[0]  = 1e10;
+	blck2_.VYO[0]  = 1e10;
+	blck2_.VZO[0]  = 1e10;
+	blck2_.RTL[0] = 1e10;
+	blck2_.RLL[0] = 1e10;
+	}
+#endif
+} // extern "C" {
 
 MDMTrace* MDMTrace::instance_ = 0;
 double MDMTrace::jeffParams_[6] = {-0.51927,0.038638,0.028404,-0.022797,-0.019275,0.755583};
