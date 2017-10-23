@@ -84,6 +84,11 @@ TMDMPhysics::TMDMPhysics()
 	m_MinimizerPluginFile  = "";
 	m_MinimizerPluginClass = "";
 	m_MinimizerFunction    =  0;
+
+	double m_Xlow  = -15;
+	double m_Ylow  = -15;
+	double m_Xhigh = +15;
+	double m_Yhigh = +15;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -242,6 +247,30 @@ void TMDMPhysics::ReadAnalysisConfig() {
         AnalysisConfigFile >> DataBuffer;
         m_Y_Threshold = atof(DataBuffer.c_str());
         cout << "\t" << whatToDo << " " << m_Y_Threshold << endl;
+      }
+
+			else if (whatToDo=="X_LOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Xlow = atof(DataBuffer.c_str());
+        cout << "\t" << whatToDo << " " << m_Xlow << endl;
+      }
+
+			else if (whatToDo=="X_HIGH") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Xhigh = atof(DataBuffer.c_str());
+        cout << "\t" << whatToDo << " " << m_Xhigh << endl;
+      }
+
+			else if (whatToDo=="Y_LOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Ylow = atof(DataBuffer.c_str());
+        cout << "\t" << whatToDo << " " << m_Ylow << endl;
+      }
+
+			else if (whatToDo=="Y_HIGH") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Yhigh = atof(DataBuffer.c_str());
+        cout << "\t" << whatToDo << " " << m_Yhigh << endl;
       }
 
 			else if (whatToDo=="MINIMIZER_PLUGIN_FILE") {

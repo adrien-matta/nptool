@@ -226,6 +226,10 @@ private:
 	// thresholds
 	double m_X_Threshold;     //!
 	double m_Y_Threshold;     //!
+	double m_Xlow;  //!
+	double m_Ylow;  //!
+	double m_Xhigh; //!
+	double m_Yhigh; //!
 
   // number of detectors
 private:
