@@ -295,30 +295,6 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
-				else  if(Name == "He_gas"){
-            if(!density)
-							density = 0.0001665*g/cm3; // room temp, 1 atm
-            G4Material* material = new G4Material("NPS_"+Name, density,1);
-            material->AddElement(GetElementFromLibrary("He"),1);
-            m_Material[Name]=material;
-            return material;
-				}
-				else  if(Name == "O2_gas"){
-            if(!density)
-							density = 0.001331*g/cm3; // room temp, 1 atm
-            G4Material* material = new G4Material("NPS_"+Name, density,1);
-            material->AddElement(GetElementFromLibrary("O"),2);
-            m_Material[Name]=material;
-            return material;
-				}
-				else  if(Name == "Ti"){
-            if(!density)
-							density = 4.5189*g/cm3;
-            G4Material* material = new G4Material("NPS_"+Name, density,1);
-            material->AddElement(GetElementFromLibrary("Ti"),1);
-            m_Material[Name]=material;
-            return material;
-				}
          
         // Usual detector material
         else  if(Name == "Si"){
@@ -766,7 +742,10 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
     string newName= oss.str();
     map<string,G4Material*>::iterator it;
     it = m_Material.find(Name);
-    double density = 0 ; 
+    double density = 0 ;
+    
+    G4double Vm=0.08206*Temperature*atmosphere/(Pressure*kelvin);
+    
     // The element is not found
     if(it==m_Material.end()){
         if(Name == "CF4"){ // 52 torr
@@ -780,7 +759,61 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             m_Material[Name]=material;
             return material;
         }
+
+        if(Name == "He"){
+            density =  (4.0026/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("He"), 1);
+            m_Material[Name]=material;
+            return material;
+        }
         
+        if(Name == "iC4H10" || Name == "Isobutane" || Name == "isobutane"){
+            density	= ((4*12.0107+10*1.00794)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 4);
+            material->AddElement(GetElementFromLibrary("H"), 10);
+            m_Material[Name]=material;
+            return material;
+        }
+        
+        if(Name == "CH4"){
+            density	= ((12.0107+4*1.00794)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("H"), 4);
+            m_Material[Name]=material;
+            return material;
+        }
+
+        if(Name == "CO2"){
+            density	= ((12.0107+2*16)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("O"), 2);
+            m_Material[Name]=material;
+            return material;
+        }
+
+        if(Name == "H2"){
+            density	= (2*1.00794/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("H"), 1);
+            material->AddElement(GetElementFromLibrary("H"), 1);
+            m_Material[Name]=material;
+            return material;
+        }
+        
+        if(Name == "D2"){
+            density	= (2*2.0140/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("D"), 1);
+            material->AddElement(GetElementFromLibrary("D"), 1);
+            m_Material[Name]=material;
+            return material;
+        }
+        
+
         else{
           exit(1);
         }
