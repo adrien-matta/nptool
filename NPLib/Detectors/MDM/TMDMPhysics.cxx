@@ -492,15 +492,21 @@ void TMDMPhysics::SendRay(double thetaX,double thetaY,double Ekin) const {
 	// but it needs to change internal variables (Fit_***), so these are
 	// made muitable in their definition
 	//
-	m_Trace->SetScatteredMass(GetParticle()->Mass()/amu_c2);
+	// Note:: All inputs/outputs in RADIANS. Converted to degrees here
+	// as required by MDMTrace, and then back to radians for the outputs
+	//
+	m_Trace->SetScatteredMass(GetParticle()->Mass()/amu_c2); // AMU
 	m_Trace->SetScatteredCharge(GetParticleQ());
-	m_Trace->SetScatteredAngle(thetaX, thetaY); // deg
-	m_Trace->SetScatteredEnergy(Ekin);
+	m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg); // deg (converted)
+	m_Trace->SetScatteredEnergy(Ekin/MeV); // MeV
 			
 	m_Trace->SendRay();
-	m_Trace->
+	m_Trace-> // angles in degrees here
 		GetOxfordWirePositions(Fit_AngleX,Fit_Xpos[0],Fit_Xpos[1],Fit_Xpos[2],Fit_Xpos[3],
 													 Fit_AngleY,Fit_Ypos[0],Fit_Ypos[1],Fit_Ypos[2],Fit_Ypos[3]);
+	// convert to radians
+	Fit_AngleX = Fit_AngleX*deg;
+	Fit_AngleY = Fit_AngleY*deg;
 }
 
 
@@ -529,7 +535,7 @@ proxy_MDM p_MDM;
 }
 
 
-void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
+void TMDMPhysics::MinimizeTarget(){
 	//
 	// check if we do the minimization
 	if(DoMinimization() == false) { 
@@ -545,13 +551,15 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	min->SetFunction(*m_MinimizerFunction);
 
 	// Set Initial parameters
+	// Note: GetInitialThetaX(), GetInitialThetaY() returns radians,
+	// but MDMTrace needs degrees
 	int ivar = 0;
 	m_MinimizerFunction->Initialize();
 	if(m_MinimizerFunction->GetFixedThetaX() == false) {
-		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX()*deg, 0.01);
+		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX()/deg, 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedThetaY() == false) {
-		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY()*deg, 0.01);
+		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY()/deg, 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedEkin() == false) {
 		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),       0.01);
@@ -561,16 +569,19 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	min->Minimize();
 
 	// Set outputs
+	// Output angles are in radians
+	// If using the initial angle, it's radians already
+	// If using the minimized angle, it's 
 	ivar = 0;
 	if(m_MinimizerFunction->GetFixedThetaX()) {
-		Target_Xang = m_MinimizerFunction->GetInitialThetaX()*deg;
+		Target_Xang = m_MinimizerFunction->GetInitialThetaX(); // already rad
 	}	else {
-		Target_Xang = min->X()[ivar++]*deg;
+		Target_Xang = min->X()[ivar++]*deg; // convert to rad
 	}
 	if(m_MinimizerFunction->GetFixedThetaY()) {
-		Target_Yang = m_MinimizerFunction->GetInitialThetaY()*deg;
+		Target_Yang = m_MinimizerFunction->GetInitialThetaY(); // already rad
 	}	else {
-		Target_Yang = min->X()[ivar++]*deg;
+		Target_Yang = min->X()[ivar++]*deg; // convert to rad
 	}
 	if(m_MinimizerFunction->GetFixedEkin()) {
 		Target_Ekin = m_MinimizerFunction->GetInitialEkin();
