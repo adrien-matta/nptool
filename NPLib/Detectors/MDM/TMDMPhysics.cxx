@@ -154,7 +154,8 @@ void TMDMPhysics::BuildPhysicalEvent() {
 		Yang = atan((Ypos[i1] - Ypos[i0]) / (Zpos[i1] - Zpos[i0]));
 	}
 
-	if(DoMinimization()) { MinimizeTarget(); }
+	// do minimization
+	MinimizeTarget();
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -529,6 +530,11 @@ proxy_MDM p_MDM;
 
 
 void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
+	//
+	// check if we do the minimization
+	if(DoMinimization() == false) { 
+		return; 
+	}
 	// Set up minimizer
 	std::unique_ptr<ROOT::Math::Minimizer> min(
 		ROOT::Math::Factory::CreateMinimizer(
