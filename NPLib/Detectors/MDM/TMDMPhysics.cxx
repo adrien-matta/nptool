@@ -551,18 +551,18 @@ void TMDMPhysics::MinimizeTarget(){
 	min->SetFunction(*m_MinimizerFunction);
 
 	// Set Initial parameters
-	// Note: GetInitialThetaX(), GetInitialThetaY() returns radians,
-	// but MDMTrace needs degrees
+	// Note: everything in RADIANS, conversion to deg for MDMTrace
+	// happens in SendRay()
 	int ivar = 0;
 	m_MinimizerFunction->Initialize();
 	if(m_MinimizerFunction->GetFixedThetaX() == false) {
-		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX()/deg, 0.01);
+		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX(), 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedThetaY() == false) {
-		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY()/deg, 0.01);
+		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY(), 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedEkin() == false) {
-		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),       0.01);
+		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),   0.01);
 	}
 
 	// Do minimization
@@ -574,14 +574,14 @@ void TMDMPhysics::MinimizeTarget(){
 	// If using the minimized angle, it's 
 	ivar = 0;
 	if(m_MinimizerFunction->GetFixedThetaX()) {
-		Target_Xang = m_MinimizerFunction->GetInitialThetaX(); // already rad
+		Target_Xang = m_MinimizerFunction->GetInitialThetaX();
 	}	else {
-		Target_Xang = min->X()[ivar++]*deg; // convert to rad
+		Target_Xang = min->X()[ivar++];
 	}
 	if(m_MinimizerFunction->GetFixedThetaY()) {
-		Target_Yang = m_MinimizerFunction->GetInitialThetaY(); // already rad
+		Target_Yang = m_MinimizerFunction->GetInitialThetaY();
 	}	else {
-		Target_Yang = min->X()[ivar++]*deg; // convert to rad
+		Target_Yang = min->X()[ivar++];
 	}
 	if(m_MinimizerFunction->GetFixedEkin()) {
 		Target_Ekin = m_MinimizerFunction->GetInitialEkin();
