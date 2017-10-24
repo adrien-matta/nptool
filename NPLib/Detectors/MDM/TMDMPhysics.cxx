@@ -79,8 +79,8 @@ TMDMPhysics::TMDMPhysics()
 	SetLightParticleAngles(0,0);
 
 	m_DoMinimization       = false;
-	m_MinimizerName        = "Minuit2";
-	m_MinimizerAlgorithm   = "Migrad";
+	m_MinimizerName        = "Minuit";
+	m_MinimizerAlgorithm   = "";
 	m_MinimizerPluginFile  = "";
 	m_MinimizerPluginClass = "";
 	m_MinimizerFunction    =  0;
