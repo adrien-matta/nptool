@@ -80,12 +80,19 @@ namespace Actar_NS{
     const double ChargeThreshold = 0;
     const double ResoTime = 0.1*ns ;
     //const double ResoEnergy = 1.0*MeV ;
-    const double ChamberThickness = 40*cm ;
-    const double ChamberWidth = 40*cm ;
+    const double ChamberThickness = 55*cm ;
+    const double ChamberWidth = 50*cm ;
     const double ChamberHeight = 40*cm ;
     //const int NumberOfPads = 16384;
     const int PadX = 128;
     const int PadZ = 128;
+
+    const double Nose_Rmin = 2.5*cm;
+    const double Nose_Rmax = 3.5*cm;
+    const double Nose_Length = 12*cm;
+
+    const double Mylar_Rmax = 3.5*cm;
+    const double Mylar_Thickness = 7*micrometer;
 
     const double XGazVolume = 256.*mm;
     const double YGazVolume = 256.*mm;
@@ -116,7 +123,7 @@ Actar::Actar(){
     m_SquareDetector = 0;
 
     // RGB Color + Transparency
-    m_VisChamber    = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5, 0.1));
+    m_VisChamber    = new G4VisAttributes(G4Colour(0.7, 0.7, 0.7, 0.3));
     m_VisWindows    = new G4VisAttributes(G4Colour(1, 0, 0, 0.25));
     m_VisGas        = new G4VisAttributes(G4Colour(0, 0.5, 0.5, 0.3));
     m_VisPads       = new G4VisAttributes(G4Colour(255, 223, 50, 0.8));
@@ -162,8 +169,16 @@ G4LogicalVolume* Actar::BuildDetector(){
         G4Box* sChamber = new G4Box("Actar_Box",Actar_NS::ChamberWidth*0.5,
                                     Actar_NS::ChamberHeight*0.5,Actar_NS::ChamberThickness*0.5);
 
-        // Gaz volume
-        G4Box* sGas = new G4Box("Actar_Gas",Actar_NS::XGazVolume*0.5,
+        //Nose volume
+        G4Tubs* sNose = new G4Tubs("Actar_Nose",Actar_NS::Nose_Rmin, Actar_NS::Nose_Rmax,Actar_NS::Nose_Length*0.5,
+                                    0*deg, 360*deg);
+
+        //Mylar volume
+        G4Tubs* sWindows = new G4Tubs("Actar_Windows",0, Actar_NS::Mylar_Rmax,Actar_NS::Mylar_Thickness*0.5,
+                                    0*deg, 360*deg);
+
+        // Cage volume
+        G4Box* sCage = new G4Box("Actar_Gas",Actar_NS::XGazVolume*0.5,
                                 Actar_NS::YGazVolume*0.5,Actar_NS::ZGazVolume*0.5);
 
         // Pad
@@ -174,9 +189,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         G4Box* sCathode = new G4Box("Actar_Cathode",26.5*cm*0.5,
                                     1*um*0.5,25.6*cm*0.5);
 
-        // Entrance/Exit windows
-        G4Box* sWindows = new G4Box("Actar_Windows",7*cm*0.5,
-                                    7*cm*0.5,12*micrometer*0.5);
+
 
         unsigned const int NumberOfGasMix = m_GasMaterial.size();
 
@@ -228,13 +241,20 @@ G4LogicalVolume* Actar::BuildDetector(){
         Al->SetMaterialPropertiesTable(MPT2);
 
         m_SquareDetector = new G4LogicalVolume(sChamber,GasMaterial,"logic_Actar_Box",0,0,0);
-        G4LogicalVolume* logicGas = new G4LogicalVolume(sGas,DriftGasMaterial,"logic_Gas",0,0,0);
+        G4LogicalVolume* logicGas = new G4LogicalVolume(sCage,DriftGasMaterial,"logic_Gas",0,0,0);
+        G4LogicalVolume* logicNose = new G4LogicalVolume(sNose,Al,"logic_Nose",0,0,0);
         G4LogicalVolume* logicPad = new G4LogicalVolume(sPad,Cu,"logic_Pad",0,0,0);
         G4LogicalVolume* logicCathode = new G4LogicalVolume(sCathode,Cu,"logic_Cathode",0,0,0);
         G4LogicalVolume* logicWindows = new G4LogicalVolume(sWindows,Mylar,"logic_Windows",0,0,0);
 
         G4RotationMatrix* Rot = new G4RotationMatrix();
+        new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,-Actar_NS::ChamberThickness*0.5+Actar_NS::Nose_Length*0.5)),
+                          logicNose,
+                          "ActarNose",m_SquareDetector,false,0);
 
+        new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,-Actar_NS::ChamberThickness*0.5+Actar_NS::Mylar_Thickness*0.5+Actar_NS::Nose_Length)),
+                          logicWindows,
+                          "ActarEntranceWindows",m_SquareDetector,false,0);
 
         new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,0)),
                           logicGas,
@@ -261,9 +281,7 @@ G4LogicalVolume* Actar::BuildDetector(){
                           logicCathode,
                           "ActarCathode",logicGas,false,0);
 
-        new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,6*cm-6*micrometer)),
-                          logicWindows,
-                          "ActarExitWindows",m_SquareDetector,false,0);
+
 
         new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(0,0,-6*cm+6*micrometer)),
                           logicWindows,
@@ -289,6 +307,7 @@ G4LogicalVolume* Actar::BuildDetector(){
 
 
         logicPad->SetSensitiveDetector(m_ActarScorer);
+        logicNose->SetVisAttributes(m_VisChamber);
         m_SquareDetector->SetVisAttributes(m_VisChamber);
         logicGas->SetVisAttributes(m_VisGas);
         logicWindows->SetVisAttributes(m_VisWindows);
