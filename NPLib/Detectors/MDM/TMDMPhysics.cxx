@@ -548,13 +548,13 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	int ivar = 0;
 	m_MinimizerFunction->Initialize();
 	if(m_MinimizerFunction->GetFixedThetaX() == false) {
-		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX(), 0.01);
+		min->SetVariable(ivar++, "thetax", m_MinimizerFunction->GetInitialThetaX()*deg, 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedThetaY() == false) {
-		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY(), 0.01);
+		min->SetVariable(ivar++, "thetay", m_MinimizerFunction->GetInitialThetaY()*deg, 0.01);
 	}
 	if(m_MinimizerFunction->GetFixedEkin() == false) {
-		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),   0.01);
+		min->SetVariable(ivar++, "ekin",   m_MinimizerFunction->GetInitialEkin(),       0.01);
 	}
 
 	// Do minimization
@@ -563,14 +563,14 @@ void TMDMPhysics::MinimizeTarget(){  // outputs, MeV, rad
 	// Set outputs
 	ivar = 0;
 	if(m_MinimizerFunction->GetFixedThetaX()) {
-		Target_Xang = m_MinimizerFunction->GetInitialThetaX();
+		Target_Xang = m_MinimizerFunction->GetInitialThetaX()*deg;
 	}	else {
-		Target_Xang = min->X()[ivar++];
+		Target_Xang = min->X()[ivar++]*deg;
 	}
 	if(m_MinimizerFunction->GetFixedThetaY()) {
-		Target_Yang = m_MinimizerFunction->GetInitialThetaY();
+		Target_Yang = m_MinimizerFunction->GetInitialThetaY()*deg;
 	}	else {
-		Target_Yang = min->X()[ivar++];
+		Target_Yang = min->X()[ivar++]*deg;
 	}
 	if(m_MinimizerFunction->GetFixedEkin()) {
 		Target_Ekin = m_MinimizerFunction->GetInitialEkin();
