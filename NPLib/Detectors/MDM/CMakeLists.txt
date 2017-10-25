@@ -12,7 +12,7 @@ if("${CMAKE_GENERATOR}" STREQUAL "Unix Makefiles")
     message(STATUS "Compiling libMDM with RAYTRACE support included.")
     add_definitions(-DUSE_RAYTRACE)
     enable_language(Fortran)
-    set (CMAKE_Fortran_FLAGS "-finit-local-zero -falign-commons -fno-automatic")
+    set (CMAKE_Fortran_FLAGS "-O3 -finit-local-zero -falign-commons -fno-automatic")
     add_library(NPMDM SHARED TMDMSpectra.cxx TMDMData.cxx TMDMPhysics.cxx TMDMPhysicsMinimizer TMDMDataDict.cxx TMDMPhysicsDict.cxx TMDMPhysicsMinimizerDict.cxx MDMTrace.cpp RAYTKIN1.F)
   else()
 ## No fortran support, compile "fake" c-version
