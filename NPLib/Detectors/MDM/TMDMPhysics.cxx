@@ -594,7 +594,7 @@ void TMDMPhysics::MinimizeTarget(){
 
 
 void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer& min){
-	min.SetMaxFunctionCalls(10000);
+	min.SetMaxFunctionCalls(1000);
 	min.SetMaxIterations(1000);
 	min.SetTolerance(0.001);
 }
