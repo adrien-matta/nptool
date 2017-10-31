@@ -758,9 +758,8 @@ int THiraPhysics::CheckEvent(){
         return 1 ; // Regular Event
     
     // INterstrip management is not coded, so waste of time to make this test
-    /*  else if(   m_PreTreatedData->GetMMStripXEMult() == m_PreTreatedData->GetMMStripYEMult()+1
-     || m_PreTreatedData->GetMMStripXEMult() == m_PreTreatedData->GetMMStripYEMult()-1  )
-     return 2 ; // Pseudo Event, potentially interstrip*/
+    else if(   fabs(m_PreTreatedData->GetHiraStripXEMult() - m_PreTreatedData->GetHiraStripYEMult() )< 3)
+        return 2 ; // Pseudo Event, potentially interstrip events
     
     else
         return -1 ; // Rejected Event
