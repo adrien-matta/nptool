@@ -127,13 +127,12 @@ void TMDMPhysics::BuildPhysicalEvent() {
   PreTreat();
 
   // match x and y
-  UInt_t mysizeX = m_PreTreatedData->GetMultX();
-  UInt_t mysizeY = m_PreTreatedData->GetMultY();
+  UInt_t mysize = m_PreTreatedData->GetMult();
 	UInt_t i0=-1, i1=-1;
-  for (UShort_t ix = 0; ix < mysizeX ; ix++) {
-    for (UShort_t iy = 0; iy < mysizeY ; iy++) {
-      if (m_PreTreatedData->GetX_DetectorNbr(ix) == m_PreTreatedData->GetY_DetectorNbr(iy)) {
-				int detno = m_PreTreatedData->GetX_DetectorNbr(ix);
+  for (UShort_t ix = 0; ix < mysize ; ix++) {
+    for (UShort_t iy = 0; iy < mysize ; iy++) {
+      if (m_PreTreatedData->GetDetectorNbr(ix) == m_PreTreatedData->GetDetectorNbr(iy)) {
+				int detno = m_PreTreatedData->GetDetectorNbr(ix);
 
 				if(detno >= 0 && detno < 4) {
 					DetectorNumber.push_back(detno);
@@ -169,26 +168,17 @@ void TMDMPhysics::PreTreat() {
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
-  // X - position
-  UInt_t mysize = m_EventData->GetMultX();
+  UInt_t mysize = m_EventData->GetMult();
   for (UShort_t i = 0; i < mysize ; ++i) {
-    if (m_EventData->Get_Xpos(i) < m_X_Threshold) {
-      Double_t Xpos = Cal->ApplyCalibration("MDM/XPOS"+NPL::itoa(m_EventData->GetX_DetectorNbr(i)),m_EventData->Get_Xpos(i));
+    if (m_EventData->Get_Xpos(i) < m_X_Threshold && m_EventData->Get_Ypos(i) < m_Y_Threshold) {
+      Double_t Xpos = Cal->ApplyCalibration("MDM/XPOS"+NPL::itoa(m_EventData->GetDetectorNbr(i)),m_EventData->Get_Xpos(i));
+      Double_t Ypos = Cal->ApplyCalibration("MDM/YPOS"+NPL::itoa(m_EventData->GetDetectorNbr(i)),m_EventData->Get_Ypos(i));
+			Double_t Mass = m_EventData->GetParticleMass(i);
+			UShort_t Charge = m_EventData->GetParticleCharge(i);
       if (true) {
-        m_PreTreatedData->SetXpos(m_EventData->GetX_DetectorNbr(i), Xpos);
+				m_PreTreatedData->SetHit(m_EventData->GetDetectorNbr(i), Xpos, Ypos, Charge, Mass);
       }
-    }
-  }
-
-	// Y - position
-  mysize = m_EventData->GetMultY();
-  for (UShort_t i = 0; i < mysize ; ++i) {
-    if (m_EventData->Get_Ypos(i) < m_Y_Threshold) {
-      Double_t Ypos = Cal->ApplyCalibration("MDM/YPOS"+NPL::itoa(m_EventData->GetY_DetectorNbr(i)),m_EventData->Get_Ypos(i));
-      if (true) {
-        m_PreTreatedData->SetYpos(m_EventData->GetY_DetectorNbr(i), Ypos);
-      }
-    }
+		}
   }
 }
 

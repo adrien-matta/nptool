@@ -33,15 +33,20 @@ class TMDMData : public TObject {
   //////////////////////////////////////////////////////////////
   // data members are hold into vectors in order 
   // to allow multiplicity treatment
-  private: 
+  private:
+	  // Detector Number
+    vector<UShort_t>   fMDM_DetectorNbr;
+
     // X - position
-    vector<UShort_t>   fMDM_X_DetectorNbr;
     vector<Double_t>   fMDM_Xpos;
 
     // Y - position
-    vector<UShort_t>   fMDM_Y_DetectorNbr;
     vector<Double_t>   fMDM_Ypos;
 
+		// Particle ID
+		vector<UShort_t>   fMDM_Particle_Charge;
+		vector<Double_t>   fMDM_Particle_Mass;
+		
 
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
@@ -65,39 +70,36 @@ class TMDMData : public TObject {
   // add //! to avoid ROOT creating dictionnary for the methods
   public:
     //////////////////////    SETTERS    ////////////////////////
-    // X - position
-    inline void SetXpos(const UShort_t& DetNbr,const Double_t& x){
-      fMDM_X_DetectorNbr.push_back(DetNbr);
+    //
+		inline void SetHit(UShort_t DetNbr, Double_t x, Double_t y, UShort_t charge, Double_t mass){
+      fMDM_DetectorNbr.push_back(DetNbr);
       fMDM_Xpos.push_back(x);
-    };//!
-
-    // Y - position
-    inline void SetYpos(const UShort_t& DetNbr,const Double_t& y){
-      fMDM_Y_DetectorNbr.push_back(DetNbr);
       fMDM_Ypos.push_back(y);
+			fMDM_Particle_Mass.push_back(mass);
+			fMDM_Particle_Charge.push_back(charge);
     };//!
 
 
     //////////////////////    GETTERS    ////////////////////////
+    inline UShort_t GetMult() const
+      {return fMDM_DetectorNbr.size();}
+    inline UShort_t GetDetectorNbr(const unsigned int &i) const 
+      {return fMDM_DetectorNbr[i];}//!
     // X - position
-    inline UShort_t GetMultX() const
-      {return fMDM_X_DetectorNbr.size();}
-    inline UShort_t GetX_DetectorNbr(const unsigned int &i) const 
-      {return fMDM_X_DetectorNbr[i];}//!
     inline Double_t Get_Xpos(const unsigned int &i) const 
       {return fMDM_Xpos[i];}//!
-
 		// Y - position
-    inline UShort_t GetMultY() const
-      {return fMDM_Y_DetectorNbr.size();}
-    inline UShort_t GetY_DetectorNbr(const unsigned int &i) const 
-      {return fMDM_Y_DetectorNbr[i];}//!
     inline Double_t Get_Ypos(const unsigned int &i) const 
       {return fMDM_Ypos[i];}//!
-
+		// Particle ID
+		inline Double_t GetParticleMass(const unsigned int& i) const
+		  {return fMDM_Particle_Mass[i];}//!
+		inline UShort_t GetParticleCharge(const unsigned int& i) const
+		  {return fMDM_Particle_Charge[i];}//!
+		
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary
-  ClassDef(TMDMData,1)  // MDMData structure
+  ClassDef(TMDMData,2)  // MDMData structure
 };
 
 #endif

@@ -153,7 +153,7 @@ void MDM::ReadConfiguration(NPL::InputParser parser){
 void MDM::ConstructDetector(G4LogicalVolume* world){
   G4double wX = 0;
   G4double wY = 0;
-  G4double wZ = 1e-6*m;
+  G4double wZ = 30*cm;
   G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
 
   new G4PVPlacement(0, Det_pos, BuildSquareDetector(), 
@@ -186,7 +186,7 @@ void MDM::ReadSensitive(const G4Event* event){
     // Read energy, position, momentum
     double Ekin              = Iter.second->Edep;  // MeV
     double Mass              = Iter.second->Mass;  // MeV/c^2
-    double Charge            = Iter.second->Charge;// e
+    unsigned short Charge    = Iter.second->Charge;// e
     const G4ThreeVector& Pos = Iter.second->Pos;   // mm
     const G4ThreeVector& Mom = Iter.second->Mom;   // rad
 		
@@ -218,8 +218,7 @@ void MDM::ReadSensitive(const G4Event* event){
 		
     // Set X, Y positions in TMDMData class
     for(int i=0; i< 4; ++i) {
-      m_Event->SetXpos(i, x[i]);
-      m_Event->SetYpos(i, y[i]);
+			m_Event->SetHit(i, x[i], y[i], Charge, Mass/amu_c2);
     }
   
     ++indx;

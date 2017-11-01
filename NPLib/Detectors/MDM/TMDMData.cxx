@@ -44,12 +44,14 @@ TMDMData::~TMDMData() {
 
 //////////////////////////////////////////////////////////////////////
 void TMDMData::Clear() {
-  // Energy
-  fMDM_X_DetectorNbr.clear();
+  fMDM_DetectorNbr.clear();
+  // X
   fMDM_Xpos.clear();
-  // Time
-  fMDM_Y_DetectorNbr.clear();
+  // Y
   fMDM_Ypos.clear();
+	// ID
+	fMDM_Particle_Mass.clear();
+	fMDM_Particle_Charge.clear();
 }
 
 
@@ -60,20 +62,14 @@ void TMDMData::Dump() const {
   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TMDMData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
 
   // X - position
-  size_t mysize = fMDM_X_DetectorNbr.size();
-  cout << "MDM_X_Mult: " << mysize << endl;
+  size_t mysize = fMDM_DetectorNbr.size();
+  cout << "MDM_Mult: " << mysize << endl;
  
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fMDM_X_DetectorNbr[i]
-         << " X position: " << fMDM_Xpos[i];
-  }
-  
-  // Y - position
-  mysize = fMDM_Y_DetectorNbr.size();
-  cout << "MDM_Y_Mult: " << mysize << endl;
- 
-  for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fMDM_Y_DetectorNbr[i]
-         << " Y position: " << fMDM_Ypos[i];
-  }
+    cout << "DetNbr: " << fMDM_DetectorNbr[i]
+         << ", X position: " << fMDM_Xpos[i]
+         << ", Y position: " << fMDM_Ypos[i]
+				 << ", Particle Mass: " << fMDM_Particle_Mass[i]
+				 << ", Particle Charge: " << fMDM_Particle_Charge[i] << endl;
+	}
 }
