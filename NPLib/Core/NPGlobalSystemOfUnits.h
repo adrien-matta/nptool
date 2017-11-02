@@ -106,6 +106,7 @@ using NPUNITS::watt;
 using NPUNITS::newton;
 using NPUNITS::hep_pascal;
 using NPUNITS::bar;
+using NPUNITS::torr;
 using NPUNITS::atmosphere;
 using NPUNITS::ampere;
 using NPUNITS::milliampere;

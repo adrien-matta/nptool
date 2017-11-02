@@ -191,22 +191,28 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
 void NPL::DetectorManager::BuildPhysicalEvent(){
 #if __cplusplus > 199711L
   // add new job
+//cout << "TEST0a" << endl;
   map<string,VDetector*>::iterator it;
   unsigned int i = 0;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+//cout << "TEST0" << endl;
     m_Ready[i++]=true;
   }
-
+//cout << "TEST1" << endl;
   { // aquire the sub thread lock
     std::unique_lock<std::mutex> lk(m_ThreadMtx);
   }
   m_CV.notify_all();
 
+//cout << "TEST2" << endl;
   while(!IsDone()){
-    // this_thread::yield();
+//cout << "TEST2a" << endl;
+     //this_thread::yield();
   }
+//cout << "TEST2b" << endl;
 
 #else 
+//cout << "TEST3" << endl;
   map<string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
     (it->second->*m_ClearEventPhysicsPtr)();
@@ -375,6 +381,7 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
   vector<bool>::iterator it = m_Ready.begin()+id;
   while(true){
     { // Aquire the lock
+////cout << "WWWW" << endl;
       std::unique_lock<std::mutex> lk(m_ThreadMtx);    
       // wait for work to be given
       while(!m_Ready[id]){
@@ -409,9 +416,16 @@ void NPL::DetectorManager::StopThread(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::DetectorManager::IsDone(){
+int ijk=0;
+//cout << m_Ready.size() << " !" << endl;
   for(vector<bool>::iterator it =  m_Ready.begin() ; it!=m_Ready.end() ; it++){
     if((*it))
+{
+ijk++;
+//cout << *it << endl;
+//cout << ijk << endl;
       return false;
+}
   }
   return true;
 }

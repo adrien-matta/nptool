@@ -1,0 +1,19 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 1 micrometer
+ ANGLE= 0 deg
+ RADIUS= 7.5 mm
+ MATERIAL= CH2
+ X= 0 mm
+ Y= 0 mm
+ Z= -110 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Actar
+ POS= 0 0 0 mm
+ Shape= Square
+ Si= 1
+ CsI= 1
+ GasMaterial= iC4H10
+ GasFraction= 100
+ Temperature= 295 kelvin
+ Pressure= 0.4 bar

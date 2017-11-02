@@ -246,24 +246,50 @@ void Tiara::ReadSensitive(const G4Event* event){
     double EF = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EF>EnergyThreshold){
       int RingNumber=Info[8];
-      RingNumber=abs(RingNumber-17);    
+	//by Shuya 171009
+      RingNumber=abs(RingNumber);    
+      //RingNumber=abs(RingNumber-17);    
       Info[8]=RingNumber; 
       m_EventHyball->SetRingE(Info[7],Info[8],EF);
       m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 
     }
 
     // Back Energy
-    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyHyball);
+//by Shuya 171009. Infor[1] is Timing data... no make sense.
+    //double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyHyball);
+    double EB = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EB>EnergyThreshold){
-      m_EventHyball->SetSectorE(Info[7],Info[9],EF);
+//by Shuya 171012.
+	double m_axis = -100.0;
+	double m_phi = Info[6];
+	if(Info[6]<0)	m_phi = Info[6]+2.0*M_PI;
+	if(Info[7]==1)	m_axis = 210.0/180.0*M_PI;
+	else if(Info[7]==2)	m_axis = 150.0/180.0*M_PI;
+	else if(Info[7]==3)	m_axis = 90.0/180.0*M_PI;
+	else if(Info[7]==4)	m_axis = 30.0/180.0*M_PI;
+	else if(Info[7]==5)	m_axis = 330.0/180.0*M_PI;
+	else if(Info[7]==6)	m_axis = 270.0/180.0*M_PI;
+    	double m_StripPitchSector_Tiara = (0.5*HYBALL_ActiveWafer_Angle-(-0.5*HYBALL_ActiveWafer_Angle))/HYBALL_NumberOfRadialStrip;
+	Info[9] = (int)((m_phi - (m_axis - 0.5*HYBALL_ActiveWafer_Angle)) / m_StripPitchSector_Tiara ) + 1 ;
+//by Shuya 171009
+      //m_EventHyball->SetSectorE(Info[7],Info[9],EF);
+      m_EventHyball->SetSectorE(Info[7],Info[9],EB);
       m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
     }
     // Interaction Coordinates
+//by Shuya 171009
+/*
     ms_InterCoord->SetDetectedPositionX(Info[5]) ;
     ms_InterCoord->SetDetectedPositionY(Info[6]) ;
     ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
     ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
     ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
+*/
+    ms_InterCoord->SetDetectedPositionX(Info[2]) ;
+    ms_InterCoord->SetDetectedPositionY(Info[3]) ;
+    ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
+    ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
+    ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
   }
   // Clear Map for next event
   HyballHitMap->clear();

@@ -168,15 +168,19 @@ int main(int argc , char** argv){
     if(!IsPhysics){ 
       for (unsigned int i = 0 ; i < nentries; i++) { 
         // Get the raw Data
+	//cout << "!" << endl;
         Chain -> GetEntry(i);
-        Chain -> GetEntry(i);
+	//cout << "!!" << endl;
         // Build the current event
         myDetector->BuildPhysicalEvent();
+	//cout << "!!!" << endl;
         // User Analysis
         UserAnalysis->TreatEvent();
+	//cout << "!!!!" << endl;
         // Fill the tree      
         tree->Fill();
       
+	//cout << "!!!!!" << endl;
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         
