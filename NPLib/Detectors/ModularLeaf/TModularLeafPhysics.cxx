@@ -176,6 +176,6 @@ class proxy_modularleaf{
     }
 };
 
-proxy_modularleaf p;
+proxy_modularleaf p_modularleaf;
 }
 
