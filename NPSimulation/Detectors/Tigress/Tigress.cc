@@ -54,9 +54,10 @@
 
 // NPS
 #include "Tigress.hh"
-//#include "TigressScorers.hh"
+#include "TigressScorers.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
+#include "NPSHitsMap.hh"
 
 // NPL
 #include "NPOptionManager.h"
@@ -102,7 +103,7 @@ namespace {
 // Tigress Specific Method
 Tigress::Tigress(){
   InitializeMaterial();
-  m_Event = new TTigressData();
+  m_TigressData = new TTigressData();
 
   BlueVisAtt   = new G4VisAttributes(G4Colour(0, 0, 1)) ;
   GreenVisAtt  = new G4VisAttributes(G4Colour(0, 1, 0)) ;
@@ -126,7 +127,7 @@ void Tigress::ReadConfiguration(NPL::InputParser parser){
 
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Tigress","Clover");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << "free clovers found " << endl; 
+    cout << "//// " << blocks.size() << " free clovers found " << endl; 
 
   vector<string> token = {"CloverID","R","Theta","Phi","Beta"};
 
@@ -135,9 +136,8 @@ void Tigress::ReadConfiguration(NPL::InputParser parser){
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
+      vector<double> beta = blocks[i]->GetVectorDouble("Beta","deg");
       int     id = blocks[i]->GetInt("CloverID");
-      vector<double> beta = blocks[i]->GetVectorDouble("Beta","mm");
-
       AddCloverFreePosition(id,R,Theta,Phi,beta[0],beta[1],beta[2]);
     }
 
@@ -288,8 +288,7 @@ G4LogicalVolume* Tigress::ConstructBGO(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Return a clover in the configuration given by option (not use a the moment)
-void Tigress::ConstructClover(){
-
+void Tigress::ConstructClover(){	
   if(m_LogicClover==0){
     // Construct the clover itself
     m_LogicClover = ConstructCapsule();
@@ -320,7 +319,9 @@ void Tigress::ConstructClover(){
     new G4PVPlacement(G4Transform3D(*CrystalRotation, CrystalPositionW),
         logicCrystal,"LogicCrystalW",m_LogicClover,false,4);
 
-  }
+		logicCrystal->SetSensitiveDetector(m_HPGeScorer);
+		// m_LogicClover->SetSensitiveDetector(m_HPGeScorer);
+	}
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -563,178 +564,81 @@ void Tigress::InitializeRootOutput(){
   RootOutput *pAnalysis = RootOutput::getInstance();
   TTree *pTree = pAnalysis->GetTree();
   if(!pTree->FindBranch("Tigress")){
-    pTree->Branch("Tigress", "TTigressData", &m_Event) ;
+    pTree->Branch("Tigress", "TTigressData", &m_TigressData) ;
   }
-  pTree->SetBranchAddress("Tigress", &m_Event) ;    
+  pTree->SetBranchAddress("Tigress", &m_TigressData) ;    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void Tigress::ReadSensitive(const G4Event* event){
-  event->GetHCofThisEvent(); // event should be used to remove compilation warning
-  /*m_Event->Clear();
+  m_TigressData->Clear();
 
   ///////////
-  // BOX
-  NPS::HitsMap<G4double*>*     BOXHitMap;
-  std::map<G4int, G4double**>::iterator    BOX_itr;
+  // HPGE
+  NPS::HitsMap<G4double*>*     HPGEHitMap;
+  std::map<G4int, G4double**>::iterator    HPGE_itr;
 
-  G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tigress_BOXScorer/TigressBOX");
-  BOXHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
+  G4int HPGECollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tigress_Scorer/Tigress");
+	if(HPGECollectionID == -1) {
+		G4cerr << "ERROR: No Collection found for HPGeScorer: Skipping processing of HPGe Hit" << G4endl;
+		return;
+	}
+  HPGEHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HPGECollectionID));
 
-  // Loop on the BOX map
-  for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
+  // Loop on the HPGE map
+  for (HPGE_itr = HPGEHitMap->GetMap()->begin() ; HPGE_itr != HPGEHitMap->GetMap()->end() ; HPGE_itr++){
 
-  G4double* Info = *(BOX_itr->second);
+		G4double* Info = *(HPGE_itr->second);
 
-  double Energy =  Info[0];
-  double Time  = Info[1];
-  int DetNbr =     (int) Info[2];
-  int StripFront = (int) Info[3];
-  int StripBack =  (int) Info[4];
-
-  m_Event->SetFront_DetectorNbr(DetNbr);
-  m_Event->SetFront_StripNbr(StripFront);
-  m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-  m_Event->SetBack_DetectorNbr(DetNbr);
-  m_Event->SetBack_StripNbr(StripBack);
-  m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-
-  // Interraction Coordinates
-  ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-  ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-  ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-  ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-  ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-
+		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
+		G4double Time     =  Info[1];
+		G4int CloverNbr   = (int)Info[7];
+		G4int CrystalNbr  = (int)Info[8];
+    
+		// Figure out segment number, in progress
+		G4int SegmentNbr = 0;
+		G4double zpos = Info[4]; // mm
+		if(fabs(zpos) < 10)                         { SegmentNbr = 2; } // MIDDLE
+		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
+		else                                        { SegmentNbr = 3; } // LEFT
+		
+		// To avoid warning for now, in progress
+    Energy=Energy;
+    Time=Time;
+    CloverNbr=CloverNbr;
+    CrystalNbr=CrystalNbr;
+    SegmentNbr=SegmentNbr;
+    
+		//m_TigressData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
+		//m_TigressData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
+		//m_TigressData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
+		//m_TigressData->SetSegmentT(CloverNbr, SegmentNbr, Time/keV);
   }
 
   // clear map for next event
-  BOXHitMap->clear();
-
-  ///////////
-  // PAD
-  NPS::HitsMap<G4double*>*     PADHitMap;
-  std::map<G4int, G4double**>::iterator    PAD_itr;
-
-  G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tigress_PADScorer/TigressPAD");
-  PADHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
-
-  // Loop on the BOX map
-  for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
-
-  G4double* Info = *(PAD_itr->second);
-
-  double Energy =  Info[0];
-  double Time  = Info[1];
-  int DetNbr =     (int) Info[2];
-
-  m_Event->SetPAD_DetectorNbr(DetNbr);
-  m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
-  m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
-  m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-  }
-
-  // clear map for next event
-  PADHitMap->clear();
-
-  ///////////
-  // QQQ
-  NPS::HitsMap<G4double*>*     QQQHitMap;
-  std::map<G4int, G4double**>::iterator    QQQ_itr;
-
-  G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tigress_QQQScorer/TigressQQQ");
-  QQQHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
-
-  // Loop on the BOX map
-  for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){
-
-    G4double* Info = *(QQQ_itr->second);
-
-    double Energy =  Info[0];
-    double Time  = Info[1];
-    int DetNbr =     (int) Info[2];
-    int StripFront = (int) Info[3];
-    int StripBack =  (int) Info[4];
-
-    m_Event->SetFront_DetectorNbr(DetNbr);
-    m_Event->SetFront_StripNbr(StripFront);
-    m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-    m_Event->SetBack_DetectorNbr(DetNbr);
-    m_Event->SetBack_StripNbr(StripBack);
-    m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-    m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-    m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-    // Interraction Coordinates
-    ms_InterCoord->SetDetectedPositionX(Info[5]) ;
-    ms_InterCoord->SetDetectedPositionY(Info[6]) ;
-    ms_InterCoord->SetDetectedPositionZ(Info[7]) ;
-    ms_InterCoord->SetDetectedAngleTheta(Info[8]/deg) ;
-    ms_InterCoord->SetDetectedAnglePhi(Info[9]/deg) ;
-
-  }
-
-  // clear map for next event
-  QQQHitMap->clear();
-  */
+  HPGEHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tigress::InitializeScorers(){
-  /*
-  //   Silicon Associate Scorer
-  m_BOXScorer = new G4MultiFunctionalDetector("Tigress_BOXScorer");
-  m_PADScorer = new G4MultiFunctionalDetector("Tigress_PADScorer");
-  m_QQQScorer = new G4MultiFunctionalDetector("Tigress_QQQScorer");
+	//Look for previous definition of the scorer (geometry reload)
+	//n.b. calls new G4MultiFunctionalDetector("Tigress_CoreScorer");
+  bool already_exist = false;
+  m_HPGeScorer = CheckScorer("Tigress_Scorer",already_exist);
 
-  G4VPrimitiveScorer* BOXScorer =
-  new  Tigress::PS_Silicon_Rectangle("TigressBOX",
-  BOX_Wafer_Length,
-  BOX_Wafer_Width,
-  BOX_Wafer_Back_NumberOfStrip ,
-  BOX_Wafer_Front_NumberOfStrip,
-  EnergyThreshold);
-
-  G4VPrimitiveScorer* PADScorer =
-  new  Tigress::PS_Silicon_Rectangle("TigressPAD",
-  PAD_Wafer_Length,
-  PAD_Wafer_Width,
-  1 ,
-  1,
-  EnergyThreshold);
-
-  G4VPrimitiveScorer* QQQScorer =
-  new  Tigress::PS_Silicon_Annular("TigressQQQ",
-  QQQ_Wafer_Inner_Radius,
-  QQQ_Wafer_Outer_Radius,
-  QQQ_Wafer_Stopping_Phi-QQQ_Wafer_Starting_Phi,
-  QQQ_Wafer_NumberOf_RadialStrip,
-  QQQ_Wafer_NumberOf_AnnularStrip,
-  EnergyThreshold);
-
-
+	// if the scorer were created previously nothing else need to be made
+  if(already_exist) return;
+		
+  //   HPGe Associate Scorer
+  G4VPrimitiveScorer* HPGeScorer = new  TIGRESSSCORERS::PS_Tigress("Tigress",0);
 
   //and register it to the multifunctionnal detector
-  m_BOXScorer->RegisterPrimitive(BOXScorer);
-  m_PADScorer->RegisterPrimitive(PADScorer);
-  m_QQQScorer->RegisterPrimitive(QQQScorer);
+  m_HPGeScorer->RegisterPrimitive(HPGeScorer);
 
-  //   Add All Scorer to the Global Scorer Manager
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_BOXScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_QQQScorer) ;*/
+	//   Add All Scorer to the Global Scorer Manager
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_HPGeScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
