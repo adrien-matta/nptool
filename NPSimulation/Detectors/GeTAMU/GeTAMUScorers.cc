@@ -37,7 +37,7 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   m_CrystalNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
-  //from local position one should eb able to calculate the segments
+  //from local position one should be able to calculate the segments
   m_LocalPosition = aStep->GetPreStepPoint()->GetTouchableHandle()
                          ->GetHistory()->GetTopTransform().TransformPoint(m_Position);
 
@@ -48,6 +48,11 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[5] = m_Position.theta();
   Infos[6] = m_Position.phi();
 
+  //This will be used in the future to calculate the segments
+  Infos[9] = m_LocalPosition.x();
+  Infos[10] = m_LocalPosition.y();
+  Infos[11] = m_LocalPosition.z();
+
 	// Find Clover with Closest central phi angle
 	G4double phiDeg = Infos[6]*180/CLHEP::pi;
 	G4double distance[4] = { fabs(phiDeg - 45) , fabs(phiDeg - 135) , fabs(phiDeg - -135) , fabs(phiDeg - -45) };
@@ -55,11 +60,6 @@ G4bool PS_GeTAMU::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 	
 	Infos[7] = m_CloverNumber;
   Infos[8] = m_CrystalNumber;
-
-  //This will be used in the future to calculate the segments
-  Infos[9] = m_LocalPosition.x();
-  Infos[10] = m_LocalPosition.y();
-  Infos[11] = m_LocalPosition.z();
 
 	m_Index = m_CloverNumber * 1 + m_CrystalNumber * 1e3;
 
