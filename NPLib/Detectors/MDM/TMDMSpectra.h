@@ -49,9 +49,9 @@ class TMDMSpectra : public VSpectra {
   //////////////////////////////////////////////////////////////
   // Filling methods
   public:
-    void FillRawSpectra(TMDMData*);
-    void FillPreTreatedSpectra(TMDMData*);
-    void FillPhysicsSpectra(TMDMPhysics*);
+    void FillRawSpectra(void*);
+    void FillPreTreatedSpectra(void*);
+    void FillPhysicsSpectra(void*);
 
   //////////////////////////////////////////////////////////////
   // Detector parameters 

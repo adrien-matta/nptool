@@ -107,7 +107,7 @@ void TMDMSpectra::InitPhysicsSpectra() {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void TMDMSpectra::FillRawSpectra(TMDMData* RawData) {
+void TMDMSpectra::FillRawSpectra(void* RawData) {
 # if 0
   static string name;
   static string family;
@@ -135,7 +135,7 @@ void TMDMSpectra::FillRawSpectra(TMDMData* RawData) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void TMDMSpectra::FillPreTreatedSpectra(TMDMData* PreTreatedData) {
+void TMDMSpectra::FillPreTreatedSpectra(void* PreTreatedData) {
 #if 0
   static string name;
   static string family;
@@ -163,7 +163,7 @@ void TMDMSpectra::FillPreTreatedSpectra(TMDMData* PreTreatedData) {
 
 
 ////////////////////////////////////////////////////////////////////////////////
-void TMDMSpectra::FillPhysicsSpectra(TMDMPhysics* Physics) {
+void TMDMSpectra::FillPhysicsSpectra(void* Physics) {
 #if 0
   static string name;
   static string family;

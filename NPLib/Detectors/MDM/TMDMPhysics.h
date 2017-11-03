@@ -183,7 +183,7 @@ public:
 
 	// give and external TMDMData object to TMDMPhysics. 
 	// needed for online analysis for example
-	void SetRawDataPointer(TMDMData* rawDataPointer) {m_EventData = rawDataPointer;}
+	void SetRawDataPointer(void* rawDataPointer) {m_EventData = (TMDMData*)rawDataPointer;}
 
 	// do chi2 minimization to find most likely energy, angle parameters @target
 	void MinimizeTarget();
