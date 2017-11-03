@@ -70,6 +70,10 @@ ClassImp(TTiaraHyballPhysics)
     m_StripSector_E_RAW_Threshold = 0 ;
     m_StripSector_E_Threshold = 0.300 ; // MeV
 
+//by Shuya 171019
+    m_Take_E_Ring_Sector_Average=false;
+    m_Sigma_Ring_E = 0.018;	// MeV
+    m_Sigma_Sector_E = 0.022;	// MeV
 //by Shuya 170523.
     //m_Take_E_Ring=false;
     m_Take_E_Ring=true;
@@ -124,8 +128,36 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       StripSector_E.push_back(Sector_E) ;
       StripSector_T.push_back(Sector_T) ;
 
+//by Shuya 170703
+/*
       if(m_Take_E_Ring)
         Strip_E.push_back(Ring_E) ;
+      else
+        Strip_E.push_back(Sector_E) ;
+*/
+	//by Shuya 171019
+      if(m_Take_E_Ring_Sector_Average)
+	{
+		if(Ring_E && Sector_E)
+		{
+			double	Weighted_E, Sigma_RingE2, Sigma_SectorE2;
+			double	Sigma_RingE = m_Sigma_Ring_E;
+			double	Sigma_SectorE = m_Sigma_Sector_E;
+			Sigma_RingE2 = m_Sigma_Ring_E * m_Sigma_Ring_E;
+			Sigma_SectorE2 = m_Sigma_Sector_E * m_Sigma_Sector_E;
+
+			Weighted_E = (Ring_E / Sigma_RingE2 + Sector_E / Sigma_SectorE2) / (1.0 / Sigma_RingE2 + 1.0 / Sigma_SectorE2); 
+			Strip_E.push_back(Weighted_E) ;
+		}
+		else if(Ring_E)	Strip_E.push_back(Ring_E) ;
+		else	Strip_E.push_back(Sector_E) ;
+	}
+      //if(m_Take_E_Ring)
+      else if(m_Take_E_Ring)
+	{
+		if(Ring_E)	Strip_E.push_back(Ring_E) ;
+		else	Strip_E.push_back(Sector_E) ;
+	}
       else
         Strip_E.push_back(Sector_E) ;
 
@@ -277,7 +309,9 @@ void TTiaraHyballPhysics::ReadAnalysisConfig(){
     getline(AnalysisConfigFile, LineBuffer);
 
     // search for "header"
-    if (LineBuffer.compare(0, 11, "ConfigTiaraHyball") == 0) ReadingStatus = true;
+//by Shuya 171019
+    //if (LineBuffer.compare(0, 11, "ConfigTiaraHyball") == 0) ReadingStatus = true;
+    if (LineBuffer.compare(0, 17, "ConfigTiaraHyball") == 0) ReadingStatus = true;
 
     // loop on tokens and data
     while (ReadingStatus ) {
@@ -336,6 +370,26 @@ void TTiaraHyballPhysics::ReadAnalysisConfig(){
 
         else cout << "Warning: detector type for TiaraHyball unknown!" << endl;
 
+      }
+
+	//by Shuya 171019
+      else if (whatToDo=="TAKE_E_RING_SECTOR_Average") {
+        m_Take_E_Ring_Sector_Average = true;
+        cout << whatToDo << endl;
+      }
+
+	//by Shuya 171019
+      else if (whatToDo=="SIGMA_RING_E") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Sigma_Ring_E = atof(DataBuffer.c_str() );
+        cout << "STANDARD DEVIATION OF RING ENERGY " << m_Sigma_Ring_E <<endl;
+      }
+
+	//by Shuya 171019
+      else if (whatToDo=="SIGMA_SECTOR_E") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Sigma_Sector_E = atof(DataBuffer.c_str() );
+        cout << "STANDARD DEVIATION OF SECTOR ENERGY " << m_Sigma_Sector_E <<endl;
       }
 
       else if (whatToDo=="TAKE_E_RING") {

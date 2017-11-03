@@ -167,6 +167,10 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
     // By default take EX and TY.
     bool m_Take_E_Ring;//!
     bool m_Take_T_Sector;//!
+//by Shuya 171019
+    bool m_Take_E_Ring_Sector_Average;//!
+    double m_Sigma_Ring_E;
+    double m_Sigma_Sector_E;
 
     //   Event over this value after pre-treatment are not treated / avoid long treatment time on spurious event   
     unsigned int m_MaximumStripMultiplicityAllowed  ;//!
@@ -203,7 +207,7 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
 
     public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();
-     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
+     ClassDef(TTiaraHyballPhysics,2)  // SharcPhysics structure
 };
 
 namespace TiaraHyball_LOCAL{

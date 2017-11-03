@@ -130,6 +130,7 @@ void Analysis::TreatEvent(){
     for(int i=0; i<FA->Energy.size(); i++){
         ThetaLabFA = InteractionCoordinates->GetDetectedAngleTheta(i);
         PhiLabFA = InteractionCoordinates->GetDetectedAnglePhi(i);
+        StartTimeFA = FA->Time[0];
     }
     
     FAMultiplicity = FA->DetectorNumber.size();
@@ -163,6 +164,7 @@ void Analysis::InitOutputBranch() {
     
     RootOutput::getInstance()->GetTree()->Branch("ThetaLabFA",&ThetaLabFA,"ThetaLabFA/D");
     RootOutput::getInstance()->GetTree()->Branch("PhiLabFA",&PhiLabFA,"PhiLabFA/D");
+    RootOutput::getInstance()->GetTree()->Branch("StartTimeFA",&StartTimeFA,"StartTimeFA/D");
     
     RootOutput::getInstance()->GetTree()->Branch("MBMultiplicity",&MBMultiplicity,"MBMultiplicity/I");
     RootOutput::getInstance()->GetTree()->Branch("NWMultiplicity",&NWMultiplicity,"NWMultiplicity/I");
@@ -200,6 +202,7 @@ void Analysis::ReInitValue(){
     EF              = -100;
     HiraELab        = -100;
     E_CsI           = -100;
+    StartTimeFA     = -100;
     
     FAMultiplicity  = -1;
     NWMultiplicity  = -1;

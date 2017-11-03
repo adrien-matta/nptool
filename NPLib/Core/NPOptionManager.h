@@ -105,6 +105,7 @@ class NPOptionManager{
       bool   GetG4BatchMode()              {return fG4BatchMode;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
+      int    GetFirstEntryToAnalyse()      {return fFirstEntryToAnalyse;} 
       string GetSharedLibExtension()       {return fSharedLibExtension;}     
       string GetLastFile();                 
       
@@ -143,6 +144,7 @@ class NPOptionManager{
       bool   fLastAnyFile;
       int    fVerboseLevel; // 0 for not talk, 1 for talking
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
+      int    fFirstEntryToAnalyse; // use to set the first event analysed in NPA (total: fFirstEntryToAnalyse -> fFirstEntryToAnalyse + fNumberOfEntryToAnalyse)
       string fSharedLibExtension; // lib extension is platform dependent
       string fG4MacroPath; // Path to a geant4 macro to execute at start of nps
       bool fG4BatchMode; // Execute geant4 in batch mode, running the given macro

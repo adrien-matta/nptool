@@ -102,10 +102,13 @@ int main(int argc , char** argv){
   std::cout << std::endl << "///////// Starting Analysis ///////// "<< std::endl;
   TChain* Chain = RootInput:: getInstance()->GetChain();
   myOptionManager->GetNumberOfEntryToAnalyse();
- 
+
+	unsigned long first_entry = myOptionManager->GetFirstEntryToAnalyse(); // defaults to zero
   unsigned long nentries = Chain->GetEntries();
   if(nentries> myOptionManager->GetNumberOfEntryToAnalyse() && myOptionManager->GetNumberOfEntryToAnalyse()>0)
-    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ; 
+    nentries = myOptionManager->GetNumberOfEntryToAnalyse() ;
+	if(nentries + first_entry > Chain->GetEntries()) {nentries = first_entry+Chain->GetEntries();}
+	
 
   TString ChainName = Chain->GetName();
   std::cout << " Number of Event to be treated : " << nentries << " on chain " << ChainName << std::endl;
@@ -124,7 +127,7 @@ int main(int argc , char** argv){
 
   if(UserAnalysis==NULL){ 
     if(!IsPhysics){
-      for (unsigned int i = 0 ; i < nentries; i++) { 
+      for (unsigned long i = first_entry ; i < nentries + first_entry; i++) { 
         // Get the raw Data
         Chain -> GetEntry(i);
         // Build the current event
@@ -166,17 +169,21 @@ int main(int argc , char** argv){
 
   else{
     if(!IsPhysics){ 
-      for (unsigned int i = 0 ; i < nentries; i++) { 
+      for (unsigned long i = first_entry ; i < nentries + first_entry; i++) { 
         // Get the raw Data
+	//cout << "!" << endl;
         Chain -> GetEntry(i);
-        Chain -> GetEntry(i);
+	//cout << "!!" << endl;
         // Build the current event
         myDetector->BuildPhysicalEvent();
+	//cout << "!!!" << endl;
         // User Analysis
         UserAnalysis->TreatEvent();
+	//cout << "!!!!" << endl;
         // Fill the tree      
         tree->Fill();
       
+	//cout << "!!!!!" << endl;
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         
@@ -203,7 +210,7 @@ int main(int argc , char** argv){
     }
 
     else{
-      for (unsigned int i = 0 ; i < nentries; i++) { 
+			for (unsigned long i = first_entry ; i < nentries + first_entry; i++) { 
         // Get the Physics Data
         Chain -> GetEntry(i);
         // User Analysis
