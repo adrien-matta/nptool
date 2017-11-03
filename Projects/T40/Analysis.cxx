@@ -75,21 +75,47 @@ Analysis::Analysis(){
 Analysis::~Analysis(){
 }
 
+namespace { 
+bool check_SRIM_energy_loss(const string& Path, bool warn = true) {
+  string globalPath = getenv("NPTOOL");
+  string StandardPath = globalPath + "/Inputs/EnergyLoss/" + Path;
+	bool isGood;
+	
+	// Check standard location
+	{
+		std::ifstream ifs(StandardPath.c_str());
+		isGood =  ifs.good();
+	}
+	if(!isGood){
+		// check PWD
+		std::ifstream ifs1(Path.c_str());
+		isGood = ifs1.good();
+	}
+	if(warn && !isGood) {
+		cout << "SRIM energy loss file: " << Path << " not found, defaulting to G4Table...\n";
+	}
+	return isGood;
+} }
+
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-
-  TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
-  TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
-  TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-  TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
-
-
+	{
+		std::vector<std::string> detlist = m_DetectorManager->GetDetectorList();
+		TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
+		TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
+		TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
+		TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
+		MDM = std::find(detlist.begin(), detlist.end(), "MDM") != detlist.end() ?
+			(TMDMPhysics*) m_DetectorManager -> GetDetector("MDM") : 0;
+	}
+	
   // get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   cout << "Original Beam energy (entrance of target): " << OriginalBeamEnergy << endl ;
-
+	MDM->SetReaction(myReaction);
+	
   // target thickness
   TargetThickness = m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
@@ -109,20 +135,35 @@ void Analysis::Init(){
 */
 
 //Copied from Momo's Slack 170222.
+//GAC 171003 - check for existence of SRIM file, use that if available; if not,
+//default to G4table
+//
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
-  LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 );
+	
+  LightTarget = check_SRIM_energy_loss(light+"_"+TargetMaterial+".SRIM", true) ?
+		NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 ) :
+		NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4table",100);
+	
 //by Shuya 170505
 //Note when you analyze the triple alpha calibration run, use He4_Al and He4_Si
-  LightAl = NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10);
+  LightAl = check_SRIM_energy_loss(light+"_Al.SRIM", true) ?
+		NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10) :
+		NPL::EnergyLoss(light+"Al.G4table","G4table",100);
+		
   //LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
-  LightSi = NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10);
+  LightSi = check_SRIM_energy_loss(light+"_Si.SRIM", true) ?
+		NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10) :
+		NPL::EnergyLoss(light+"_Si.G4table","G4table",100);
   //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
 
 //by Shuya 170530
   //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
 
-  BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
+  BeamTarget = check_SRIM_energy_loss(beam+"_"+TargetMaterial+".SRIM", true) ?
+		NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10) :
+		NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4table",100) ;
+	
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
   cout << "Final Beam energy (middle of target): " << FinalBeamEnergy << endl;
@@ -482,6 +523,16 @@ void Analysis::TreatEvent(){
 		if(detNumber >=0 && detNumber< 4) {
 			Aw_X[detNumber] = TF->AWirePositionX[iw];
 			Aw_Z[detNumber] = TF->AWirePositionZ[iw];
+
+			// Fill MDM class with FPD data
+			// Only do this if it's not there already
+			// (e.g. data files, not similation)
+			if(MDM && RootInput::getInstance()->GetChain()->GetBranch("MDM") == 0) {
+				MDM->DetectorNumber.push_back(detNumber);
+				MDM->Xpos.push_back(Aw_X[detNumber]);
+				MDM->Ypos.push_back(0);
+				MDM->Zpos.push_back(Aw_Z[detNumber]);
+			}
 		}
 		else {
 			cerr << "WARNING:: Wire number not bewtween 0 and 4!\n";
@@ -562,6 +613,19 @@ void Analysis::TreatEvent(){
   else
     TacSiGeOR = -999;
 
+	/////////////////////////////////////////////////////////////
+	// MDM RECONSTRUCTION OF TARGET PARAMETERS //////////////////
+	/////////////////////////////////////////////////////////////
+	if(MDM){
+		if(Ex != -1000) MDM->SetEx4(Ex);
+		else            MDM->SetEx4(0);
+		MDM->SetLightParticleAngles(ThetaLab, PhiLab);
+
+		// do target parameter minimization
+		MDM->MinimizeTarget();
+	}
+	
+	
   //by Shuya 170524
  	//RunNumber = RootInput::getInstance()->GetChain()->GetFileNumber() + 1;
 	if(currentfilename != RootInput::getInstance()->GetChain()->GetCurrentFile()->GetName())
@@ -743,8 +807,7 @@ void Analysis::InitOutputBranch() {
 	RootOutput::getInstance()->GetTree()->Branch("TacSiMicro_dE",&TacSiMicro_dE,"TacSiMicro_dE/D");
 
 	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastLeft",&TacSiPlastLeft,"TacSiPlastLeft/D");
-  	RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",&TacSiPlastRight,"TacSiPlastRight/D");
-
+  RootOutput::getInstance()->GetTree()->Branch("TacSiPlastRight",&TacSiPlastRight,"TacSiPlastRight/D");
 
 // Other
 	RootOutput::getInstance()->GetTree()->Branch("RunNumber", &RunNumber,"RunNumber/I");

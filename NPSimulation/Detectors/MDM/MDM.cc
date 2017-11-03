@@ -61,9 +61,10 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace MDM_NS{
   // Energy and time Resolution
-  const double Width = 200*mm ;
-  const double Thickness = Width;
-  const string Material = "BC400";
+const double Width     = 250*mm ;
+const double Thickness = 10*mm;
+const double Zpos      = 40*cm;
+const string Material  = "BC400"; // fake!!
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -153,7 +154,7 @@ void MDM::ReadConfiguration(NPL::InputParser parser){
 void MDM::ConstructDetector(G4LogicalVolume* world){
   G4double wX = 0;
   G4double wY = 0;
-  G4double wZ = 30*cm;
+  G4double wZ = MDM_NS::Zpos;
   G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
 
   new G4PVPlacement(0, Det_pos, BuildSquareDetector(), 
@@ -204,12 +205,17 @@ void MDM::ReadSensitive(const G4Event* event){
 		// acceptance
 		if(fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept)
 		{
+			// Calculate positions at TARGET
+			double xTrgt = Pos.x()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaX);
+			double yTrgt = Pos.y()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaY);
+			double zTrgt = 0.*mm;
+			
 			// Send Through MDM
 			m_Trace->SetScatteredMass(Mass/amu_c2);
 			m_Trace->SetScatteredCharge(Charge);
 			m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg);
 			m_Trace->SetScatteredEnergy(Ekin/MeV);
-			m_Trace->SetBeamPosition(Pos.x()/cm, Pos.y()/cm, Pos.z()/cm);
+			m_Trace->SetBeamPosition(xTrgt/cm, yTrgt/cm, zTrgt/cm);
 			m_Trace->SendRay();
 
 			// Read wire1 position, angle

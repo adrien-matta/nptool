@@ -4,8 +4,8 @@ GeneralTarget
 %0.5mg/cm2
 Target
  THICKNESS= 0.1132 micrometer 
- RADIUS=	5 mm
- MATERIAL= 6LiF
+ RADIUS=10 mm
+ MATERIAL= CD2
  ANGLE= 0 deg
  X= 0 mm
  Y= 0 mm

@@ -95,16 +95,23 @@ private:
 	double m_Light_ThetaLab;   //!
 	double m_Light_PhiLab;     //!
 	NPL::Reaction* m_Reaction; //!
+	Double_t m_Ex4; //!
+	Double_t m_Ex3; //!
 	
 public:
-	
+
 	double GetAngle() { return m_Angle; }
 	double GetField() { return m_Field; }
 	double GetParticleQ()  const { return m_ParticleQ; }
 	NPL::Nucleus* GetParticle() const { return m_Particle;  } 
 	MDMTrace* GetTrace() { return m_Trace; }
 	NPL::Reaction* GetReaction() const { return m_Reaction; }
-	void SetReaction(NPL::Reaction* r) {m_Reaction=r;}
+	double GetEx4()  const { return m_Ex4; }
+	double GetEx3()  const { return m_Ex3; }
+	void   SetEx4(double ex) { m_Ex4 = ex; }
+	void   SetEx3(double ex) { m_Ex3 = ex; }
+	
+	void SetReaction(NPL::Reaction* r) {m_Reaction= new NPL::Reaction(*r);}
 	void SetLightParticleAngles(double theta,double phi)
 		{ m_Light_ThetaLab=theta; m_Light_PhiLab=phi; }
 	void GetLightParticleAngles(double& t, double& p)
@@ -255,7 +262,7 @@ public:
 public:
 	static NPL::VDetector* Construct();
 
-	ClassDef(TMDMPhysics,1)  // MDMPhysics structure
+	ClassDef(TMDMPhysics,2)  // MDMPhysics structure
 };
 #endif
 

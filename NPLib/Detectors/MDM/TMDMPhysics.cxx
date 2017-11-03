@@ -76,6 +76,8 @@ TMDMPhysics::TMDMPhysics()
 	m_ParticleQ = 0;
 	m_Particle = 0;
 	m_Reaction = 0;
+	m_Ex4 = 0;
+	m_Ex3 = 0;
 	SetLightParticleAngles(0,0);
 
 	m_DoMinimization       = false;
@@ -95,6 +97,7 @@ TMDMPhysics::TMDMPhysics()
 TMDMPhysics::~TMDMPhysics(){
 //	if(m_Rayin) { delete m_Rayin; m_Rayin = 0; }
 	if(m_Particle) { delete m_Particle; m_Particle = 0; }
+	if(m_Reaction) { delete m_Reaction; m_Reaction = 0; }
 }
 
 ///////////////////////////////////////////////////////////////////////////
