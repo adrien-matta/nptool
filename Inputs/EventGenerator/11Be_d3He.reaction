@@ -35,11 +35,11 @@ TwoBodyReaction
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %GammaDecay 9Li
-  Cascade
+  GammaCascade
     BranchingRatio= 30
     Energies= 0.1
     DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma9He
-  Cascade
+  GammaCascade
     BranchingRatio= 70
     Energies= 0.05 0.5
 

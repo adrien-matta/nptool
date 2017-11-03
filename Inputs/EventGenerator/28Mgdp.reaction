@@ -31,10 +31,10 @@ TwoBodyReaction
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %GammaDecay 25Na
-  Cascade
+  GammaCascade
     BranchingRatio= 70
     Energies= 2.2
     DifferentialCrossSection= 11Li(d,3He)10He.txt Gamma25Na
-  Cascade
+  GammaCascade
     BranchingRatio= 30
     Energies= 1.0 1.2
