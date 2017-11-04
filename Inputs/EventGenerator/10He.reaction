@@ -39,7 +39,7 @@ TwoBodyReaction
  ExcitationEnergyHeavy= 10.0
   CrossSectionPath= 11Li(d,3He)10He.txt CS10He
  ShootLight= 1
- ShootHeavy= 0
+ ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
@@ -50,15 +50,13 @@ TwoBodyReaction
   shoot= 1 1
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%GammaDecay 9He
-  GammaCascade
+  GammaCascade 9He
     BranchingRatio= 30
-    Energies= 0.1
+    Energies= 0.10
     DifferentialCrossSection= 11Li(d,3He)10He.txt Gamma9He
-  GammaCascade
+  GammaCascade 9He
     BranchingRatio= 70
-    Energies= 0.05 0.5
+    Energies= 0.50 0.05
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
