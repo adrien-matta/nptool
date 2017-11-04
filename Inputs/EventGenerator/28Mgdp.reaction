@@ -2,21 +2,21 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
   Particle= 28Mg
-  ExcitationEnergy= 0
-  Energy= 224
-  SigmaEnergy= 0.448
-  SigmaThetaX= 0.01 
-  SigmaPhiY= 0.01
-  SigmaX= 0.5
-  SigmaY= 0.5
-  MeanThetaX= 0
-  MeanPhiY= 0
-  MeanX= 0
-  MeanY= 0
+  ExcitationEnergy= 0 MeV
+  Energy= 224 MeV
+  SigmaEnergy= 0.448 MeV
+  SigmaThetaX= 0.01  deg
+  SigmaPhiY= 0.01    deg
+  SigmaX= 0.5 mm
+  SigmaY= 0.5 mm
+  MeanThetaX= 0 deg
+  MeanPhiY= 0 deg
+  MeanX= 0 mm
+  MeanY= 0 mm
   %EnergyProfilePath=
   %XThetaXProfilePath=
   %YPhiYProfilePath=
-
+ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
  Beam= 28Mg
@@ -29,12 +29,11 @@ TwoBodyReaction
  ShootLight= 1
  ShootHeavy= 1
   
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%GammaDecay 25Na
-  GammaCascade
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  GammaCascade 29Mg
     BranchingRatio= 70
     Energies= 2.2
     DifferentialCrossSection= 11Li(d,3He)10He.txt Gamma25Na
-  GammaCascade
+  GammaCascade 29Mg
     BranchingRatio= 30
     Energies= 1.0 1.2

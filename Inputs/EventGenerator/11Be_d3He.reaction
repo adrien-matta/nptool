@@ -33,13 +33,11 @@ TwoBodyReaction
   shoot= 1 1
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%GammaDecay 9Li
-  GammaCascade
+  GammaCascade 9Li
     BranchingRatio= 30
     Energies= 0.1
     DifferentialCrossSection= 11Li(d,3He)10He.txt	Gamma9He
-  GammaCascade
+  GammaCascade 9Li
     BranchingRatio= 70
     Energies= 0.05 0.5
 
