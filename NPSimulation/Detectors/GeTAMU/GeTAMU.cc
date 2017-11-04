@@ -572,10 +572,9 @@ void GeTAMU::ReadSensitive(const G4Event* event){
   // Loop on the HPGE map
   for (HPGE_itr = HPGEHitMap->GetMap()->begin() ; HPGE_itr != HPGEHitMap->GetMap()->end() ; HPGE_itr++){
     
-    bool GeScoredHit= false; // flag true if first stage scores a hit above threshold 
 		G4double* Info = *(HPGE_itr->second);
 
-		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
+		G4double Energy   =  Info[0];
 		G4double Time     =  Info[1];
     //
     G4double InterPos_X = Info[2];
@@ -594,7 +593,6 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 		else                                        { SegmentNbr = 3; } // LEFT
 		
     if(Energy>0.0*keV){
-      GeScoredHit= true;
   		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
   		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
   		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
@@ -607,6 +605,17 @@ void GeTAMU::ReadSensitive(const G4Event* event){
       ms_InterCoord->SetDetectedPositionZ(InterPos_Z) ;
       ms_InterCoord->SetDetectedAngleTheta(InterPos_Theta/deg) ;
       ms_InterCoord->SetDetectedAnglePhi(InterPos_Phi/deg) ;
+     
+      //add resolutions
+      G4double energyCry = RandGauss::shoot(Energy, ResoCry);
+      G4double energySeg = RandGauss::shoot(Energy, ResoSeg);
+      G4double time = RandGauss::shoot(Time, ResoTime);
+          
+     if(Energy > EnergyThreshold){
+        m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, energyCry/keV);
+        m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, time/ns);
+        m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, energySeg/keV);
+        m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, time/ns);
     }
 
   }
