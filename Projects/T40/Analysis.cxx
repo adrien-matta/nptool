@@ -24,6 +24,8 @@
 
 using namespace std;
 
+#include "TSystem.h"
+
 #include "Analysis.h"
 #include "NPAnalysisFactory.h"
 #include "NPDetectorManager.h"
@@ -65,9 +67,9 @@ double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
 	/// TODO::: R2 doesn't seem to make sense... look into it!
 
 	return slope;
-} }
+}
 
-
+}
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -130,20 +132,15 @@ NPL::EnergyLoss check_energy_loss(const string& particle, const string& target){
 } }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-	{
-		std::vector<std::string> detlist = m_DetectorManager->GetDetectorList();
-		TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
-		TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
-		TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-		TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
-		MDM = std::find(detlist.begin(), detlist.end(), "MDM") != detlist.end() ?
-			(TMDMPhysics*) m_DetectorManager -> GetDetector("MDM") : 0;
-	}
-	
-  // get reaction information
+	TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");	assert(TH);
+	TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara"); assert(TB);
+	TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu"); assert(TF);
+	TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU"); assert(TG);
+	MDM = (TMDMPhysics*) m_DetectorManager -> GetDetector("MDM"); assert(MDM);
+
+	// get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   OriginalBeamEnergy = myReaction->GetBeamEnergy();

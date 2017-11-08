@@ -10,6 +10,12 @@ Target
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
+MDM
+ Angle= 0 deg
+ Field= 6248.26 gauss
+ XAccept= 2.0 deg
+ YAccept= 2.0 deg
+ Rayin= ../../Inputs/DetectorConfiguration/rayin-t4t.dat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara Barrel
  InnerBarrel= 1
