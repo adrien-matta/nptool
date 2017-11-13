@@ -120,7 +120,7 @@ void Analysis::Init(){
   //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
 
 //by Shuya 170530
-  //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
+  LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
 
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
@@ -157,7 +157,6 @@ void Analysis::Init(){
 	Micro2_E_row1_2 = 0; // Energy from micromega rows 1-2  ("E in stopping mode")
   Micro1_E_row1 = 0 ;// Energy from micromega row 1
 //by Shuya 170912
-  //Micro1_E_col4 = 0 ;// energy from micromega col 4
   Micro1_E_col4_sum = 0 ;// energy from micromega col 4
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
@@ -196,7 +195,7 @@ void Analysis::Init(){
   Micro2_E_col4_mult = 0. ;// energy from micromega2 col 3
   Micro2_E_col5_mult = 0. ;// energy from micromega2 col 5
   Micro2_E_col6_mult = 0. ;// energy from micromega2 col 6
-  Micro2_E_col7_mult = 0. ;// energy from micromega2 col 7
+  Micro2_E_col7_mult = 0. ;// energy from micromega2 col 6
 
   //TAC
   TacSiGeOR     = -1000;
@@ -228,7 +227,13 @@ void Analysis::TreatEvent(){
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+	//by Shuya 170807 (from 22Ne(d,d))
+      //TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
+	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment
+      //TVector3 BeamImpact(0.173098, 2.67341, 4.07383);
+	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment, but X, Y=0
+      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
       TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
@@ -253,8 +258,6 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH; // calibration for hyball is in MeV
     // Correct for energy loss using the thickness of the target and the dead layer
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
-//by Shuya 170530
-    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
    /////////////////////////////
@@ -283,7 +286,13 @@ void Analysis::TreatEvent(){
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+	//by Shuya 170807 (from 22Ne(d,d))
+      //TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
+	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment
+      //TVector3 BeamImpact(0.173098, 2.67341, 4.07383);
+	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment, but X, Y=0
+      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
       TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
       //Angle of emission wrt to beam
@@ -320,6 +329,8 @@ void Analysis::TreatEvent(){
 
     // Evaluate energy using the thickness, Target and Si dead layer Correction
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
+//by Shuya 170530
+    if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
@@ -482,10 +493,9 @@ void Analysis::TreatEvent(){
 	for(int i=0; i< kNumAw; ++i) {
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
- 			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
- 			Aw_ThetaFit_R2 = TF->AWireFitR2;
+			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
+			Aw_ThetaFit_R2 = TF->AWireFitR2;
 			break;
-
 		}
 	}
 
@@ -577,7 +587,7 @@ void Analysis::ReInitValue(){
   Ex_Hyball = -1000 ;
   Ex_Barrel = -1000 ;
 //by Shuya 171019
-  PhiLab = -1000;
+  PhiLab = -1000 ;
 
   //Simu
   //Original_ELab = -1000;
@@ -622,7 +632,6 @@ void Analysis::ReInitValue(){
   Micro2_E_col5_mult = -1000;
   Micro2_E_col6_mult = -1000;
   Micro2_E_col7_mult = -1000;
-
 
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
@@ -713,6 +722,7 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5_mult",&Micro2_E_col5_mult,"Micro2_E_col5_mult/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6_mult",&Micro2_E_col6_mult,"Micro2_E_col6_mult/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7_mult",&Micro2_E_col7_mult,"Micro2_E_col7_mult/D");
+
 
 //TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");
