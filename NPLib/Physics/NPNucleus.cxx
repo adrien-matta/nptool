@@ -71,6 +71,7 @@ void Nucleus::SetUp(string isotope){
 
   // Replace the p,d,t,a by there standard name:
   if(isotope=="p") isotope="1H";
+	else if(isotope=="n") isotope="1n";
   else if(isotope=="d") isotope="2H";
   else if(isotope=="t") isotope="3H";
   else if(isotope=="a") isotope="4He";
