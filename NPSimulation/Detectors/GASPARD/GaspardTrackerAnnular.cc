@@ -86,9 +86,9 @@ void GaspardTrackerAnnular::AddModule(G4double PosZ,
                                       bool wSecondStage,
                                       bool wThirdStage)
 {
-   m_PosZ.push_back(PosZ);
-   m_Rmin.push_back(Rmin);
-   m_Rmax.push_back(Rmax);
+   m_FirstStagePosZ.push_back(PosZ);
+   m_FirstStageRmin.push_back(Rmin);
+   m_FirstStageRmax.push_back(Rmax);
 
    m_wFirstStage.push_back(wFirstStage)   ;
    m_wSecondStage.push_back(wSecondStage) ;
@@ -106,11 +106,15 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
                                         bool wThirdStage,
                                         G4LogicalVolume* world)
 {
-   G4double NbrTelescopes = DetectorNumber  ;
+   G4double TelNbr = DetectorNumber  ;
    G4String DetNumber                   ;
    ostringstream Number                      ;
-   Number << NbrTelescopes                   ;
+   Number << TelNbr                   ;
    DetNumber = Number.str()             ;
+
+   cout<<"FF DetectorNumber: "<<DetectorNumber<<endl;
+   cout<<"FF m_FSRmin[DetecNbr-1]: "<<m_FirstStageRmin[DetectorNumber-1]<<endl;
+   cout<<"FF m_FSRmax[DetecNbr-1]: "<<m_FirstStageRmax[DetectorNumber-1]<<endl;
 
    ////////////////////////////////////////////////////////////////
    ////////////// Starting Volume Definition //////////////////////
@@ -120,13 +124,12 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
 
    // Definition of the volume containing the sensitive detector
    G4Tubs* solidMM = new G4Tubs(Name, 
-                                Rmin,
-                                Rmax,
-                                Length/2,
+                                LogicRmin,
+                                LogicRmax,
+                                LogicLength/2,
                                 0*deg, 
                                 360*deg);
 
-//   G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, Iron, Name, 0, 0, 0);
    G4LogicalVolume* logicMM = new G4LogicalVolume(solidMM, m_MaterialVacuum, Name, 0, 0, 0);
    
    new G4PVPlacement(G4Transform3D(*MMrot, MMpos), logicMM, Name, world, false, DetectorNumber);
@@ -141,8 +144,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
    G4ThreeVector positionVacBox = G4ThreeVector(0, 0, VacBox_PosZ);
 
    G4Tubs* solidVacBox = new G4Tubs("solidVacBox", 
-                                    FirstStageRmin,
-                                    FirstStageRmax,
+                                    m_FirstStageRmin[DetectorNumber-1],
+                                    m_FirstStageRmax[DetectorNumber-1],
                                     VacBoxThickness/2,
                                     0*deg, 
                                     360*deg); 
@@ -162,8 +165,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
       G4ThreeVector positionAluStripBack  = G4ThreeVector(0, 0, AluStripBack_PosZ);
 
       G4Tubs* solidAluStrip = new G4Tubs("AluBox", 
-                                         FirstStageRmin,
-                                         FirstStageRmax,
+                                         m_FirstStageRmin[DetectorNumber-1],
+                                         m_FirstStageRmax[DetectorNumber-1],
                                          AluStripThickness/2, 
                                          0*deg, 
                                          360*deg); 
@@ -180,8 +183,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
       G4ThreeVector  positionSilicon = G4ThreeVector(0, 0, Silicon_PosZ);
 
       G4Tubs* solidSilicon = new G4Tubs("solidSilicon", 
-                                         FirstStageRmin,
-                                         FirstStageRmax,
+                                         m_FirstStageRmin[DetectorNumber-1],
+                                         m_FirstStageRmax[DetectorNumber-1],
                                          FirstStageThickness/2, 
                                          0*deg, 
                                          360*deg); 
@@ -205,8 +208,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
       G4ThreeVector  positionSecondStage = G4ThreeVector(0, 0, SecondStage_PosZ);
 
       G4Tubs* solidSecondStage = new G4Tubs("solidSecondStage", 
-                                            FirstStageRmin,
-                                            FirstStageRmax,
+                                            m_FirstStageRmin[DetectorNumber-1],
+                                            m_FirstStageRmax[DetectorNumber-1],
                                             SecondStageThickness/2, 
                                             0*deg, 
                                             360*deg); 
@@ -231,8 +234,8 @@ void GaspardTrackerAnnular::VolumeMaker(G4int DetectorNumber,
       G4ThreeVector  positionThirdStage = G4ThreeVector(0, 0, ThirdStage_PosZ);
 
       G4Tubs* solidThirdStage = new G4Tubs("solidThirdStage", 
-                                            FirstStageRmin,
-                                            FirstStageRmax,
+                                            m_FirstStageRmin[DetectorNumber-1],
+                                            m_FirstStageRmax[DetectorNumber-1],
                                             ThirdStageThickness/2, 
                                             0*deg, 
                                             360*deg); 
@@ -297,13 +300,13 @@ void GaspardTrackerAnnular::ConstructDetector(G4LogicalVolume* world)
    bool SecondStage = true ;
    bool ThirdStage  = true ;
 
-   G4int NumberOfModule = m_PosZ.size() ;
+   G4int NumberOfModule = m_FirstStagePosZ.size() ;
 
    for (G4int i = 0; i < NumberOfModule; i++) {
       // translation to position the module
       // test if module is in the forward or backward hemisphere
-      (m_PosZ[i] < 0) ? m_PosZ[i] -= 0.5*Length : m_PosZ[i] += 0.5*Length;
-      MMpos = G4ThreeVector(0, 0, m_PosZ[i]);
+      (m_FirstStagePosZ[i] < 0) ? m_FirstStagePosZ[i] -= 0.5*LogicLength : m_FirstStagePosZ[i] += 0.5*LogicLength;
+      MMpos = G4ThreeVector(0, 0, m_FirstStagePosZ[i]);
 
       // Passage Matrix from Lab Referential to Module Referential
       // Identity matrix by default
@@ -489,8 +492,8 @@ void GaspardTrackerAnnular::InitializeScorers()
    G4VPrimitiveScorer* GPDScorerFirstStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularFirstStage",
                                              0,
-                                             FirstStageRmin,
-                                             FirstStageRmax,
+                                             m_FirstStageRmin[0],
+                                             m_FirstStageRmax[0],
                                              360*deg,
                                              0*deg,
                                              NbThetaStrips,
@@ -501,8 +504,8 @@ void GaspardTrackerAnnular::InitializeScorers()
    G4VPrimitiveScorer* GPDScorerSecondStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularSecondStage",
                                              0,
-                                             FirstStageRmin,
-                                             FirstStageRmax,
+                                             m_FirstStageRmin[0],
+                                             m_FirstStageRmax[0],
                                              0*deg,
                                              360*deg,
                                              1,
@@ -513,8 +516,8 @@ void GaspardTrackerAnnular::InitializeScorers()
    G4VPrimitiveScorer* GPDScorerThirdStage =
       new SILICONSCORERS::PS_Silicon_Annular("GPDAnnularThirdStage",
                                              0,
-                                             FirstStageRmin,
-                                             FirstStageRmax,
+                                             m_FirstStageRmin[0],
+                                             m_FirstStageRmax[0],
                                              0*deg,
                                              360*deg,
                                              1,
