@@ -15,7 +15,7 @@ The package was started in 2009 by Adrien Matta for the MUST2 collaboration.
 * P. Morfouace (GANIL) <mailto:pierre.morfouace@ganil.f>
 * F. Flavigny (IPN Orsay) <mailto:flavigny@ipno.in2p3.fr>
 * R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
-* M. Moukaddam <mailto:m.moukaddam@surrey.ac.uk>>
+* M. Moukaddam (University of Surrey) <mailto:m.moukaddam@surrey.ac.uk>>
  
 ### Detector contributors (alphabetical order)
 * G. Christian (Texas A&M) <mailto:gchristian@tamu.edu>
