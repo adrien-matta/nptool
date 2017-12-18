@@ -10,22 +10,24 @@ The package was started in 2009 by Adrien Matta for the MUST2 collaboration.
 
 ### Framework contributors
 
-* A. Matta (University of Surrey) <mailto:a.matta@surrey.ac.uk>
+* A. Matta (LPC Caen) <mailto:matta@lpccaen.in2p3.fr>
 * N. de Séréville (IPN Orsay) <mailto:deserevi@ipno.in2p3.fr>
-* P. Morfouace (MSU/NSCL) <mailto:morfouac@nscl.msu.edu>
-
-### Detector contributors (alphabetical order)
-
+* P. Morfouace (GANIL) <mailto:pierre.morfouace@ganil.f>
 * F. Flavigny (IPN Orsay) <mailto:flavigny@ipno.in2p3.fr>
+* R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
+* M. Moukaddam <mailto:m.moukaddam@surrey.ac.uk>>
+ 
+### Detector contributors (alphabetical order)
+* G. Christian (Texas A&M) <mailto:gchristian@tamu.edu>
 * S. Giron
 * M. Labiche (STFC Daresbury Laboratory) <mailto:marc.labiche@stfc.ac.uk>
 * L. Lefebvre
-* R. Shearman (NPL / University of Surrey) <mailto:r.shearman@surrey.ac.uk>
+* S. Ota (Texas A&M) <mailto:shuyaota@comp.tamu.edu>
 * R. Wilkinson (University of Surrey) <mailto:r.wilkinson@surrey.ac.uk>
 
 ### Acknowledgements
 
-We thank IPN Orsay and the University of Surrey for their continuous support.
+We thank IPN Orsay, the University of Surrey and LPC Caen for their continuous support.
 
 ### Various credits and licences
 
