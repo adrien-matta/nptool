@@ -616,10 +616,10 @@ void GeTAMU::ReadSensitive(const G4Event* event){
         m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, time/ns);
         m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, energySeg/keV);
         m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, time/ns);
+     }
+     
     }
-
-  }
-
+   }
   // clear map for next event
   HPGEHitMap->clear();
 }
