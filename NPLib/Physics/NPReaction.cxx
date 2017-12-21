@@ -463,7 +463,9 @@ void Reaction::initializePrecomputeVariable(){
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab){
-  double p3 = sqrt(pow(EnergyLab,2) + 2*m3*EnergyLab);
+
+  double E3 = m3 + EnergyLab;
+  double p_Lab_3 = sqrt(E3*E3 - m3*m3);
   TVector3 p_Lab_3_vec = TVector3(0,0,1);
   p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
 
