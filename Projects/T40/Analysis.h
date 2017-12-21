@@ -37,6 +37,8 @@
 #include <TMath.h>
 #include <TObject.h>
 
+namespace NPL { class VDetector; }
+
 
 class Analysis: public NPL::VAnalysis{
   public:
@@ -51,7 +53,7 @@ class Analysis: public NPL::VAnalysis{
     void InitOutputBranch();
     void InitInputBranch();
     static NPL::VAnalysis* Construct();
-    
+
   private:
   double Ex;
 //by Shuya 170703

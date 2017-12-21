@@ -24,6 +24,8 @@
 
 using namespace std;
 
+#include "TSystem.h"
+
 #include "Analysis.h"
 #include "NPAnalysisFactory.h"
 #include "NPDetectorManager.h"
@@ -65,9 +67,9 @@ double calculate_fit_slope(int len, double* Aw_X, double* Aw_Z, double& R2)
 	/// TODO::: R2 doesn't seem to make sense... look into it!
 
 	return slope;
-} }
+}
 
-
+}
 ////////////////////////////////////////////////////////////////////////////////
 Analysis::Analysis(){
 }
@@ -75,46 +77,75 @@ Analysis::Analysis(){
 Analysis::~Analysis(){
 }
 
-namespace { 
-bool check_SRIM_energy_loss(const string& Path, bool warn = true) {
+namespace {
+
+NPL::EnergyLoss check_energy_loss(const string& particle, const string& target){
   string globalPath = getenv("NPTOOL");
-  string StandardPath = globalPath + "/Inputs/EnergyLoss/" + Path;
-	bool isGood;
+  string standardPath = globalPath + "/Inputs/EnergyLoss/";
+	string srimPath = particle+"_"+target+".SRIM";
+	string geantPath = particle+"_"+target+".G4table";
+
+	string pathList[4] = {
+		srimPath,                // SRIM in PWD
+		standardPath + srimPath, // SRIM in standard location
+		geantPath,               // GEANT in PWD
+		standardPath + geantPath // GEANT in standard location
+	};
+
+	int i=0;
+	for(;i<4;++i){
+		std::ifstream ifs(pathList[i].c_str());
+		if(ifs.good()) { break; }
+	}
+
+	int nstep;
+	string type;
+	switch(i){
+	case 0:
+		cout << "Using SRIM energy loss file in \"Projects/T40\"\n";
+		nstep = 10;
+		type = "SRIM";
+		break;
+	case 1:
+		cout << "Using SRIM energy loss file in \"Inputs/EnergyLoss\"\n";
+		nstep = 10;
+		type = "SRIM";
+		break;
+	case 2:
+		cout << "Using GEANT energy loss file in \"Projects/T40\"\n";
+		nstep = 100;
+		type = "G4table";
+		break;
+	case 3:
+		cout << "Using GEANT energy loss file in \"Inputs/EnergyLoss\"\n";
+		nstep = 100;
+		type = "G4table";
+		break;
+	default:
+		cerr << "FATAL ERROR:: Energy Loss file not found for particle: \"" << particle
+				 << "\", and material: \"" << target << "\" (neither SRIM nor GEANT)\n";
+		exit(1);
+		break;
+	}
 	
-	// Check standard location
-	{
-		std::ifstream ifs(StandardPath.c_str());
-		isGood =  ifs.good();
-	}
-	if(!isGood){
-		// check PWD
-		std::ifstream ifs1(Path.c_str());
-		isGood = ifs1.good();
-	}
-	if(warn && !isGood) {
-		cout << "SRIM energy loss file: " << Path << " not found, defaulting to G4Table...\n";
-	}
-	return isGood;
+	return NPL::EnergyLoss(pathList[i], type.c_str(), nstep);			
 } }
+
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::Init(){
-	{
-		std::vector<std::string> detlist = m_DetectorManager->GetDetectorList();
-		TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");
-		TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara");
-		TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu");
-		TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU");
-		MDM = std::find(detlist.begin(), detlist.end(), "MDM") != detlist.end() ?
-			(TMDMPhysics*) m_DetectorManager -> GetDetector("MDM") : 0;
-	}
-	
-  // get reaction information
+	TH  = (TTiaraHyballPhysics*) m_DetectorManager -> GetDetector("HyballWedge");	assert(TH);
+	TB  = (TTiaraBarrelPhysics*) m_DetectorManager -> GetDetector("Tiara"); assert(TB);
+	TF  = (TFPDTamuPhysics*) m_DetectorManager -> GetDetector("FPDTamu"); assert(TF);
+	TG  = (TGeTAMUPhysics*) m_DetectorManager -> GetDetector("GeTAMU"); assert(TG);
+	MDM = (TMDMPhysics*) m_DetectorManager -> GetDetector("MDM"); assert(MDM);
+
+	// get reaction information
   myReaction = new NPL::Reaction();
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   OriginalBeamEnergy = myReaction->GetBeamEnergy();
   cout << "Original Beam energy (entrance of target): " << OriginalBeamEnergy << endl ;
-	MDM->SetReaction(myReaction);
+	if(MDM) { 	MDM->SetReaction(myReaction);  }
 	
   // target thickness
   TargetThickness = m_DetectorManager->GetTargetThickness();
@@ -141,28 +172,20 @@ void Analysis::Init(){
   string light=NPL::ChangeNameToG4Standard(myReaction->GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction->GetNucleus1().GetName());
 	
-  LightTarget = check_SRIM_energy_loss(light+"_"+TargetMaterial+".SRIM", true) ?
-		NPL::EnergyLoss(light+"_"+TargetMaterial+".SRIM","SRIM",10 ) :
-		NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4table",100);
+  LightTarget = check_energy_loss(light,TargetMaterial);
 	
 //by Shuya 170505
 //Note when you analyze the triple alpha calibration run, use He4_Al and He4_Si
-  LightAl = check_SRIM_energy_loss(light+"_Al.SRIM", true) ?
-		NPL::EnergyLoss(light+"_Al.SRIM","SRIM",10) :
-		NPL::EnergyLoss(light+"Al.G4table","G4table",100);
+  LightAl = check_energy_loss(light,"Al");
 		
   //LightAl = NPL::EnergyLoss("He4_Al.SRIM","SRIM",10);
-  LightSi = check_SRIM_energy_loss(light+"_Si.SRIM", true) ?
-		NPL::EnergyLoss(light+"_Si.SRIM","SRIM",10) :
-		NPL::EnergyLoss(light+"_Si.G4table","G4table",100);
+  LightSi = check_energy_loss(light,"Si");
   //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
 
 //by Shuya 170530
   //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
 
-  BeamTarget = check_SRIM_energy_loss(beam+"_"+TargetMaterial+".SRIM", true) ?
-		NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10) :
-		NPL::EnergyLoss(beam+"_"+TargetMaterial+".G4table","G4table",100) ;
+  BeamTarget = check_energy_loss(beam,TargetMaterial);
 	
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
   myReaction->SetBeamEnergy(FinalBeamEnergy);
