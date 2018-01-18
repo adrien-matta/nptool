@@ -252,14 +252,16 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
+double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab, double PhiLab){
   // EnergyLab in MeV
   // ThetaLab in rad
   double E3 = m3 + EnergyLab;
   double p_Lab_3 = sqrt(E3*E3 - m3*m3);
-  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
-  fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
+  TVector3 p_Lab_3_vec = TVector3(0,0,1);
+  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
 
+  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
+  fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 
   double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4.Mass();
 
@@ -268,11 +270,13 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //Return ThetaCM
-double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
+double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab){
   double E3 = m3 + EnergyLab;
   double p_Lab_3 = sqrt(E3*E3 - m3*m3);
+  TVector3 p_Lab_3_vec = TVector3(0,0,1);
+  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
 
-  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
+  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
   fEnergyImpulsionCM_3 = fEnergyImpulsionLab_3;
   fEnergyImpulsionCM_3.Boost(0,0,-BetaCM);
 
@@ -458,15 +462,20 @@ void Reaction::initializePrecomputeVariable(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
-  double p3 = sqrt(pow(EnergyLab,2) + 2*m3*EnergyLab);
+void Reaction::SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab){
 
-  fEnergyImpulsionLab_3 = TLorentzVector(p3*sin(ThetaLab),0,p3*cos(ThetaLab),EnergyLab+m3);
+  double E3 = m3 + EnergyLab;
+  double p_Lab_3 = sqrt(E3*E3 - m3*m3);
+  TVector3 p_Lab_3_vec = TVector3(0,0,1);
+  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
+
+  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
   fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 
   fNuclei3.SetEnergyImpulsion(fEnergyImpulsionLab_3);
   fNuclei4.SetEnergyImpulsion(fEnergyImpulsionLab_4);
-
+  
+  //ThetaCM and Energy do not depend on PhiLab
   fThetaCM = EnergyLabToThetaCM(EnergyLab, ThetaLab);
   fExcitation4 = ReconstructRelativistic(EnergyLab, ThetaLab);
 }

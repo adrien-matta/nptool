@@ -192,14 +192,14 @@ namespace NPL{
           double &ThetaLab4, double &KineticEnergyLab4);
 
       // Return Excitation Energy
-      double ReconstructRelativistic(double EnergyLab, double ThetaLab);
+      double ReconstructRelativistic(double EnergyLab, double ThetaLab, double PhiLab=0);
 
       // Return ThetaCM
       // EnergyLab: energy measured in the laboratory frame
       // ExcitationEnergy: excitation energy previously calculated.
-      double EnergyLabToThetaCM(double EnergyLab, double ThetaLab);
+      double EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab=0);
 
-      void SetNuclei3(double EnergyLab, double ThetaLab);
+      void SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab=0);
 
       TGraph* GetKinematicLine3(double AngleStep_CM=1);
       TGraph* GetKinematicLine4(double AngleStep_CM=1);
