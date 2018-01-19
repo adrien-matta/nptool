@@ -1,11 +1,11 @@
 
 void EnergyLoss();
 void Reaction();
-TCanvas* c = new TCanvas("PhysicsBench","Physics Benchmark ",1000,500);
+TCanvas* c = new TCanvas("PhysicsBench","Physics Benchmark ",1500,500);
 
 ////////////////////////////////////////////////////////////////////////////////
 void physics(){
-  c->Divide(2,1);
+  c->Divide(3,1);
   EnergyLoss();
   Reaction();
 }
@@ -31,23 +31,50 @@ void EnergyLoss(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Reaction() {
+  unsigned int cycles = 1000000;
+  // test Random Ex generation
+    NPL::Reaction r2;
+    r2.ReadConfigurationFile("test.reaction");
+    TH1F* h2 = new TH1F("hE2","hE2",1000,-1,1);
+    double E4,T4,E3,T3,Ex,E;  
+    clock_t begin = clock(); 
+    for (unsigned int i = 0 ; i < cycles ; i++){
+      r2.ShootRandomExcitationEnergy();
+      Ex = r2.GetExcitation4();
+      r2.SetThetaCM(i*deg*180./cycles);
+      r2.KineRelativistic(T3,E3,T4,E4);
+      E = r2.ReconstructRelativistic(E3,T3)-Ex;
+      h2->Fill(E/eV);
+    } 
+    clock_t end = clock();
+    double time = end-begin;
+    time = time/CLOCKS_PER_SEC;
+    cout << " ***** Reaction performance : " << cycles/time/1000. << " cycles per ms *****" << endl; 
+    c->cd(3);
+    h2->Draw("");
+    h2->GetXaxis()->SetTitle("Excitation error on Generated/Reconstructed cycle (eV)");
+
+  // On fly declaration
+  cout << " Reaction declaration without input file / no Ex distribution" << endl;
   NPL::Reaction r("28Si(d,p)29Si@280");
-  double E4,T4,E3,T3;
   TH1F* h = new TH1F("hE","hE",1000,-1,1);
-  clock_t begin = clock(); 
-  for (unsigned int i = 0 ; i < 10000 ; i++){
-    r.SetThetaCM(i*deg*180./10000);
+  begin = clock(); 
+  for (unsigned int i = 0 ; i < cycles ; i++){
+    r.SetExcitation4(0);
+    Ex = r2.GetExcitation4();
+    r.SetThetaCM(i*deg*180./cycles);
     r.KineRelativistic(T3,E3,T4,E4);
-    double E = r.ReconstructRelativistic(E3,T3);
+    E = r.ReconstructRelativistic(E3,T3);
     h->Fill(E/eV);
   } 
-  clock_t end = clock();
-  double time = end-begin;
+  end = clock();
+  time = end-begin;
   time = time/CLOCKS_PER_SEC;
-  cout << " ***** Reaction performance : 10000 cycle done in " << time*1000 << "ms *****" << endl; 
-
+  cout << " ***** Reaction performance :" << cycles/time/1000. << " cycles per ms *****" << endl; 
   c->cd(2);
   h->Draw("");
   h->GetXaxis()->SetTitle("Excitation error on Generated/Reconstructed cycle (eV)");
+
+
 }
 
