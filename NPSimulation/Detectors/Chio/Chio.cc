@@ -148,7 +148,9 @@ G4LogicalVolume* Chio::BuildDetector(){
     G4Material* Fe= MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
     G4Material* Al= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
 
-    G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
+    //G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
+    G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("iC4H10",8.*bar/1000.,273.15*kelvin);
+
     G4Material* Mylar= MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
 
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      

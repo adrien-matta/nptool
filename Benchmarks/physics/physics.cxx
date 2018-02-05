@@ -31,12 +31,13 @@ void EnergyLoss(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void Reaction() {
-  unsigned int cycles = 1000000;
+  unsigned int cycles = 10000;
   // test Random Ex generation
     NPL::Reaction r2;
     r2.ReadConfigurationFile("test.reaction");
     TH1F* h2 = new TH1F("hE2","hE2",1000,-1,1);
     double E4,T4,E3,T3,Ex,E;  
+    r2.ShootRandomExcitationEnergy();
     clock_t begin = clock(); 
     for (unsigned int i = 0 ; i < cycles ; i++){
       r2.ShootRandomExcitationEnergy();

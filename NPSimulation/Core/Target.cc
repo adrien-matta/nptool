@@ -45,13 +45,16 @@
 #include "G4EmCalculator.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
+#include "G4UserLimits.hh"
 #include "Randomize.hh"
+#include "BeamReaction.hh"
+#include "G4FastSimulationManager.hh"
 using namespace CLHEP ;
 
 // NPS
-#include"Target.hh"
-#include"MaterialManager.hh"
-
+#include "Target.hh"
+#include "MaterialManager.hh"
+#include "Decay.hh"
 // NPL
 #include "NPOptionManager.h"
 #include "NPInputParser.h"
@@ -71,6 +74,7 @@ Target::Target(){
   m_TargetNbLayers     = 5;   // Number of steps by default
   // Set the global pointer
   TargetInstance = this;
+  m_ReactionRegion=0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -122,7 +126,7 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       m_WindowsThickness= ctarget[0]->GetDouble("WindowsThickness","micrometer");
       m_WindowsMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("WindowsMaterial"));
       m_TargetRadius=ctarget[0]->GetDouble("Radius","mm");
-      
+
       m_TargetX=ctarget[0]->GetDouble("X","mm");
       m_TargetY=ctarget[0]->GetDouble("Y","mm");
       m_TargetZ =ctarget[0]->GetDouble("Z","mm");
@@ -131,7 +135,7 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       cout << "ERROR: Target token list incomplete, check your input file" << endl;
       exit(1);
     }
-    
+
     if(ctarget[0]->HasToken("NBLAYERS"))
       m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
 
@@ -175,14 +179,14 @@ void Target::ConstructDetector(G4LogicalVolume* world){
         new G4Tubs("solidTarget", 0, m_TargetRadius, 
             0.5*m_TargetThickness+m_WindowsThickness, 0*deg, 360*deg);
 
-     m_TargetLogic = 
+      m_TargetLogic = 
         new G4LogicalVolume(m_TargetSolid, 
-                            GetMaterialFromLibrary("Vacuum")
-                            , "logicTarget");
+            GetMaterialFromLibrary("Vacuum")
+            , "logicTarget");
 
       m_TargetLogic->SetVisAttributes(G4VisAttributes::Invisible);
       G4Tubs* solidTarget = 
-            new G4Tubs("solidTarget", 0, m_TargetRadius, 
+        new G4Tubs("solidTarget", 0, m_TargetRadius, 
             0.5*m_TargetThickness, 0*deg, 360*deg);
 
       G4LogicalVolume* logicTarget = 
@@ -191,7 +195,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
       new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
           logicTarget, "Target", m_TargetLogic, false, 0);
 
-       new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
+      new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
           m_TargetLogic, "Target", world, false, 0);
 
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
@@ -231,7 +235,30 @@ void Target::ConstructDetector(G4LogicalVolume* world){
     }
   }
 
+  //SetReactionRegion();
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Target::SetReactionRegion(){
+  if(!m_ReactionRegion){
+    m_ReactionRegion= new G4Region("NPSimulationProcess");
+    m_ReactionRegion->AddRootLogicalVolume(m_TargetLogic);
+    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.));
+  }
+
+  G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();
+
+  unsigned int size = m_ReactionModel.size();
+  for(unsigned int i = 0 ; i < size ; i++)
+    mng->RemoveFastSimulationModel(m_ReactionModel[i]);
+
+  m_ReactionModel.clear();
+  G4VFastSimulationModel* fsm;
+  fsm = new NPS::BeamReaction("BeamReaction",m_ReactionRegion);
+  m_ReactionModel.push_back(fsm); 
+  fsm = new NPS::Decay("Decay",m_ReactionRegion);
+  m_ReactionModel.push_back(fsm); 
+
+} 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.

@@ -54,7 +54,7 @@ namespace NPL{
   // False for a Root file
   bool OpenASCIIorROOTFile(string filename, ifstream &ASCII , TFile &ROOT);
   
-  void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma= 10000);
+  void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y);
   
   // Change nucleus name from G4 standard to Physics standard (11Li vs Li11)
   string ChangeNameToG4Standard(string name);

@@ -1,5 +1,3 @@
-#ifndef PrimaryGeneratorActionMessenger_h
-#define PrimaryGeneratorActionMessenger_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -8,51 +6,53 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : November 2014                                            *
+ * Creation Date  : Octobre 2017                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the PrimaryGeneratorAction Messenger                 *
+ * Use to kill the beam track and replace it with the reaction product       *
+ *                                                                           *
+*                                                                           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
  *****************************************************************************/
-///....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "globals.hh"
-#include "G4UImessenger.hh"
+#ifndef Decay_h
+#define Decay_h
 
-class PrimaryGeneratorAction;
-class G4UIdirectory;
-class G4UICommand;
-class G4UIcmdWithAString;
-class G4UIcmdWithAnInteger;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithoutParameter;
+#include "G4VFastSimulationModel.hh"
+#include "PhysicsList.hh"
+#include "NPDecay.h"
+class G4VPhysicalVolume;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////////////////////
+namespace NPS{
 
-class PrimaryGeneratorActionMessenger: public G4UImessenger{
+class Decay : public G4VFastSimulationModel{
   public:
-    PrimaryGeneratorActionMessenger(PrimaryGeneratorAction* );
-   ~PrimaryGeneratorActionMessenger();
-    
-    void SetNewValue(G4UIcommand*, G4String);
-    
+    Decay (G4String, G4Region*);
+    Decay (G4String);
+    ~Decay();
+
+  public:
+    void ReadConfiguration();
+    virtual G4bool IsApplicable(const G4ParticleDefinition&);
+    virtual G4bool ModelTrigger(const G4FastTrack &);
+    virtual void DoIt(const G4FastTrack&, G4FastStep&);
+
   private:
-    PrimaryGeneratorAction* PGA;
-    
-    G4UIdirectory* GenDir;
-    G4UIcmdWithoutParameter* UpdateCmd;
-    G4UIcmdWithAString* OpenCmd;
+    NPL::DecayStore m_Decay;
+    std::set<std::string>  m_MotherName;
+    std::string m_CurrentName;
+    double m_ExcitationEnergy;
+    double m_PreviousEnergy;
+    double m_PreviousLength;
 
 };
+}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#endif
-
+#endif 

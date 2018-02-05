@@ -332,6 +332,18 @@ std::vector<std::string> NPL::InputParser::GetAllBlocksToken(){
   return token;
 }
 ////////////////////////////////////////////////////////////////////////////////
+std::vector<std::string> NPL::InputParser::GetAllBlocksValues(std::string token){
+  std::vector<std::string> value;
+  std::vector<NPL::InputBlock*> blocks = GetAllBlocksWithToken(token);
+  unsigned int size = blocks.size();
+  for(unsigned int i = 0 ; i < size ; i++){
+    value.push_back(blocks[i]->GetMainValue());
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void NPL::InputParser::TreatAliases(){
 
   // Call the alias block

@@ -84,6 +84,7 @@ class TCATSPhysics : public TObject, public NPL::VDetector
     vector<double>	 QsumY;
     double           PositionOnTargetX;
     double           PositionOnTargetY;
+    double           m_Zproj;;
 
     TVector3         BeamDirection;//!
 
@@ -167,7 +168,7 @@ class TCATSPhysics : public TObject, public NPL::VDetector
     void  Clear(const Option_t*) {};  
 
     // Give and external TCATSData object to TCATSPhysics, needed for online analysis
-    void SetRawDataPointer(TCATSData* rawDataPointer) {m_EventData = rawDataPointer;}
+    void SetRawDataPointer(void* rawDataPointer) {m_EventData = (TCATSData*)rawDataPointer;}
 
     //   Return false if the channel is disabled by user
     bool IsValidChannel(const string DetectorType, const int Detector , const int channel);

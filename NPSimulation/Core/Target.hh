@@ -38,7 +38,7 @@
 #include "G4Material.hh"
 #include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
-
+#include "G4VFastSimulationModel.hh"
 // NPTool headers
 #include "NPSVDetector.hh"
 #include "NPInputParser.h"
@@ -121,6 +121,14 @@ private:
   G4double    m_TargetY;
   G4double    m_TargetZ;
 
+
+public: // Region were reaction can occure
+  void SetReactionRegion();  
+ 
+private:
+  // Region were reaction can occure:
+  G4Region* m_ReactionRegion;
+  vector<G4VFastSimulationModel*> m_ReactionModel;
   // Pointer to the last target generated (0 if none)
   private:
     static Target*  TargetInstance ;

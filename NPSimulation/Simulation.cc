@@ -74,7 +74,7 @@ int main(int argc, char** argv){
     PhysicsList* physicsList   = new PhysicsList();
     runManager->SetUserInitialization(physicsList);
     PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
-    
+
     // Initialize Geant4 kernel
     runManager->Initialize();
     

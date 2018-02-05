@@ -51,7 +51,8 @@
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
   m_Messenger = new PrimaryGeneratorActionMessenger(this);
   m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent;
-}
+  m_Target=NULL;
+  }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
@@ -111,7 +112,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     myEventGenerator->SetTarget(m_detector->GetTarget());
     m_EventGenerator.push_back(myEventGenerator);
   }
-  blocks.clear();
+/*  blocks.clear();
   blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
   if (blocks.size()>0) {
     NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
@@ -138,6 +139,10 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     myEventGenerator->SetTarget(m_detector->GetTarget());
     m_EventGenerator.push_back(myEventGenerator);
   }
+*/
+  m_Target=m_detector->GetTarget();
+  m_Target->SetReactionRegion();
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ClearEventGenerator(){
@@ -152,7 +157,7 @@ void PrimaryGeneratorAction::ClearEventGenerator(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::SetTarget(){
   for (unsigned int i = 0 ; i < m_EventGenerator.size(); i++) {
-    m_EventGenerator[i]->SetTarget(m_detector->GetTarget());
+    m_EventGenerator[i]->SetTarget(m_Target);
   }
 }
 
