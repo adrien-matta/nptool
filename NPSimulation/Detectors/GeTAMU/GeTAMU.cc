@@ -54,7 +54,6 @@
 
 // NPS
 #include "GeTAMU.hh"
-#include "NPSDetectorFactory.hh"
 #include "GeTAMUScorers.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -125,7 +124,8 @@ GeTAMU::~GeTAMU(){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void GeTAMU::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("GeTAMU");
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("GeTAMU","Clover");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " clovers found " << endl; 
 
@@ -571,27 +571,55 @@ void GeTAMU::ReadSensitive(const G4Event* event){
 
   // Loop on the HPGE map
   for (HPGE_itr = HPGEHitMap->GetMap()->begin() ; HPGE_itr != HPGEHitMap->GetMap()->end() ; HPGE_itr++){
-
+    
 		G4double* Info = *(HPGE_itr->second);
 
-		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
+		G4double Energy   =  Info[0];
 		G4double Time     =  Info[1];
-		G4int CloverNbr   = (int)Info[7];
+    //
+    G4double InterPos_X = Info[2];
+    G4double InterPos_Y = Info[3];
+    G4double InterPos_Z = Info[4];
+    G4double InterPos_Theta = Info[5];
+    G4double InterPos_Phi = Info[6];
+    //
+  	G4int CloverNbr   = (int)Info[7];
 		G4int CrystalNbr  = (int)Info[8];
 
 		// Figure out segment number
 		G4int SegmentNbr = 0;
-		G4double zpos = Info[4]; // mm
-		if(fabs(zpos) < 10)                         { SegmentNbr = 2; } // MIDDLE
+		if(fabs(InterPos_Z) < 20*mm)                { SegmentNbr = 2; } // MIDDLE
 		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
 		else                                        { SegmentNbr = 3; } // LEFT
 		
-		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
-		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
-		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
-		m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, Time/keV);
-  }
+    if(Energy>0.0*keV){
+  		m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
+  		m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
+  		m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);
+  		m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, Time/ns);
 
+      // If event passes through first stage fill the Interaction Coordinates   
+      //Always calculated with respect to (0,0,0)
+      ms_InterCoord->SetDetectedPositionX(InterPos_X) ;
+      ms_InterCoord->SetDetectedPositionY(InterPos_Y) ;
+      ms_InterCoord->SetDetectedPositionZ(InterPos_Z) ;
+      ms_InterCoord->SetDetectedAngleTheta(InterPos_Theta/deg) ;
+      ms_InterCoord->SetDetectedAnglePhi(InterPos_Phi/deg) ;
+     
+      //add resolutions
+      G4double energyCry = RandGauss::shoot(Energy, ResoCry);
+      G4double energySeg = RandGauss::shoot(Energy, ResoSeg);
+      G4double time = RandGauss::shoot(Time, ResoTime);
+          
+     if(Energy > EnergyThreshold){
+        m_GeTAMUData->SetCoreE(CloverNbr, CrystalNbr, energyCry/keV);
+        m_GeTAMUData->SetCoreT(CloverNbr, CrystalNbr, time/ns);
+        m_GeTAMUData->SetSegmentE(CloverNbr, SegmentNbr, energySeg/keV);
+        m_GeTAMUData->SetSegmentT(CloverNbr, SegmentNbr, time/ns);
+     }
+     
+    }
+   }
   // clear map for next event
   HPGEHitMap->clear();
 }

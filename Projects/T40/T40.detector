@@ -4,12 +4,18 @@ GeneralTarget
 %0.5mg/cm2
 Target
  THICKNESS= 0.1132 micrometer 
- RADIUS=	5 mm
- MATERIAL= 6LiF
+ RADIUS=10 mm
+ MATERIAL= CD2
  ANGLE= 0 deg
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
+MDM
+ Angle= 0 deg
+ Field= 6248.26 gauss
+ XAccept= 2.0 deg
+ YAccept= 2.0 deg
+ Rayin= ../../Inputs/DetectorConfiguration/rayin-t4t.dat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara Barrel
  InnerBarrel= 1

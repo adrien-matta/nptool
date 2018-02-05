@@ -207,7 +207,7 @@ class TTiaraHyballPhysics : public TObject, public NPL::VDetector{
 
     public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();
-     ClassDef(TTiaraHyballPhysics,1)  // SharcPhysics structure
+     ClassDef(TTiaraHyballPhysics,2)  // SharcPhysics structure
 };
 
 namespace TiaraHyball_LOCAL{

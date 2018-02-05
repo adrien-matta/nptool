@@ -30,15 +30,15 @@
 #include <map>
 
 
-namespace GETAMUSCORERS {
+namespace TIGRESSSCORERS {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class PS_GeTAMU : public G4VPrimitiveScorer{
+class PS_Tigress : public G4VPrimitiveScorer{
 
 public: // with description
-	PS_GeTAMU(G4String name, G4int Level,G4int depth=0);
-	~PS_GeTAMU();
+	PS_Tigress(G4String name, G4int Level,G4int depth=0);
+	~PS_Tigress();
 
 protected: // with description
 	G4bool ProcessHits(G4Step*, G4TouchableHistory*);
@@ -69,7 +69,6 @@ private: // inherited from G4VPrimitiveScorer
 
 private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
 	G4ThreeVector m_Position  ;
-	G4ThreeVector m_LocalPosition  ;
 	G4int m_CloverNumber      ;
 	G4int m_CrystalNumber     ;
 	G4int m_Index             ;

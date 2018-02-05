@@ -336,8 +336,9 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     
     m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
     m_StripRingNumber = (int) ((m_Position.rho() - m_StripPlaneInnerRadius) / m_StripPitchRing ) + 1 ;
-    
-    double phi = m_Position.phi();
+    // phi() from G4-CLHEP method return azimuth between [-pi;pi]
+    // we need it in [0;2pi] to calculate sector nbr in [1,NSectors]
+    double phi = m_Position.phi() + pi ;
 
     m_StripSectorNumber   = (int) ((phi - m_PhiStart)  / m_StripPitchSector ) + 1 ;
     m_StripQuadrantNumber = (int) ((phi - m_PhiStart)  /m_StripPitchQuadrant) + 1 ;

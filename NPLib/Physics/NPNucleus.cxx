@@ -63,6 +63,7 @@ void Nucleus::SetUp(string isotope){
   fExcitationEnergy=0; 
   // Replace the n,p,d,t,a by there standard name:
   if(isotope=="p") isotope="1H";
+	else if(isotope=="n") isotope="1n";
   else if(isotope=="d") isotope="2H";
   else if(isotope=="t") isotope="3H";
   else if(isotope=="a") isotope="4He";
@@ -70,8 +71,12 @@ void Nucleus::SetUp(string isotope){
   else if(isotope=="neutron") isotope="1n";
   else if(isotope=="g") isotope="gamma";
   else if(isotope=="gamma") isotope="gamma";
-
-
+	else if(isotope=="4n"){ // tetraneutron @Eres = 0
+		string line = "004 0000   4n      32285.268   0.0005                       219.4    ys 0.6    1/2+          00 02PaDGt   B-=100";
+		Extract(line.data());
+		return;
+	}
+	
   ifstream inFile;
   string Path = getenv("NPTOOL") ;
   string FileName = Path + "/NPLib/Physics/nubtab12.asc";
@@ -102,6 +107,10 @@ Nucleus::Nucleus(int Z, int A)
 {
   //----------- Constructor Using nubtab12.asc by Z and A----------
 
+	if(Z==0 && A==4){
+		SetUp("4n");
+		return;
+	}
   // open the file to read and check if it is open
   ifstream inFile;
   string Path = getenv("NPTOOL") ;
