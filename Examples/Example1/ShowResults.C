@@ -32,11 +32,14 @@ void ShowResults(){
     // E-DE
     c1->cd(1);
     chain->Draw("SSSD.Energy:MUST2.Si_E>>hIDE(1000,0,35,1000,0,5)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5","colz");
+
     EDE->Draw("same");
     
     // E-TOF
     c1->cd(2);
-    chain->Draw("-MUST2.Si_T:SSSD.Energy+MUST2.Si_E>>hIDT(1000,0,35,1000,-15,0)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5","colz");
+    chain->Draw("-MUST2.Si_T:SSSD.Energy+MUST2.Si_E>>hIDT(1000,0,35,1000,-30,0)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5","colz");
+
+
     ETOF->Draw("same");
     
     // Kinematical Line //

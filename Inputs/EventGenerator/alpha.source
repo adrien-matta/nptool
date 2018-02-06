@@ -10,7 +10,7 @@ Isotropic
  HalfOpenAngleMax= 180 deg
  x0= 0 mm
  y0= 0 mm
- z0= -110 mm
+ z0= 0 mm
  Particle= alpha
  ExcitationEnergy= 0 MeV
 

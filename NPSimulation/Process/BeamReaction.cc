@@ -152,14 +152,8 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
   m_Reaction.ShootRandomExcitationEnergy();
  
   // Use to clean up the IonTable in case of the Ex changing at every event
-  static G4ParticleDefinition* previousHeavy=0;
-  if(previousHeavy)
-    delete previousHeavy;
-   // IonTable->Remove(previousHeavy);
-
   G4ParticleDefinition* HeavyName
   = IonTable->GetIon(HeavyZ, HeavyA, m_Reaction.GetExcitation4()*MeV);
-  //cout << IonTable->Entries()<< endl;
   // Set the Energy of the reaction 
   m_Reaction.SetBeamEnergy(energy);
 
@@ -225,8 +219,4 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
   // Reinit for next event
   m_PreviousEnergy=0 ;
   m_PreviousLength=0 ;
-  //previousHeavy=HeavyName;
-  //IonTable->fIonList->begin()->second->Mass();
-  //IonTable->fIonList->erase(IonTable->fIonList->begin());
-
 }
