@@ -262,6 +262,8 @@ double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
 
 
   double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4.Mass();
+//by Shuya 171005
+//cout << m1 << " " << m2 << " " << fNuclei4.Mass() << " " << m3 << " " << EnergyLab << " " << ThetaLab << " " << ThetaLab/deg << " " << Eex << endl;
 
   return Eex;
 }
