@@ -120,7 +120,7 @@ void Analysis::Init(){
   //LightSi = NPL::EnergyLoss("He4_Si.SRIM","SRIM",10);
 
 //by Shuya 170530
-  LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
+  //LightCBacking = NPL::EnergyLoss(light+"_C.SRIM","SRIM",10);
 
   BeamTarget = NPL::EnergyLoss(beam+"_"+TargetMaterial+".SRIM","SRIM",10);
   FinalBeamEnergy = BeamTarget.Slow(OriginalBeamEnergy, TargetThickness*0.5, 0);
@@ -141,8 +141,8 @@ void Analysis::Init(){
 
   //Original_ELab=0;
   //Original_ThetaLab=0;
-  XTarget =0;
-  YTarget =0;
+  XTarget =-1.026126;
+  YTarget =-2.3589;
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
@@ -157,6 +157,7 @@ void Analysis::Init(){
 	Micro2_E_row1_2 = 0; // Energy from micromega rows 1-2  ("E in stopping mode")
   Micro1_E_row1 = 0 ;// Energy from micromega row 1
 //by Shuya 170912
+  //Micro1_E_col4 = 0 ;// energy from micromega col 4
   Micro1_E_col4_sum = 0 ;// energy from micromega col 4
   Plast_E = 0; // Energy Plastic
 	for(int i=0; i< kNumAw; ++i) {
@@ -195,7 +196,7 @@ void Analysis::Init(){
   Micro2_E_col4_mult = 0. ;// energy from micromega2 col 3
   Micro2_E_col5_mult = 0. ;// energy from micromega2 col 5
   Micro2_E_col6_mult = 0. ;// energy from micromega2 col 6
-  Micro2_E_col7_mult = 0. ;// energy from micromega2 col 6
+  Micro2_E_col7_mult = 0. ;// energy from micromega2 col 7
 
   //TAC
   TacSiGeOR     = -1000;
@@ -228,14 +229,14 @@ void Analysis::TreatEvent(){
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
       //TVector3 BeamImpact(XTarget,YTarget,0);
-	//by Shuya 170807 (from 22Ne(d,d))
-      //TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
 	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment
       //TVector3 BeamImpact(0.173098, 2.67341, 4.07383);
 	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment, but X, Y=0
       TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
-      TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
+	//by Shuya 171218 (because of T40 meeting's discussion)
+      //TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
+      TVector3 HitDirection = TH -> GetPositionOfInteraction(countTiaraHyball) - BeamImpact ;
 
       ThetaLab = HitDirection.Angle( BeamDirection );
       ThetaTHSurface = HitDirection.Angle(TVector3(0,0,-1)); // vector Normal on Hyball
@@ -244,6 +245,8 @@ void Analysis::TreatEvent(){
 	//by Shuya 171019
       PhiLab = HitDirection.Phi();
       PhiLab = PhiLab/(TMath::Pi())*180.0;
+	//by Shuya 171208
+      PhiLab_Hyball = PhiLab;
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -254,10 +257,15 @@ void Analysis::TreatEvent(){
     /////////////////////////////
     // Part 2 : Impact Energy
     Energy = ELab = 0;
+//by Shuya 171206
+    ELab_Hyball = 0;
+
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH; // calibration for hyball is in MeV
     // Correct for energy loss using the thickness of the target and the dead layer
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
+//by Shuya 170530
+    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
    /////////////////////////////
@@ -267,6 +275,9 @@ void Analysis::TreatEvent(){
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
 
+//by Shuya 171206
+    ELab_Hyball = ELab;
+    ThetaLab_Hyball = ThetaLab;
 //by Shuya 170703
     Ex_Hyball = Ex;
 
@@ -287,14 +298,15 @@ void Analysis::TreatEvent(){
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
       //TVector3 BeamImpact(XTarget,YTarget,0);
-	//by Shuya 170807 (from 22Ne(d,d))
-      //TVector3 BeamImpact(-0.0781531, 3.12639, 4.27667);
 	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment
       //TVector3 BeamImpact(0.173098, 2.67341, 4.07383);
 	//by Shuya 171020 from 22Ne(d,d) IB7,8 5 degrees adjustment, but X, Y=0
       TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
-      TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
+	//by Shuya 171218 (because of T40 meeting's discussion)
+      //TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
+      TVector3 HitDirection = TB -> GetPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
+
       //Angle of emission wrt to beam
       ThetaLab = HitDirection.Angle( BeamDirection );
       ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
@@ -307,6 +319,8 @@ void Analysis::TreatEvent(){
 	//by Shuya 171019
       PhiLab = HitDirection.Phi();
       PhiLab = PhiLab/(TMath::Pi())*180.0;
+	//by Shuya 171208
+      PhiLab_Barrel = PhiLab;
     }
     else{
       BeamDirection = TVector3(-1000,-1000,-1000);
@@ -317,6 +331,9 @@ void Analysis::TreatEvent(){
     /////////////////////////////
     // Part 2 : Impact Energy
     Energy = ELab = 0;
+//by Shuya 171206
+    ELab_Barrel = 0;
+
     Si_E_InnerTB = TB->Strip_E[countTiaraBarrel];
     Energy = Si_E_InnerTB*keV;// calibration for barrel is in keV
     
@@ -327,10 +344,16 @@ void Analysis::TreatEvent(){
 	      Energy = Si_E_InnerTB*keV + Si_E_OuterTB*keV;
 	    }
 
+	//by Shuya 171208. If you need E+dE for Barrel.
+    for(unsigned int countTiaraOuterBarrel = 0 ; countTiaraOuterBarrel < TB->Outer_Strip_E.size() ; countTiaraOuterBarrel++){
+	    if(TB->Outer_Detector_N[countTiaraOuterBarrel]==TB->Detector_N[countTiaraBarrel] && TB->Outer_Strip_E[countTiaraOuterBarrel]>0){
+	      	Si_E_OuterTB = TB->Outer_Strip_E[countTiaraOuterBarrel];
+	        Energy = Si_E_InnerTB*keV + Si_E_OuterTB*keV;
+		}
+	}
+
     // Evaluate energy using the thickness, Target and Si dead layer Correction
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
-//by Shuya 170530
-    if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////
@@ -343,6 +366,10 @@ void Analysis::TreatEvent(){
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction -> EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
+
+//by Shuya 171206
+    ELab_Barrel = ELab;
+    ThetaLab_Barrel = ThetaLab;
 
     /////////////////////////////
     // Part 5 : Implementing randomised position impact matrix for both the entire Barrel (all 8 strips) and each strip making up the octagonal Barrel individually
@@ -493,9 +520,10 @@ void Analysis::TreatEvent(){
 	for(int i=0; i< kNumAw; ++i) {
 		if(Aw_X[i] != -1000) { ++numValid; }
 		if(numValid == 2) {  // at least 2 points to calculate an angle
-			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
-			Aw_ThetaFit_R2 = TF->AWireFitR2;
+ 			Aw_ThetaFit = TF->AWireAngle*(180/TMath::Pi());
+ 			Aw_ThetaFit_R2 = TF->AWireFitR2;
 			break;
+
 		}
 	}
 
@@ -580,6 +608,12 @@ void Analysis::ReInitValue(){
   //Silicon
   Ex = -1000 ;
   ELab = -1000;
+//by Shuya 171206
+  ELab_Hyball = -1000;
+  ELab_Barrel = -1000;
+  ThetaLab_Hyball = -1000;
+  ThetaLab_Barrel = -1000;
+
   ThetaLab = -1000;
   ThetaCM = -1000;
   LightParticleDetected = false ;
@@ -587,7 +621,10 @@ void Analysis::ReInitValue(){
   Ex_Hyball = -1000 ;
   Ex_Barrel = -1000 ;
 //by Shuya 171019
-  PhiLab = -1000 ;
+  PhiLab = -1000;
+//by Shuya 171208
+  PhiLab_Hyball = -1000;
+  PhiLab_Barrel = -1000;
 
   //Simu
   //Original_ELab = -1000;
@@ -633,6 +670,7 @@ void Analysis::ReInitValue(){
   Micro2_E_col6_mult = -1000;
   Micro2_E_col7_mult = -1000;
 
+
 	for(int i=0; i< kNumAw; ++i) {
 		Aw_X[i] = -1000;
 		Aw_X[i] = -1000;
@@ -664,10 +702,20 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Ex_Barrel",&Ex_Barrel,"Ex_Barrel/D");
 
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
+//by Shuya 171206
+  RootOutput::getInstance()->GetTree()->Branch("ELab_Hyball",&ELab_Hyball,"ELab_Hyball/D");
+  RootOutput::getInstance()->GetTree()->Branch("ELab_Barrel",&ELab_Barrel,"ELab_Barrel/D");
+
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab,"ThetaLab/D");
+//by Shuya 171206
+  RootOutput::getInstance()->GetTree()->Branch("ThetaLab_Hyball",&ThetaLab_Hyball,"ThetaLab_Hyball/D");
+  RootOutput::getInstance()->GetTree()->Branch("ThetaLab_Barrel",&ThetaLab_Barrel,"ThetaLab_Barrel/D");
+
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
 //by Shuya 171019
   RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
+  RootOutput::getInstance()->GetTree()->Branch("PhiLab_Hyball",&PhiLab_Hyball,"PhiLab_Hyball/D");
+  RootOutput::getInstance()->GetTree()->Branch("PhiLab_Barrel",&PhiLab_Barrel,"PhiLab_Barrel/D");
 
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixX",&TiaraIMX,"TiaraImpactMatrixX/D");
   RootOutput::getInstance()->GetTree()->Branch("TiaraImpactMatrixY",&TiaraIMY,"TiaraImpactMatrixY/D");
@@ -722,7 +770,6 @@ void Analysis::InitOutputBranch() {
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col5_mult",&Micro2_E_col5_mult,"Micro2_E_col5_mult/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col6_mult",&Micro2_E_col6_mult,"Micro2_E_col6_mult/D");
   RootOutput::getInstance()->GetTree()->Branch("Micro2_E_col7_mult",&Micro2_E_col7_mult,"Micro2_E_col7_mult/D");
-
 
 //TACS
   RootOutput::getInstance()->GetTree()->Branch("TacSiGeOR",&TacSiGeOR,"TacSiGeOR/D");

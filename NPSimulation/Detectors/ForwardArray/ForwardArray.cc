@@ -1,14 +1,14 @@
 /*****************************************************************************
- * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
- * Creation Date  : May 2017                                           *
+ * Creation Date  : May 2017                                                 *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -57,7 +57,7 @@ using namespace CLHEP;
 namespace ForwardArray_NS{
     // Energy and time Resolution
     const double EnergyThreshold = 0.1*MeV;
-    const double ResoTime = 4.5*ns ;
+    const double ResoTime = 0.3*ns ;
     const double ResoEnergy = 1.0*MeV ;
     //const double Width = 100*mm ;
     

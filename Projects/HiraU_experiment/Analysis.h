@@ -59,6 +59,7 @@ private:
     int MBMultiplicity;
     int NWMultiplicity;
     int FAMultiplicity;
+    double StartTimeFA;
     double X_Hira;
     double Y_Hira;
     double Z_Hira;

@@ -1,0 +1,15 @@
+ConfigMDM
+  X_THRESHOLD 1000
+  Y_THRESHOLD 1000
+  X_LOW	       -15
+  Y_LOW	       -15
+  X_HIGH       +15
+  Y_HIGH       +15
+  RECON_A       14
+  RECON_Z        8
+  RECON_Q        8
+  DO_MINIMIZATION     false
+  MINIMIZER_NAME      Minuit2
+  MINIMIZER_ALGORITHM Migrad
+  MINIMIZER_PLUGIN_FILE  ${NPTOOL}/Inputs/DetectorConfiguration/MDM_MinimizerPlugins.C
+  MINIMIZER_PLUGIN_CLASS MinimizerR2XYLight
