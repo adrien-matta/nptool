@@ -120,7 +120,7 @@ public:
   ///////////Event class to store Data////////////////
   ////////////////////////////////////////////////////
 private:
-  TTigressData*    m_Event ;
+  TTigressData*    m_TigressData ;
   
   ////////////////////////////////////////////////////
   ///////////////// Scorer Related ///////////////////
@@ -135,8 +135,9 @@ private:
   void InitializeScorers() ;
   
   //   Scorer Associate to the Silicon
-  //G4MultiFunctionalDetector*   m_GermaniumScorer ;
+  G4MultiFunctionalDetector*   m_HPGeScorer ;
   //G4MultiFunctionalDetector*   m_BGOScorer ;
+
 private:
   //    Initialize material used in detector definition
   void InitializeMaterial();

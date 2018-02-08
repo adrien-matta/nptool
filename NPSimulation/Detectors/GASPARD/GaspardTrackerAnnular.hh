@@ -105,9 +105,9 @@ private:
    TInteractionCoordinates* ms_InterCoord;
 
    // Used for "By Point Definition"
-   vector<G4double> m_PosZ;
-   vector<G4double> m_Rmin;
-   vector<G4double> m_Rmax;
+   vector<G4double> m_FirstStagePosZ;
+   vector<G4double> m_FirstStageRmin;
+   vector<G4double> m_FirstStageRmax;
 
    // for debugging purpose
    //G4ThreeVector   MMpos;
@@ -131,18 +131,18 @@ namespace GPDANNULAR
    // Threshold
    const G4double EnergyThreshold = 0.2*MeV;
 
-   // Geometry
-   const G4double Rmin   = 15*mm;
-   const G4double Rmax   = 55*mm;
-   const G4double Length = 10*mm;
+   // Geometry of Principal Logical Volume
+   const G4double LogicRmin   = 15*mm;
+   const G4double LogicRmax   = 55*mm;
+   const G4double LogicLength = 10*mm;
 
    // First stage
 //   const G4double AluStripThickness = 0.00000001*micrometer;
    const G4double AluStripThickness   = 0.4*micrometer;
    const G4double FirstStageThickness = 300*micrometer;
-   const G4double FirstStageRmin = 16*mm;
+   //const G4double FirstStageRmin = 16*mm;
    // MUGAST
-   const G4double FirstStageRmax = 45*mm;
+   //const G4double FirstStageRmax = 45*mm;
    // gaspHyde
 //   const G4double FirstStageRmax = 52*mm;
 //   const G4double VacBoxThickness   = 3*cm           ;
@@ -159,7 +159,7 @@ namespace GPDANNULAR
    const G4int NbThetaStrips   = 16;
 
    // Starting at the front and going in direction of third stage
-   const G4double AluStripFront_PosZ = Length* -0.5 + 0.5*AluStripThickness;
+   const G4double AluStripFront_PosZ = LogicLength* -0.5 + 0.5*AluStripThickness;
    const G4double Silicon_PosZ       = AluStripFront_PosZ + 0.5*AluStripThickness + 0.5*FirstStageThickness;
    const G4double AluStripBack_PosZ  = Silicon_PosZ + 0.5*FirstStageThickness + 0.5*AluStripThickness;
    const G4double VacBox_PosZ        = AluStripBack_PosZ + 0.5*AluStripThickness + 0.5* VacBoxThickness;
