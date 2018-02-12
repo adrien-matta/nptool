@@ -250,20 +250,51 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   unsigned int sizeR = m_PreTreatedData->GetRingEMult();
   unsigned int sizeS = m_PreTreatedData->GetSectorEMult();
 
-  for(unsigned int i = 0 ; i < sizeR ; i++) {
-    for(unsigned int j = 0 ; j < sizeS ; j++){
-      //   if same detector check energy
-      if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
-        //   Look if energy match
-        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
-            < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
-          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
-        }
-      }
-    }
-  }
-  //   Prevent to treat event with ambiguous matchin beetween X and Y
-  if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+	// GAC - 02122018
+	// If StripEnergyMatchingNumberOfSigma is set to zero,
+	// do not require ring+sector matching
+	if(m_StripEnergyMatchingNumberOfSigma == 0){
+		// Check whether it's ring or sector we're getting the energy from
+		//
+		if(m_Take_E_Ring_Sector_Average){
+			// Incompatible option - can't average w/o both ring+sector
+			std::cerr << "ERROR - Can't take ring and sector average without ring+sector matching\n"
+								<< "Either set STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA > 0\nOR"
+								<< "set	TAKE_E_RING or TAKE_E_SECTOR in config/ConfigTiaraHyball.dat\n";
+			exit(1);			
+		}
+		else if(m_Take_E_Ring){
+			// Take energy from ring only
+			for(unsigned int i = 0 ; i < sizeR ; i++) {
+				// n.b. - sector number ignored
+				ArrayOfGoodCouple . push_back ( TVector2(i,0) ) ;
+			}
+		}
+		else{
+			// Take energy from sector only
+			for(unsigned int j = 0 ; j < sizeS ; j++) {
+				// n.b. - ring number ignored
+				ArrayOfGoodCouple . push_back ( TVector2(0,j) ) ;
+			}
+		}
+	}
+	else {
+		// Standard case with ring+sector matching
+		for(unsigned int i = 0 ; i < sizeR ; i++) {
+			for(unsigned int j = 0 ; j < sizeS ; j++){
+				//   if same detector check energy
+				if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
+					//   Look if energy match
+					if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
+							< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
+						ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+					}
+				}
+			}
+		}
+		//   Prevent to treat event with ambiguous matchin beetween X and Y
+		if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+	}
 
   return ArrayOfGoodCouple;
 }
