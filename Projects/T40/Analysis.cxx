@@ -401,8 +401,10 @@ void Analysis::TreatEvent(){
 	    }
 
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
-    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+		if(Energy > 0){
+			ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
+			ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+		}
 
     /////////////////////////////
     // Part 3 : Excitation Energy Calculation
