@@ -328,7 +328,11 @@ void Analysis::TreatEvent(){
 			ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
 //by Shuya 170530
 			//if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
-			ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			if(ELab > 0) {
+				ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			} else {
+				ELab = 0;
+			}
 		}
 
    /////////////////////////////
@@ -403,7 +407,11 @@ void Analysis::TreatEvent(){
     // Evaluate energy using the thickness, Target and Si dead layer Correction
 		if(Energy > 0){
 			ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
-			ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			if(ELab > 0) {
+				ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			} else {
+				ELab = 0;
+			}
 		}
 
     /////////////////////////////
