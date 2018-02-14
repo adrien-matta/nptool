@@ -27,6 +27,7 @@ using namespace TiaraHyball_LOCAL;
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <cassert>
 
 //   NPL
 #include "RootInput.h"
@@ -48,6 +49,13 @@ using namespace NPUNITS;
 //#include "random"
 
 TRandom *Rand = new TRandom3();
+namespace{
+
+	// GAC - 02142018 - Constant number of rings, sectors
+	const int k_Num_Sector = 8;
+	const int k_Num_Ring   = 16;
+	
+}
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTiaraHyballPhysics)
@@ -104,6 +112,22 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
       double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
 
+			// GAC - 02142018 - Check for ignoring sectors
+			// and taking at center of wedge ("sector 9")
+			if(m_StripEnergyMatchingNumberOfSigma == 0){
+				assert(m_Take_E_Ring_Sector_Average == false); // should never get here!
+
+				if(m_Take_E_Ring){ // taking ring energy
+					Sector = k_Num_Sector; // tells code to take phi at center of wedge - "sector 9"
+					Sector_E = 0;
+				} else { // taking sector energy
+					/// \todo Implement sector energy...
+					std::cerr << "FATAL ERROR: Full routine for taking sector energies only is not"
+										<< "yet implemented! (TTiaraHyballPhysics.cxx, line: " << __LINE__ << ")\n\n";
+					exit(1);
+				}
+			}
+			
       // Search for associate Time:
       double Ring_T = -1000 ;
       unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult();
@@ -623,8 +647,8 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
   double phi_offset = 5.6*deg;
   double phi_min = -27.2*deg;
   double phi_max = 27.2*deg;
-  int NumberOfRings = 16 ;
-  int NumberOfSectors = 8 ;
+  int NumberOfRings   = k_Num_Ring ;   // 16
+  int NumberOfSectors = k_Num_Sector ; // 8
   double wedge_pitch  = 60*deg  ;
   double ring_pitch   = (r_max-r_min)/NumberOfRings  ;
   double sec_pitch = (phi_max-phi_min)/NumberOfSectors ;
@@ -642,11 +666,17 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
     lineX.clear() ;
     lineY.clear() ;
     lineZ.clear() ;
-    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){
+		// GAC - 02142018 - Add "sector 9" - center of wedge
+		// For when ignoring sectors to get phi from wedge center
+    for(int iSec = 0 ; iSec <= NumberOfSectors ; iSec++){
       StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate
       StripCenter.SetY(0);
       StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://static.miraheze.org/t40wiki/5/55/TIARA_Detector_Map.png
+			if(iSec < NumberOfSectors){
+				StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://static.miraheze.org/t40wiki/5/55/TIARA_Detector_Map.png
+			} else{ // GAC - "sector 9" (center of wedge)
+				StripCenter.RotateZ(Phi); // todo - is phi_offset needed??
+			}
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
@@ -693,7 +723,9 @@ TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) co
   double rho_min2 = (rho-3.2)*(rho-3.2) ; // ^2 to reproduce a randomization in the arc
   double rho_max2 = (rho+3.2)*(rho+3.2) ;
   double rho_rand = sqrt(Rand->Uniform(rho_min2,rho_max2));// sqrt is necessary for realistic randomise!
-  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg); 
+	// GAC - 02142018 - Set Phi randomization over whole wedge if "sector 9"
+	double phi_half_range = Strip_Sector[i] != k_Num_Sector ? 3.4*deg : 27.2*deg;
+  double phi_rand = phi + Rand->Uniform(-phi_half_range, +phi_half_range);
   return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
