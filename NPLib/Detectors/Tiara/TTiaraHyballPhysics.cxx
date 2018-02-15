@@ -107,26 +107,12 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
-      int Sector  = m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
-
-      double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
-      double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
-
-			// GAC - 02142018 - Check for ignoring sectors
-			// and taking at center of wedge ("sector 9")
-			if(m_StripEnergyMatchingNumberOfSigma == 0){
-				assert(m_Take_E_Ring_Sector_Average == false); // should never get here!
-
-				if(m_Take_E_Ring){ // taking ring energy
-					Sector = k_Num_Sector; // tells code to take phi at center of wedge - "sector 9"
-					Sector_E = 0;
-				} else { // taking sector energy
-					/// \todo Implement sector energy...
-					std::cerr << "FATAL ERROR: Full routine for taking sector energies only is not"
-										<< "yet implemented! (TTiaraHyballPhysics.cxx, line: " << __LINE__ << ")\n\n";
-					exit(1);
-				}
-			}
+			int Sector  = (couple[i].Y() < 0) ? // GAC - sector couple of -1 (couple[i].Y() < 0) means "sector 9"
+				k_Num_Sector : m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
+			
+			double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
+      double Sector_E = Sector == k_Num_Sector ? // GAC - set sector energy to zero if "sector 9"
+				0 : m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
 			
       // Search for associate Time:
       double Ring_T = -1000 ;
@@ -141,10 +127,15 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       double Sector_T = -1000 ;
       unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult();
       for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
-        if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
-            &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
-          Sector_T = m_PreTreatedData->GetSectorTTime(t);
-      }
+				// GAC - ignore "sector 9" events (couple[i].Y() < 0)
+				// to avoid bad call to GetSectorEStripNbr
+				// Also fix bug - it used to call the ring here w/ couple[i].X()
+				if( couple[i].Y() >= 0 ){
+					if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].Y() ) == m_PreTreatedData->GetSectorTStripNbr(t)
+							 &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].Y() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
+						Sector_T = m_PreTreatedData->GetSectorTTime(t);
+				}
+			}
 
       DetectorNumber.push_back(N);
       StripRing_E.push_back(Ring_E);
@@ -192,7 +183,8 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       Strip_Ring.push_back(Ring) ;
       Strip_Sector.push_back(Sector) ;
-    }
+    } // END: for(unsigned int i = 0 ; i < MatchSize ; ++i){
+
   }
 }
 
@@ -291,20 +283,23 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
 			// Take energy from ring only
 			for(unsigned int i = 0 ; i < sizeR ; i++) {
 				// n.b. - sector number ignored
-				ArrayOfGoodCouple . push_back ( TVector2(i,0) ) ;
+				ArrayOfGoodCouple . push_back ( TVector2(i,-1) ) ;
 			}
 		}
 		else{
 			// Take energy from sector only
 			for(unsigned int j = 0 ; j < sizeS ; j++) {
 				// n.b. - ring number ignored
-				ArrayOfGoodCouple . push_back ( TVector2(0,j) ) ;
+				ArrayOfGoodCouple . push_back ( TVector2(-1,j) ) ;
 			}
 		}
 	}
 	else {
 		// Standard case with ring+sector matching
+		// GAC - 02152018 - If no sector match is found for a ring,
+		// set sector number to "sector 9" and take phi at center of wedge
 		for(unsigned int i = 0 ; i < sizeR ; i++) {
+			int numberOfSectorMatches = 0;
 			for(unsigned int j = 0 ; j < sizeS ; j++){
 				//   if same detector check energy
 				if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
@@ -312,11 +307,17 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
 					if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
 							< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
 						ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+						++numberOfSectorMatches;
 					}
 				}
 			}
+			if(numberOfSectorMatches == 0){
+				// No match: take ring only, set sector to "sector 9"
+				ArrayOfGoodCouple.push_back(TVector2(i,-1));
+			}
 		}
 		//   Prevent to treat event with ambiguous matchin beetween X and Y
+		//   TODO: should we also treat this like no match???
 		if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
 	}
 
