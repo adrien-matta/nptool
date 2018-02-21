@@ -88,7 +88,7 @@ namespace NPL{
         const;
 
       //   Calculate Energy Loss of a particle inside a material                        
-      double EnergyLossCalulation(  double Energy           , // Energy of the detected particle
+      double EnergyLossCalculation(  double Energy           , // Energy of the detected particle
           double TargetThickness  , // Target Thickness at 0 degree
           double Angle            ) // Particle Angle
         const;               

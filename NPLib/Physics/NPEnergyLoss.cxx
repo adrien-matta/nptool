@@ -77,11 +77,11 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
   TableFile.open(StandardPath.c_str())   ;
 
   // Opening dE/dX file
-  if(TableFile.is_open())    cout << "Reading Energy Loss File: " << Path << endl ; 
+  if(TableFile.is_open())    cout << "Reading Energy Loss File (standard path): " << Path << endl ; 
   // In case the file is not found in the standard path, the programm try to interpret the file name as an absolute or relative file path.
   else {
     TableFile.open( Path.c_str() );
-    if(TableFile.is_open()) { cout << "Reading Energy Loss File: " << Path << endl ;}
+    if(TableFile.is_open()) { cout << "Reading Energy Loss File (absolute path): " << Path << endl ;}
 
     else { cout << "ERROR: TABLE FILE "<< Path << " NOT FOUND" << endl; exit(1); }
   }
@@ -137,7 +137,6 @@ EnergyLoss::EnergyLoss(string Path , string Source, int NumberOfSlice=100 ,  int
   }
 
   else if(Source == "LISE"){
-    cout << "Reading Energy Loss File: " << Path << endl ;
     // Reading Data
     double energy=0, energyloss=0;
     string dummy;            
@@ -218,7 +217,7 @@ void EnergyLoss::Print() const{
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
-double EnergyLoss::EnergyLossCalulation( double Energy          , // Energy of the detected particle
+double EnergyLoss::EnergyLossCalculation( double Energy          , // Energy of the detected particle
     double TargetThickness , // Target Thickness at 0 degree
     double Angle           ) // Particle Angle
   const
