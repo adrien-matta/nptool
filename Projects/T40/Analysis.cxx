@@ -263,10 +263,16 @@ void Analysis::TreatEvent(){
     Si_E_TH = TH->Strip_E[countTiaraHyball];
     Energy = Si_E_TH; // calibration for hyball is in MeV
     // Correct for energy loss using the thickness of the target and the dead layer
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
+		if(Energy > 0){
+			ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
 //by Shuya 170530
-    //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
-    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			//if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
+			if(ELab > 0) {
+				ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			} else {
+				ELab = 0;
+			}
+		}
 
    /////////////////////////////
     // Part 3 : Excitation Energy Calculation
@@ -353,8 +359,14 @@ void Analysis::TreatEvent(){
 	}
 
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
-    ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+		if(Energy > 0){
+			ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
+			if(ELab > 0) {
+				ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+			} else {
+				ELab = 0;
+			}
+		}
 
     /////////////////////////////
     // Part 3 : Excitation Energy Calculation
