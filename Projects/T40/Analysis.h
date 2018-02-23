@@ -27,7 +27,7 @@
 #include "TTiaraBarrelPhysics.h"
 #include "TFPDTamuPhysics.h"
 #include "TGeTAMUPhysics.h"
-//#include "TMDMPhysics.h"
+#include "TMDMPhysics.h"
 #include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
@@ -103,7 +103,7 @@ class Analysis: public NPL::VAnalysis{
   TTiaraBarrelPhysics* TB;  
   TFPDTamuPhysics* TF;
   TGeTAMUPhysics* TG;
-	//TMDMPhysics* MDM;
+	TMDMPhysics* MDM;
 	//bool MDM_in_file; //!
 
   TRandom *Rand ;
