@@ -1,4 +1,4 @@
-#ifndef Analysis_h
+#ifndef Analysis_h 
 #define Analysis_h
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
@@ -61,7 +61,15 @@ class Analysis: public NPL::VAnalysis{
   double Ex_Barrel;
 
   double ELab;
+//by Shuya 171206
+  double ELab_Hyball;
+  double ELab_Barrel;
+
   double ThetaLab;
+//by Shuya 171206
+  double ThetaLab_Hyball;
+  double ThetaLab_Barrel;
+
   double ThetaCM;
   double TiaraIMX;
   double TiaraIMY;
@@ -71,6 +79,10 @@ class Analysis: public NPL::VAnalysis{
   bool LightParticleDetected;
 //by Shuya 171019
   double PhiLab;
+//by Shuya 171206
+  double PhiLab_Hyball;
+  double PhiLab_Barrel;
+
 // GAC 171020
 	double ThetaXLab;
 	double ThetaYLab;
