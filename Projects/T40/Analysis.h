@@ -61,15 +61,7 @@ class Analysis: public NPL::VAnalysis{
   double Ex_Barrel;
 
   double ELab;
-//by Shuya 171206
-  double ELab_Hyball;
-  double ELab_Barrel;
-
   double ThetaLab;
-//by Shuya 171206
-  double ThetaLab_Hyball;
-  double ThetaLab_Barrel;
-
   double ThetaCM;
   double TiaraIMX;
   double TiaraIMY;
@@ -79,10 +71,6 @@ class Analysis: public NPL::VAnalysis{
   bool LightParticleDetected;
 //by Shuya 171019
   double PhiLab;
-//by Shuya 171206
-  double PhiLab_Hyball;
-  double PhiLab_Barrel;
-
 // GAC 171020
 	double ThetaXLab;
 	double ThetaYLab;
@@ -104,7 +92,7 @@ class Analysis: public NPL::VAnalysis{
   TFPDTamuPhysics* TF;
   TGeTAMUPhysics* TG;
 	TMDMPhysics* MDM;
-	//bool MDM_in_file; //!
+	bool MDM_in_file; //!
 
   TRandom *Rand ;
 	double ThetaNormalTarget  ;
