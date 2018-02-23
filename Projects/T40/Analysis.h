@@ -1,4 +1,4 @@
-#ifndef Analysis_h 
+#ifndef Analysis_h
 #define Analysis_h
 /*****************************************************************************
  * Copyright (C) 2009-2014    this file is part of the NPTool Project        *
