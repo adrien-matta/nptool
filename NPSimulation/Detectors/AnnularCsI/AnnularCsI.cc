@@ -51,18 +51,19 @@
 
 using namespace std;
 using namespace CLHEP;
+using namespace AnnularCsI_Utils;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace AnnularCsI_NS{
-  // Energy and time Resolution
-  const double EnergyThreshold = 0.1*MeV;
-  const double ResoTime = 4.5*ns ;
-  const double ResoEnergy = 1.0*MeV ;
-  const double Radius = 50*mm ; 
-  const double Width = 100*mm ;
-  const double Thickness = 300*mm ;
-  const string Material = "BC400";
+// Energy and time Resolution
+const double EnergyThreshold = 0.*MeV; // for now
+const double ResoTime = 10*ns ; // ??? (doesn't really matter)
+const double ResoEnergy = 0.01; // percent, from Wilton
+// const double Radius = 50*mm ; // not used 
+// const double Width = 100*mm ; // not used
+const double Thickness = 10*mm ; // from Wilton
+const string Material = "CsI";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -71,63 +72,56 @@ namespace AnnularCsI_NS{
 AnnularCsI::AnnularCsI(){
   m_Event = new TAnnularCsIData() ;
   m_AnnularCsIScorer = 0;
-  m_SquareDetector = 0;
   m_CylindricalDetector = 0;
-
 
   // RGB Color + Transparency
   m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
   m_VisCylinder = new G4VisAttributes(G4Colour(0, 0, 1, 0.5));   
-
 }
 
 AnnularCsI::~AnnularCsI(){
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AnnularCsI::AddDetector(G4ThreeVector POS, string  Shape){
-  // Convert the POS value to R theta Phi as Spherical coordinate is easier in G4 
-  m_R.push_back(POS.mag());
-  m_Theta.push_back(POS.theta());
-  m_Phi.push_back(POS.phi());
-  m_Shape.push_back(Shape);
-}
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AnnularCsI::AddDetector(double  R, double  Theta, double  Phi, string  Shape){
-  m_R.push_back(R);
-  m_Theta.push_back(Theta);
-  m_Phi.push_back(Phi);
-  m_Shape.push_back(Shape);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* AnnularCsI::BuildSquareDetector(){
-  if(!m_SquareDetector){
-    G4Box* box = new G4Box("AnnularCsI_Box",AnnularCsI_NS::Width*0.5,
-        AnnularCsI_NS::Width*0.5,AnnularCsI_NS::Thickness*0.5);
-
-    G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(AnnularCsI_NS::Material);
-    m_SquareDetector = new G4LogicalVolume(box,DetectorMaterial,"logic_AnnularCsI_Box",0,0,0);
-    m_SquareDetector->SetVisAttributes(m_VisSquare);
-    m_SquareDetector->SetSensitiveDetector(m_AnnularCsIScorer);
-  }
-  return m_SquareDetector;
+void AnnularCsI::AddDetector(double R_min,   double R_max,
+														 double Phi_min, double Phi_max,
+														 double Z){
+	// Wedge Geometry
+	Geometry g;
+	g.R_min     = R_min;
+	g.R_max     = R_max;
+	g.R_delta   = R_max - R_min;
+	g.Phi_min   = Phi_min;
+	g.Phi_max   = Phi_max;
+	g.Phi_delta = Phi_max - Phi_min;
+	g.Z         = Z;
+	m_Geo.push_back(g);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* AnnularCsI::BuildCylindricalDetector(){
+G4LogicalVolume* AnnularCsI::BuildCylindricalDetector(unsigned short i){
   if(!m_CylindricalDetector){
-    G4Tubs* tub = new G4Tubs("AnnularCsI_Cyl",0,AnnularCsI_NS::Radius,AnnularCsI_NS::Thickness*0.5,0,360*deg);
+		if(!(i<m_Geo.size())){
+			G4cerr << "ERROR (AnnularCsI::BuildCylindricalDetector):"
+						 << "Invalid index: " << i << endl;
+			exit(1);
+		}
+		stringstream name; name << "AnnularCsI_Wedge" << i+1;
+    G4Tubs* tub = new G4Tubs(name.str().c_str(),
+														 m_Geo[i].R_min, m_Geo[i].R_max,
+														 AnnularCsI_NS::Thickness*0.5,
+														 m_Geo[i].Phi_min, m_Geo[i].Phi_delta);
 
-    G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(AnnularCsI_NS::Material);
-    m_CylindricalDetector = new G4LogicalVolume(tub,DetectorMaterial,"logic_AnnularCsI_tub",0,0,0);
+    G4Material* DetectorMaterial = 
+			MaterialManager::getInstance()->GetMaterialFromLibrary(AnnularCsI_NS::Material);
+    m_CylindricalDetector =
+			new G4LogicalVolume(tub,DetectorMaterial,"logic_AnnularCsI_tub",0,0,0);
     m_CylindricalDetector->SetVisAttributes(m_VisSquare);
     m_CylindricalDetector->SetSensitiveDetector(m_AnnularCsIScorer);
-
   }
   return m_CylindricalDetector;
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -137,76 +131,44 @@ G4LogicalVolume* AnnularCsI::BuildCylindricalDetector(){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void AnnularCsI::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AnnularCsI");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
-
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
-
-  for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  AnnularCsI " << i+1 <<  endl;
-    
-      G4ThreeVector Pos = NPS::ConvertVector(blocks[i]->GetTVector3("POS","mm"));
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(Pos,Shape);
-    }
-    else if(blocks[i]->HasTokenList(sphe)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  AnnularCsI " << i+1 <<  endl;
-      double R = blocks[i]->GetDouble("R","mm");
-      double Theta = blocks[i]->GetDouble("Theta","deg");
-      double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(R,Theta,Phi,Shape);
-    }
-    else{
-      cout << "ERROR: check your input file formatting " << endl;
-      exit(1);
-    }
-  }
+	vector<Geometry> detectors =
+		AnnularCsI_Utils::ReadConfiguration(parser);
+	for(const auto& d : detectors){
+		AddDetector(d.R_min,d.R_max,d.Phi_min,d.Phi_max,d.Z);
+	}
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void AnnularCsI::ConstructDetector(G4LogicalVolume* world){
-  for (unsigned short i = 0 ; i < m_R.size() ; i++) {
+  for (unsigned short i = 0 ; i < m_Geo.size() ; i++) {
 
-    G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
-    G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
-    G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
+		// each wedge is part of a circle centered at {0,0,Z}
+    G4double wX = 0;
+    G4double wY = 0;
+    G4double wZ = m_Geo[i].Z;
     G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
     // So the face of the detector is at R instead of the middle
     Det_pos+=Det_pos.unit()*AnnularCsI_NS::Thickness*0.5;
-    // Building Detector reference frame
-    G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
-    G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
-    G4double kk = -sin(m_Theta[i]);
-    G4ThreeVector Y(ii,jj,kk);
-    G4ThreeVector w = Det_pos.unit();
-    G4ThreeVector u = w.cross(Y);
-    G4ThreeVector v = w.cross(u);
-    v = v.unit();
-    u = u.unit();
+    // // Building Detector reference frame
+    // G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
+    // G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
+    // G4double kk = -sin(m_Theta[i]);
+    // G4ThreeVector Y(ii,jj,kk);
+    // G4ThreeVector w = Det_pos.unit();
+    // G4ThreeVector u = w.cross(Y);
+    // G4ThreeVector v = w.cross(u);
+    // v = v.unit();
+    // u = u.unit();
 
-    G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
+    // G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
 
-    if(m_Shape[i] == "Cylindrical"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildCylindricalDetector(),
-          "AnnularCsI",world,false,i+1);
-    }
-
-    else if(m_Shape[i] == "Square"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildSquareDetector(),
-          "AnnularCsI",world,false,i+1);
-    }
+		// Cylindrical detector
+		new G4PVPlacement(0, Det_pos, // G4Transform3D(*Rot,Det_pos),
+											BuildCylindricalDetector(i),
+											"AnnularCsI",world,false,i+1);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -239,7 +201,8 @@ void AnnularCsI::ReadSensitive(const G4Event* event){
   for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
 
     G4double* Info = *(Calo_itr->second);
-    double Energy = RandGauss::shoot(Info[0],AnnularCsI_NS::ResoEnergy);
+		double Eres = AnnularCsI_NS::ResoEnergy*Info[0];
+    double Energy = RandGauss::shoot(Info[0],Eres);
     if(Energy>AnnularCsI_NS::EnergyThreshold){
       double Time = RandGauss::shoot(Info[1],AnnularCsI_NS::ResoTime);
       int DetectorNbr = (int) Info[2];
@@ -284,13 +247,13 @@ NPS::VDetector* AnnularCsI::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern"C" {
-  class proxy_nps_AnnularCsI{
-    public:
-      proxy_nps_AnnularCsI(){
-        NPS::DetectorFactory::getInstance()->AddToken("AnnularCsI","AnnularCsI");
-        NPS::DetectorFactory::getInstance()->AddDetector("AnnularCsI",AnnularCsI::Construct);
-      }
-  };
+class proxy_nps_AnnularCsI{
+public:
+	proxy_nps_AnnularCsI(){
+		NPS::DetectorFactory::getInstance()->AddToken("AnnularCsI","AnnularCsI");
+		NPS::DetectorFactory::getInstance()->AddDetector("AnnularCsI",AnnularCsI::Construct);
+	}
+};
 
-  proxy_nps_AnnularCsI p_nps_AnnularCsI;
+proxy_nps_AnnularCsI p_nps_AnnularCsI;
 }
