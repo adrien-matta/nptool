@@ -20,6 +20,7 @@
  *                                                                           *
  *****************************************************************************/
 
+#include "AnnularCsI_Utils.h"
 #include "TAnnularCsIPhysics.h"
 
 //   STL
@@ -196,6 +197,14 @@ void TAnnularCsIPhysics::Clear() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::ReadConfiguration(NPL::InputParser parser) {
+	vector<AnnularCsI_Utils::Geometry> detectors =
+		AnnularCsI_Utils::ReadConfiguration(parser);
+	for(const auto& d : detectors){
+		AddDetector(d.R_min,d.R_max,d.Phi_min,d.Phi_max,d.Z);
+	}
+}
+
+/*************************************************************************
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("AnnularCsI");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
@@ -222,6 +231,7 @@ void TAnnularCsIPhysics::ReadConfiguration(NPL::InputParser parser) {
     }
   }
 }
+**************************************************************************/
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::InitSpectra() {
