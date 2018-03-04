@@ -25,7 +25,7 @@ AnnularCsI_Utils::ReadConfiguration(NPL::InputParser& parser){
 			}
 			Geometry g;
 			g.R_min   = blocks[i]->GetDouble("R_MIN",   "mm");
-			g.R_max   = blocks[i]->GetDouble("R_MIN",   "mm");
+			g.R_max   = blocks[i]->GetDouble("R_MAX",   "mm");
 			g.Phi_min = blocks[i]->GetDouble("PHI_MIN", "deg");
 			g.Phi_max = blocks[i]->GetDouble("PHI_MAX", "deg");	
       g.Z       = blocks[i]->GetDouble("Z",       "mm");
