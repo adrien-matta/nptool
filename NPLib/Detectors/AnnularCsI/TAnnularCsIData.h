@@ -1,5 +1,5 @@
-#ifndef __AnnularCsIDATA__
-#define __AnnularCsIDATA__
+#ifndef AnnularCsIDATA_Include_Guard
+#define AnnularCsIDATA_Include_Guard
 /*****************************************************************************
  * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
  *                                                                           *

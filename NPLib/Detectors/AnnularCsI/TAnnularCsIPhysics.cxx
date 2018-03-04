@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2018   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Greg Christian  contact address: gchristian@tamu.edu                        *
+ * Original Author: Greg Christian  contact address: gchristian@tamu.edu     *
  *                                                                           *
- * Creation Date  : March 2018                                           *
+ * Creation Date  : March 2018                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold AnnularCsI Treated  data                               *
+ *  This class hold AnnularCsI Treated  data                                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -23,6 +23,7 @@
 #include "TAnnularCsIPhysics.h"
 
 //   STL
+#include <cassert>
 #include <sstream>
 #include <iostream>
 #include <cmath>
@@ -49,51 +50,43 @@ TAnnularCsIPhysics::TAnnularCsIPhysics()
      m_EventPhysics(this),
      m_Spectra(0),
      m_E_RAW_Threshold(0), // adc channels
-     m_E_Threshold(0),     // MeV
-     m_NumberOfDetectors(0) {
+     m_E_Threshold(0)      // MeV
+{
+	;
 }
 
 ///////////////////////////////////////////////////////////////////////////
-/// A usefull method to bundle all operation to add a detector
-void TAnnularCsIPhysics::AddDetector(TVector3 , string ){
-  // In That simple case nothing is done
-  // Typically for more complex detector one would calculate the relevant 
-  // positions (stripped silicon) or angles (gamma array)
-  m_NumberOfDetectors++;
-} 
-
-///////////////////////////////////////////////////////////////////////////
-void TAnnularCsIPhysics::AddDetector(double R, double Theta, double Phi, string shape){
-  // Compute the TVector3 corresponding
-  TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
-  // Call the cartesian method
-  AddDetector(Pos,shape);
+void TAnnularCsIPhysics::AddWedge(double R_min, double R_max,
+																	double Phi_min, double Phi_max,
+																	double Z) {
+  // Add wedge spanning R_min -> R_max and Phi_min -> Phi_max
+	double R = (R_max - R_min) / 2;
+	double Phi = ((Phi_min - Phi_max) / 2);
+	
+	m_WedgePosition.push_back( TVector3(R*cos(Phi), R*sin(Phi), Z) );
 } 
   
+///////////////////////////////////////////////////////////////////////////
+TVector3 TAnnularCsIPhysics::GetPositionOfInteraction(int i) const {
+	return m_WedgePosition.at(DetectorNumber[i] - 1);
+}
+
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
 
-  // match energy and time together
+	// loop over energies
   unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
-  unsigned int mysizeT = m_PreTreatedData->GetMultTime();
   for (UShort_t e = 0; e < mysizeE ; e++) {
-    for (UShort_t t = 0; t < mysizeT ; t++) {
-      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        Energy.push_back(m_PreTreatedData->Get_Energy(e));
-        Time.push_back(m_PreTreatedData->Get_Time(t));
-      }
-    }
-  }
+		DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+		Energy.push_back(m_PreTreatedData->Get_Energy(e));
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -207,29 +200,24 @@ void TAnnularCsIPhysics::ReadConfiguration(NPL::InputParser parser) {
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> wedge = {"R_MIN", "R_MAX", "PHI_MIN","PHI_MAX", "Z"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
-    if(blocks[i]->HasTokenList(cart)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
+    if(blocks[i]->HasTokenList(wedge)){
+      if(NPOptionManager::getInstance()->GetVerboseLevel()){
         cout << endl << "////  AnnularCsI " << i+1 <<  endl;
-    
-      TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(Pos,Shape);
-    }
-    else if(blocks[i]->HasTokenList(sphe)){
-      if(NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  AnnularCsI " << i+1 <<  endl;
-      double R = blocks[i]->GetDouble("R","mm");
-      double Theta = blocks[i]->GetDouble("Theta","deg");
-      double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(R,Theta,Phi,Shape);
+			}
+			double R_min   = blocks[i]->GetDouble("R_MIN",   "mm");
+			double R_max   = blocks[i]->GetDouble("R_MIN",   "mm");
+			double Phi_min = blocks[i]->GetDouble("PHI_MIN", "deg");
+			double Phi_max = blocks[i]->GetDouble("PHI_MAX", "deg");	
+      double Z       = blocks[i]->GetDouble("Z",       "mm");
+			
+      AddWedge(R_min,R_max,Phi_min,Phi_max,Z);
     }
     else{
-      cout << "ERROR: check your input file formatting " << endl;
+      cout << "ERROR (TAnnularCsIPhysics.cxx): "
+					 << "check your input file formatting " << endl;
       exit(1);
     }
   }
@@ -237,7 +225,7 @@ void TAnnularCsIPhysics::ReadConfiguration(NPL::InputParser parser) {
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::InitSpectra() {
-  m_Spectra = new TAnnularCsISpectra(m_NumberOfDetectors);
+  m_Spectra = new TAnnularCsISpectra(GetNumberOfDetectors());
 }
 
 
@@ -285,7 +273,7 @@ void TAnnularCsIPhysics::WriteSpectra() {
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularCsIPhysics::AddParameterToCalibrationManager() {
   CalibrationManager* Cal = CalibrationManager::getInstance();
-  for (int i = 0; i < m_NumberOfDetectors; ++i) {
+  for (int i = 0; i < GetNumberOfDetectors(); ++i) {
     Cal->AddParameter("AnnularCsI", "D"+ NPL::itoa(i+1)+"_ENERGY","AnnularCsI_D"+ NPL::itoa(i+1)+"_ENERGY");
     Cal->AddParameter("AnnularCsI", "D"+ NPL::itoa(i+1)+"_TIME","AnnularCsI_D"+ NPL::itoa(i+1)+"_TIME");
   }
