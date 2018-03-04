@@ -65,10 +65,10 @@ public:
 	std::vector<double>   Energy;
 	std::vector<double>   Time;
 
-  // Add A wedge
-  void AddWedge(double R_min, double R_max, 
-								double Phi_min, double Phi_max,
-								double Z);
+  // Add A wedge detector
+  void AddDetector(double R_min, double R_max, 
+									 double Phi_min, double Phi_max,
+									 double Z);
 	
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class

@@ -56,9 +56,9 @@ TAnnularCsIPhysics::TAnnularCsIPhysics()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TAnnularCsIPhysics::AddWedge(double R_min, double R_max,
-																	double Phi_min, double Phi_max,
-																	double Z) {
+void TAnnularCsIPhysics::AddDetector(double R_min, double R_max,
+																		 double Phi_min, double Phi_max,
+																		 double Z) {
   // Add wedge spanning R_min -> R_max and Phi_min -> Phi_max
 	double R = (R_max - R_min) / 2;
 	double Phi = ((Phi_min - Phi_max) / 2);
@@ -213,7 +213,7 @@ void TAnnularCsIPhysics::ReadConfiguration(NPL::InputParser parser) {
 			double Phi_max = blocks[i]->GetDouble("PHI_MAX", "deg");	
       double Z       = blocks[i]->GetDouble("Z",       "mm");
 			
-      AddWedge(R_min,R_max,Phi_min,Phi_max,Z);
+      AddDetector(R_min,R_max,Phi_min,Phi_max,Z);
     }
     else{
       cout << "ERROR (TAnnularCsIPhysics.cxx): "

@@ -1,20 +1,20 @@
-#ifndef AnnularCsI_h
-#define AnnularCsI_h 1
+#ifndef AnnularCsI_SIMULATION_HEADER
+#define AnnularCsI_SIMULATION_HEADER 1
 /*****************************************************************************
- * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2018   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Greg Christian  contact address: gchristian@tamu.edu                        *
+ * Original Author: Greg Christian  contact address: gchristian@tamu.edu     *
  *                                                                           *
- * Creation Date  : March 2018                                           *
+ * Creation Date  : March 2018                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  AnnularCsI simulation                             *
+ *  This class describe  AnnularCsI simulation                               *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -24,7 +24,6 @@
 // C++ header
 #include <string>
 #include <vector>
-using namespace std;
 
 // G4 headers
 #include "G4ThreeVector.hh"
@@ -50,9 +49,9 @@ class AnnularCsI : public NPS::VDetector{
     ////////////////////////////////////////////////////
   public:
     // Cartesian
-    void AddDetector(G4ThreeVector POS, string Shape);
+    void AddDetector(G4ThreeVector POS, std::string Shape);
     // Spherical
-    void AddDetector(double R,double Theta,double Phi,string Shape);  
+    void AddDetector(double R,double Theta,double Phi,std::string Shape);  
 
 
     G4LogicalVolume* BuildSquareDetector();
@@ -99,12 +98,12 @@ class AnnularCsI : public NPS::VDetector{
     ////////////////////////////////////////////////////
   private: // Geometry
     // Detector Coordinate 
-    vector<double>  m_R; 
-    vector<double>  m_Theta;
-    vector<double>  m_Phi; 
+    std::vector<double>  m_R; 
+    std::vector<double>  m_Theta;
+    std::vector<double>  m_Phi; 
     
     //   Shape type
-    vector<string> m_Shape ;
+    std::vector<std::string> m_Shape ;
    
     // Visualisation Attribute
     G4VisAttributes* m_VisSquare;
