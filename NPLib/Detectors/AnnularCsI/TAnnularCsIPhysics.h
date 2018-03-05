@@ -32,6 +32,7 @@
 #include "TH1.h"
 #include "TVector3.h"
 // NPTool headers
+#include "AnnularCsI_Utils.h"
 #include "TAnnularCsIData.h"
 #include "TAnnularCsISpectra.h"
 #include "NPCalibrationManager.h"
@@ -164,18 +165,24 @@ private:
 	
 	// interaction position
 	std::vector<TVector3> m_WedgePosition; //!
-
+	// dimensions of wedge
+	std::vector<AnnularCsI_Utils::Geometry> m_WedgeGeometry; //!
+	
   // spectra class
 private:
 	TAnnularCsISpectra* m_Spectra; // !
 
 public:
-  // spectra getter
+	// Getters
   std::map<std::string, TH1*>   GetSpectra();
-
-	// get number of detectors
-	UInt_t GetNumberOfDetectors() const { return m_WedgePosition.size(); }
-
+	UInt_t GetNumberOfDetectors()   const { return m_WedgePosition.size(); }
+	double GetRawEThreshold()       const { return m_E_RAW_Threshold; }
+	double GetEThreshold()          const { return m_E_Threshold; }
+	int    GetDetectorNumber(int i) const { return DetectorNumber.at(i); }
+	double GetEnergy(int i)         const { return Energy.at(i); }
+	double GetTime(int i)           const { return Time.at(i); }
+	int    MatchToSi(const TVector3& position) const;
+	
   // Static constructor to be passed to the Detector Factory
 public:
 	static NPL::VDetector* Construct();

@@ -20,7 +20,6 @@
  *                                                                           *
  *****************************************************************************/
 
-#include "AnnularCsI_Utils.h"
 #include "TAnnularCsIPhysics.h"
 
 //   STL
@@ -65,6 +64,10 @@ void TAnnularCsIPhysics::AddDetector(double R_min, double R_max,
 	double Phi = ((Phi_min - Phi_max) / 2);
 	
 	m_WedgePosition.push_back( TVector3(R*cos(Phi), R*sin(Phi), Z) );
+
+	AnnularCsI_Utils::Geometry geo =
+		{ R_min, R_max, R_max-R_min, Phi_min, Phi_max, Phi_max-Phi_min, Z };
+	m_WedgeGeometry.push_back(geo);
 } 
   
 ///////////////////////////////////////////////////////////////////////////
@@ -184,6 +187,25 @@ void TAnnularCsIPhysics::ReadAnalysisConfig() {
   }
 }
 
+///////////////////////////////////////////////////////////////////////////
+int TAnnularCsIPhysics::MatchToSi(const TVector3& SiPosition) const {
+	// return detector number of detector that spans the Si position
+	// for when CsI backs an Si detector
+	// returns -1 if no detector found
+
+	// todo account for offset between detectors
+	int i = 0;
+	for (const auto& g : m_WedgeGeometry){
+		if(SiPosition.Phi() >= g.Phi_min && SiPosition.Phi() <= g.Phi_max &&
+			 SiPosition.Pt()  >= g.R_min   && SiPosition.Pt()  <= g.R_max) {
+			// match!
+			return i;
+		}
+		++i;
+	}
+	// no match
+	return -1;
+}
 
 
 ///////////////////////////////////////////////////////////////////////////
