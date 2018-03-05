@@ -97,6 +97,7 @@ double calc_r2_x(TMDMPhysics* m_MDM){
 
 		double X = m_MDM->Xpos[i];				
 		double F = m_MDM->Fit_Xpos[iDet];
+
 		if(X > m_MDM->GetXlow() && X < m_MDM->GetXhigh()) {
 			SStot += pow(X - ybar, 2);
 			SSres += pow(X - F, 2);
@@ -251,8 +252,8 @@ public:
 
 			TVector3 v;
 			v.SetMagThetaPhi(1,ThetaHeavy*NPUNITS::deg, PhiHeavy*NPUNITS::deg);
-			m_InitialThetaX = atan(v.X()/v.Z())/NPUNITS::deg;
-			m_InitialThetaY = atan(v.Y()/v.Z())/NPUNITS::deg;
+			m_InitialThetaX = atan(v.X()/v.Z()); // RADIANS!!
+			m_InitialThetaY = atan(v.Y()/v.Z()); // RADIANS!!
 		}
 		m_InitialEkin = m_MDM->CalculateCentralEnergy();
 	}
