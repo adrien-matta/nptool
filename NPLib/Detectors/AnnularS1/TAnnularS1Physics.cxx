@@ -503,7 +503,7 @@ void TAnnularS1Physics::AddDetector(double Z){
 
         // if the hit is not "allowed" (see comment above) use a default value
         if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
-          StripCenter.XYZ(-100,-100, Z-100);
+          StripCenter.SetXYZ(-100,-100, Z-100);
         
         lineX.push_back( StripCenter.X() );// these vectors will contain 16x4 = 64 elements
         lineY.push_back( StripCenter.Y() );
