@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GeneralTarget
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%0.5mg/cm2
+%0.03mg/cm2
 Target
  THICKNESS= 0.1132 micrometer 
  RADIUS=10 mm

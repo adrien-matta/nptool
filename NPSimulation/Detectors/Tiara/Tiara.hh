@@ -48,8 +48,10 @@ using namespace CLHEP;
 namespace TIARA{
   // Energy and time Resolution
   const G4double ResoTime    = 0      ;
-  const G4double ResoEnergyInnerBarrel  = 0.017*MeV ;// = 136keV FWHM 
-  const G4double ResoEnergyOuterBarrel  = 0.017*MeV ;// = 136keV FWHM
+  //const G4double ResoEnergyInnerBarrel  = 0.017*MeV ;// = 136keV FWHM 
+  //const G4double ResoEnergyOuterBarrel  = 0.017*MeV ;// = 136keV FWHM
+  const G4double ResoEnergyInnerBarrel  = 0.050*MeV ;// = 136keV FWHM 
+  const G4double ResoEnergyOuterBarrel  = 0.050*MeV ;// = 136keV FWHM
   const G4double ResoEnergyHyball       = 0.017*MeV ;// =  70keV FWHM
 
   const G4double EnergyThreshold = 200*keV;
@@ -86,7 +88,9 @@ namespace TIARA{
   const G4double INNERBARREL_ActiveWafer_Thickness =400*um;
   const G4double INNERBARREL_InertWafer_Length = 97.00*mm;
   const G4double INNERBARREL_InertWafer_Width = 24.80*mm;
-  const G4double INNERBARREL_ActiveWafer_DeadLayerThickness = 1*um;
+  //by Shuya 180219. Equivalent to thickness in Al (note material itself is Si).
+  //const G4double INNERBARREL_ActiveWafer_DeadLayerThickness = 1*um;
+  const G4double INNERBARREL_ActiveWafer_DeadLayerThickness = 0.3*um;
   const G4double INNERBARREL_InertWafer_Thickness = 
     INNERBARREL_ActiveWafer_Thickness+ 2*INNERBARREL_ActiveWafer_DeadLayerThickness;
   const G4int    INNERBARREL_NumberOfStrip = 4;
@@ -117,6 +121,9 @@ namespace TIARA{
   const G4double HYBALL_ActiveWafer_Angle = 54.8*deg;
   const G4double HYBALL_NumberOfAnnularStrip = 16;
   const G4double HYBALL_NumberOfRadialStrip = 8 ;
+  //by Shuya 180219. Equivalent to thickness in Al (note material itself is Si).
+  const G4double HYBALL_DeadLayer_Thickness = 0.61*um ;
+
 }
 
 

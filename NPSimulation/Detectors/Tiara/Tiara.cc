@@ -719,6 +719,12 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
         HYBALL_ActiveWafer_OuterRadius,0.6*HYBALL_ActiveWafer_Thickness,
         -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
 
+ //by Shuya 180219. Hyball DeadLayer
+  G4Tubs* Hyball_DeadLayer = 
+    new G4Tubs("HyballDeadLayer",HYBALL_ActiveWafer_InnerRadius,
+        HYBALL_ActiveWafer_OuterRadius,0.5*HYBALL_DeadLayer_Thickness,
+        -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
+
 
   // Substract Active Wafer from Wafer
   G4SubtractionSolid* InertWafer = new G4SubtractionSolid("Hyball_InertWafer", WaferFull, ActiveWaferShape,
@@ -751,6 +757,12 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   logicAW->SetVisAttributes(SiliconVisAtt);
   logicAW->SetSensitiveDetector(m_HyballScorer);
 
+  //by Shuya 180219
+  // logic Hyball DeadLayer
+  G4LogicalVolume* logicDL =
+    new G4LogicalVolume(Hyball_DeadLayer,m_MaterialSilicon,"logicDL", 0, 0, 0);
+  logicDL->SetVisAttributes(SiliconVisAtt);
+
   // Place all the Piece in the mother volume
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
       G4ThreeVector(0,0,0),
@@ -765,6 +777,12 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
       G4ThreeVector(0,0,0),
       logicAW,"Hyball_ActiveWafer",
+      logicHyball,false,0);
+
+  //by Shuya 180219. Note beacause Hyball is placed in negative direction (such as -147 mm) in world coordinate, deadlayer (front side) positions must be added in positive direction.
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0.5*HYBALL_ActiveWafer_Thickness+0.5*HYBALL_DeadLayer_Thickness),
+      logicDL,"Hyball_DeadLayer",
       logicHyball,false,0);
 
   for(unsigned int i = 0 ; i < m_HyballZ.size() ; i++){

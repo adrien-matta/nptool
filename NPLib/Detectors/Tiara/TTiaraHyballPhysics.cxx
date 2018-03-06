@@ -27,6 +27,7 @@ using namespace TiaraHyball_LOCAL;
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <cassert>
 
 //   NPL
 #include "RootInput.h"
@@ -48,6 +49,13 @@ using namespace NPUNITS;
 //#include "random"
 
 TRandom *Rand = new TRandom3();
+namespace{
+
+	// GAC - 02142018 - Constant number of rings, sectors
+	const int k_Num_Sector = 8;
+	const int k_Num_Ring   = 16;
+	
+}
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTiaraHyballPhysics)
@@ -99,11 +107,13 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
-      int Sector  = m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
-
-      double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
-      double Sector_E  = m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
-
+			int Sector  = (couple[i].Y() < 0) ? // GAC - sector couple of -1 (couple[i].Y() < 0) means "sector 9"
+				k_Num_Sector : m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
+			
+			double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
+      double Sector_E = Sector == k_Num_Sector ? // GAC - set sector energy to zero if "sector 9"
+				0 : m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
+			
       // Search for associate Time:
       double Ring_T = -1000 ;
       unsigned int StripRingTMult = m_PreTreatedData->GetRingTMult();
@@ -117,10 +127,15 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       double Sector_T = -1000 ;
       unsigned int StripSectorTMult = m_PreTreatedData->GetSectorTMult();
       for(unsigned int t = 0 ; t < StripSectorTMult ; ++t ){
-        if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTStripNbr(t)
-            &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].X() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
-          Sector_T = m_PreTreatedData->GetSectorTTime(t);
-      }
+				// GAC - ignore "sector 9" events (couple[i].Y() < 0)
+				// to avoid bad call to GetSectorEStripNbr
+				// Also fix bug - it used to call the ring here w/ couple[i].X()
+				if( couple[i].Y() >= 0 ){
+					if(  m_PreTreatedData->GetSectorEStripNbr( couple[i].Y() ) == m_PreTreatedData->GetSectorTStripNbr(t)
+							 &&m_PreTreatedData->GetSectorEDetectorNbr( couple[i].Y() ) == m_PreTreatedData->GetSectorTDetectorNbr(t))
+						Sector_T = m_PreTreatedData->GetSectorTTime(t);
+				}
+			}
 
       DetectorNumber.push_back(N);
       StripRing_E.push_back(Ring_E);
@@ -168,7 +183,8 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
 
       Strip_Ring.push_back(Ring) ;
       Strip_Sector.push_back(Sector) ;
-    }
+    } // END: for(unsigned int i = 0 ; i < MatchSize ; ++i){
+
   }
 }
 
@@ -250,20 +266,60 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
   unsigned int sizeR = m_PreTreatedData->GetRingEMult();
   unsigned int sizeS = m_PreTreatedData->GetSectorEMult();
 
-  for(unsigned int i = 0 ; i < sizeR ; i++) {
-    for(unsigned int j = 0 ; j < sizeS ; j++){
-      //   if same detector check energy
-      if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
-        //   Look if energy match
-        if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
-            < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
-          ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
-        }
-      }
-    }
-  }
-  //   Prevent to treat event with ambiguous matchin beetween X and Y
-  if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+	// GAC - 02122018
+	// If StripEnergyMatchingNumberOfSigma is set to zero,
+	// do not require ring+sector matching
+	if(m_StripEnergyMatchingNumberOfSigma == 0){
+		// Check whether it's ring or sector we're getting the energy from
+		//
+		if(m_Take_E_Ring_Sector_Average){
+			// Incompatible option - can't average w/o both ring+sector
+			std::cerr << "ERROR - Can't take ring and sector average without ring+sector matching\n"
+								<< "Either set STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA > 0\nOR"
+								<< "set	TAKE_E_RING or TAKE_E_SECTOR in config/ConfigTiaraHyball.dat\n";
+			exit(1);			
+		}
+		else if(m_Take_E_Ring){
+			// Take energy from ring only
+			for(unsigned int i = 0 ; i < sizeR ; i++) {
+				// n.b. - sector number ignored
+				ArrayOfGoodCouple . push_back ( TVector2(i,-1) ) ;
+			}
+		}
+		else{
+			// Take energy from sector only
+			for(unsigned int j = 0 ; j < sizeS ; j++) {
+				// n.b. - ring number ignored
+				ArrayOfGoodCouple . push_back ( TVector2(-1,j) ) ;
+			}
+		}
+	}
+	else {
+		// Standard case with ring+sector matching
+		// GAC - 02152018 - If no sector match is found for a ring,
+		// set sector number to "sector 9" and take phi at center of wedge
+		for(unsigned int i = 0 ; i < sizeR ; i++) {
+			int numberOfSectorMatches = 0;
+			for(unsigned int j = 0 ; j < sizeS ; j++){
+				//   if same detector check energy
+				if ( m_PreTreatedData->GetRingEDetectorNbr(i) == m_PreTreatedData->GetSectorEDetectorNbr(j) ){
+					//   Look if energy match
+					if( abs( (m_PreTreatedData->GetRingEEnergy(i)-m_PreTreatedData->GetSectorEEnergy(j))/2. )
+							< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
+						ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+						++numberOfSectorMatches;
+					}
+				}
+			}
+			if(numberOfSectorMatches == 0){
+				// No match: take ring only, set sector to "sector 9"
+				ArrayOfGoodCouple.push_back(TVector2(i,-1));
+			}
+		}
+		//   Prevent to treat event with ambiguous matchin beetween X and Y
+		//   TODO: should we also treat this like no match???
+		if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
+	}
 
   return ArrayOfGoodCouple;
 }
@@ -592,8 +648,8 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
   double phi_offset = 5.6*deg;
   double phi_min = -27.2*deg;
   double phi_max = 27.2*deg;
-  int NumberOfRings = 16 ;
-  int NumberOfSectors = 8 ;
+  int NumberOfRings   = k_Num_Ring ;   // 16
+  int NumberOfSectors = k_Num_Sector ; // 8
   double wedge_pitch  = 60*deg  ;
   double ring_pitch   = (r_max-r_min)/NumberOfRings  ;
   double sec_pitch = (phi_max-phi_min)/NumberOfSectors ;
@@ -611,11 +667,17 @@ void TTiaraHyballPhysics::AddWedgeDetector( double R,double Phi,double Z){
     lineX.clear() ;
     lineY.clear() ;
     lineZ.clear() ;
-    for(int iSec = 0 ; iSec < NumberOfSectors ; iSec++){
+		// GAC - 02142018 - Add "sector 9" - center of wedge
+		// For when ignoring sectors to get phi from wedge center
+    for(int iSec = 0 ; iSec <= NumberOfSectors ; iSec++){
       StripCenter.SetX(r_min + (iRing+0.5)*ring_pitch); // build the detector at angle phi=0, then rotate
       StripCenter.SetY(0);
       StripCenter.SetZ(Z);
-      StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://static.miraheze.org/t40wiki/5/55/TIARA_Detector_Map.png
+			if(iSec < NumberOfSectors){
+				StripCenter.RotateZ(Phi + (iSec-4+0.5)*sec_pitch + phi_offset ); //https://static.miraheze.org/t40wiki/5/55/TIARA_Detector_Map.png
+			} else{ // GAC - "sector 9" (center of wedge)
+				StripCenter.RotateZ(Phi); // todo - is phi_offset needed??
+			}
       lineX.push_back( StripCenter.X() );
       lineY.push_back( StripCenter.Y() );
       lineZ.push_back( StripCenter.Z() );
@@ -662,7 +724,9 @@ TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) co
   double rho_min2 = (rho-3.2)*(rho-3.2) ; // ^2 to reproduce a randomization in the arc
   double rho_max2 = (rho+3.2)*(rho+3.2) ;
   double rho_rand = sqrt(Rand->Uniform(rho_min2,rho_max2));// sqrt is necessary for realistic randomise!
-  double phi_rand = phi + Rand->Uniform(-3.4*deg, +3.4*deg); 
+	// GAC - 02142018 - Set Phi randomization over whole wedge if "sector 9"
+	double phi_half_range = Strip_Sector[i] != k_Num_Sector ? 3.4*deg : 27.2*deg;
+  double phi_rand = phi + Rand->Uniform(-phi_half_range, +phi_half_range);
   return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
