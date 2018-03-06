@@ -475,6 +475,21 @@ void TAnnularS1Physics::AddDetector(double Z){
   vector< vector< double > >   OneStripPositionY   ;
   vector< vector< double > >   OneStripPositionZ   ;
   
+ /* The logic behind the strip numbering of S1 in NPTOOL: 
+ The number of rings goes from 1->64, the number of sectors goes from 1->16 
+ (4 per quadrant). There's a redundancy in the fact that 1->64 already contain 
+ the information about the quadrant and the majority of these positions are 
+ indeed not physical. Example: 
+ A hit combining Ring 17 (first ring in Quadrant 2) and 
+ Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
+ of the detector frontside-backside layout. 
+ The possible (allowed hits) are R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12),
+ R(50-64)S(13-16). 
+ The three loops however takes all the possible combintation that an analysis
+ can produce. This works perfectly for cases where the detector does not have 
+ "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
+ non physical hit combinations. 
+ */
   for(int iQuad = 0 ; iQuad < NumberOfQuadrant ; iQuad++){
     for(int iRing = 0 ; iRing < NumberofRing; iRing++){
       lineX.clear() ;
@@ -486,8 +501,7 @@ void TAnnularS1Physics::AddDetector(double Z){
         StripCenter = TVector3(R_Min+(iRing+0.5)*StripPitchRing,0, Z);
         StripCenter.RotateZ( ( Phi_0 - (iSector+0.5)*StripPitchSector ) *M_PI/180.);
 
-        // Physical allowed combinations are: 
-        // R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12), R(50-64)S(13-16)
+        // if the hit is not "allowed" (see comment above) use a default value
         if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
           StripCenter.XYZ(-100,-100, Z-100);
         
