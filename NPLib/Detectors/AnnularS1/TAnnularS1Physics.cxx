@@ -460,7 +460,7 @@ void TAnnularS1Physics::AddDetector(double Z){
 
   int NumberOfQuadrant = 4 ;
   int NumberofRing = 16 ; //Per Quadrant
-  int NumberofSector = 16 ; //Per detector
+  int NumberofSector = 16 ; //Per detector, ( 4 in each Quad)
 
   double StripPitchSector = (Phi_Max-Phi_Min)/(NumberofSector) ; //radial strip spacing in rad
   double StripPitchRing = (R_Max-R_Min)/NumberofRing  ; // ring strip spacing in mm
@@ -486,6 +486,11 @@ void TAnnularS1Physics::AddDetector(double Z){
         StripCenter = TVector3(R_Min+(iRing+0.5)*StripPitchRing,0, Z);
         StripCenter.RotateZ( ( Phi_0 - (iSector+0.5)*StripPitchSector ) *M_PI/180.);
 
+        // Physical allowed combinations are: 
+        // R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12), R(50-64)S(13-16)
+        if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
+          StripCenter.XYZ(-100,-100, Z-100);
+        
         lineX.push_back( StripCenter.X() );// these vectors will contain 16x4 = 64 elements
         lineY.push_back( StripCenter.Y() );
         lineZ.push_back( StripCenter.Z() );
