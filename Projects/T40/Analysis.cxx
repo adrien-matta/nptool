@@ -675,6 +675,31 @@ void Analysis::TreatEvent(){
 
 		// do target parameter minimization
 		MDM->MinimizeTarget();
+
+		//GAC 180305
+		//Calculate excitation energy from lab energy of heavy particle
+		// Still not 100% sure this is correct...
+		double T4 = MDM->Target_Ekin; // kinetic energy, MeV
+		double M4 = myReaction->GetNucleus4().Mass(); // rest mass, MeV/c^2
+		double P4 = sqrt(pow(T4+M4,2) - M4*M4); // momentum, MeV/c
+
+		double Theta4 = // calculate from dummy vector w/ Pz == 1
+			TVector3(tan(MDM->Target_Xang), tan(MDM->Target_Yang), 1.).Theta();
+		ThetaLab_MDM = Theta4/deg;
+		ELab_MDM = T4;
+		
+		double T1 = myReaction->GetBeamEnergy();
+		double M1 = myReaction->GetNucleus1().Mass();
+		double P1 = sqrt(pow(T1+M1,2) - M1*M1);
+		double M2 = myReaction->GetNucleus2().Mass();
+		double M3 = myReaction->GetNucleus3().Mass();
+
+		double P3_2 = P4*P4+P1*P1-2*P1*P4*cos(Theta4);
+		double E3 = sqrt(M3*M3 + P3_2);
+		double T3 = E3 - M3;
+		
+		Ex_MDM = 
+			sqrt(pow(T1+M1+M2-E3, 2) - P4*P4) - M4;
 	}
 	
 	
@@ -709,11 +734,17 @@ void Analysis::ReInitValue(){
   ThetaLab_Barrel = -1000;
 
   ThetaLab = -1000;
+//GAC 180305
+	ThetaLab_MDM = -1000;
+	ELab_MDM = -1000;
+	
   ThetaCM = -1000;
   LightParticleDetected = false ;
 //by Shuya 170703
   Ex_Hyball = -1000 ;
   Ex_Barrel = -1000 ;
+//GAC 180305
+	Ex_MDM = -1000;
 //by Shuya 171019
   PhiLab = -1000;
 //by Shuya 171208
@@ -795,6 +826,8 @@ void Analysis::InitOutputBranch() {
 //by Shuya 170703
   RootOutput::getInstance()->GetTree()->Branch("Ex_Hyball",&Ex_Hyball,"Ex_Hyball/D");
   RootOutput::getInstance()->GetTree()->Branch("Ex_Barrel",&Ex_Barrel,"Ex_Barrel/D");
+//GAC 180305
+  RootOutput::getInstance()->GetTree()->Branch("Ex_MDM",&Ex_MDM,"Ex_MDM/D");
 
   RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab,"ELab/D");
 //by Shuya 171206
@@ -805,7 +838,10 @@ void Analysis::InitOutputBranch() {
 //by Shuya 171206
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab_Hyball",&ThetaLab_Hyball,"ThetaLab_Hyball/D");
   RootOutput::getInstance()->GetTree()->Branch("ThetaLab_Barrel",&ThetaLab_Barrel,"ThetaLab_Barrel/D");
-
+//GAC 180305
+  RootOutput::getInstance()->GetTree()->Branch("ThetaLab_MDM",&ThetaLab_MDM,"ThetaLab_MDM/D");
+  RootOutput::getInstance()->GetTree()->Branch("ELab_MDM",&ELab_MDM,"ELab_MDM/D");
+	
   RootOutput::getInstance()->GetTree()->Branch("ThetaCM",&ThetaCM,"ThetaCM/D");
 //by Shuya 171019
   RootOutput::getInstance()->GetTree()->Branch("PhiLab",&PhiLab,"PhiLab/D");
