@@ -674,7 +674,8 @@ void Analysis::TreatEvent(){
 
 		//GAC 180305
 		//Calculate excitation energy from lab energy of heavy particle
-		// Still not 100% sure this is correct...
+		//See http://people.physics.tamu.edu/christian/files/transfer-momentum-conservation.pdf
+		//
 		double T4 = MDM->Target_Ekin; // kinetic energy, MeV
 		double M4 = myReaction->GetNucleus4().Mass(); // rest mass, MeV/c^2
 		double P4 = sqrt(pow(T4+M4,2) - M4*M4); // momentum, MeV/c
@@ -694,8 +695,7 @@ void Analysis::TreatEvent(){
 		double E3 = sqrt(M3*M3 + P3_2);
 		double T3 = E3 - M3;
 		
-		Ex_MDM = 
-			sqrt(pow(T1+M1+M2-E3, 2) - P4*P4) - M4;
+		Ex_MDM = sqrt(pow(T1+M1+M2-E3, 2) - P4*P4) - M4;
 	}
 	
 	
