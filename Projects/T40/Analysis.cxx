@@ -203,8 +203,10 @@ void Analysis::Init(){
 
   //Original_ELab=0;
   //Original_ThetaLab=0;
-  XTarget =0;
-  YTarget =0;
+  XTarget =-1.026126;
+  YTarget =-2.3589;
+  //XTarget =0;
+  //YTarget =0;
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
@@ -290,7 +292,8 @@ void Analysis::TreatEvent(){
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
 	//by Shuya 171218 (because of T40 meeting's discussion)
       //TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
@@ -361,7 +364,8 @@ void Analysis::TreatEvent(){
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      TVector3 BeamImpact(XTarget,YTarget,0);
+      //TVector3 BeamImpact(XTarget,YTarget,0);
+      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
 
 	//by Shuya 171218 (because of T40 meeting's discussion)
       //TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
