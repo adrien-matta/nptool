@@ -579,6 +579,8 @@ void Analysis::TreatEvent(){
 			// Fill MDM class with FPD data
 			// Only do this if it's not there already
 			// (e.g. data files, not similation)
+			//if(RootInput::getInstance()->GetChain()->GetBranch("MDM"))	cout << detNumber << endl;
+
 			if(MDM && RootInput::getInstance()->GetChain()->GetBranch("MDM") == 0) {
 				MDM->DetectorNumber.push_back(detNumber);
 				MDM->Xpos.push_back(Aw_X[detNumber]);
