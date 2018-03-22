@@ -333,16 +333,20 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     Infos[4] = m_Position.z();
     Infos[5] = m_Position.theta();
     Infos[6] = m_Position.phi();
-    
+
+    //Transform into local coordinates
     m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
     m_StripRingNumber = (int) ((m_Position.rho() - m_StripPlaneInnerRadius) / m_StripPitchRing ) + 1 ;
+
     // phi() from G4-CLHEP method return azimuth between [-pi;pi]
     // we need it in [0;2pi] to calculate sector nbr in [1,NSectors]
-    double phi = m_Position.phi() + pi ;
-
-    m_StripSectorNumber   = (int) ((phi - m_PhiStart)  / m_StripPitchSector ) + 1 ;
-    m_StripQuadrantNumber = (int) ((phi - m_PhiStart)  /m_StripPitchQuadrant) + 1 ;
+    // only add 360 if the value is negative
+    double phi = (m_Position.phi()<0)?  m_Position.phi()+2*pi : m_Position.phi() ;
     
+    // factor out the extra 360 degrees before strip/quad calculation
+    m_StripSectorNumber   = (int) ( fmod((phi - m_PhiStart),2*pi)  / m_StripPitchSector  ) + 1 ;
+    m_StripQuadrantNumber = (int) ( fmod((phi - m_PhiStart),2*pi)  / m_StripPitchQuadrant) + 1 ;
+
     //Rare case where particle is close to edge of silicon plan
     if (m_StripRingNumber > m_NumberOfStripRing) m_StripRingNumber = m_NumberOfStripRing;
     if (m_StripSectorNumber > m_NumberOfStripSector) m_StripSectorNumber = m_NumberOfStripSector;
