@@ -36,13 +36,28 @@ class TAnnularTelescopeData : public TObject {
 private: 
 	// CsI Energy
 	vector<UShort_t>   fAnnularTelescope_CsI_E_DetectorNbr;
+	vector<UShort_t>   fAnnularTelescope_CsI_E_WedgeNbr;
 	vector<Double_t>   fAnnularTelescope_CsI_Energy;
 
-	// Time
+	// Si Energy
+	vector<UShort_t>   fAnnularTelescope_Si_E_DetectorNbr;
+	vector<UShort_t>   fAnnularTelescope_Si_E_ThetaStripNbr;
+	vector<UShort_t>   fAnnularTelescope_Si_E_PhiStripNbr;
+	vector<Double_t>   fAnnularTelescope_Si_Energy;
+	
+	// CsI Time
 	vector<UShort_t>   fAnnularTelescope_CsI_T_DetectorNbr;
+	vector<UShort_t>   fAnnularTelescope_CsI_T_WedgeNbr;
 	vector<Double_t>   fAnnularTelescope_CsI_Time;
 
+	// Si Time
+	vector<UShort_t>   fAnnularTelescope_Si_T_DetectorNbr;
+	vector<UShort_t>   fAnnularTelescope_Si_T_ThetaStripNbr;
+	vector<UShort_t>   fAnnularTelescope_Si_T_PhiStripNbr;
+	vector<Double_t>   fAnnularTelescope_Si_Time;
 
+
+	
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
 public: 
@@ -66,34 +81,81 @@ public:
 public:
 	//////////////////////    SETTERS    ////////////////////////
 	// CsI Energy
-	inline void SetCsIEnergy(const UShort_t& DetNbr,const Double_t& Energy){
+	void SetCsIEnergy(UShort_t DetNbr, UShort_t WedgeNbr, Double_t Energy){
 		fAnnularTelescope_CsI_E_DetectorNbr.push_back(DetNbr);
+		fAnnularTelescope_CsI_E_WedgeNbr.push_back(WedgeNbr);
 		fAnnularTelescope_CsI_Energy.push_back(Energy);
 	};//!
 
     // CsI Time
-	inline void SetCsITime(const UShort_t& DetNbr,const Double_t& Time)	{
+	void SetCsITime(UShort_t DetNbr, UShort_t WedgeNbr, Double_t Time)	{
 		fAnnularTelescope_CsI_T_DetectorNbr.push_back(DetNbr);     
+		fAnnularTelescope_CsI_T_WedgeNbr.push_back(WedgeNbr);
 		fAnnularTelescope_CsI_Time.push_back(Time);
 	};//!
 
+	// Si Energy
+	void SetSiEnergy(UShort_t DetNbr, UShort_t ThetaStripNbr, UShort_t PhiStripNbr, Double_t Energy) {
+		fAnnularTelescope_Si_E_DetectorNbr.push_back(DetNbr);
+		fAnnularTelescope_Si_E_ThetaStripNbr.push_back(ThetaStripNbr);
+		fAnnularTelescope_Si_E_PhiStripNbr.push_back(PhiStripNbr);
+		fAnnularTelescope_Si_Energy.push_back(Energy);
+	}
+
+	// Si Time
+	void SetSiTime(UShort_t DetNbr, UShort_t ThetaStripNbr, UShort_t PhiStripNbr, Double_t Time) {
+		fAnnularTelescope_Si_T_DetectorNbr.push_back(DetNbr);
+		fAnnularTelescope_Si_T_ThetaStripNbr.push_back(ThetaStripNbr);
+		fAnnularTelescope_Si_T_PhiStripNbr.push_back(PhiStripNbr);
+		fAnnularTelescope_Si_Time.push_back(Time);
+	}
+
+
 
     //////////////////////    GETTERS    ////////////////////////
-    // Energy
-	inline UShort_t GetCsIMultEnergy() const
+    // CsI Energy
+	UShort_t GetCsIMultEnergy() const
 		{return fAnnularTelescope_CsI_E_DetectorNbr.size();}
-	inline UShort_t GetCsIE_DetectorNbr(const unsigned int &i) const 
+	UShort_t GetCsIE_DetectorNbr(const unsigned int &i) const 
 		{return fAnnularTelescope_CsI_E_DetectorNbr[i];}//!
-	inline Double_t GetCsIEnergy(const unsigned int &i) const 
+	UShort_t GetCsIE_WedgeNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_E_WedgeNbr[i];}//!
+	Double_t GetCsIEnergy(const unsigned int &i) const 
 		{return fAnnularTelescope_CsI_Energy[i];}//!
 
-	// Time
-	inline UShort_t GetCsIMultTime() const
+	// CsI Time
+	UShort_t GetCsIMultTime() const
 		{return fAnnularTelescope_CsI_T_DetectorNbr.size();}
-	inline UShort_t GetCsIT_DetectorNbr(const unsigned int &i) const 
+	UShort_t GetCsIT_DetectorNbr(const unsigned int &i) const 
 		{return fAnnularTelescope_CsI_T_DetectorNbr[i];}//!
-	inline Double_t GetCsITime(const unsigned int &i) const 
+	UShort_t GetCsIT_WedgeNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_T_WedgeNbr[i];}//!
+	Double_t GetCsITime(const unsigned int &i) const 
 		{return fAnnularTelescope_CsI_Time[i];}//!
+	
+	// Si Energy
+	UShort_t GetSiMultEnergy() const
+		{return fAnnularTelescope_Si_E_DetectorNbr.size();}
+	UShort_t GetSiE_DetectorNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_E_DetectorNbr[i];}//!
+	UShort_t GetSiE_ThetaStripNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_E_ThetaStripNbr[i];}//!
+	UShort_t GetSiE_PhiStripNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_E_PhiStripNbr[i];}//!
+	Double_t GetSiEnergy(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_Energy[i];}//!
+
+	// Si Time
+	UShort_t GetSiMultTime() const
+		{return fAnnularTelescope_Si_T_DetectorNbr.size();}
+	UShort_t GetSiT_DetectorNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_T_DetectorNbr[i];}//!
+	UShort_t GetSiT_ThetaStripNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_T_ThetaStripNbr[i];}//!
+	UShort_t GetSiT_PhiStripNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_T_PhiStripNbr[i];}//!
+	Double_t GetSiTime(const unsigned int &i) const 
+		{return fAnnularTelescope_Si_Time[i];}//!
 
 
   //////////////////////////////////////////////////////////////

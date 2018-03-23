@@ -111,7 +111,7 @@ void TAnnularTelescopePhysics::PreTreat() {
     if (m_EventData->GetCsIEnergy(i) > m_E_RAW_Threshold) {
       Double_t Energy = Cal->ApplyCalibration("AnnularTelescope/ENERGY"+NPL::itoa(m_EventData->GetCsIE_DetectorNbr(i)),m_EventData->GetCsIEnergy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetCsIEnergy(m_EventData->GetCsIE_DetectorNbr(i), Energy);
+        m_PreTreatedData->SetCsIEnergy(m_EventData->GetCsIE_DetectorNbr(i), m_EventData->GetCsIE_WedgeNbr(i), Energy);
       }
     }
   }
@@ -120,7 +120,7 @@ void TAnnularTelescopePhysics::PreTreat() {
   mysize = m_EventData->GetCsIMultTime();
   for (UShort_t i = 0; i < mysize; ++i) {
     Double_t Time= Cal->ApplyCalibration("AnnularTelescope/TIME"+NPL::itoa(m_EventData->GetCsIT_DetectorNbr(i)),m_EventData->GetCsITime(i));
-    m_PreTreatedData->SetCsITime(m_EventData->GetCsIT_DetectorNbr(i), Time);
+    m_PreTreatedData->SetCsITime(m_EventData->GetCsIT_DetectorNbr(i), m_EventData->GetCsIT_WedgeNbr(i), Time);
   }
 }
 
