@@ -34,13 +34,13 @@ class TAnnularTelescopeData : public TObject {
   // data members are hold into vectors in order 
   // to allow multiplicity treatment
 private: 
-	// Energy
-	vector<UShort_t>   fAnnularTelescope_E_DetectorNbr;
-	vector<Double_t>   fAnnularTelescope_Energy;
+	// CsI Energy
+	vector<UShort_t>   fAnnularTelescope_CsI_E_DetectorNbr;
+	vector<Double_t>   fAnnularTelescope_CsI_Energy;
 
 	// Time
-	vector<UShort_t>   fAnnularTelescope_T_DetectorNbr;
-	vector<Double_t>   fAnnularTelescope_Time;
+	vector<UShort_t>   fAnnularTelescope_CsI_T_DetectorNbr;
+	vector<Double_t>   fAnnularTelescope_CsI_Time;
 
 
   //////////////////////////////////////////////////////////////
@@ -65,35 +65,35 @@ public:
   // add //! to avoid ROOT creating dictionnary for the methods
 public:
 	//////////////////////    SETTERS    ////////////////////////
-	// Energy
-	inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy){
-		fAnnularTelescope_E_DetectorNbr.push_back(DetNbr);
-		fAnnularTelescope_Energy.push_back(Energy);
+	// CsI Energy
+	inline void SetCsIEnergy(const UShort_t& DetNbr,const Double_t& Energy){
+		fAnnularTelescope_CsI_E_DetectorNbr.push_back(DetNbr);
+		fAnnularTelescope_CsI_Energy.push_back(Energy);
 	};//!
 
-    // Time
-	inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
-		fAnnularTelescope_T_DetectorNbr.push_back(DetNbr);     
-		fAnnularTelescope_Time.push_back(Time);
+    // CsI Time
+	inline void SetCsITime(const UShort_t& DetNbr,const Double_t& Time)	{
+		fAnnularTelescope_CsI_T_DetectorNbr.push_back(DetNbr);     
+		fAnnularTelescope_CsI_Time.push_back(Time);
 	};//!
 
 
     //////////////////////    GETTERS    ////////////////////////
     // Energy
-	inline UShort_t GetMultEnergy() const
-		{return fAnnularTelescope_E_DetectorNbr.size();}
-	inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 
-		{return fAnnularTelescope_E_DetectorNbr[i];}//!
-	inline Double_t Get_Energy(const unsigned int &i) const 
-		{return fAnnularTelescope_Energy[i];}//!
+	inline UShort_t GetCsIMultEnergy() const
+		{return fAnnularTelescope_CsI_E_DetectorNbr.size();}
+	inline UShort_t GetCsIE_DetectorNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_E_DetectorNbr[i];}//!
+	inline Double_t GetCsIEnergy(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_Energy[i];}//!
 
 	// Time
-	inline UShort_t GetMultTime() const
-		{return fAnnularTelescope_T_DetectorNbr.size();}
-	inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 
-		{return fAnnularTelescope_T_DetectorNbr[i];}//!
-	inline Double_t Get_Time(const unsigned int &i) const 
-		{return fAnnularTelescope_Time[i];}//!
+	inline UShort_t GetCsIMultTime() const
+		{return fAnnularTelescope_CsI_T_DetectorNbr.size();}
+	inline UShort_t GetCsIT_DetectorNbr(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_T_DetectorNbr[i];}//!
+	inline Double_t GetCsITime(const unsigned int &i) const 
+		{return fAnnularTelescope_CsI_Time[i];}//!
 
 
   //////////////////////////////////////////////////////////////

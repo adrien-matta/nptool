@@ -87,10 +87,10 @@ void TAnnularTelescopePhysics::BuildPhysicalEvent() {
   PreTreat();
 
 	// loop over energies
-  unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
+  unsigned int mysizeE = m_PreTreatedData->GetCsIMultEnergy();
   for (UShort_t e = 0; e < mysizeE ; e++) {
-		DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-		Energy.push_back(m_PreTreatedData->Get_Energy(e));
+		DetectorNumber.push_back(m_PreTreatedData->GetCsIE_DetectorNbr(e));
+		Energy.push_back(m_PreTreatedData->GetCsIEnergy(e));
 	}
 }
 
@@ -106,21 +106,21 @@ void TAnnularTelescopePhysics::PreTreat() {
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
   // Energy
-  unsigned int mysize = m_EventData->GetMultEnergy();
+  unsigned int mysize = m_EventData->GetCsIMultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
-    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("AnnularTelescope/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+    if (m_EventData->GetCsIEnergy(i) > m_E_RAW_Threshold) {
+      Double_t Energy = Cal->ApplyCalibration("AnnularTelescope/ENERGY"+NPL::itoa(m_EventData->GetCsIE_DetectorNbr(i)),m_EventData->GetCsIEnergy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+        m_PreTreatedData->SetCsIEnergy(m_EventData->GetCsIE_DetectorNbr(i), Energy);
       }
     }
   }
 
   // Time 
-  mysize = m_EventData->GetMultTime();
+  mysize = m_EventData->GetCsIMultTime();
   for (UShort_t i = 0; i < mysize; ++i) {
-    Double_t Time= Cal->ApplyCalibration("AnnularTelescope/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
+    Double_t Time= Cal->ApplyCalibration("AnnularTelescope/TIME"+NPL::itoa(m_EventData->GetCsIT_DetectorNbr(i)),m_EventData->GetCsITime(i));
+    m_PreTreatedData->SetCsITime(m_EventData->GetCsIT_DetectorNbr(i), Time);
   }
 }
 
