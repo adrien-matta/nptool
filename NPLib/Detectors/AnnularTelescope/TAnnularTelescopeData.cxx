@@ -49,22 +49,25 @@ void TAnnularTelescopeData::Clear() {
 	CsI_E.Wedge.clear();
 	CsI_E.Value.clear();
 
-
-	Si_E.Detector.clear();
-	Si_E.ThetaStrip.clear();
-	Si_E.PhiStrip.clear();
-	Si_E.Value.clear();
-
-
 	CsI_T.Detector.clear();
 	CsI_T.Wedge.clear();
 	CsI_T.Value.clear();
 
+	Si_Theta_E.Detector.clear();
+	Si_Theta_E.Strip.clear();
+	Si_Theta_E.Value.clear();
 
-	Si_T.Detector.clear();
-	Si_T.ThetaStrip.clear();
-	Si_T.PhiStrip.clear();
-	Si_T.Value.clear();
+	Si_Theta_T.Detector.clear();
+	Si_Theta_T.Strip.clear();
+	Si_Theta_T.Value.clear();
+
+	Si_Phi_E.Detector.clear();
+	Si_Phi_E.Strip.clear();
+	Si_Phi_E.Value.clear();
+
+	Si_Phi_T.Detector.clear();
+	Si_Phi_T.Strip.clear();
+	Si_Phi_T.Value.clear();
 }
 
 
@@ -83,6 +86,7 @@ void TAnnularTelescopeData::Dump() const {
 				 << " CsI WedgeNbr: " << CsI_E.Wedge[i]
          << " CsI Energy: " << CsI_E.Value[i];
   }
+	cout << "\n";
   
   // CsI Time
   mysize = CsI_T.Detector.size();
@@ -93,26 +97,49 @@ void TAnnularTelescopeData::Dump() const {
 				 << " CsI WedgeNbr: " << CsI_T.Detector[i]
          << " CsI Time: " << CsI_T.Value[i];
   }
-
+	cout << "\n";
+	
   // Si Energy
-	mysize = Si_E.Detector.size();
-  cout << "Si:: AnnularTelescope_E_Mult: " << mysize << endl;
+	mysize = Si_Theta_E.Detector.size();
+  cout << "Si:: AnnularTelescope_ThetaE_Mult: " << mysize << endl;
  
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << Si_E.Detector[i]
-				 << " Si ThetaStripNbr: " << Si_E.ThetaStrip[i]
-				 << " Si PhiStripNbr: " << Si_E.PhiStrip[i]
-         << " Si Energy: " << Si_E.Value[i];
+    cout << "DetNbr: " << Si_Theta_E.Detector[i]
+				 << " Si ThetaStripNbr: " << Si_Theta_E.Strip[i]
+         << " Si ThetaStripEnergy: " << Si_Theta_E.Value[i];
   }
+	cout << "\n";
   
   // Si Time
-  mysize = Si_T.Detector.size();
-  cout << "Si:: AnnularTelescope_T_Mult: " << mysize << endl;
+	mysize = Si_Theta_T.Detector.size();
+  cout << "Si:: AnnularTelescope_ThetaT_Mult: " << mysize << endl;
  
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "Si DetNbr: " << Si_T.Detector[i]
-				 << " Si ThetaStripNbr: " << Si_T.ThetaStrip[i]
-				 << " Si PhiStripNbr: " << Si_T.PhiStrip[i]
-         << " Si Time: " << Si_T.Value[i];
+    cout << "DetNbr: " << Si_Theta_T.Detector[i]
+				 << " Si ThetaStripNbr: " << Si_Theta_T.Strip[i]
+         << " Si ThetaStripTime: " << Si_Theta_T.Value[i];
   }
+	cout << "\n";
+
+  // Si Energy (phi)
+	mysize = Si_Phi_E.Detector.size();
+  cout << "Si:: AnnularTelescope_PhiE_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << Si_Phi_E.Detector[i]
+				 << " Si PhiStripNbr: " << Si_Phi_E.Strip[i]
+         << " Si PhiStripEnergy: " << Si_Phi_E.Value[i];
+  }
+	cout << "\n";
+  
+  // Si Time (phi)
+	mysize = Si_Phi_T.Detector.size();
+  cout << "Si:: AnnularTelescope_PhiT_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << Si_Phi_T.Detector[i]
+				 << " Si PhiStripNbr: " << Si_Phi_T.Strip[i]
+         << " Si PhiStripTime: " << Si_Phi_T.Value[i];
+  }
+	cout << "\n";
 }
