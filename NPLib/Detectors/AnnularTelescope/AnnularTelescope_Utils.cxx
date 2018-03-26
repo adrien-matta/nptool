@@ -7,6 +7,9 @@ using namespace std;
 #include "NPOptionManager.h"
 #include "NPInputParser.h"
 
+// ROOT
+#include <TMath.h>
+
 #include "AnnularTelescope_Utils.h"
 
 std::vector<AnnularTelescope_Utils::Geometry>
@@ -28,7 +31,7 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			g.R_max   = blocks[i]->GetDouble("R_MAX",   "mm");
 
 			int n_wedges = blocks[i]->GetInt("CSI_WEDGES");
-			g.CsI_Wedge_Angle_Pitch = 360. / n_wedges;
+			g.CsI_Wedge_Angle_Pitch = (2*TMath::Pi()) / n_wedges;
 			for(int i=0; i< n_wedges; ++i){
 				g.CsI_Wedge_Phi_Angle.push_back(
 					i*g.CsI_Wedge_Angle_Pitch + g.CsI_Wedge_Angle_Pitch/2. );
@@ -42,7 +45,7 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			}
 
 			int n_phi = blocks[i]->GetInt("SI_PHI_STRIPS");
-			g.Si_Phi_Angle_Pitch = 360. / n_phi;
+			g.Si_Phi_Angle_Pitch = (2*TMath::Pi()) / n_phi;
 			for(int i=0; i< n_phi; ++i){
 				g.Si_Strip_Phi_Angle.push_back(
 					i*g.Si_Phi_Angle_Pitch + g.Si_Phi_Angle_Pitch/2. );
