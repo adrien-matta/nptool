@@ -41,7 +41,51 @@
 // forward declaration
 class TAnnularTelescopeSpectra;
 
+namespace ANNULAR_TELESCOPE_PHYSICS {
 
+struct CsIHit_t {
+	/// Detector number
+	std::vector<Int_t>    Detector;
+	/// Wedge number
+	std::vector<Int_t>    Wedge;
+	/// Energy
+	std::vector<Double_t> Energy;
+	/// Time
+	std::vector<Double_t> Time;
+};
+
+struct SiHit_t {
+	/// Detector number
+	std::vector<Int_t>    Detector;
+	/// Theta strip number
+	std::vector<Int_t>    ThetaStrip;
+	/// Phi strip number
+	std::vector<Int_t>    PhiStrip;
+	/// Theta strip energy
+	std::vector<Double_t> ThetaStripEnergy;
+	/// Phi Strip energy
+	std::vector<Double_t> PhiStripEnergy;
+	/// Theta strip time
+	std::vector<Double_t> ThetaStripTime;
+	/// Phi strip time
+	std::vector<Double_t> PhiStripTime;
+};
+
+// complete hit w/ detector matching
+struct Hit_t {
+	// silicon energy
+	std::vector<Double_t> Si_Energy;
+	// silicon time
+	std::vector<Double_t> Si_Time;
+	// CsI energy
+	std::vector<Double_t> CsI_Energy;
+	// CsI time
+	std::vector<Double_t> CsI_Time;
+	// Position
+	std::vector<TVector3> Position;
+};
+
+}
 
 class TAnnularTelescopePhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
@@ -62,14 +106,12 @@ public:
   // data obtained after BuildPhysicalEvent() and stored in
   // output ROOT file
 public:
-	std::vector<int>      DetectorNumber;
-	std::vector<double>   Energy;
-	std::vector<double>   Time;
+	ANNULAR_TELESCOPE_PHYSICS::CsIHit_t CsIHit;
+	ANNULAR_TELESCOPE_PHYSICS::SiHit_t  SiHit;
+	ANNULAR_TELESCOPE_PHYSICS::Hit_t Hit;
 
-  // Add A wedge detector
-  void AddDetector(double R_min, double R_max, 
-									 double Phi_min, double Phi_max,
-									 double Z);
+  // Add a detector
+  void AddDetector(const AnnularTelescope_Utils::Geometry& g);
 	
   //////////////////////////////////////////////////////////////
   // methods inherited from the VDetector ABC class
@@ -80,10 +122,19 @@ public:
 	// add parameters to the CalibrationManger
 	void AddParameterToCalibrationManager();
 
+	// build CsI part of event
+	void BuildCsIEvent();
+
+	// build Si part of event
+	void BuildSiEvent();
+
+	// combine Si + CsI
+	void BuildTotalEvent();
+	
 	// method called event by event, aiming at extracting the 
 	// physical information from detector
 	void BuildPhysicalEvent();
-
+	
 	// same as BuildPhysicalEvent() method but with a simpler
 	// treatment
 	void BuildSimplePhysicalEvent();
@@ -156,32 +207,23 @@ public:
 
 	// getters for interaction position
 	TVector3 GetPositionOfInteraction(int i) const;
+	TVector3 GetRandomisedPositionOfInteraction(int i) const;
+
+	// Number of detectors
+	int GetNumberOfDetectors() const { return m_WedgeGeometry.size(); } //!
 	
   // parameters used in the analysis
 private:
-	// thresholds
-	double m_E_RAW_Threshold; //!
-	double m_E_Threshold;     //!
-	
-	// interaction position
-	std::vector<TVector3> m_WedgePosition; //!
 	// dimensions of wedge
 	std::vector<AnnularTelescope_Utils::Geometry> m_WedgeGeometry; //!
 	
   // spectra class
 private:
-	TAnnularTelescopeSpectra* m_Spectra; // !
+	TAnnularTelescopeSpectra* m_Spectra; //!
 
 public:
 	// Getters
   std::map<std::string, TH1*>   GetSpectra();
-	UInt_t GetNumberOfDetectors()   const { return m_WedgePosition.size(); }
-	double GetRawEThreshold()       const { return m_E_RAW_Threshold; }
-	double GetEThreshold()          const { return m_E_Threshold; }
-	int    GetDetectorNumber(int i) const { return DetectorNumber.at(i); }
-	double GetEnergy(int i)         const { return Energy.at(i); }
-	double GetTime(int i)           const { return Time.at(i); }
-	int    MatchToSi(const TVector3& position) const;
 	
   // Static constructor to be passed to the Detector Factory
 public:
