@@ -49,6 +49,9 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			}
 				
       g.Z = blocks[i]->GetDouble("Z", "mm");
+			g.SiThickness = blocks[i]->GetDouble("SiThickness", "mm");
+			g.CsIThickness = blocks[i]->GetDouble("CsIThickness", "mm");
+
 			out.push_back(g);
 		}
     else{

@@ -12,15 +12,17 @@ namespace AnnularTelescope_Utils {
 
 /// Sescribes the geometry of an annular telescope
 struct Geometry{
-	double R_min; /// inner radius
-	double R_max; /// outer radius
-	double CsI_Wedge_Angle_Pitch;  /// ANGULAR pitch of CsI wedges
-	double Si_Theta_Radius_Pitch;  /// RADIAL pitch of Si theta strips
-	double Si_Phi_Angle_Pitch;     /// ANGULAR pitch of Si Phi strips
-	std::vector<double> CsI_Wedge_Phi_Angle;   /// CsI wedge phi central angles
-	std::vector<double> Si_Strip_Theta_Radius; /// Si Theta strips RADIUS (central)
-	std::vector<double> Si_Strip_Phi_Angle;    /// Si Phi strips ANGLE (central)
-	double Z;
+	double R_min; /// inner radius (mm)
+	double R_max; /// outer radius (mm)
+	double CsI_Wedge_Angle_Pitch;  /// ANGULAR pitch of CsI wedges (rad)
+	double Si_Theta_Radius_Pitch;  /// RADIAL pitch of Si theta strips (mm)
+	double Si_Phi_Angle_Pitch;     /// ANGULAR pitch of Si Phi strips (rad)
+	std::vector<double> CsI_Wedge_Phi_Angle;   /// CsI wedge phi central angles (rad)
+	std::vector<double> Si_Strip_Theta_Radius; /// Si Theta strips RADIUS (central) (mm)
+	std::vector<double> Si_Strip_Phi_Angle;    /// Si Phi strips ANGLE (central) (rad)
+	double Z; /// z-position of detector (mm relative to target)
+	double SiThickness; /// Si detector thickness (mm)
+	double CsIThickness; /// CsI detector thickness (mm)
 };
 
 /// Read detector geometry from a config file

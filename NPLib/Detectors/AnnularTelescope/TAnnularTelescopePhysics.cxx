@@ -160,18 +160,6 @@ void TAnnularTelescopePhysics::BuildCsIEvent() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularTelescopePhysics::BuildSiEvent() {
-
-#ifdef DUMMY_
-	SiHit
-	std::vector<Int_t>    Detector;
-	std::vector<Int_t>    ThetaStrip;
-	std::vector<Int_t>    PhiStrip;
-	std::vector<Double_t> ThetaStripEnergy;
-	std::vector<Double_t> PhiStripEnergy;
-	std::vector<Double_t> ThetaStripTime;
-	std::vector<Double_t> PhiStripTime;
-#endif
-	
 	// loop over theta strip energies
 	const size_t mysizeE = m_PreTreatedData->GetSiThetaE_Mult();
 	for (size_t iThetaE = 0; iThetaE < mysizeE; ++iThetaE) {
@@ -242,6 +230,43 @@ void TAnnularTelescopePhysics::BuildSiEvent() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularTelescopePhysics::BuildTotalEvent(){
+	for(size_t iSi = 0; iSi< SiHit.Detector.size(); ++iSi){
+		//
+		// Add Si energy, time, position
+		TVector3 SiPos = GetPositionOfInteraction(iSi);
+		Hit.Si_Energy.push_back(SiHit.ThetaStripEnergy.at(iSi));
+		Hit.Si_Time.push_back(SiHit.ThetaStripTime.at(iSi));
+		Hit.Position.push_back(SiPos);
+		//
+		// Match CsI wedge and detector (by phi angle)
+		Int_t csiMatch = -1000;
+		Int_t siDetNo = SiHit.Detector.at(iSi);
+		for(size_t iCsI = 0; iCsI< CsIHit.Detector.size(); ++iCsI){
+			Int_t csiDetNo = CsIHit.Detector.at(iCsI);
+			if(csiDetNo != siDetNo){
+				continue; // WRONG detector, skip
+			}
+			Int_t csiWedgeNo = CsIHit.Wedge.at(iCsI);
+			double phiCsIPitch = 
+				m_WedgeGeometry.at(csiDetNo).CsI_Wedge_Angle_Pitch;
+			double phiCsI =
+				m_WedgeGeometry.at(csiDetNo).CsI_Wedge_Phi_Angle.at(csiWedgeNo);
+			if(SiPos.Phi() >= phiCsI - phiCsIPitch/2. &&
+				 SiPos.Phi() <  phiCsI + phiCsIPitch/2.) {
+				// match!
+				csiMatch = iCsI;
+				break;
+			}
+		}
+		// Add CsI info
+		if(csiMatch == -1000) { // NO match
+			Hit.CsI_Energy.push_back(0);
+			Hit.CsI_Time.push_back(-1000);
+		} else { // YES match
+			Hit.CsI_Energy.push_back(CsIHit.Energy.at(csiMatch));
+			Hit.CsI_Time.push_back(CsIHit.Time.at(csiMatch));
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
