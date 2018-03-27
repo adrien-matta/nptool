@@ -41,51 +41,6 @@
 // forward declaration
 class TAnnularTelescopeSpectra;
 
-namespace ANNULAR_TELESCOPE_PHYSICS {
-
-struct CsIHit_t {
-	/// Detector number
-	std::vector<Int_t>    Detector;
-	/// Wedge number
-	std::vector<Int_t>    Wedge;
-	/// Energy
-	std::vector<Double_t> Energy;
-	/// Time
-	std::vector<Double_t> Time;
-};
-
-struct SiHit_t {
-	/// Detector number
-	std::vector<Int_t>    Detector;
-	/// Theta strip number
-	std::vector<Int_t>    ThetaStrip;
-	/// Phi strip number
-	std::vector<Int_t>    PhiStrip;
-	/// Theta strip energy
-	std::vector<Double_t> ThetaStripEnergy;
-	/// Phi Strip energy
-	std::vector<Double_t> PhiStripEnergy;
-	/// Theta strip time
-	std::vector<Double_t> ThetaStripTime;
-	/// Phi strip time
-	std::vector<Double_t> PhiStripTime;
-};
-
-// complete hit w/ detector matching
-struct Hit_t {
-	// silicon energy
-	std::vector<Double_t> Si_Energy;
-	// silicon time
-	std::vector<Double_t> Si_Time;
-	// CsI energy
-	std::vector<Double_t> CsI_Energy;
-	// CsI time
-	std::vector<Double_t> CsI_Time;
-	// Position
-	std::vector<TVector3> Position;
-};
-
-}
 
 class TAnnularTelescopePhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
@@ -106,9 +61,28 @@ public:
   // data obtained after BuildPhysicalEvent() and stored in
   // output ROOT file
 public:
-	ANNULAR_TELESCOPE_PHYSICS::CsIHit_t CsIHit;
-	ANNULAR_TELESCOPE_PHYSICS::SiHit_t  SiHit;
-	ANNULAR_TELESCOPE_PHYSICS::Hit_t Hit;
+	//
+	// CsI Hit
+	std::vector<Int_t>    CsIHit_Detector;
+	std::vector<Int_t>    CsIHit_Wedge;
+	std::vector<Double_t> CsIHit_Energy;
+	std::vector<Double_t> CsIHit_Time;
+	//
+	// Si Hit
+	std::vector<Int_t>    SiHit_Detector;
+	std::vector<Int_t>    SiHit_ThetaStrip;
+	std::vector<Int_t>    SiHit_PhiStrip;
+	std::vector<Double_t> SiHit_ThetaStripEnergy;
+	std::vector<Double_t> SiHit_PhiStripEnergy;
+	std::vector<Double_t> SiHit_ThetaStripTime;
+	std::vector<Double_t> SiHit_PhiStripTime;
+	//
+	// Composed (Si+CsI) hit
+	std::vector<Double_t> Hit_Si_Energy;
+	std::vector<Double_t> Hit_Si_Time;
+	std::vector<Double_t> Hit_CsI_Energy;
+	std::vector<Double_t> Hit_CsI_Time;
+	std::vector<TVector3> Hit_Position;
 
   // Add a detector
   void AddDetector(const AnnularTelescope_Utils::Geometry& g);
