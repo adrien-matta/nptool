@@ -57,7 +57,7 @@ using namespace AnnularTelescope_Utils;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace AnnularTelescope_NS{
 // Energy and time Resolution
-const double EnergyThreshold = 0.*MeV; // for now
+// const double EnergyThreshold = 0.*MeV;
 const double CsIResoTime = 10*ns ; // ??? (doesn't really matter)
 const double CsIResoEnergy = 0.01; // percent, from Wilton
 const double SiResoTime = 1*ns ;  // ??? (doesn't really matter)
@@ -74,7 +74,6 @@ const double SiResoEnergy = 0.0149; // absolute, from AnnularS1.hh
 AnnularTelescope::AnnularTelescope(){
   m_Event = new TAnnularTelescopeData() ;
   m_AnnularTelescopeScorer = 0;
-  m_CylindricalDetector = 0;
 
   // RGB Color + Transparency
   m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
@@ -85,43 +84,57 @@ AnnularTelescope::~AnnularTelescope(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void AnnularTelescope::AddDetector(double R_min,   double R_max,
-														 double Phi_min, double Phi_max,
-														 double Z){
-	// Wedge Geometry
-	Geometry g;
-	g.R_min     = R_min;
-	g.R_max     = R_max;
-	g.R_delta   = R_max - R_min;
-	g.Phi_min   = Phi_min;
-	g.Phi_max   = Phi_max;
-	g.Phi_delta = Phi_max - Phi_min;
-	g.Z         = Z;
-	m_Geo.push_back(g);
+void AnnularTelescope::AddDetector(AnnularTelescope_Utils::Geometry& geo){
+	m_Geo.push_back(geo);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4LogicalVolume* AnnularTelescope::BuildCylindricalDetector(unsigned short i){
-  if(!m_CylindricalDetector){
-		if(!(i<m_Geo.size())){
-			G4cerr << "ERROR (AnnularTelescope::BuildCylindricalDetector):"
-						 << "Invalid index: " << i << endl;
-			exit(1);
-		}
-		stringstream name; name << "AnnularTelescope_Wedge" << i+1;
-    G4Tubs* tub = new G4Tubs(name.str().c_str(),
-														 m_Geo[i].R_min, m_Geo[i].R_max,
-														 AnnularTelescope_NS::Thickness*0.5,
-														 m_Geo[i].Phi_min, m_Geo[i].Phi_delta);
+std::pair<G4LogicalVolume*, G4LogicalVolume*>
+AnnularTelescope::BuildDetector(unsigned short i){
+																														
+	if(!(i<m_Geo.size())){
+		G4cerr << "ERROR (AnnularTelescope::BuildDetector):"
+					 << "Invalid index: " << i << endl;
+		exit(1);
+	}
 
-    G4Material* DetectorMaterial = 
-			MaterialManager::getInstance()->GetMaterialFromLibrary(AnnularTelescope_NS::Material);
-    m_CylindricalDetector =
-			new G4LogicalVolume(tub,DetectorMaterial,"logic_AnnularTelescope_tub",0,0,0);
-    m_CylindricalDetector->SetVisAttributes(m_VisSquare);
-    m_CylindricalDetector->SetSensitiveDetector(m_AnnularTelescopeScorer);
-  }
-  return m_CylindricalDetector;
+	std::pair<G4LogicalVolume*, G4LogicalVolume*> logic; // output: <Si, CsI>
+	//
+	// Si Detector
+	{
+		std::stringstream name;
+		name << "AnnularTelescope_Si_" << i+1;
+		G4Tubs* tub = new G4Tubs(name.str().c_str(),
+														 m_Geo[i].R_min, m_Geo[i].R_max,
+														 m_Geo[i].SiThickness*0.5,
+														 0, 360);
+
+		G4Material* DetectorMaterial = 
+			MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
+		logic.first = new G4LogicalVolume(
+			tub,DetectorMaterial,"logic_AnnularTelescope_Si_tub",0,0,0);
+		logic.first->SetVisAttributes(m_VisSquare);
+		logic.first->SetSensitiveDetector(m_AnnularTelescopeScorer);
+	}
+	//
+	// CsI Detector
+	{
+		std::stringstream name;
+		name << "AnnularTelescope_CsI_" << i+1;
+		G4Tubs* tub = new G4Tubs(name.str().c_str(),
+														 m_Geo[i].R_min, m_Geo[i].R_max,
+														 m_Geo[i].CsIThickness*0.5,
+														 0, 360);
+
+		G4Material* DetectorMaterial = 
+			MaterialManager::getInstance()->GetMaterialFromLibrary("CsI");
+		logic.second = new G4LogicalVolume(
+			tub,DetectorMaterial,"logic_AnnularTelescope_CsI_tub",0,0,0);
+		logic.second->SetVisAttributes(m_VisSquare);
+		logic.second->SetSensitiveDetector(m_AnnularTelescopeScorer);
+	}
+	
+  return logic; // <Si, CsI>
 }
 
 
@@ -133,11 +146,9 @@ G4LogicalVolume* AnnularTelescope::BuildCylindricalDetector(unsigned short i){
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void AnnularTelescope::ReadConfiguration(NPL::InputParser parser){
-	vector<Geometry> detectors =
+	vector<Geometry> geometries =
 		AnnularTelescope_Utils::ReadConfiguration(parser);
-	for(const auto& d : detectors){
-		AddDetector(d.R_min,d.R_max,d.Phi_min,d.Phi_max,d.Z);
-	}
+	for(auto& geo : geometries){ 	AddDetector(geo);  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -147,32 +158,25 @@ void AnnularTelescope::ReadConfiguration(NPL::InputParser parser){
 void AnnularTelescope::ConstructDetector(G4LogicalVolume* world){
   for (unsigned short i = 0 ; i < m_Geo.size() ; i++) {
 
-		// each wedge is part of a circle centered at {0,0,Z}
-    G4double wX = 0;
-    G4double wY = 0;
-    G4double wZ = m_Geo[i].Z;
-    G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
-    // So the face of the detector is at R instead of the middle
-    Det_pos+=Det_pos.unit()*AnnularTelescope_NS::Thickness*0.5;
-    // // Building Detector reference frame
-    // G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
-    // G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
-    // G4double kk = -sin(m_Theta[i]);
-    // G4ThreeVector Y(ii,jj,kk);
-    // G4ThreeVector w = Det_pos.unit();
-    // G4ThreeVector u = w.cross(Y);
-    // G4ThreeVector v = w.cross(u);
-    // v = v.unit();
-    // u = u.unit();
-
-    // G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
-
-		// Cylindrical detector
-		new G4PVPlacement(0, Det_pos, // G4Transform3D(*Rot,Det_pos),
-											BuildCylindricalDetector(i),
-											"AnnularTelescope",world,false,i+1);
+		auto logic = BuildDetector(i); // <Si, CsI>
+		//
+		// Si
+		// Put FACE of detector at m_Geo[i].Z
+		double Z_Si = m_Geo[i].Z + m_Geo[i].SiThickness*0.5;
+		G4ThreeVector Si_pos (0, 0, Z_Si);		
+		new G4PVPlacement(
+			0, Si_pos, logic.first,"AnnularTelescope",world,false,i+1 );
+		//
+		// CsI
+		// Put FACE of detector at m_Geo[i].Z + Si thickness
+		double Z_CsI = 
+			m_Geo[i].Z + m_Geo[i].SiThickness + m_Geo[i].CsIThickness*0.5;
+		G4ThreeVector CsI_pos (0, 0, Z_CsI);
+		new G4PVPlacement(
+			0, CsI_pos, logic.second,"AnnularTelescope",world,false,i+1 );		
   }
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
@@ -201,19 +205,119 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
 
   // Loop on the Calo map
   for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    G4double* Info = *(Calo_itr->second);
-		double Eres = AnnularTelescope_NS::ResoEnergy*Info[0];
-    double Energy = RandGauss::shoot(Info[0],Eres);
-    if(Energy>AnnularTelescope_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],AnnularTelescope_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
-      m_Event->SetEnergy(DetectorNbr,Energy);
-      m_Event->SetTime(DetectorNbr,Time); 
-    }
+		//
+		// Read Hit Information
+ 		//   Infos[0] = aStep->GetTotalEnergyDeposit();
+    //   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+    //   Infos[2] = m_Position.x();
+    //   Infos[3] = m_Position.y();
+    //   Infos[4] = m_Position.z();
+    //   Infos[5] = m_Position.theta();
+    //   Infos[6] = m_Position.phi();
+		//   Infos[7] = Detector Number (???)
+    G4double* Infos = *(Calo_itr->second);
+		double energy = Infos[0];
+		double time = Infos[1];
+		G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
+		//
+		// Figure out which detector we are in
+		int detectorNumber = int(Infos[7]);
+		const auto& geo = m_Geo.at(detectorNumber);
+		if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
+			//
+			// We are in the Si detector			
+			FillSiData(detectorNumber, energy, time, pos);
+		}
+		else if(pos.z() >= geo.Z + geo.SiThickness && 
+						pos.z() <  geo.Z + geo.SiThickness + geo.CsIThickness) {
+			//
+			// We are in the CsI detector
+			FillCsIData(detectorNumber, energy, time, pos);
+		}
+		else {
+			//
+			// Position doesn't make sense, bail out
+			std::cerr << "ERROR: AnnularTelescope::ReadSensitive: "
+								<< "Invalid position for detector number " << detectorNumber
+								<< ". Position:\n" << pos << endl;
+			exit(1);
+		}
   }
   // clear map for next event
   CaloHitMap->clear();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////   
+void AnnularTelescope::FillCsIData(
+	int detector_number, double energy, double time, const G4ThreeVector& pos){
+	//
+	// Figure out wedge
+	int wedge_number = 0;
+	double pitch = m_Geo.at(detector_number).CsI_Wedge_Angle_Pitch;
+	for(const double& phi : m_Geo.at(detector_number).CsI_Wedge_Phi_Angle){
+		if(pos.phi() >= phi - pitch/2. && pos.phi() < phi + pitch/2.) {
+			// match!
+			break;
+		}
+		++wedge_number;
+	}
+	//
+	// Add resolutions
+	double eres = AnnularTelescope_NS::CsIResoEnergy*energy; // percent
+	double energy_res = RandGauss::shoot(energy, eres);
+	double tres = AnnularTelescope_NS::CsIResoTime; // absolute
+	double time_res = RandGauss::shoot(time, tres);
+	//
+	// Set CsI energy and time
+	m_Event->SetCsIEnergy(detector_number, wedge_number, energy_res);
+	m_Event->SetCsITime(detector_number, wedge_number, time_res);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+////////////////////////////////////////////////////////////////   
+void AnnularTelescope::FillSiData(
+	int detector_number, double energy, double time, const G4ThreeVector& pos){
+	//
+	// Figure out strips
+	// Phi
+	int phi_strip = 0;
+	{
+		double pitch = m_Geo.at(detector_number).Si_Phi_Angle_Pitch;
+		for(const double& phi : m_Geo.at(detector_number).Si_Strip_Phi_Angle){
+			if(pos.phi() >= phi - pitch/2. && pos.phi() < phi + pitch/2.) {
+				// match!
+				break;
+			}
+			++phi_strip;
+		}
+	}
+	// Theta
+	int theta_strip = 0;
+	{
+		double pitch = m_Geo.at(detector_number).Si_Theta_Radius_Pitch;
+		for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
+			if(pos.perp() >= R - pitch/2. && pos.perp() < R + pitch/2.) {
+				// match!
+				break;
+			}
+			++theta_strip;
+		}
+	}
+	//
+	// Add resolutions
+	double eres = AnnularTelescope_NS::SiResoEnergy; // absolute
+	double energy_theta = RandGauss::shoot(energy, eres);
+	double energy_phi = RandGauss::shoot(energy, eres);
+	double tres = AnnularTelescope_NS::SiResoTime; // absolute
+	double time_theta = RandGauss::shoot(time, tres);
+	double time_phi = RandGauss::shoot(time, tres);
+	//
+	// Set Si energy and time
+	m_Event->SetSiThetaEnergy(detector_number, theta_strip, energy_theta);
+	m_Event->SetSiPhiEnergy(detector_number, phi_strip, energy_phi);
+	m_Event->SetSiThetaTime(detector_number, theta_strip, time_theta);
+	m_Event->SetSiPhiTime(detector_number, phi_strip, time_phi);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -228,7 +332,8 @@ void AnnularTelescope::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter =
+		new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
   m_AnnularTelescopeScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_AnnularTelescopeScorer) ;

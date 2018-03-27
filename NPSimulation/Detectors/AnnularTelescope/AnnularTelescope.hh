@@ -24,6 +24,7 @@
 // C++ header
 #include <string>
 #include <vector>
+#include <utility>
 
 // G4 headers
 #include "G4ThreeVector.hh"
@@ -36,6 +37,8 @@
 #include "AnnularTelescope_Utils.h"
 #include "TAnnularTelescopeData.h"
 #include "NPInputParser.h"
+
+namespace AnnularTelescope_Utils { struct Geometry; }
 
 class AnnularTelescope : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -50,15 +53,12 @@ public:
 	////////////////////////////////////////////////////
 public:
 	// Cartesian
-	void AddDetector(double R_min, double R_max,
-									 double Phi_min, double Phi_max,
-									 double Z);
+	void AddDetector(AnnularTelescope_Utils::Geometry& geo);
 
-	G4LogicalVolume* BuildCylindricalDetector(unsigned short i);
+	std::pair<G4LogicalVolume*, G4LogicalVolume*>
+	BuildDetector(unsigned short i);
   
 private:
-	G4LogicalVolume* m_CylindricalDetector;
-    
 	////////////////////////////////////////////////////
 	//////  Inherite from NPS::VDetector class /////////
 	////////////////////////////////////////////////////
@@ -78,6 +78,14 @@ public:
 	// Read sensitive part and fill the Root tree.
 	// Called at in the EventAction::EndOfEventAvtion
 	void ReadSensitive(const G4Event* event) ;
+
+	// Fill NPL CsI Data
+	// Called from ReadSensitive
+	void FillCsIData(int detector_number, double energy, double time, const G4ThreeVector& pos);
+
+	// Fill NPL Si Data
+	// Called from ReadSensitive
+	void FillSiData(int detector_number, double energy, double time, const G4ThreeVector& pos);
 
 public:   // Scorer
 	//   Initialize all Scorer used by the MUST2Array
