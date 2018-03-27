@@ -50,7 +50,11 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel()){
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 	}
-  vector<string> wedge = {"R_MIN", "R_MAX", "CSI_WEDGES", "SI_THETA_STRIPS", "ST_PHI_STRIPS", "Z"};
+  vector<string> wedge = {
+		"Z", "R_MIN", "R_MAX",
+		"CSI_THICKNESS", "CSI_WEDGES",
+		"SI_THICKNESS", "SI_THETA_STRIPS", "SI_PHI_STRIPS"
+	};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(wedge)){
@@ -87,11 +91,15 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			g.CsIThickness = blocks[i]->GetDouble("CSI_THICKNESS", "mm");
 
 			out.push_back(g);
-			do_print(g);			
+      // if(NPOptionManager::getInstance()->GetVerboseLevel()){
+			// 	do_print(g);
+			// }
 		}
     else{
       cout << "ERROR (AnnularTelescope): "
-					 << "check your input file formatting " << endl;
+					 << "check your input file formatting." << endl
+					 << "Here is a dump of the problem block: " << endl;
+			blocks[i]->Dump();
       exit(1);
     }
   }
