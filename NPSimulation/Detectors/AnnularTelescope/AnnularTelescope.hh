@@ -92,7 +92,8 @@ public:   // Scorer
 	void InitializeScorers() ;
 
 	//   Associated Scorer
-	G4MultiFunctionalDetector* m_AnnularTelescopeScorer ;
+	G4MultiFunctionalDetector* m_AnnularTelescopeScorer_CsI ;
+	G4MultiFunctionalDetector* m_AnnularTelescopeScorer_Si ;
 	////////////////////////////////////////////////////
 	///////////Event class to store Data////////////////
 	////////////////////////////////////////////////////

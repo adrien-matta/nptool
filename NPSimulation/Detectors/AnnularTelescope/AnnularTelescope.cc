@@ -73,7 +73,8 @@ const double SiResoEnergy = 0.0149; // absolute, from AnnularS1.hh
 // AnnularTelescope Specific Method
 AnnularTelescope::AnnularTelescope(){
   m_Event = new TAnnularTelescopeData() ;
-  m_AnnularTelescopeScorer = 0;
+  m_AnnularTelescopeScorer_CsI= 0;
+  m_AnnularTelescopeScorer_Si = 0;
 
   // RGB Color + Transparency
   m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
@@ -114,7 +115,7 @@ AnnularTelescope::BuildDetector(unsigned short i){
 		logic.first = new G4LogicalVolume(
 			tub,DetectorMaterial,"logic_AnnularTelescope_Si_tub",0,0,0);
 		logic.first->SetVisAttributes(m_VisSquare);
-		logic.first->SetSensitiveDetector(m_AnnularTelescopeScorer);
+		logic.first->SetSensitiveDetector(m_AnnularTelescopeScorer_Si);
 	}
 	//
 	// CsI Detector
@@ -131,7 +132,7 @@ AnnularTelescope::BuildDetector(unsigned short i){
 		logic.second = new G4LogicalVolume(
 			tub,DetectorMaterial,"logic_AnnularTelescope_CsI_tub",0,0,0);
 		logic.second->SetVisAttributes(m_VisSquare);
-		logic.second->SetSensitiveDetector(m_AnnularTelescopeScorer);
+		logic.second->SetSensitiveDetector(m_AnnularTelescopeScorer_CsI);
 	}
 	
   return logic; // <Si, CsI>
@@ -196,55 +197,117 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
   m_Event->Clear();
 
   ///////////
-  // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  // Calorimeter scorer (CSI)
+	{
+		NPS::HitsMap<G4double*>* CaloHitMap;
+		std::map<G4int, G4double**>::iterator Calo_itr;
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AnnularTelescopeScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
+		G4int CaloCollectionID = 
+			G4SDManager::GetSDMpointer()->GetCollectionID(
+				"AnnularTelescopeScorer_CsI/Calorimeter_CsI");
+		CaloHitMap = (NPS::HitsMap<G4double*>*)(
+			event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
 
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-		//
-		// Read Hit Information
- 		//   Infos[0] = aStep->GetTotalEnergyDeposit();
-    //   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-    //   Infos[2] = m_Position.x();
-    //   Infos[3] = m_Position.y();
-    //   Infos[4] = m_Position.z();
-    //   Infos[5] = m_Position.theta();
-    //   Infos[6] = m_Position.phi();
-		//   Infos[7] = Detector Number (???)
-    G4double* Infos = *(Calo_itr->second);
-		double energy = Infos[0];
-		double time = Infos[1];
-		G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
-		//
-		// Figure out which detector we are in
-		int detectorNumber = int(Infos[7]);
-		const auto& geo = m_Geo.at(detectorNumber);
-		if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
+		// Loop on the Calo map
+		for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
+				 Calo_itr != CaloHitMap->GetMap()->end() ;
+				 Calo_itr++){
+			// Read Hit Information
+			//   Infos[0] = aStep->GetTotalEnergyDeposit();
+			//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+			//   Infos[2] = m_Position.x();
+			//   Infos[3] = m_Position.y();
+			//   Infos[4] = m_Position.z();
+			//   Infos[5] = m_Position.theta();
+			//   Infos[6] = m_Position.phi();
+			//   Infos[7] = Detector Number (???)
+			G4double* Infos = *(Calo_itr->second);
+			double energy = Infos[0];
+			double time = Infos[1];
+			G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
 			//
-			// We are in the Si detector			
-			FillSiData(detectorNumber, energy, time, pos);
+			// Figure out which detector we are in
+			int detectorNumber = int(Infos[7]);
+			const auto& geo = m_Geo.at(detectorNumber-1);
+			if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
+				//
+				// We are in the Si detector			
+				FillSiData(detectorNumber-1, energy, time, pos);
+			}
+			else if(pos.z() >= geo.Z + geo.SiThickness && 
+							pos.z() <  geo.Z + geo.SiThickness + geo.CsIThickness) {
+				//
+				// We are in the CsI detector
+				FillCsIData(detectorNumber-1, energy, time, pos);
+			}
+			else {
+				//
+				// Position doesn't make sense, bail out
+				std::cerr << "ERROR: AnnularTelescope::ReadSensitive: "
+									<< "Invalid position for detector number " << detectorNumber
+									<< ". Position:\n" << pos << endl;
+				exit(1);
+			}
 		}
-		else if(pos.z() >= geo.Z + geo.SiThickness && 
-						pos.z() <  geo.Z + geo.SiThickness + geo.CsIThickness) {
-			//
-			// We are in the CsI detector
-			FillCsIData(detectorNumber, energy, time, pos);
-		}
-		else {
-			//
-			// Position doesn't make sense, bail out
-			std::cerr << "ERROR: AnnularTelescope::ReadSensitive: "
-								<< "Invalid position for detector number " << detectorNumber
-								<< ". Position:\n" << pos << endl;
-			exit(1);
-		}
-  }
   // clear map for next event
   CaloHitMap->clear();
+  }
+  ///////////
+  // Calorimeter scorer (SI)
+	{
+		NPS::HitsMap<G4double*>* CaloHitMap;
+		std::map<G4int, G4double**>::iterator Calo_itr;
+
+		G4int CaloCollectionID = 
+			G4SDManager::GetSDMpointer()->GetCollectionID(
+				"AnnularTelescopeScorer_Si/Calorimeter_Si");
+		CaloHitMap = (NPS::HitsMap<G4double*>*)(
+			event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
+
+		// Loop on the Calo map
+		for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
+				 Calo_itr != CaloHitMap->GetMap()->end() ;
+				 Calo_itr++){
+			// Read Hit Information
+			//   Infos[0] = aStep->GetTotalEnergyDeposit();
+			//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+			//   Infos[2] = m_Position.x();
+			//   Infos[3] = m_Position.y();
+			//   Infos[4] = m_Position.z();
+			//   Infos[5] = m_Position.theta();
+			//   Infos[6] = m_Position.phi();
+			//   Infos[7] = Detector Number (???)
+			G4double* Infos = *(Calo_itr->second);
+			double energy = Infos[0];
+			double time = Infos[1];
+			G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
+			//
+			// Figure out which detector we are in
+			int detectorNumber = int(Infos[7]);
+			const auto& geo = m_Geo.at(detectorNumber-1);
+			if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
+				//
+				// We are in the Si detector			
+				FillSiData(detectorNumber-1, energy, time, pos);
+			}
+			else if(pos.z() >= geo.Z + geo.SiThickness && 
+							pos.z() <  geo.Z + geo.SiThickness + geo.CsIThickness) {
+				//
+				// We are in the CsI detector
+				FillCsIData(detectorNumber-1, energy, time, pos);
+			}
+			else {
+				//
+				// Position doesn't make sense, bail out
+				std::cerr << "ERROR: AnnularTelescope::ReadSensitive: "
+									<< "Invalid position for detector number " << detectorNumber
+									<< ". Position:\n" << pos << endl;
+				exit(1);
+			}
+		}
+		// clear map for next event
+		CaloHitMap->clear();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -322,21 +385,41 @@ void AnnularTelescope::FillSiData(
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////   
-void AnnularTelescope::InitializeScorers() { 
+void AnnularTelescope::InitializeScorers() {
+	// CSI
+	//
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false; 
-  m_AnnularTelescopeScorer = CheckScorer("AnnularTelescopeScorer",already_exist) ;
+  m_AnnularTelescopeScorer_CsI = 
+		CheckScorer("AnnularTelescopeScorer_CsI",already_exist) ;
 
-  if(already_exist) 
-    return ;
+  if(!already_exist) {
+		// Otherwise the scorer is initialised
+		vector<int> level; level.push_back(0);
+		G4VPrimitiveScorer* Calorimeter_CsI =
+			new CALORIMETERSCORERS::PS_CalorimeterWithInteraction(
+				"Calorimeter_CsI",level, 0) ;
+		//and register it to the multifunctionnal detector
+		m_AnnularTelescopeScorer_CsI->RegisterPrimitive(Calorimeter_CsI);
+		G4SDManager::GetSDMpointer()->AddNewDetector(m_AnnularTelescopeScorer_CsI) ;
+	}
+	// SI
+	//
+  // This check is necessary in case the geometry is reloaded
+	already_exist = false; 
+  m_AnnularTelescopeScorer_Si = 
+		CheckScorer("AnnularTelescopeScorer_Si",already_exist) ;
 
-  // Otherwise the scorer is initialised
-  vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter =
-		new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level, 0) ;
-  //and register it to the multifunctionnal detector
-  m_AnnularTelescopeScorer->RegisterPrimitive(Calorimeter);
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_AnnularTelescopeScorer) ;
+  if(!already_exist) {
+		// Otherwise the scorer is initialised
+		vector<int> level; level.push_back(0);
+		G4VPrimitiveScorer* Calorimeter_Si =
+			new CALORIMETERSCORERS::PS_CalorimeterWithInteraction(
+				"Calorimeter_Si",level, 0) ;
+		//and register it to the multifunctionnal detector
+		m_AnnularTelescopeScorer_Si->RegisterPrimitive(Calorimeter_Si);
+		G4SDManager::GetSDMpointer()->AddNewDetector(m_AnnularTelescopeScorer_Si) ;
+	}
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
