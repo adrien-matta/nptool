@@ -4,13 +4,44 @@
 using namespace std;
 
 // NPL
+#include "NPSystemOfUnits.h"
 #include "NPOptionManager.h"
 #include "NPInputParser.h"
+using namespace NPUNITS;
 
 // ROOT
 #include <TMath.h>
 
 #include "AnnularTelescope_Utils.h"
+
+
+namespace { void do_print(AnnularTelescope_Utils::Geometry& g) {
+	std::cout
+		<< "\tZ POSITION [mm]: " << g.Z / mm << "\n"
+		<< "\tRADIUS [mm]: " << g.R_min / mm << " - " << g.R_max / mm << "\n"
+		<< "\tCSI_THICKNESS [mm]: " << g.CsIThickness / mm << "\n"
+		<< "\tCSI_WEDGES [deg]:\n";
+	for(size_t i=0; i< g.CsI_Wedge_Phi_Angle.size(); ++i){
+		cout << 
+			"\t\t" << i << " : " << (g.CsI_Wedge_Phi_Angle[i] - g.CsI_Wedge_Angle_Pitch/2.) / deg
+				 << " - " << (g.CsI_Wedge_Phi_Angle[i] + g.CsI_Wedge_Angle_Pitch/2.) / deg << "\n";
+	}
+	std::cout 
+		<< "\tSI_THICKNESS [mm]: " << g.SiThickness / mm << "\n"
+		<< "\tSI_PHI_STRIPS [deg]:\n";
+	for(size_t i=0; i< g.Si_Strip_Phi_Angle.size(); ++i){
+		cout << 
+			"\t\t" << i << " : " << (g.Si_Strip_Phi_Angle[i] - g.Si_Phi_Angle_Pitch/2.)/deg
+				 << " - " << (g.Si_Strip_Phi_Angle[i] + g.Si_Phi_Angle_Pitch/2.)/deg << "\n";
+	}
+	std::cout << "\tSI_THETA_STRIPS [mm]:\n";
+	for(size_t i=0; i< g.Si_Strip_Theta_Radius.size(); ++i){
+		cout << 
+			"\t\t" << i << " : " << (g.Si_Strip_Theta_Radius[i] - g.Si_Theta_Radius_Pitch/2.)/mm
+				 << " - " << (g.Si_Strip_Theta_Radius[i] + g.Si_Theta_Radius_Pitch/2.)/mm << "\n";
+	}
+	std::cout << "////////////////////////////////////////////////////////" << std::endl;
+} }
 
 std::vector<AnnularTelescope_Utils::Geometry>
 AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
@@ -52,10 +83,11 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			}
 				
       g.Z = blocks[i]->GetDouble("Z", "mm");
-			g.SiThickness = blocks[i]->GetDouble("SiThickness", "mm");
-			g.CsIThickness = blocks[i]->GetDouble("CsIThickness", "mm");
+			g.SiThickness = blocks[i]->GetDouble("SI_THICKNESS", "um");
+			g.CsIThickness = blocks[i]->GetDouble("CSI_THICKNESS", "mm");
 
 			out.push_back(g);
+			do_print(g);			
 		}
     else{
       cout << "ERROR (AnnularTelescope): "
