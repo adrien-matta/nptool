@@ -28,39 +28,35 @@
 // ROOT
 #include "TObject.h"
 
-namespace ANNULAR_TELESCOPE_DATA {
-
-struct CsIHit_t {
-	std::vector<UShort_t> Detector; // detector number
-	std::vector<UShort_t> Wedge;    // wedge number
-	std::vector<Double_t> Value;    // value (energy or time)
-};
-
-struct SiHit_t {
-	std::vector<UShort_t> Detector;   // detector number
-	std::vector<UShort_t> Strip;      // radial strip number
-	std::vector<Double_t> Value;      // value (energy or time)
-};
-
-}
-
 class TAnnularTelescopeData : public TObject {
   //////////////////////////////////////////////////////////////
   // data members are hold into vectors in order 
   // to allow multiplicity treatment
-private: 
-	// CsI Energy
-	ANNULAR_TELESCOPE_DATA::CsIHit_t CsI_E;
-	// CsI Time
-	ANNULAR_TELESCOPE_DATA::CsIHit_t CsI_T;
-	// Si Energy (theta strips)
-	ANNULAR_TELESCOPE_DATA::SiHit_t Si_Theta_E;
-	// Si Time (theta strips)
-	ANNULAR_TELESCOPE_DATA::SiHit_t Si_Theta_T;
-	// Si Energy (phi strips)
-	ANNULAR_TELESCOPE_DATA::SiHit_t Si_Phi_E;
-	// Si Time (phi strips)
-	ANNULAR_TELESCOPE_DATA::SiHit_t Si_Phi_T;
+private:
+// CsI Energy
+	std::vector<UShort_t> CsI_E_Detector; // detector number
+	std::vector<UShort_t> CsI_E_Wedge;    // wedge number
+	std::vector<Double_t> CsI_E_Energy;   // value (energy or time)
+// CsI Time
+	std::vector<UShort_t> CsI_T_Detector; // detector number
+	std::vector<UShort_t> CsI_T_Wedge;    // wedge number
+	std::vector<Double_t> CsI_T_Time;     // value (energy or time)
+// Si Energy (theta strips)
+	std::vector<UShort_t> Si_Theta_E_Detector;   // detector number
+	std::vector<UShort_t> Si_Theta_E_Strip;      // radial strip number
+	std::vector<Double_t> Si_Theta_E_Energy;     // value (energy or time)
+// Si Time (theta strips)
+	std::vector<UShort_t> Si_Theta_T_Detector;   // detector number
+	std::vector<UShort_t> Si_Theta_T_Strip;      // radial strip number
+	std::vector<Double_t> Si_Theta_T_Time;       // value (energy or time)
+// Si Energy (phi strips)
+	std::vector<UShort_t> Si_Phi_E_Detector;   // detector number
+	std::vector<UShort_t> Si_Phi_E_Strip;      // radial strip number
+	std::vector<Double_t> Si_Phi_E_Energy;     // value (energy or time)
+// Si Time (phi strips)
+	std::vector<UShort_t> Si_Phi_T_Detector;   // detector number
+	std::vector<UShort_t> Si_Phi_T_Strip;      // radial strip number
+	std::vector<Double_t> Si_Phi_T_Time;       // value (energy or time)
 	
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
@@ -86,106 +82,106 @@ public:
 	//////////////////////    SETTERS    ////////////////////////
 	// CsI Energy
 	void SetCsIEnergy(UShort_t DetNbr, UShort_t WedgeNbr, Double_t Energy){		
-		CsI_E.Detector.push_back(DetNbr);
-		CsI_E.Wedge.push_back(WedgeNbr);
-		CsI_E.Value.push_back(Energy);
+		CsI_E_Detector.push_back(DetNbr);
+		CsI_E_Wedge.push_back(WedgeNbr);
+		CsI_E_Energy.push_back(Energy);
 	};//!
 
     // CsI Time
 	void SetCsITime(UShort_t DetNbr, UShort_t WedgeNbr, Double_t Time)	{
-		CsI_T.Detector.push_back(DetNbr);
-		CsI_T.Wedge.push_back(WedgeNbr);
-		CsI_T.Value.push_back(Time);
+		CsI_T_Detector.push_back(DetNbr);
+		CsI_T_Wedge.push_back(WedgeNbr);
+		CsI_T_Time.push_back(Time);
 	};//!
 
 	// Si Energy (theta strips)
 	void SetSiThetaEnergy(UShort_t DetNbr, UShort_t StripNbr, Double_t Energy) {
-		Si_Theta_E.Detector.push_back(DetNbr);
-		Si_Theta_E.Strip.push_back(StripNbr);
-		Si_Theta_E.Value.push_back(Energy);
+		Si_Theta_E_Detector.push_back(DetNbr);
+		Si_Theta_E_Strip.push_back(StripNbr);
+		Si_Theta_E_Energy.push_back(Energy);
 	}
 
 	// Si Time (theta strips)
 	void SetSiThetaTime(UShort_t DetNbr, UShort_t StripNbr, Double_t Time) {
-		Si_Theta_T.Detector.push_back(DetNbr);
-		Si_Theta_T.Strip.push_back(StripNbr);
-		Si_Theta_T.Value.push_back(Time);
+		Si_Theta_T_Detector.push_back(DetNbr);
+		Si_Theta_T_Strip.push_back(StripNbr);
+		Si_Theta_T_Time.push_back(Time);
 	}
 
 	// Si Energy (phi strips)
 	void SetSiPhiEnergy(UShort_t DetNbr, UShort_t StripNbr, Double_t Energy) {
-		Si_Phi_E.Detector.push_back(DetNbr);
-		Si_Phi_E.Strip.push_back(StripNbr);
-		Si_Phi_E.Value.push_back(Energy);
+		Si_Phi_E_Detector.push_back(DetNbr);
+		Si_Phi_E_Strip.push_back(StripNbr);
+		Si_Phi_E_Energy.push_back(Energy);
 	}
 
 	// Si Time (phi strips)
 	void SetSiPhiTime(UShort_t DetNbr, UShort_t StripNbr, Double_t Time) {
-		Si_Phi_T.Detector.push_back(DetNbr);
-		Si_Phi_T.Strip.push_back(StripNbr);
-		Si_Phi_T.Value.push_back(Time);
+		Si_Phi_T_Detector.push_back(DetNbr);
+		Si_Phi_T_Strip.push_back(StripNbr);
+		Si_Phi_T_Time.push_back(Time);
 	}
 
 	//////////////////////    GETTERS    ////////////////////////
 	// CsI Energy
 	UShort_t GetCsIMultEnergy() const
-		{return CsI_E.Detector.size();}
+		{return CsI_E_Detector.size();}
 	UShort_t GetCsIE_DetectorNbr(const unsigned int &i) const 
-		{return CsI_E.Detector[i];}//!
+		{return CsI_E_Detector[i];}//!
 	UShort_t GetCsIE_WedgeNbr(const unsigned int &i) const 
-		{return CsI_E.Wedge[i];}//!
+		{return CsI_E_Wedge[i];}//!
 	Double_t GetCsIEnergy(const unsigned int &i) const 
-		{return CsI_E.Value[i];}//!
+		{return CsI_E_Energy[i];}//!
 
 	// CsI Time
 	UShort_t GetCsIMultTime() const
-		{return CsI_T.Detector.size();}
+		{return CsI_T_Detector.size();}
 	UShort_t GetCsIT_DetectorNbr(const unsigned int &i) const 
-		{return CsI_T.Detector[i];}//!
+		{return CsI_T_Detector[i];}//!
 	UShort_t GetCsIT_WedgeNbr(const unsigned int &i) const 
-		{return CsI_T.Wedge[i];}//!
+		{return CsI_T_Wedge[i];}//!
 	Double_t GetCsITime(const unsigned int &i) const 
-		{return CsI_T.Value[i];}//!
+		{return CsI_T_Time[i];}//!
 	
 	// Si Energy (theta strips)
 	UShort_t GetSiThetaE_Mult() const
-		{return Si_Theta_E.Detector.size();}
+		{return Si_Theta_E_Detector.size();}
 	UShort_t GetSiThetaE_DetectorNbr(const unsigned int &i) const 
-		{return Si_Theta_E.Detector[i];}//!
+		{return Si_Theta_E_Detector[i];}//!
 	UShort_t GetSiThetaE_StripNbr(const unsigned int &i) const 
-		{return Si_Theta_E.Strip[i];}//!
+		{return Si_Theta_E_Strip[i];}//!
 	Double_t GetSiThetaE_Energy(const unsigned int &i) const 
-		{return Si_Theta_E.Value[i];}//!
+		{return Si_Theta_E_Energy[i];}//!
 
 	// Si Time (theta strips)
 	UShort_t GetSiThetaT_Mult() const
-		{return Si_Theta_T.Detector.size();}
+		{return Si_Theta_T_Detector.size();}
 	UShort_t GetSiThetaT_DetectorNbr(const unsigned int &i) const 
-		{return Si_Theta_T.Detector[i];}//!
+		{return Si_Theta_T_Detector[i];}//!
 	UShort_t GetSiThetaT_StripNbr(const unsigned int &i) const 
-		{return Si_Theta_T.Strip[i];}//!
+		{return Si_Theta_T_Strip[i];}//!
 	Double_t GetSiThetaT_Time(const unsigned int &i) const 
-		{return Si_Theta_T.Value[i];}//!
+		{return Si_Theta_T_Time[i];}//!
 
 		// Si Energy (phi strips)
 	UShort_t GetSiPhiE_Mult() const
-		{return Si_Phi_E.Detector.size();}
+		{return Si_Phi_E_Detector.size();}
 	UShort_t GetSiPhiE_DetectorNbr(const unsigned int &i) const 
-		{return Si_Phi_E.Detector[i];}//!
+		{return Si_Phi_E_Detector[i];}//!
 	UShort_t GetSiPhiE_StripNbr(const unsigned int &i) const 
-		{return Si_Phi_E.Strip[i];}//!
+		{return Si_Phi_E_Strip[i];}//!
 	Double_t GetSiPhiE_Energy(const unsigned int &i) const 
-		{return Si_Phi_E.Value[i];}//!
+		{return Si_Phi_E_Energy[i];}//!
 
 	// Si Time (phi strips)
 	UShort_t GetSiPhiT_Mult() const
-		{return Si_Phi_T.Detector.size();}
+		{return Si_Phi_T_Detector.size();}
 	UShort_t GetSiPhiT_DetectorNbr(const unsigned int &i) const 
-		{return Si_Phi_T.Detector[i];}//!
+		{return Si_Phi_T_Detector[i];}//!
 	UShort_t GetSiPhiT_StripNbr(const unsigned int &i) const 
-		{return Si_Phi_T.Strip[i];}//!
+		{return Si_Phi_T_Strip[i];}//!
 	Double_t GetSiPhiT_Time(const unsigned int &i) const 
-		{return Si_Phi_T.Value[i];}//!
+		{return Si_Phi_T_Time[i];}//!
 
 
   //////////////////////////////////////////////////////////////
