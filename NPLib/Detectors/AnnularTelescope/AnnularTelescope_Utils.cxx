@@ -69,7 +69,7 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			g.CsI_Wedge_Angle_Pitch = (2*TMath::Pi()) / n_wedges;
 			for(int i=0; i< n_wedges; ++i){
 				g.CsI_Wedge_Phi_Angle.push_back(
-					i*g.CsI_Wedge_Angle_Pitch + g.CsI_Wedge_Angle_Pitch/2. );
+					-180*NPUNITS::deg + i*g.CsI_Wedge_Angle_Pitch + g.CsI_Wedge_Angle_Pitch/2. );
 			}
 
 			int n_theta = blocks[i]->GetInt("SI_THETA_STRIPS");
@@ -83,7 +83,7 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			g.Si_Phi_Angle_Pitch = (2*TMath::Pi()) / n_phi;
 			for(int i=0; i< n_phi; ++i){
 				g.Si_Strip_Phi_Angle.push_back(
-					i*g.Si_Phi_Angle_Pitch + g.Si_Phi_Angle_Pitch/2. );
+					-180*NPUNITS::deg + i*g.Si_Phi_Angle_Pitch + g.Si_Phi_Angle_Pitch/2. );
 			}
 				
       g.Z = blocks[i]->GetDouble("Z", "mm");
