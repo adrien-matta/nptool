@@ -76,7 +76,7 @@ AnnularTelescope_Utils::ReadConfiguration(NPL::InputParser& parser){
 			g.Si_Theta_Radius_Pitch = (g.R_max - g.R_min) / n_theta;
 			for(int i=0; i< n_theta; ++i){
 				g.Si_Strip_Theta_Radius.push_back(
-					i*g.Si_Theta_Radius_Pitch + g.Si_Theta_Radius_Pitch/2. );
+					g.R_min + i*g.Si_Theta_Radius_Pitch + g.Si_Theta_Radius_Pitch/2. );
 			}
 
 			int n_phi = blocks[i]->GetInt("SI_PHI_STRIPS");
