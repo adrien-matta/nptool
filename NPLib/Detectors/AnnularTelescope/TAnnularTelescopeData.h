@@ -24,6 +24,7 @@
 
 // STL
 #include <vector>
+#include <iostream>
 
 // ROOT
 #include "TObject.h"
@@ -123,66 +124,77 @@ public:
 	}
 
 	//////////////////////    GETTERS    ////////////////////////
+	/////////////////////////////////////////////////////////////
+	// Helper function to catch errors better
+	template <class T>
+	T GetArrayVal(const std::vector<T>& v, size_t i, const std::string& name) const {
+		try { return v.at(i); }
+		catch(std::exception& e) {
+			std::cerr << "ERROR in AnnularTelescopeData, can't get value of "
+								<< name << " at index " << i << std::endl;
+			exit(1);
+		}
+	} //!
+	
 	// CsI Energy
 	UShort_t GetCsIMultEnergy() const
 		{return CsI_E_Detector.size();}
 	UShort_t GetCsIE_DetectorNbr(const unsigned int &i) const 
-		{return CsI_E_Detector[i];}//!
+		{return GetArrayVal(CsI_E_Detector,i,"CsI_E_Detector");}//!
 	UShort_t GetCsIE_WedgeNbr(const unsigned int &i) const 
-		{return CsI_E_Wedge[i];}//!
+		{return GetArrayVal(CsI_E_Wedge,i,"CsI_E_Wedge");}//!
 	Double_t GetCsIEnergy(const unsigned int &i) const 
-		{return CsI_E_Energy[i];}//!
+		{return GetArrayVal(CsI_E_Energy,i,"CsI_E_Energy");}//!
 
 	// CsI Time
 	UShort_t GetCsIMultTime() const
 		{return CsI_T_Detector.size();}
 	UShort_t GetCsIT_DetectorNbr(const unsigned int &i) const 
-		{return CsI_T_Detector[i];}//!
+		{return GetArrayVal(CsI_T_Detector,i,"CsI_T_Detector");}//!
 	UShort_t GetCsIT_WedgeNbr(const unsigned int &i) const 
-		{return CsI_T_Wedge[i];}//!
+		{return GetArrayVal(CsI_T_Wedge,i,"CsI_T_Wedge");}//!
 	Double_t GetCsITime(const unsigned int &i) const 
-		{return CsI_T_Time[i];}//!
+		{return GetArrayVal(CsI_T_Time,i,"CsI_T_Time");}//!
 	
 	// Si Energy (theta strips)
 	UShort_t GetSiThetaE_Mult() const
 		{return Si_Theta_E_Detector.size();}
 	UShort_t GetSiThetaE_DetectorNbr(const unsigned int &i) const 
-		{return Si_Theta_E_Detector[i];}//!
+		{return GetArrayVal(Si_Theta_E_Detector,i,"Si_Theta_E_Detector");}//!
 	UShort_t GetSiThetaE_StripNbr(const unsigned int &i) const 
-		{return Si_Theta_E_Strip[i];}//!
+		{return GetArrayVal(Si_Theta_E_Strip,i,"Si_Theta_E_Strip");}//!
 	Double_t GetSiThetaE_Energy(const unsigned int &i) const 
-		{return Si_Theta_E_Energy[i];}//!
+		{return GetArrayVal(Si_Theta_E_Energy,i,"Si_Theta_E_Energy");}//!
 
 	// Si Time (theta strips)
 	UShort_t GetSiThetaT_Mult() const
 		{return Si_Theta_T_Detector.size();}
 	UShort_t GetSiThetaT_DetectorNbr(const unsigned int &i) const 
-		{return Si_Theta_T_Detector[i];}//!
+		{return GetArrayVal(Si_Theta_T_Detector,i,"Si_Theta_T_Detecor");}//!
 	UShort_t GetSiThetaT_StripNbr(const unsigned int &i) const 
-		{return Si_Theta_T_Strip[i];}//!
+		{return GetArrayVal(Si_Theta_T_Strip,i,"Si_Theta_T_Strip");}//!
 	Double_t GetSiThetaT_Time(const unsigned int &i) const 
-		{return Si_Theta_T_Time[i];}//!
+		{return GetArrayVal(Si_Theta_T_Time,i,"Si_Theta_T_Time");}//!
 
 		// Si Energy (phi strips)
 	UShort_t GetSiPhiE_Mult() const
 		{return Si_Phi_E_Detector.size();}
 	UShort_t GetSiPhiE_DetectorNbr(const unsigned int &i) const 
-		{return Si_Phi_E_Detector[i];}//!
+		{return GetArrayVal(Si_Phi_E_Detector,i,"Si_Phi_E_Detector");}//!
 	UShort_t GetSiPhiE_StripNbr(const unsigned int &i) const 
-		{return Si_Phi_E_Strip[i];}//!
+		{return GetArrayVal(Si_Phi_E_Strip,i,"Si_Phi_E_Strip");}//!
 	Double_t GetSiPhiE_Energy(const unsigned int &i) const 
-		{return Si_Phi_E_Energy[i];}//!
+		{return GetArrayVal(Si_Phi_E_Energy,i,"Si_Phi_E_Energy");}//!
 
 	// Si Time (phi strips)
 	UShort_t GetSiPhiT_Mult() const
 		{return Si_Phi_T_Detector.size();}
 	UShort_t GetSiPhiT_DetectorNbr(const unsigned int &i) const 
-		{return Si_Phi_T_Detector[i];}//!
+		{return GetArrayVal(Si_Phi_T_Detector,i,"Si_Phi_T_Detecor");}//!
 	UShort_t GetSiPhiT_StripNbr(const unsigned int &i) const 
-		{return Si_Phi_T_Strip[i];}//!
+		{return GetArrayVal(Si_Phi_T_Strip,i,"Si_Phi_T_Strip");}//!
 	Double_t GetSiPhiT_Time(const unsigned int &i) const 
-		{return Si_Phi_T_Time[i];}//!
-
+		{return GetArrayVal(Si_Phi_T_Time,i,"Si_Phi_T_Time");}//!
 
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary
