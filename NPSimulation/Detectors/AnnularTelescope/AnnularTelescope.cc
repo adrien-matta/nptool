@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  AnnularTelescope simulation                               *
+ *  This class describe  AnnularTelescope simulation                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -220,7 +220,7 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
 			//   Infos[4] = m_Position.z();
 			//   Infos[5] = m_Position.theta();
 			//   Infos[6] = m_Position.phi();
-			//   Infos[7] = Detector Number (???)
+			//   Infos[7] = Detector Number
 			G4double* Infos = *(Calo_itr->second);
 			double energy = Infos[0];
 			double time = Infos[1];
@@ -228,6 +228,8 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
 			//
 			// Figure out which detector we are in
 			int detectorNumber = int(Infos[7]);
+			FillSiData(detectorNumber, energy, time, pos);
+#if 0
 			const auto& geo = m_Geo.at(detectorNumber-1);
 			if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
 				//
@@ -248,6 +250,7 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
 									<< ". Position:\n" << pos << endl;
 				exit(1);
 			}
+#endif
 		}
   // clear map for next event
   CaloHitMap->clear();
@@ -284,26 +287,30 @@ void AnnularTelescope::ReadSensitive(const G4Event* event){
 			//
 			// Figure out which detector we are in
 			int detectorNumber = int(Infos[7]);
+			FillCsIData(detectorNumber, energy, time, pos);
+#if 0
 			const auto& geo = m_Geo.at(detectorNumber-1);
 			if(pos.z() >= geo.Z && pos.z() < geo.Z + geo.SiThickness) {
 				//
 				// We are in the Si detector			
-				FillSiData(detectorNumber-1, energy, time, pos);
+				FillSiData(detectorNumber, energy, time, pos);
 			}
 			else if(pos.z() >= geo.Z + geo.SiThickness && 
 							pos.z() <  geo.Z + geo.SiThickness + geo.CsIThickness) {
 				//
 				// We are in the CsI detector
-				FillCsIData(detectorNumber-1, energy, time, pos);
+				FillCsIData(detectorNumber, energy, time, pos);
 			}
 			else {
 				//
 				// Position doesn't make sense, bail out
 				std::cerr << "ERROR: AnnularTelescope::ReadSensitive: "
 									<< "Invalid position for detector number " << detectorNumber
-									<< ". Position:\n" << pos << endl;
+									<< ".\nPosition:\n" << pos
+									<< ".\nGeo.Z: " << geo.Z << "\n";				
 				exit(1);
 			}
+#endif
 		}
 		// clear map for next event
 		CaloHitMap->clear();
@@ -317,14 +324,24 @@ void AnnularTelescope::FillCsIData(
 	//
 	// Figure out wedge
 	int wedge_number = 0;
-	double pitch = m_Geo.at(detector_number).CsI_Wedge_Angle_Pitch;
-	for(const double& phi : m_Geo.at(detector_number).CsI_Wedge_Phi_Angle){
+	if(size_t(detector_number - 1) >= m_Geo.size()) {
+		std::cerr << "ERROR: AnnularTelescope::FillCsIData: "
+							<< "invalid detector number: " << detector_number
+							<< ", tried to access index: " << detector_number-1
+							<< " in length " << m_Geo.size() << " array\n";
+		exit(1);
+	}
+	const Geometry& geo = m_Geo.at(detector_number - 1);
+	double pitch = geo.CsI_Wedge_Angle_Pitch;
+	for(const double& phi : geo.CsI_Wedge_Phi_Angle){
 		if(pos.phi() >= phi - pitch/2. && pos.phi() < phi + pitch/2.) {
 			// match!
 			break;
 		}
 		++wedge_number;
 	}
+	// start counting at 1, not 0
+	++wedge_number;
 	//
 	// Add resolutions
 	double eres = AnnularTelescope_NS::CsIResoEnergy*energy; // percent
@@ -344,21 +361,29 @@ void AnnularTelescope::FillSiData(
 	//
 	// Figure out strips
 	// Phi
+	if(size_t(detector_number - 1) >= m_Geo.size()) {
+		std::cerr << "ERROR: AnnularTelescope::FillSiData: "
+							<< "invalid detector number: " << detector_number
+							<< ", tried to access index: " << detector_number-1
+							<< " in length " << m_Geo.size() << " array\n";
+		exit(1);
+	}
+	const Geometry& geo = m_Geo.at(detector_number - 1);
 	size_t phi_strip = 0;
 	{
-		double pitch = m_Geo.at(detector_number).Si_Phi_Angle_Pitch;
-		for(const double& phi : m_Geo.at(detector_number).Si_Strip_Phi_Angle){
+		double pitch = geo.Si_Phi_Angle_Pitch;
+		for(const double& phi : geo.Si_Strip_Phi_Angle){
 			if(pos.phi() >= phi - pitch/2. && pos.phi() < phi + pitch/2.) {
 				// match!
 				break;
 			}
 			++phi_strip;
 		}
-		if(phi_strip == m_Geo.at(detector_number).Si_Strip_Phi_Angle.size()) {
+		if(phi_strip == geo.Si_Strip_Phi_Angle.size()) {
 			std::cerr << "\nWARNING: Phi strip number not found: "
 								<< "Angle of hit [deg]: " << pos.phi()/deg << "\n";
 			std::cerr << "Strip angles:\n";
-			for(const double& R : m_Geo.at(detector_number).Si_Strip_Phi_Angle){
+			for(const double& R : geo.Si_Strip_Phi_Angle){
 				std::cerr << "   " << (R-pitch/2.)/deg << " - " << (R+pitch/2.)/deg << "\n";
 			}
 			std::cerr << "---------\n";
@@ -369,26 +394,26 @@ void AnnularTelescope::FillSiData(
 	// Theta
 	size_t theta_strip = 0;
 	{
-		double pitch = m_Geo.at(detector_number).Si_Theta_Radius_Pitch;
-		for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
+		double pitch = geo.Si_Theta_Radius_Pitch;
+		for(const double& R : geo.Si_Strip_Theta_Radius){
 			if(pos.perp() >= R - pitch/2. && pos.perp() < R + pitch/2.) {
 				// match!
 				break;
 			}
 			++theta_strip;
 		}
-		if(theta_strip == m_Geo.at(detector_number).Si_Strip_Theta_Radius.size()) {
+		if(theta_strip == geo.Si_Strip_Theta_Radius.size()) {
 			// Strip not found			
 			// Check for error in floating point
 			if(
-				pos.perp() < m_Geo.at(detector_number).Si_Strip_Theta_Radius.at(0) - pitch/2. &&
-				fabs(pos.perp() - (m_Geo.at(detector_number).Si_Strip_Theta_Radius.at(0) - pitch/2.)) < 1e-3) {
+				pos.perp() < geo.Si_Strip_Theta_Radius.front() - pitch/2. &&
+				fabs(pos.perp() - (geo.Si_Strip_Theta_Radius.front() - pitch/2.)) < 1e-3) {
 				// okay!
 				theta_strip = 0; // inner strip
 			}
 			else if (
-				pos.perp() >= m_Geo.at(detector_number).Si_Strip_Theta_Radius.back() + pitch/2. &&
-				fabs(pos.perp() - (m_Geo.at(detector_number).Si_Strip_Theta_Radius.back() + pitch/2.)) < 1e-3) {
+				pos.perp() >= geo.Si_Strip_Theta_Radius.back() + pitch/2. &&
+				fabs(pos.perp() - (geo.Si_Strip_Theta_Radius.back() + pitch/2.)) < 1e-3) {
 				// okay!
 				--theta_strip; // outer strip
 			}
@@ -398,7 +423,7 @@ void AnnularTelescope::FillSiData(
 				std::cerr << "\nWARNING: Theta strip number not found: "
 									<< "Radius of hit [mm]: " << pos.perp()/mm << "\n";
 				std::cerr << "Strip radii:\n";
-				for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
+				for(const double& R : geo.Si_Strip_Theta_Radius){
 					std::cout << "   " << (R-pitch/2.)/mm << " - " << (R+pitch/2.)/mm << "\n";
 				}
 				std::cerr << "---------\n";
