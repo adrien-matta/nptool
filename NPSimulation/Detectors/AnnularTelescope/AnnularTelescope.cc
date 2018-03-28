@@ -363,6 +363,8 @@ void AnnularTelescope::FillSiData(
 			}
 			std::cerr << "---------\n";
 		}
+		// Start at 1, not zero
+		++phi_strip;
 	}
 	// Theta
 	size_t theta_strip = 0;
@@ -376,14 +378,34 @@ void AnnularTelescope::FillSiData(
 			++theta_strip;
 		}
 		if(theta_strip == m_Geo.at(detector_number).Si_Strip_Theta_Radius.size()) {
-			std::cerr << "\nWARNING: Theta strip number not found: "
-								<< "Radius of hit [mm]: " << pos.perp()/mm << "\n";
-			std::cerr << "Strip radii:\n";
-			for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
-				std::cout << "   " << (R-pitch/2.)/mm << " - " << (R+pitch/2.)/mm << "\n";
+			// Strip not found			
+			// Check for error in floating point
+			if(
+				pos.perp() < m_Geo.at(detector_number).Si_Strip_Theta_Radius.at(0) - pitch/2. &&
+				fabs(pos.perp() - (m_Geo.at(detector_number).Si_Strip_Theta_Radius.at(0) - pitch/2.)) < 1e-3) {
+				// okay!
+				theta_strip = 0; // inner strip
 			}
-			std::cerr << "---------\n";
+			else if (
+				pos.perp() >= m_Geo.at(detector_number).Si_Strip_Theta_Radius.back() + pitch/2. &&
+				fabs(pos.perp() - (m_Geo.at(detector_number).Si_Strip_Theta_Radius.back() + pitch/2.)) < 1e-3) {
+				// okay!
+				--theta_strip; // outer strip
+			}
+			else {
+				//
+				// Genuine problem
+				std::cerr << "\nWARNING: Theta strip number not found: "
+									<< "Radius of hit [mm]: " << pos.perp()/mm << "\n";
+				std::cerr << "Strip radii:\n";
+				for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
+					std::cout << "   " << (R-pitch/2.)/mm << " - " << (R+pitch/2.)/mm << "\n";
+				}
+				std::cerr << "---------\n";
+			}
 		}
+		// Start at 1, not zero
+		++theta_strip;
 	}
 	//
 	// Add resolutions
