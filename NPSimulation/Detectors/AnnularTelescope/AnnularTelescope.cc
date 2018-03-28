@@ -344,7 +344,7 @@ void AnnularTelescope::FillSiData(
 	//
 	// Figure out strips
 	// Phi
-	int phi_strip = 0;
+	size_t phi_strip = 0;
 	{
 		double pitch = m_Geo.at(detector_number).Si_Phi_Angle_Pitch;
 		for(const double& phi : m_Geo.at(detector_number).Si_Strip_Phi_Angle){
@@ -353,6 +353,15 @@ void AnnularTelescope::FillSiData(
 				break;
 			}
 			++phi_strip;
+		}
+		if(phi_strip == m_Geo.at(detector_number).Si_Strip_Phi_Angle.size()) {
+			std::cerr << "\nWARNING: Phi strip number not found: "
+								<< "ANgle of hit [deg]: " << pos.phi()/deg << "\n";
+			std::cerr << "Strip angles:\n";
+			for(const double& R : m_Geo.at(detector_number).Si_Strip_Phi_Angle){
+				std::cerr << "   " << (R-pitch/2.)/deg << " - " << (R+pitch/2.)/deg << "\n";
+			}
+			std::cerr << "---------\n";
 		}
 	}
 	// Theta
@@ -365,6 +374,15 @@ void AnnularTelescope::FillSiData(
 				break;
 			}
 			++theta_strip;
+		}
+		if(theta_strip == m_Geo.at(detector_number).Si_Strip_Theta_Radius.size()) {
+			std::cerr << "\nWARNING: Theta strip number not found: "
+								<< "Radius of hit [mm]: " << pos.perp()/mm << "\n";
+			std::cerr << "Strip radii:\n";
+			for(const double& R : m_Geo.at(detector_number).Si_Strip_Theta_Radius){
+				std::cout << "   " << (R-pitch/2.)/mm << " - " << (R+pitch/2.)/mm << "\n";
+			}
+			std::cerr << "---------\n";
 		}
 	}
 	//
