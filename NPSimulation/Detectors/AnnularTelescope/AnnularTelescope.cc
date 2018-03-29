@@ -345,7 +345,10 @@ void AnnularTelescope::FillCsIData(
 	//
 	// Add resolutions
 	double eres = AnnularTelescope_NS::CsIResoEnergy*energy; // percent
-	double energy_res = RandGauss::shoot(energy, eres);
+	double energy_res = -1000;
+	while(energy_res < 0) { // make sure it's a positive number
+		energy_res = RandGauss::shoot(energy, eres);
+	}
 	double tres = AnnularTelescope_NS::CsIResoTime; // absolute
 	double time_res = RandGauss::shoot(time, tres);
 	//
@@ -435,8 +438,14 @@ void AnnularTelescope::FillSiData(
 	//
 	// Add resolutions
 	double eres = AnnularTelescope_NS::SiResoEnergy; // absolute
-	double energy_theta = RandGauss::shoot(energy, eres);
-	double energy_phi = RandGauss::shoot(energy, eres);
+	double energy_theta = -1000;
+	while(energy_theta < 0) { // make sure it's a positive number
+		energy_theta = RandGauss::shoot(energy, eres);
+	}
+	double energy_phi = -1000;
+	while(energy_phi < 0) { // make sure it's a positive number
+		energy_phi = RandGauss::shoot(energy, eres);
+	}
 	double tres = AnnularTelescope_NS::SiResoTime; // absolute
 	double time_theta = RandGauss::shoot(time, tres);
 	double time_phi = RandGauss::shoot(time, tres);
