@@ -206,7 +206,7 @@ void AnnularTelescope::ReadScorer(
 		event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
 
 	// Loop on the Calo map
-	for(const auto& hit : CaloHitMap->GetMap()) {
+	for(const auto& hit : *(CaloHitMap->GetMap()) ) {
 		// Read Hit Information
 		//   Infos[0] = aStep->GetTotalEnergyDeposit();
 		//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();

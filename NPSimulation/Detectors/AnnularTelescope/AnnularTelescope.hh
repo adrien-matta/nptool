@@ -81,8 +81,8 @@ public:
 
 	// Read scorer information
 	struct HitInfo_t {
-		G4int detector, G4double energy, G4double time,
-		G4double x; G4double y; G4double z 
+		G4int detector; G4double energy; G4double time;
+		G4double x; G4double y; G4double z;
 	};
 	void ReadScorer(const G4Event* event, const char* scorerName,
 									std::vector<HitInfo_t>& hits);
