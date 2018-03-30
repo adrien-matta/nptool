@@ -191,85 +191,140 @@ void AnnularTelescope::InitializeRootOutput(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Read scorer
+// Helper for ReadSensitive()
+void AnnularTelescope::ReadScorer(
+	const G4Event* event, const char* scorerName,
+	std::vector<HitInfo_t>& hits) {
+	
+	NPS::HitsMap<G4double*>* CaloHitMap;
+	std::map<G4int, G4double**>::iterator Calo_itr;
+
+	G4int CaloCollectionID = 
+		G4SDManager::GetSDMpointer()->GetCollectionID(scorerName);
+	CaloHitMap = (NPS::HitsMap<G4double*>*)(
+		event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
+
+	// Loop on the Calo map
+	for(const auto& hit : CaloHitMap->GetMap()) {
+		// Read Hit Information
+		//   Infos[0] = aStep->GetTotalEnergyDeposit();
+		//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+		//   Infos[2] = m_Position.x();
+		//   Infos[3] = m_Position.y();
+		//   Infos[4] = m_Position.z();
+		//   Infos[5] = m_Position.theta();
+		//   Infos[6] = m_Position.phi();
+		//   Infos[7] = Detector Number
+		hits.push_back(HitInfo_t());
+		G4double* Infos = *(hit.second);
+
+		hits.back().detector = int(Infos[7]);
+		hits.back().energy = Infos[0];
+		hits.back().time = Infos[1];
+		hits.back().x = Infos[2];
+		hits.back().y = Infos[3];
+		hits.back().z = Infos[4];
+	}
+	// clear map for next event
+	CaloHitMap->clear();	
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void AnnularTelescope::ReadSensitive(const G4Event* event){
   m_Event->Clear();
 
-  ///////////
-  // Calorimeter scorer (CSI)
-	{
-		NPS::HitsMap<G4double*>* CaloHitMap;
-		std::map<G4int, G4double**>::iterator Calo_itr;
+	// CSI
+	std::vector<HitInfo_t> csiHits;
+	ReadScorer(event, "AnnularTelescopeScorer_CsI/Calorimeter_CsI", csiHits);
+	for(const auto& hit : csiHits) {
+		FillCsIData(hit.detector, hit.energy, hit.time, G4ThreeVector(hit.x,hit.y,hit.z));
+	}
 
-		G4int CaloCollectionID = 
-			G4SDManager::GetSDMpointer()->GetCollectionID(
-				"AnnularTelescopeScorer_CsI/Calorimeter_CsI");
-		CaloHitMap = (NPS::HitsMap<G4double*>*)(
-			event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
+	// SI
+	std::vector<HitInfo_t> siHits;
+	ReadScorer(event, "AnnularTelescopeScorer_Si/Calorimeter_Si", siHits);
+	for(const auto& hit : siHits) {
+		FillSiData(hit.detector, hit.energy, hit.time, G4ThreeVector(hit.x,hit.y,hit.z));
+	}
+	
+  // ///////////
+  // // Calorimeter scorer (CSI)
+	// {
+	// 	NPS::HitsMap<G4double*>* CaloHitMap;
+	// 	std::map<G4int, G4double**>::iterator Calo_itr;
 
-		// Loop on the Calo map
-		for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
-				 Calo_itr != CaloHitMap->GetMap()->end() ;
-				 Calo_itr++){
-			// Read Hit Information
-			//   Infos[0] = aStep->GetTotalEnergyDeposit();
-			//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-			//   Infos[2] = m_Position.x();
-			//   Infos[3] = m_Position.y();
-			//   Infos[4] = m_Position.z();
-			//   Infos[5] = m_Position.theta();
-			//   Infos[6] = m_Position.phi();
-			//   Infos[7] = Detector Number
-			G4double* Infos = *(Calo_itr->second);
-			double energy = Infos[0];
-			double time = Infos[1];
-			G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
-			//
-			// Figure out which detector we are in
-			int detectorNumber = int(Infos[7]);
-			FillSiData(detectorNumber, energy, time, pos);
-		}
-  // clear map for next event
-  CaloHitMap->clear();
-  }
-  ///////////
-  // Calorimeter scorer (SI)
-	{
-		NPS::HitsMap<G4double*>* CaloHitMap;
-		std::map<G4int, G4double**>::iterator Calo_itr;
+	// 	G4int CaloCollectionID = 
+	// 		G4SDManager::GetSDMpointer()->GetCollectionID(
+	// 			"AnnularTelescopeScorer_CsI/Calorimeter_CsI");
+	// 	CaloHitMap = (NPS::HitsMap<G4double*>*)(
+	// 		event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
 
-		G4int CaloCollectionID = 
-			G4SDManager::GetSDMpointer()->GetCollectionID(
-				"AnnularTelescopeScorer_Si/Calorimeter_Si");
-		CaloHitMap = (NPS::HitsMap<G4double*>*)(
-			event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
+	// 	// Loop on the Calo map
+	// 	for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
+	// 			 Calo_itr != CaloHitMap->GetMap()->end() ;
+	// 			 Calo_itr++){
+	// 		// Read Hit Information
+	// 		//   Infos[0] = aStep->GetTotalEnergyDeposit();
+	// 		//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+	// 		//   Infos[2] = m_Position.x();
+	// 		//   Infos[3] = m_Position.y();
+	// 		//   Infos[4] = m_Position.z();
+	// 		//   Infos[5] = m_Position.theta();
+	// 		//   Infos[6] = m_Position.phi();
+	// 		//   Infos[7] = Detector Number
+	// 		G4double* Infos = *(Calo_itr->second);
+	// 		G4double energy = Infos[0];
+	// 		G4double time = Infos[1];
+	// 		G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
+	// 		//
+	// 		// Figure out which detector we are in
+	// 		G4int detectorNumber = int(Infos[7]);
+	// 		FillCsIData(detectorNumber, energy, time, pos);
+	// 	}
+  // // clear map for next event
+  // CaloHitMap->clear();
+  // }
+  // ///////////
+  // // Calorimeter scorer (SI)
+	// {
+	// 	NPS::HitsMap<G4double*>* CaloHitMap;
+	// 	std::map<G4int, G4double**>::iterator Calo_itr;
 
-		// Loop on the Calo map
-		for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
-				 Calo_itr != CaloHitMap->GetMap()->end() ;
-				 Calo_itr++){
-			// Read Hit Information
-			//   Infos[0] = aStep->GetTotalEnergyDeposit();
-			//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-			//   Infos[2] = m_Position.x();
-			//   Infos[3] = m_Position.y();
-			//   Infos[4] = m_Position.z();
-			//   Infos[5] = m_Position.theta();
-			//   Infos[6] = m_Position.phi();
-			//   Infos[7] = Detector Number (???)
-			G4double* Infos = *(Calo_itr->second);
-			double energy = Infos[0];
-			double time = Infos[1];
-			G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
-			//
-			// Figure out which detector we are in
-			int detectorNumber = int(Infos[7]);
-			FillCsIData(detectorNumber, energy, time, pos);
-		}
-		// clear map for next event
-		CaloHitMap->clear();
-  }
+	// 	G4int CaloCollectionID = 
+	// 		G4SDManager::GetSDMpointer()->GetCollectionID(
+	// 			"AnnularTelescopeScorer_Si/Calorimeter_Si");
+	// 	CaloHitMap = (NPS::HitsMap<G4double*>*)(
+	// 		event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
+
+	// 	// Loop on the Calo map
+	// 	for (Calo_itr = CaloHitMap->GetMap()->begin() ; 
+	// 			 Calo_itr != CaloHitMap->GetMap()->end() ;
+	// 			 Calo_itr++){
+	// 		// Read Hit Information
+	// 		//   Infos[0] = aStep->GetTotalEnergyDeposit();
+	// 		//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
+	// 		//   Infos[2] = m_Position.x();
+	// 		//   Infos[3] = m_Position.y();
+	// 		//   Infos[4] = m_Position.z();
+	// 		//   Infos[5] = m_Position.theta();
+	// 		//   Infos[6] = m_Position.phi();
+	// 		//   Infos[7] = Detector Number (???)
+	// 		G4double* Infos = *(Calo_itr->second);
+	// 		double energy = Infos[0];
+	// 		double time = Infos[1];
+	// 		G4ThreeVector pos(Infos[2], Infos[3], Infos[4]);
+	// 		//
+	// 		// Figure out which detector we are in
+	// 		int detectorNumber = int(Infos[7]);
+	// 		FillSiData(detectorNumber, energy, time, pos);
+	// 	}
+	// 	// clear map for next event
+	// 	CaloHitMap->clear();
+  // }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

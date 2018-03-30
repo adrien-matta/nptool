@@ -79,6 +79,14 @@ public:
 	// Called at in the EventAction::EndOfEventAvtion
 	void ReadSensitive(const G4Event* event) ;
 
+	// Read scorer information
+	struct HitInfo_t {
+		G4int detector, G4double energy, G4double time,
+		G4double x; G4double y; G4double z 
+	};
+	void ReadScorer(const G4Event* event, const char* scorerName,
+									std::vector<HitInfo_t>& hits);
+	
 	// Fill NPL CsI Data
 	// Called from ReadSensitive
 	void FillCsIData(int detector_number, double energy, double time, const G4ThreeVector& pos);
