@@ -103,10 +103,7 @@ TVector3 TAnnularTelescopePhysics::GetRandomisedPositionOfInteraction(int i) con
 		Phi = Arc_pos / R;
 
 		TVector3 position(R*cos(Phi), R*sin(Phi), pos.Z());
-		// // set position on the wafer
-		// position.SetPtThetaPhi(R, 0, Phi);
-		// // then translate to the Z-position (from target)
-		// position.SetZ(pos.Z());
+		if(pos.Z() == 0) { position.SetXYZ(0,0,0); } // no phi strip
 		return position;
 	} catch(std::exception& e) {
 		cerr << "RANGE ERROR: GetRandomisedPositionOfInteration\n";
