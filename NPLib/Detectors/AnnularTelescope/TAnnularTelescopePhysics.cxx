@@ -37,6 +37,7 @@ using namespace std;
 #include "NPDetectorFactory.h"
 #include "NPOptionManager.h"
 #include "NPSystemOfUnits.h"
+using namespace NPUNITS;
 
 //   ROOT
 #include "TChain.h"
@@ -52,7 +53,8 @@ TAnnularTelescopePhysics::TAnnularTelescopePhysics()
      m_EventPhysics(this),
      m_Spectra(0)
 {
-	;
+	m_EnergyMatch.NSigma = 5;
+	m_EnergyMatch.Sigma = 0.0149;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -63,55 +65,53 @@ void TAnnularTelescopePhysics::AddDetector(const AnnularTelescope_Utils::Geometr
 ///////////////////////////////////////////////////////////////////////////
 TVector3 TAnnularTelescopePhysics::GetPositionOfInteraction(int i) const {
 	try {
-		Int_t detector = SiHit_Detector.at(i);
-		Int_t theta_n  = SiHit_ThetaStrip.at(i);
-		Int_t phi_n    = SiHit_PhiStrip.at(i);
+		const Int_t detector = m_SiHits.at(i).Detector;
+		const Int_t theta_n  = m_SiHits.at(i).ThetaStrip;
+		const Int_t phi_n    = m_SiHits.at(i).PhiStrip;
 		const AnnularTelescope_Utils::Geometry& geo =
 		 	m_WedgeGeometry.at(detector - 1);
 
-		TVector3 position;
-		// set position on the wafer
-		position.SetPtThetaPhi(geo.Si_Strip_Theta_Radius.at(theta_n - 1), 0,
-													 geo.Si_Strip_Phi_Angle.at(phi_n - 1) );
-		// then translate to the Z-position (from target)
-		position.SetZ(geo.Z);
+		TVector3 position(0,0,0);
+		if(theta_n > 0 && phi_n > 0) { // check we have both strips
+			// set position on the wafer
+			position.SetPtThetaPhi(geo.Si_Strip_Theta_Radius.at(theta_n - 1), 0,
+														 geo.Si_Strip_Phi_Angle.at(phi_n - 1) );
+			// then translate to the Z-position (from target)
+			position.SetZ(geo.Z);
+		}
 		return position;
 	} catch(std::exception& e) {
-		cerr << "ERROR: GetPositionOfInteration: invalid index " << i
-				 << " (geo size: " << m_WedgeGeometry.size() << ")"
-				 << "\nReturning (0,0,0)\n";
-		return TVector3(0,0,0);
+		std::cerr	<< "RANGE ERROR: GetPositionOfInteraction\n";
+		exit(1);
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
 TVector3 TAnnularTelescopePhysics::GetRandomisedPositionOfInteraction(int i) const {
-	// try {
-	// 	TVector3 pos = GetPositionOfInteraction(i);
-	// 	double R = pos.Pt();
-	// 	double Phi = pos.Phi();
+	try {
+		TVector3 pos = GetPositionOfInteraction(i);
+		double R = pos.Pt();
+		double Phi = pos.Phi();
 
-	// 	double R_pitch = m_WedgeGeometry.at(i).Si_Theta_Radius_Pitch;
-	// 	R += gRandom->Uniform(-R_pitch/2., +R_pitch/2.);
+		double R_pitch = m_WedgeGeometry.at(i).Si_Theta_Radius_Pitch;
+		R += gRandom->Uniform(-R_pitch/2., +R_pitch/2.);
 
-	// 	double Phi_pitch = m_WedgeGeometry.at(i).Si_Phi_Angle_Pitch;
-	// 	double Arc_len = R*Phi_pitch;
-	// 	double Arc_pos = R*Phi;
-	// 	Arc_pos += gRandom->Uniform(-Arc_len/2., +Arc_len/2.);
-	// 	Phi = Arc_pos / R;
+		double Phi_pitch = m_WedgeGeometry.at(i).Si_Phi_Angle_Pitch;
+		double Arc_len = R*Phi_pitch;
+		double Arc_pos = R*Phi;
+		Arc_pos += gRandom->Uniform(-Arc_len/2., +Arc_len/2.);
+		Phi = Arc_pos / R;
 
-	// 	TVector3 position;
-	// 	// set position on the wafer
-	// 	position.SetPtThetaPhi(R, 0, Phi);
-	// 	// then translate to the Z-position (from target)
-	// 	position.SetZ(pos.Z());
-	// 	return position;
-	// } catch(std::exception& e) {
-	// 	cerr << "ERROR: GetRandomisedPositionOfInteration: invalid index " << i
-	// 			 << "Returning (0,0,0)";
-	// 	return TVector3(0,0,0);
-	// }
-	return TVector3(0,0,0);
+		TVector3 position(R*cos(Phi), R*sin(Phi), pos.Z());
+		// // set position on the wafer
+		// position.SetPtThetaPhi(R, 0, Phi);
+		// // then translate to the Z-position (from target)
+		// position.SetZ(pos.Z());
+		return position;
+	} catch(std::exception& e) {
+		cerr << "RANGE ERROR: GetRandomisedPositionOfInteration\n";
+		exit(1);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -127,37 +127,34 @@ void TAnnularTelescopePhysics::BuildPhysicalEvent() {
 	BuildCsIEvent();
 	// build Si event
 	BuildSiEvent();
-	// build total (Si + CsI event)
+	// // build total (Si + CsI event)
 	BuildTotalEvent();
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularTelescopePhysics::BuildCsIEvent() {
-	// loop over energies
+	// Loop over raw hits
   size_t mysizeE = m_PreTreatedData->GetCsIMultEnergy();
   for (size_t i = 0; i < mysizeE ; ++i) {
-		CsIHit_Detector.push_back(
-			m_PreTreatedData->GetCsIE_DetectorNbr(i) );
-		CsIHit_Wedge.push_back(
-			m_PreTreatedData->GetCsIE_WedgeNbr(i) );
-		CsIHit_Energy.push_back(
-			m_PreTreatedData->GetCsIEnergy(i) );
-
-		// now look for matching times
+		// Read detector, wedge no, energy
+		const Int_t det = m_PreTreatedData->GetCsIE_DetectorNbr(i);
+		const Int_t wedge = m_PreTreatedData->GetCsIE_WedgeNbr(i);
+		const Double_t energy = m_PreTreatedData->GetCsIEnergy(i);
+		//
+		// Look for matching times
 		double time = -1000;
 		size_t mysizeT = m_PreTreatedData->GetCsIMultTime();
 		for(size_t j=0; j< mysizeT; ++j) {
-			size_t detT = m_PreTreatedData->GetCsIT_DetectorNbr(j);
-			size_t wedgeT = m_PreTreatedData->GetCsIT_WedgeNbr(j);
-			if(CsIHit_Detector.at(i) == detT &&
-				 CsIHit_Wedge.at(i) == wedgeT) {
+			const size_t detT = m_PreTreatedData->GetCsIT_DetectorNbr(j);
+			const size_t wedgeT = m_PreTreatedData->GetCsIT_WedgeNbr(j);
+			if(det == detT && wedge == wedgeT) {
 				// Match - set time
 				time = m_PreTreatedData->GetCsITime(j);
 				break;
 			}
 		}
-		// add (real or dummy) time
-		CsIHit_Time.push_back(time);
+		// add event
+		SetCsIHit(det,wedge,energy,time);
 	}
 }
 
@@ -168,12 +165,9 @@ void TAnnularTelescopePhysics::BuildSiEvent() {
 	for (size_t iThetaE = 0; iThetaE < mysizeE; ++iThetaE) {
 		//
 		// Add theta strip energy info
-		SiHit_Detector.push_back(
-			m_PreTreatedData->GetSiThetaE_DetectorNbr(iThetaE) );
-		SiHit_ThetaStrip.push_back(
-			m_PreTreatedData->GetSiThetaE_StripNbr(iThetaE) );
-		SiHit_ThetaStripEnergy.push_back(
-			m_PreTreatedData->GetSiThetaE_Energy(iThetaE) );
+		const Int_t& det = m_PreTreatedData->GetSiThetaE_DetectorNbr(iThetaE);
+		const Int_t& thetaStrip = m_PreTreatedData->GetSiThetaE_StripNbr(iThetaE);
+		const Double_t& thetaEnergy = m_PreTreatedData->GetSiThetaE_Energy(iThetaE);
 		//
 		// Check for corresponding time
 		Double_t timeTheta = -1000;
@@ -181,15 +175,12 @@ void TAnnularTelescopePhysics::BuildSiEvent() {
 		for (size_t iThetaT = 0; iThetaT < mysizeT; ++iThetaT) {
 			size_t detT = m_PreTreatedData->GetSiThetaT_DetectorNbr(iThetaT);
 			size_t thT = m_PreTreatedData->GetSiThetaT_StripNbr(iThetaT);
-			if(SiHit_Detector.at(iThetaE) == detT &&
-				 SiHit_ThetaStrip.at(iThetaE) == thT) {
+			if(det == detT && thetaStrip == thT) {
 				// Match - set time
 				timeTheta = m_PreTreatedData->GetSiThetaT_Time(iThetaT);
 				break;
 			}
 		}
-		// add (real or dummy) time
-		SiHit_ThetaStripTime.push_back(timeTheta);
 		//
 		// Now check for phi match
 		Int_t phiStrip = -1000;
@@ -198,23 +189,21 @@ void TAnnularTelescopePhysics::BuildSiEvent() {
 		// Check for match in energy window
 		const size_t mysizePhiE = m_PreTreatedData->GetSiPhiE_Mult();
 		for (size_t iPhiE = 0; iPhiE < mysizePhiE; ++iPhiE) {
-			size_t det = m_PreTreatedData->GetSiPhiE_DetectorNbr(iPhiE);
+			size_t detPhi = m_PreTreatedData->GetSiPhiE_DetectorNbr(iPhiE);
 			Double_t e = m_PreTreatedData->GetSiPhiE_Energy(iPhiE);
-			Int_t N_SIGMA = 5;
-			Double_t SIGMA = 0.0149;
-			if(SiHit_Detector.at(iThetaE) == det &&
-				 fabs(SiHit_ThetaStripEnergy.at(iThetaE) - e) < SIGMA*N_SIGMA) {
+			if(det == detPhi &&
+				 fabs(thetaEnergy - e) < m_EnergyMatch.NSigma*m_EnergyMatch.Sigma)
+			{
 				// Match!
 				phiStrip = m_PreTreatedData->GetSiPhiE_StripNbr(iPhiE);
-				phiEnergy = m_PreTreatedData->GetSiPhiE_Energy(iPhiE);
+				phiEnergy = e;
 				//
 				// Now see if we have a time
 				const size_t mysizePhiT = m_PreTreatedData->GetSiPhiT_Mult();
 				for (size_t iPhiT = 0; iPhiT < mysizePhiT; ++iPhiT) {
-					size_t det = m_PreTreatedData->GetSiPhiT_DetectorNbr(iPhiT);
-					size_t phT = m_PreTreatedData->GetSiPhiT_StripNbr(iPhiT);
-					if(SiHit_Detector.at(iPhiE) == det &&
-						 SiHit_ThetaStrip.at(iPhiE) == phT) {
+					const size_t detPhiT = m_PreTreatedData->GetSiPhiT_DetectorNbr(iPhiT);
+					const size_t phiStripT = m_PreTreatedData->GetSiPhiT_StripNbr(iPhiT);
+					if(det == detPhiT &&  phiStrip == phiStripT) {
 						// Match - set time
 						timePhi = m_PreTreatedData->GetSiPhiT_Time(iPhiT);
 						break;
@@ -223,52 +212,106 @@ void TAnnularTelescopePhysics::BuildSiEvent() {
 				break; // Done - phi energy match found
 			}
 		}
-		// add (real or dummy) phi info
-		SiHit_PhiStrip.push_back(phiStrip);
-		SiHit_PhiStripEnergy.push_back(phiEnergy);
-		SiHit_PhiStripTime.push_back(timePhi);
+		// Set hit info
+		SetSiHit(det,thetaStrip,phiStrip,thetaEnergy,phiEnergy,timeTheta,timePhi);
 	}
 }
 
 
 ///////////////////////////////////////////////////////////////////////////
+namespace { inline bool match_si_csi(
+	double siPitch, double siAngle, double csiPitch, double csiAngle) {
+	const double siLow   = siAngle - siPitch/2.;
+	const double siHigh  = siAngle + siPitch/2.;
+	const double csiLow  = csiAngle - csiPitch/2.;
+	const double csiHigh = csiAngle + csiPitch/2.;
+
+	if ( (siLow  >= csiLow && siLow  < csiHigh) ||
+			 (siHigh >= csiLow && siHigh < csiLow) ) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+class SiCsIMatch {
+public:
+	SiCsIMatch(const SiHit_t& siHit, const AnnularTelescope_Utils::Geometry& geo, bool usePitch = true):
+		m_SiHit(siHit), m_Geo(geo), m_UsePitch(usePitch) { }
+	bool operator() (const CsIHit_t& csiHit) {
+		if(csiHit.Detector != m_SiHit.Detector) { return false; }
+		if(csiHit.Wedge < 0)   { return false; }
+		if(m_SiHit.PhiStrip < 0) { return false; }
+		if(m_UsePitch) {
+			return match_si_csi(
+				m_Geo.Si_Phi_Angle_Pitch, m_Geo.Si_Strip_Phi_Angle.at(m_SiHit.PhiStrip-1),
+				m_Geo.CsI_Wedge_Angle_Pitch, m_Geo.CsI_Wedge_Phi_Angle.at(csiHit.Wedge-1) );		
+		}
+		else { // no si pitch (except for f.p. errors)
+			return match_si_csi(
+				1e-4, m_Geo.Si_Strip_Phi_Angle.at(m_SiHit.PhiStrip-1),
+				m_Geo.CsI_Wedge_Angle_Pitch, m_Geo.CsI_Wedge_Phi_Angle.at(csiHit.Wedge-1) );					
+		}
+	}
+private:
+	const SiHit_t& m_SiHit;
+	const AnnularTelescope_Utils::Geometry& m_Geo;
+	bool m_UsePitch;
+};
+
+}
 void TAnnularTelescopePhysics::BuildTotalEvent(){
-	for(size_t iSi = 0; iSi< SiHit_Detector.size(); ++iSi){
+	Int_t iSi = 0;
+	for(const auto& hitSi : m_SiHits) {
+		// Skip events w/o phi strip number
+		if(hitSi.PhiStrip < 0) { 
+			continue;
+		}
 		//
 		// Add Si energy, time
-		Hit_Si_Energy.push_back(SiHit_ThetaStripEnergy.at(iSi));
-		Hit_Si_Time.push_back(SiHit_ThetaStripTime.at(iSi));
+		const Double_t& siEnergy = hitSi.ThetaStripEnergy;
+		const Double_t& siTime = hitSi.ThetaStripTime;
 		TVector3 SiPos = GetPositionOfInteraction(iSi);
-		Hit_Position.push_back(SiPos);
+		TVector3 SiPos_R = GetRandomisedPositionOfInteraction(iSi);
 		//
 		// Match CsI wedge and detector (by phi angle)
-		Int_t csiMatch = -1000;
-		Int_t siDetNo = SiHit_Detector.at(iSi);
-		for(size_t iCsI = 0; iCsI< CsIHit_Detector.size(); ++iCsI){
-			Int_t csiDetNo = CsIHit_Detector.at(iCsI);
-			if(csiDetNo != siDetNo){
-				continue; // WRONG detector, skip
+		const	AnnularTelescope_Utils::Geometry& geo =
+			m_WedgeGeometry.at(hitSi.Detector-1);
+		vector<const CsIHit_t*> csiMatch;
+		for(const auto& csiHit : m_CsIHits){
+			if(csiHit.Wedge < 0) {
+				continue;
 			}
-			Int_t csiWedgeNo = CsIHit_Wedge.at(iCsI);
-			double phiCsIPitch = 
-				m_WedgeGeometry.at(csiDetNo-1).CsI_Wedge_Angle_Pitch;
-			double phiCsI =
-				m_WedgeGeometry.at(csiDetNo-1).CsI_Wedge_Phi_Angle.at(csiWedgeNo-1);
-			if(SiPos.Phi() >= phiCsI - phiCsIPitch/2. &&
-				 SiPos.Phi() <  phiCsI + phiCsIPitch/2.) {
-				// match!
-				csiMatch = iCsI;
-				break;
+			if(SiCsIMatch(hitSi, geo)(csiHit)) {
+				csiMatch.push_back(&csiHit);
 			}
 		}
 		// Add CsI info
-		if(csiMatch == -1000) { // NO match
-			Hit_CsI_Energy.push_back(0);
-			Hit_CsI_Time.push_back(-1000);
-		} else { // YES match
-			Hit_CsI_Energy.push_back(CsIHit_Energy.at(csiMatch));
-			Hit_CsI_Time.push_back(CsIHit_Time.at(csiMatch));
+		Double_t csiEnergy = -1000;
+		Double_t csiTime = -1000;
+		Int_t csiWedge = -1000;
+		if(!csiMatch.empty()) {
+			if(csiMatch.size() == 1) { // unambiguous
+				csiEnergy = csiMatch.front()->Energy;
+				csiTime = csiMatch.front()->Time;
+				csiWedge = csiMatch.front()->Wedge;
+			} else { // ambiguous, pick the closest one		
+				for(const auto& csi: csiMatch) {
+					if(SiCsIMatch(hitSi, geo, false)(*csi)) {
+						csiEnergy = csi->Energy;
+						csiTime = csi->Time;
+						csiWedge = csi->Wedge;
+					}
+				}
+			}
 		}
+		// Set hit info
+		SetHit(siEnergy,siTime,csiEnergy,csiTime,
+					 hitSi.Detector,hitSi.ThetaStrip,
+					 hitSi.PhiStrip,csiWedge,
+					 SiPos,SiPos_R);
+		++iSi;
 	}
 }
 
@@ -437,6 +480,10 @@ void TAnnularTelescopePhysics::ReadAnalysisConfig() {
 ///////////////////////////////////////////////////////////////////////////
 void TAnnularTelescopePhysics::Clear() {
 
+	m_CsIHits.clear();
+	m_SiHits.clear();
+	m_Hits.clear();
+	
 	CsIHit_Detector.clear();
 	CsIHit_Wedge.clear();
 	CsIHit_Energy.clear();
@@ -454,7 +501,12 @@ void TAnnularTelescopePhysics::Clear() {
 	Hit_Si_Time.clear();
 	Hit_CsI_Energy.clear();
 	Hit_CsI_Time.clear();
+	Hit_Detector.clear();
+	Hit_Si_ThetaStrip.clear();
+	Hit_Si_PhiStrip.clear();
+	Hit_CsI_Wedge.clear();
 	Hit_Position.clear();
+	Hit_Position_R.clear();
 }
 
 
