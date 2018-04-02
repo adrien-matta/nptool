@@ -62,8 +62,8 @@ using namespace CLHEP;
 namespace MDM_NS{
   // Energy and time Resolution
 const double Width     = 250*mm ;
-const double Thickness = 10*mm;
-const double Zpos      = 40*cm;
+const double Thickness = 1*m; // needs to be very thick to serve as calorimeter
+const double Zpos      = 40*cm; // of FRONT face
 const string Material  = "BC400"; // fake!!
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -154,7 +154,7 @@ void MDM::ReadConfiguration(NPL::InputParser parser){
 void MDM::ConstructDetector(G4LogicalVolume* world){
   G4double wX = 0;
   G4double wY = 0;
-  G4double wZ = MDM_NS::Zpos;
+  G4double wZ = MDM_NS::Zpos + MDM_NS::Thickness;
   G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
 
   new G4PVPlacement(0, Det_pos, BuildSquareDetector(), 
