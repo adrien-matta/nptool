@@ -77,8 +77,8 @@ G4bool MDMScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   info.Charge = Q;
   info.Pos    = POS;
   info.Mom    = MOM;
-  
-  EvtMap->add(index+DetNumber, info);
+  // NOTE: add() calls += operator
+  EvtMap->add(index+DetNumber, info); 
   return TRUE;
 }
 
