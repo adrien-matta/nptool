@@ -93,7 +93,7 @@ void MDM::AddDetector(double angle, double field, double xaccept, double yaccept
   m_Rayin = new MDMTrace::Rayin(m_Rayin_file, false);
   m_Trace = MDMTrace::Instance();
 
-  m_Trace->SetMDMAngle(angle/mrad);  // mrad
+  m_Trace->SetMDMAngle(angle/deg);  // mrad
   m_Trace->SetMDMDipoleField(field/gauss); // gauss
 
   cout << "MDM::AddDetector :: Angle [mrad], Angle [deg], Field [G], Rayin File :: " 
