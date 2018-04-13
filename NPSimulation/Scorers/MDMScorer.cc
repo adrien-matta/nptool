@@ -67,7 +67,10 @@ G4bool MDMScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
     
   G4double edep = aStep->GetTotalEnergyDeposit();
   G4double M = aStep->GetPreStepPoint()->GetMass();
-  G4double Q = aStep->GetPreStepPoint()->GetCharge();
+	// This gives the correct charge for a fully stripped ion (proton number)
+  G4double Q = aStep->GetTrack()->GetDynamicParticle()->GetParticleDefinition()->GetPDGCharge();
+	// THIS gives something strange (non-integers that change every step - some sort of stripping?)
+	//aStep->GetPreStepPoint()->GetCharge();
   G4ThreeVector POS  = aStep->GetPreStepPoint()->GetPosition();
   G4ThreeVector MOM  = aStep->GetPreStepPoint()->GetMomentumDirection();
   
@@ -77,7 +80,7 @@ G4bool MDMScorer::ProcessHits(G4Step* aStep, G4TouchableHistory*)
   info.Charge = Q;
   info.Pos    = POS;
   info.Mom    = MOM;
-  
+  // NOTE: add() calls += operator
   EvtMap->add(index+DetNumber, info);
   return TRUE;
 }
