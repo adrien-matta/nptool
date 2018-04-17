@@ -199,7 +199,15 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
           AWireRightCharge.push_back(EnergyR);
           // calculate position in X and Z
           double wire_length = 2*fabs(AWireLeftPos[det].X())/NPUNITS::cm;
-          AWirePositionX.push_back(wire_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
+          double aWirePositionX_uncalib = wire_length*(EnergyL-EnergyR)/(EnergyL+EnergyR);
+          static string name;
+          name = "FPDTamu/AWire_R";
+          name+= NPL::itoa(det+1) ;
+          name+= "_POS" ;
+          double aWirePositionX_calib = CalibrationManager::getInstance()->ApplyCalibration(name, aWirePositionX_uncalib);
+          AWirePositionX.push_back(aWirePositionX_calib);
+        //cout << name << endl;
+        //cout << det << " " << wire_length << " " << AWirePositionX.at(r) << " " << EnergyL << " " << EnergyR << " " << relpos << " "<<  aWirePositionX_uncalib << " " << aWirePositionX_calib << endl;
           AWirePositionZ.push_back(AWireLeftPos[det].Z()/NPUNITS::cm);
         }
       }
@@ -884,6 +892,9 @@ void TFPDTamuPhysics::AddParameterToCalibrationManager() {
       Cal->AddParameter("FPDTamu", "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T",
           "AWire_R"+ NPL::itoa(i+1)+"_C"+ NPL::itoa(iCol+1)+"_T");
     }
+      Cal->AddParameter("FPDTamu", "AWire_R"+ NPL::itoa(i+1)+"_POS",
+          "AWire_R"+ NPL::itoa(i+1)+"_POS");
+
   }
 
   for (int i = 0; i < m_NumberOfPlast; ++i) { // Always 1
