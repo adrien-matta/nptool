@@ -203,11 +203,11 @@ void MDM::ReadSensitive(const G4Event* event){
 		// check if within acceptance
 		// saves lots of time not tracking events outside of the
 		// acceptance
-		if(fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept)
+		if((fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept))
 		{
 			// Calculate positions at TARGET
-			double xTrgt = Pos.x()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaX);
-			double yTrgt = Pos.y()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaY);
+			double xTrgt = Pos.x()/mm - (Pos.z()/mm)*tan(thetaX);
+			double yTrgt = Pos.y()/mm - (Pos.z()/mm)*tan(thetaY);
 			double zTrgt = 0.*mm;
 			
 			// Send Through MDM
