@@ -41,11 +41,24 @@
 #include "NPReaction.h"
 // MDM Trace
 #include "MDMTrace.h"
-#include "TMDMPhysicsMinimizer.h"
 
 // forward declaration
 class TMDMSpectra;
+
+#ifdef HAVE_MINUIT2
+#include "TMDMPhysicsMinimizer.h"
+
 namespace ROOT { namespace Math { class Minimizer; } }
+typedef ROOT::Math::Minimizer Minimizer_t;
+
+#else
+
+class TMDMPhysics;
+struct TMDMPhysicsMinimizer { };
+struct Minimizer_t { };
+
+#endif
+
 
 class TMDMPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
@@ -201,7 +214,7 @@ public:
 
 // Minimization options & helpers
 	double CalculateCentralEnergy();
-	void   InitializeMinimizerWithDefaults(ROOT::Math::Minimizer& min);
+	void   InitializeMinimizerWithDefaults(Minimizer_t& min);
 
 private:
 	TMDMPhysicsMinimizer* m_MinimizerFunction; //!
