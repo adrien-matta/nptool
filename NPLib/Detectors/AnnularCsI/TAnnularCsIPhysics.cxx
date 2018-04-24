@@ -36,6 +36,7 @@ using namespace std;
 #include "RootOutput.h"
 #include "NPDetectorFactory.h"
 #include "NPOptionManager.h"
+#include "NPSystemOfUnits.h"
 
 //   ROOT
 #include "TChain.h"
@@ -194,14 +195,17 @@ int TAnnularCsIPhysics::MatchToSi(const TVector3& SiPosition) const {
 	// returns -1 if no detector found
 
 	// todo account for offset between detectors
-	int i = 0;
-	for (const auto& g : m_WedgeGeometry){
-		if(SiPosition.Phi() >= g.Phi_min && SiPosition.Phi() <= g.Phi_max &&
-			 SiPosition.Pt()  >= g.R_min   && SiPosition.Pt()  <= g.R_max) {
-			// match!
-			return i;
+	int hitno = 0;
+	for(const auto& detno : DetectorNumber){
+		const AnnularCsI_Utils::Geometry& g = m_WedgeGeometry.at(detno - 1);
+		if(SiPosition.Phi() >= g.Phi_min && SiPosition.Phi() < g.Phi_max &&
+			 SiPosition.Pt()  >= g.R_min   && SiPosition.Pt()  < g.R_max   &&
+			 fabs(SiPosition.Z()/NPUNITS::mm - g.Z/NPUNITS::mm) < 10) {
+			//
+			// Match!
+			return hitno;
 		}
-		++i;
+		++hitno;
 	}
 	// no match
 	return -1;

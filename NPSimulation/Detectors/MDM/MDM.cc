@@ -62,8 +62,8 @@ using namespace CLHEP;
 namespace MDM_NS{
   // Energy and time Resolution
 const double Width     = 250*mm ;
-const double Thickness = 10*mm;
-const double Zpos      = 40*cm;
+const double Thickness = 1*m; // needs to be very thick to serve as calorimeter
+const double Zpos      = 40*cm; // of FRONT face
 const string Material  = "BC400"; // fake!!
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -93,7 +93,7 @@ void MDM::AddDetector(double angle, double field, double xaccept, double yaccept
   m_Rayin = new MDMTrace::Rayin(m_Rayin_file, false);
   m_Trace = MDMTrace::Instance();
 
-  m_Trace->SetMDMAngle(angle/mrad);  // mrad
+  m_Trace->SetMDMAngle(angle/deg);  // mrad
   m_Trace->SetMDMDipoleField(field/gauss); // gauss
 
   cout << "MDM::AddDetector :: Angle [mrad], Angle [deg], Field [G], Rayin File :: " 
@@ -154,7 +154,7 @@ void MDM::ReadConfiguration(NPL::InputParser parser){
 void MDM::ConstructDetector(G4LogicalVolume* world){
   G4double wX = 0;
   G4double wY = 0;
-  G4double wZ = MDM_NS::Zpos;
+  G4double wZ = MDM_NS::Zpos + MDM_NS::Thickness;
   G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
 
   new G4PVPlacement(0, Det_pos, BuildSquareDetector(), 
@@ -203,11 +203,11 @@ void MDM::ReadSensitive(const G4Event* event){
 		// check if within acceptance
 		// saves lots of time not tracking events outside of the
 		// acceptance
-		if(fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept)
+		if((fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept))
 		{
 			// Calculate positions at TARGET
-			double xTrgt = Pos.x()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaX);
-			double yTrgt = Pos.y()/mm - (MDM_NS::Zpos/mm - MDM_NS::Thickness*0.5/mm)*tan(thetaY);
+			double xTrgt = Pos.x()/mm - (Pos.z()/mm)*tan(thetaX);
+			double yTrgt = Pos.y()/mm - (Pos.z()/mm)*tan(thetaY);
 			double zTrgt = 0.*mm;
 			
 			// Send Through MDM

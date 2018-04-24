@@ -59,7 +59,9 @@ class Analysis: public NPL::VAnalysis{
 //by Shuya 170703
   double Ex_Hyball;
   double Ex_Barrel;
-
+//GAC 180305
+	double Ex_MDM;
+	
   double ELab;
 //by Shuya 171206
   double ELab_Hyball;
@@ -69,7 +71,10 @@ class Analysis: public NPL::VAnalysis{
 //by Shuya 171206
   double ThetaLab_Hyball;
   double ThetaLab_Barrel;
-
+//GAC 180305
+	double ThetaLab_MDM;
+	double ELab_MDM;
+	
   double ThetaCM;
   double TiaraIMX;
   double TiaraIMY;
