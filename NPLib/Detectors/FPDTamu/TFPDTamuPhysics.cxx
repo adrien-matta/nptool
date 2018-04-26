@@ -159,7 +159,9 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
    unsigned int mysizeT = m_PreTreatedData->Get_Micro_Time_Mult();
     for (UShort_t t = 0; t< mysizeT ; t++) {
       MicroTimeOR.push_back(m_EventData->Get_Micro_Time(t));
+			//by Shuya 170905 - uncomment the second one and comment out the first one if you want to have a MicroMegas_dE Timing data in an appropriate Tree (not PlastLeftTime). 
 			MicroTimeRowNumber.push_back(m_EventData->Get_Micro_T_RowNbr(t));
+			//MicroTimeDetNumber.push_back(m_EventData->Get_Micro_T_DetNbr(t));
     }
 
 // cout << " end of Micro " << endl ;
@@ -199,7 +201,33 @@ void TFPDTamuPhysics::BuildPhysicalEvent() {
           AWireRightCharge.push_back(EnergyR);
           // calculate position in X and Z
           double wire_length = 2*fabs(AWireLeftPos[det].X())/NPUNITS::cm;
-          AWirePositionX.push_back(wire_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
+	//by Shuya 170811 for (6Li,d)
+	///////////////////////////////////////////////////////
+          //AWirePositionX.push_back(wire_length*(EnergyL-EnergyR)/(EnergyL+EnergyR));
+	  double a = 0.0;
+	  double b = 0.0;
+	  if(det==0)
+	  {
+		a = 50.956;
+		b = -25.295;
+	  }
+	  else if(det==1)
+	  {
+		a = 51.452;
+		b = -26.05;
+	  }
+	  else if(det==2)
+	  {
+		a = 51.83;
+		b = -26.092;
+	  }
+	  else if(det==3)
+	  {
+		a = 51.033;
+		b = -25.66;
+	  }
+          AWirePositionX.push_back(a*(EnergyL)/(EnergyL+EnergyR)+b);
+	///////////////////////////////////////////////////////
           AWirePositionZ.push_back(AWireLeftPos[det].Z()/NPUNITS::cm);
         }
       }
@@ -584,7 +612,9 @@ void TFPDTamuPhysics::Clear() {
   MicroDetNumber.clear();
   MicroRowNumber.clear();
   MicroColNumber.clear();
+	//by Shuya 170905 - uncomment the second one and comment out the first one if you want to have a MicroMegas_dE Timing data in an appropriate Tree (not PlastLeftTime). 
 	MicroTimeRowNumber.clear();
+	//MicroTimeDetNumber.clear();
   MicroPositionX.clear();
   MicroPositionZ.clear();
   MicroCharge.clear();
@@ -670,11 +700,17 @@ void TFPDTamuPhysics::Dump() const {
   for (size_t i = 0 ; i < MicroEnergy.size() ; i++)
     cout << " " << MicroEnergy[i];
   cout<<endl;
+//by Shuya 170905 - uncomment the second one and comment out the first one if you want to have a MicroMegas_dE Timing data in an appropriate Tree (not PlastLeftTime). 
   cout << " Row TAC:" << endl;
   for (size_t i = 0 ; i < MicroTimeRowNumber.size() ; i++)
     cout << " " << MicroTimeRowNumber[i];
   cout<<endl;
-
+/*
+  cout << " Row TAC:" << endl;
+  for (size_t i = 0 ; i < MicroTimeDetNumber.size() ; i++)
+    cout << " " << MicroTimeDetNumber[i];
+  cout<<endl;
+*/
   cout << "  ...oooOOOooo...   Plastic Scintillator  ...oooOOOooo...   " << endl;
   // Energy
   cout << " Left Charge:" ;
@@ -921,7 +957,9 @@ void TFPDTamuPhysics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus( "MicroDetNumber" , true );
   inputChain->SetBranchStatus( "MicroRowNumber" , true );
   inputChain->SetBranchStatus( "MicroColNumber" , true );
+//by Shuya 170905 - uncomment the second one and comment out the first one if you want to have a MicroMegas_dE Timing data in an appropriate Tree (not PlastLeftTime). 
   inputChain->SetBranchStatus( "MicroTimeRowNumber" , true );
+  //inputChain->SetBranchStatus( "MicroTimeDetNumber" , true );
   inputChain->SetBranchStatus( "MicroPositionX" , true );
   inputChain->SetBranchStatus( "MicroPositionZ" , true );
   inputChain->SetBranchStatus( "MicroCharge" , true );

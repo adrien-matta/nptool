@@ -207,6 +207,8 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
   double Cal_Strip_Upstream_E(const int i);
   double Cal_Strip_Downstream_E(const int i);
   double Cal_Back_E(const int i);
+//by Shuya 171208
+  double Cal_OuterBarrel_E(const int i);
   double Match_Strip_Upstream_E(const int i);
   double Match_Strip_Downstream_E(const int i);
 

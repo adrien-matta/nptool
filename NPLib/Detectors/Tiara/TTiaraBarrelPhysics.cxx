@@ -61,7 +61,8 @@ ClassImp(TTiaraBarrelPhysics)
     m_Strip_E_Threshold = 300 ; //keV
     m_Back_E_Threshold = 10 ; //keV
     m_Maximum_FrontBack_Difference = 30 ; // keV
-    m_OuterBack_E_Threshold = 50;
+//by Shuya 171208
+    m_OuterBack_E_Threshold = 50;	//ch or keV
     m_Spectra = NULL ;
   }
 
@@ -175,7 +176,9 @@ void TTiaraBarrelPhysics::PreTreat(){
   }
 
   for(unsigned int i = 0 ; i < sizeO ; i++){  
-    double EO = m_EventData->GetOuterEEnergy(i);
+    //by Shuya 171208
+    //double EO = m_EventData->GetOuterEEnergy(i);
+    double EO = Cal_OuterBarrel_E(i);
     int det = m_EventData->GetOuterEDetectorNbr(i);
     int strip = m_EventData->GetOuterEStripNbr(i);
     int key = det*10+strip; // key of the map  OuterStrip={1,2,3,4} => key  
@@ -368,6 +371,8 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
     }
 
     Cal->AddParameter("TIARABARREL","B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
+    //by Shuya 171208
+    Cal->AddParameter("TIARABARREL","OB" + NPL::itoa( i+1 ) + "_E","TIARABARREL_OB" + NPL::itoa( i+1 ) + "_E");
   }
   return;
 
@@ -469,9 +474,9 @@ TVector3 TTiaraBarrelPhysics::GetDetectorNormal( const int i) const{
 ///////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   // All in mm 
-  double INNERBARREL_PCB_Width  = 27.76;
+  double INNERBARREL_PCB_Width  = 27.10;
   double INNERBARREL_ActiveWafer_Length = 94.80; 
-  double INNERBARREL_ActiveWafer_Width = 24.0;
+  double INNERBARREL_ActiveWafer_Width = 22.6;
   double StripPitch = INNERBARREL_ActiveWafer_Width/4.0;
   
   //Calculate position locally as if it's detector 3 (at 12'oclock) that is hit 
@@ -485,8 +490,11 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
 ///////////////////////////////////////////////////////////////////////////////
 TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) const{
   TVector3 RandomPOS = GetPositionOfInteraction(i);
-  TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); 
-  TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
+//by Shuya 180323
+  //TVector3 v1(-12.0, 27.76*(0.5+sin(45*deg)), 0.0); 
+  //TVector3 v2(12.0, 27.76*(0.5+sin(45*deg)), 0.0);
+  TVector3 v1(-12.0, 27.10*(0.5+sin(45*deg)), 0.0); 
+  TVector3 v2(12.0, 27.10*(0.5+sin(45*deg)), 0.0);
   v1.RotateZ((3-Detector_N[i])*45*deg);
   v2.RotateZ((3-Detector_N[i])*45*deg);
   TVector3 u = (v2-v1).Unit();
@@ -567,6 +575,14 @@ double TTiaraBarrelPhysics::Cal_Back_E(const int i){
   name+= NPL::itoa( m_EventData->GetBackEDetectorNbr(i) ) ;
   name+= "_BACK_E";
   return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBackEEnergy(i));
+}
+//by Shuya 171208
+///////////////////////////////////////////////////////////////////////////////
+double TTiaraBarrelPhysics::Cal_OuterBarrel_E(const int i){
+  static string name; name = "TIARABARREL/OB" ;
+  name+= NPL::itoa( m_EventData->GetOuterEDetectorNbr(i));
+  name+= "_E";
+  return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetOuterEEnergy(i));
 }
 
 ////////////////////////////////////////////////////////////////////////////
