@@ -50,7 +50,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     void ReadConfiguration(NPL::InputParser);
 
     //   Add Parameter to the CalibrationManger
-    void AddParameterToCalibrationManager();      
+    void AddParameterToCalibrationManager();
 
     //   Activated associated Branches and link it to the private member DetectorData address
     //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
@@ -74,7 +74,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     //   Read the user configuration file; if no file found, load standard one
     void ReadAnalysisConfig();
 
-    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
+    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter.
     void BuildPhysicalEvent() ;
 
     //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
@@ -83,9 +83,9 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     void BuildSimplePhysicalEvent(){BuildPhysicalEvent();} ;
 
     //   Clear the Event Physics
-    void ClearEventPhysics() {Clear();}          
-    void ClearEventData()    {m_EventData->Clear();}  
-    
+    void ClearEventPhysics() {Clear();}
+    void ClearEventData()    {m_EventData->Clear();}
+
   public:
     void PreTreat();
     // clear the pre-treated object
@@ -102,16 +102,16 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     map<int, vector <int> > Singles_CloverMap_CryEN; //! cry number energy
     map<int, vector <int> > Singles_CloverMap_SegEN; //1 seg number
     map<int, vector <double> > Singles_CloverMap_CryE; //! cry energy
-    map<int, vector <double> > Singles_CloverMap_SegE; //! seg energy 
+    map<int, vector <double> > Singles_CloverMap_SegE; //! seg energy
     map<int, vector <int> > Singles_CloverMap_CryTN; //! cry number time
     map<int, vector <int> > Singles_CloverMap_SegTN; //! seg number
     map<int, vector <double> > Singles_CloverMap_CryT; //! cry energy
-    map<int, vector <double> > Singles_CloverMap_SegT; //! seg energy 
-   
+    map<int, vector <double> > Singles_CloverMap_SegT; //! seg energy
+
   public: // Data Member
     //sorting parameters
-    vector<double> Singles_E;    
-    vector<double> Singles_T;    
+    vector<double> Singles_E;
+    vector<double> Singles_T;
     vector<double> Singles_DC;   // Doppler Corrected Energy (filled externaly)
     vector<double> Singles_Theta;
     vector<double> Singles_X;
@@ -121,8 +121,8 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     vector<int> Singles_Crystal;
     vector<int> Singles_Segment;
     // add back parameters
-    vector<double> AddBack_E;   
-    vector<double> AddBack_T;   
+    vector<double> AddBack_E;
+    vector<double> AddBack_T;
     vector<double> AddBack_DC;    // Doppler Corrected Energy
     vector<double> AddBack_Theta;
     vector<double> AddBack_X;
@@ -140,11 +140,11 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     double m_Seg_E_Threshold;
     int m_Cry_E_Raw_Threshold;
     int m_Seg_E_Raw_Threshold;
-    int m_AddBackMode; 
-    bool m_LowGainCryIsSet; 
-    bool m_LowGainSegIsSet; 
+    int m_AddBackMode;
+    bool m_LowGainCryIsSet;
+    bool m_LowGainSegIsSet;
     bool m_ADCRandomBinIsSet; //Randomise the raw energy in the Raw data within a bin
- 
+
   private: // use for anlysis
     TLorentzVector m_GammaLV; //!
 
@@ -152,7 +152,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     TVector3 GetPositionOfInteraction(unsigned int& i);
     double GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta);
     // Add a detector and computes its coordinate
-    void AddClover(unsigned int ID, double R, double Theta, double Phi);
+    void AddClover(unsigned int ID, double R, double Theta, double Phi, double xShift, double yShift, double zShift);
     TVector3 GetCloverPosition(int& CloverNbr);
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
