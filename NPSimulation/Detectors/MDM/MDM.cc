@@ -61,9 +61,9 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace MDM_NS{
   // Energy and time Resolution
-const double Width     = 250*mm ;
+//const double Width     = 250*mm ;
 const double Thickness = 1*m; // needs to be very thick to serve as calorimeter
-const double Zpos      = 40*cm; // of FRONT face
+const double Zpos      = 65.25*cm; // correct SLIT distance
 const string Material  = "BC400"; // fake!!
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -103,8 +103,10 @@ void MDM::AddDetector(double angle, double field, double xaccept, double yaccept
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* MDM::BuildSquareDetector(){
   if(!m_SquareDetector){
-    G4Box* box = new G4Box("MDM_Box",MDM_NS::Width*0.5,
-			   MDM_NS::Width*0.5,MDM_NS::Thickness*0.5);
+		G4double HalfWidth = MDM_NS::Zpos*tan(m_Xaccept);
+		G4double HalfHeight = MDM_NS::Zpos*tan(m_Yaccept);
+    G4Box* box = new G4Box(
+			"MDM_Box",HalfWidth,HalfHeight,MDM_NS::Thickness*0.5);
 
     G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(MDM_NS::Material);
     m_SquareDetector = new G4LogicalVolume(box,DetectorMaterial,"logic_MDM_Box",0,0,0);
@@ -203,7 +205,9 @@ void MDM::ReadSensitive(const G4Event* event){
 		// check if within acceptance
 		// saves lots of time not tracking events outside of the
 		// acceptance
-		if((fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept))
+		// GAC - Acceptance check no longer needed. Particles
+		// outside the acceptance now never hit the detector
+		if(true) // (fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept))
 		{
 			// Calculate positions at TARGET
 			double xTrgt = Pos.x()/mm - (Pos.z()/mm)*tan(thetaX);
