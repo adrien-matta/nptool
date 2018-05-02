@@ -14,9 +14,9 @@ Target
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Tiara
-  TiaraInnerBarrel= 1
-  TiaraOuterBarrel= 1
-  TiaraChamber= 1
+  InnerBarrel= 1
+  OuterBarrel= 1
+  Chamber= 1
   TiaraHyballWedge
     Z= -147
     R= 0
@@ -42,5 +42,3 @@ Tiara
     R= 0
     Phi= 300
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-

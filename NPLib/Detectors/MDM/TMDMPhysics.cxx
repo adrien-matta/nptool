@@ -46,10 +46,11 @@ using namespace std;
 #include "TGraph.h"
 #include "TROOT.h"
 #include "TVector3.h"
+#ifdef HAVE_MINUIT2
 #include "Math/Minimizer.h"
 #include "Math/Factory.h"
 #include "Math/Functor.h"
-
+#endif
 
 ClassImp(TMDMPhysics)
 
@@ -285,7 +286,7 @@ void TMDMPhysics::ReadAnalysisConfig() {
 					DataBuffer == "false" ? false : atoi(DataBuffer.c_str());
 				cout << "\t" << whatToDo << " " << m_DoMinimization << endl;
 			}
-
+			
 			else if (whatToDo=="MINIMIZER_NAME") {
 				AnalysisConfigFile >> DataBuffer;
 				m_MinimizerName  = DataBuffer;
@@ -376,6 +377,9 @@ void TMDMPhysics::ReadConfiguration(NPL::InputParser parser) {
 
 	// Read analysis config file & initialize relavant variables
   ReadAnalysisConfig();
+#ifndef HAVE_MINUIT2
+	m_DoMinimization = false;
+#endif
 	
 	m_Particle = new NPL::Nucleus(m_ParticleZ, m_ParticleA);
 
@@ -503,6 +507,14 @@ void TMDMPhysics::SendRay(double thetaX,double thetaY,double Ekin) const {
 }
 
 
+double TMDMPhysics::CalculateCentralEnergy(){
+	double brho = (m_Field/tesla)*1.6; // tesla*meter
+	m_Particle->SetBrho(brho);
+	m_Particle->BrhoToEnergy(m_ParticleQ); // charge state
+	return m_Particle->GetEnergy()/MeV;
+}
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //            Construct Method to be pass to the DetectorFactory              //
 ////////////////////////////////////////////////////////////////////////////////
@@ -528,6 +540,16 @@ proxy_MDM p_MDM;
 }
 
 
+
+/////////////////////////////////////////////////////
+////  The following routines depend on MINUIT2 //////
+
+
+#ifdef HAVE_MINUIT2
+#pragma message "Compiling TMDMPhysics with Minuit2 support"
+
+// Define real routines using minuit2
+//
 void TMDMPhysics::MinimizeTarget(){
 	//
 	// check if we do the minimization
@@ -535,7 +557,7 @@ void TMDMPhysics::MinimizeTarget(){
 		return; 
 	}
 	// Set up minimizer
-	std::unique_ptr<ROOT::Math::Minimizer> min(
+	std::unique_ptr<Minimizer_t> min(
 		ROOT::Math::Factory::CreateMinimizer(
 			m_MinimizerName, m_MinimizerAlgorithm.c_str()
 			)
@@ -585,16 +607,24 @@ void TMDMPhysics::MinimizeTarget(){
 	Fit_Chi2 = m_MinimizerFunction->operator()(min->X());
 }
 
-
-void TMDMPhysics::InitializeMinimizerWithDefaults(ROOT::Math::Minimizer& min){
+void TMDMPhysics::InitializeMinimizerWithDefaults(Minimizer_t& min){
 	min.SetMaxFunctionCalls(1000);
 	min.SetMaxIterations(1000);
 	min.SetTolerance(0.001);
 }
 
-double TMDMPhysics::CalculateCentralEnergy(){
-	double brho = (m_Field/tesla)*1.6; // tesla*meter
-	m_Particle->SetBrho(brho);
-	m_Particle->BrhoToEnergy(m_ParticleQ); // charge state
-	return m_Particle->GetEnergy()/MeV;
+#else
+
+// Define fake routines without minuit2
+//
+#pragma message "Compiling TMDMPhysics without Minuit2 support"
+
+void TMDMPhysics::MinimizeTarget(){
+	// Do Nothing
 }
+
+void TMDMPhysics::InitializeMinimizerWithDefaults(Minimizer_t& min){
+	// Do Nothing
+}
+
+#endif

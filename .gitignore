@@ -40,3 +40,8 @@ Documentation/user_guide.log
 *.SRIM
 *.sublime-*
 PhysicsListOption.txt
+Projects/T40/Analysis.cxx
+Projects/T40/Analysis.h
+Projects/T40/T40.detector
+Projects/T40/19Fdp.reaction
+Projects/T40/configs/*.dat
