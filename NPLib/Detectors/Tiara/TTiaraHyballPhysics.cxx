@@ -417,26 +417,40 @@ void TTiaraHyballPhysics::ReadAnalysisConfig(){
       else if (whatToDo== "DISABLE_ALL") {
         AnalysisConfigFile >> DataBuffer;
         cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+//by Shuya 180504. The detector number's position is not 2, but 0 in DataBuffer. (ex, DISABLE_ALL 1 --> 1 (DetectorNum) is [0] position of DataBuffer).
+        //int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        int Detector = atoi(DataBuffer.substr(0,1).c_str());
         vector< bool > ChannelStatus;
-        ChannelStatus.resize(24,false);
+//by Shuya 180504. The number of ring channels is 16, not 24.
+        //ChannelStatus.resize(24,false);
+        ChannelStatus.resize(16,false);
         m_RingChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(48,false);
+//by Shuya 180504. The number of ring channels is 8, not 48.
+        //ChannelStatus.resize(48,false);
+        ChannelStatus.resize(8,false);
         m_SectorChannelStatus[Detector-1] = ChannelStatus;
       }
 
       else if (whatToDo == "DISABLE_CHANNEL") {
         AnalysisConfigFile >> DataBuffer;
         cout << whatToDo << "  " << DataBuffer << endl;
-        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+//by Shuya 180504. The detector number's position is not 2, but 0 in DataBuffer. (ex, DISABLE_ALL 1 --> 1 (DetectorNum) is [0] position of DataBuffer).
+        //int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        int Detector = atoi(DataBuffer.substr(0,1).c_str());
         int channel = -1;
-        if (DataBuffer.compare(3,4,"STRF") == 0) {
-          channel = atoi(DataBuffer.substr(7).c_str());
+//by Shuya 180504. The channel number's position is starting at not 3, but 1 in DataBuffer. (ex, 1STRF2 --> 1 (DetectorNum) is [0] position of DataBuffer, STRF is from [1]-[4] of DataBuffer, and then [5] is channel number.
+        //if (DataBuffer.compare(3,4,"STRF") == 0) {
+        if (DataBuffer.compare(1,4,"STRF") == 0) {
+          //channel = atoi(DataBuffer.substr(7).c_str());
+          channel = atoi(DataBuffer.substr(5).c_str());
           *(m_RingChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
-        else if (DataBuffer.compare(3,4,"STRB") == 0) {
-          channel = atoi(DataBuffer.substr(7).c_str());
+//by Shuya 180504. The channel number's position is starting at not 3, but 1 in DataBuffer. (ex, 1STRF2 --> 1 (DetectorNum) is [0] position of DataBuffer, STRF is from [1]-[4] of DataBuffer, and then [5] is channel number (2).
+        //else if (DataBuffer.compare(3,4,"STRB") == 0) {
+        else if (DataBuffer.compare(1,4,"STRB") == 0) {
+          //channel = atoi(DataBuffer.substr(7).c_str());
+          channel = atoi(DataBuffer.substr(5).c_str());
           *(m_SectorChannelStatus[Detector-1].begin()+channel-1) = false;
         }
 
