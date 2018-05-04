@@ -9,7 +9,7 @@
  * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
  * Creation Date  : November 2012                                            *
- * Last update    :                                                          *
+ * Last update    : May 2018                                                 *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class hold TiaraBarrel treated data                                 *
@@ -58,10 +58,10 @@ ClassImp(TTiaraBarrelPhysics)
 
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
-    m_Strip_E_Threshold = 300 ; //keV
-    m_Back_E_Threshold = 10 ; //keV
-    m_Maximum_FrontBack_Difference = 30 ; // keV
-    m_OuterBack_E_Threshold = 50;
+    m_Strip_E_Threshold = 300*keV;
+    m_Back_E_Threshold = 10*keV;
+    m_Maximum_FrontBack_Difference = 30*keV;
+    m_OuterBack_E_Threshold = 50*keV;
     m_Spectra = NULL ;
   }
 
@@ -199,7 +199,7 @@ for (it= m_mapU.begin(); it!=m_mapU.end(); ++it){
   EU=ED=EUms=EDms=0;
   // skip any event where U and D are not present simultaneously
   if (m_mapU[key].size()==1 && m_mapD[key].size()==1){
-    if( (m_mapU[key][0]+m_mapD[key][0])> m_Strip_E_Threshold ){ // U+D greater than threshold
+    if( (m_mapU[key][0]+m_mapD[key][0])> m_Strip_E_Threshold && IsValidChannel("InnerBarrelStripUpstream", det, strip) && IsValidChannel("InnerBarrelStripDownstream", det, strip) ){ // U+D greater than threshold
       EU = m_mapU[key][0];
       ED = m_mapD[key][0];
       EUms = m_mapMSU[key][0];
@@ -257,6 +257,71 @@ bool TTiaraBarrelPhysics :: IsValidChannel(const string DetectorType, const int 
 
 ///////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::ReadAnalysisConfig(){
+  bool ReadingStatus = false;
+
+  // path to file
+  string FileName = "./configs/ConfigTiaraBarrel.dat";
+
+  // open analysis config file
+  ifstream AnalysisConfigFile;
+  AnalysisConfigFile.open(FileName.c_str());
+
+  if (!AnalysisConfigFile.is_open()) {
+    cout << " No ConfigTiaraBarrel.dat found: Default parameter loaded for Analayis " << FileName << endl;
+    return;
+  }
+  cout << " Loading user parameter for Analysis from ConfigTiaraBarrel.dat " << endl;
+
+  // Save it in a TAsciiFile
+  TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
+  asciiConfig->AppendLine("%%% ConfigTiaraBarrel.dat %%%");
+  asciiConfig->Append(FileName.c_str());
+  asciiConfig->AppendLine("");
+
+  // read analysis config file
+  string LineBuffer,DataBuffer,whatToDo;
+  while (!AnalysisConfigFile.eof()) {
+    // Pick-up next line
+    getline(AnalysisConfigFile, LineBuffer);
+    if (LineBuffer.compare(0, 17, "ConfigTiaraBarrel") == 0) ReadingStatus = true;
+
+    // loop on tokens and data
+    while (ReadingStatus ) {
+      whatToDo="";
+      AnalysisConfigFile >> whatToDo;
+      // Search for comment symbol (%)
+      if (whatToDo.compare(0, 1, "%") == 0) {
+        AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
+      }
+      else if (whatToDo== "DISABLE_ALL") {
+        AnalysisConfigFile >> DataBuffer;
+        cout << whatToDo << "  " << DataBuffer << endl;
+        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        vector< bool > ChannelStatus;
+        ChannelStatus.resize(8,false);
+        m_InnerBarrelStripUpstreamChannelStatus[Detector-1] = ChannelStatus;
+        m_InnerBarrelStripDownstreamChannelStatus[Detector-1] = ChannelStatus;
+      }
+      else if (whatToDo == "DISABLE_CHANNEL") {
+        AnalysisConfigFile >> DataBuffer;
+        cout << whatToDo << "  " << DataBuffer << endl;
+        int Detector = atoi(DataBuffer.substr(2,1).c_str());
+        int channel = -1;
+        if (DataBuffer.compare(3,5,"STRIP") == 0) {
+          channel = atoi(DataBuffer.substr(8).c_str());
+          *(m_InnerBarrelStripUpstreamChannelStatus[Detector-1].begin()+channel-1) = false;
+          *(m_InnerBarrelStripDownstreamChannelStatus[Detector-1].begin()+channel-1) = false;
+          *(m_InnerBarrelBackChannelStatus[Detector-1].begin()+channel-1) = false;
+        }
+        else cout << "Warning: token name for TiaraBarrel unknown!" << endl;
+      }
+
+      else {
+        ReadingStatus = false;
+      }
+
+    }
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -476,8 +541,8 @@ TVector3 TTiaraBarrelPhysics::GetPositionOfInteraction(const int i) const{
   double INNERBARREL_ActiveWafer_Length = 94.80;
   double INNERBARREL_ActiveWafer_Width = 22.60; // was 24.60
   double StripPitch = INNERBARREL_ActiveWafer_Width/4.0;
-  
-  //Calculate position locally as if it's detector 3 (at 12'oclock) that is hit 
+
+  //Calculate position locally as if it's detector 3 (at 12'oclock) that is hit
   double X = (Strip_N[i]-0.5)*StripPitch - 0.5*INNERBARREL_ActiveWafer_Width;
   double Y = INNERBARREL_PCB_Width*(0.5+sin(45*deg));
   double Z = Strip_Pos[i]*(0.5*INNERBARREL_ActiveWafer_Length);
@@ -501,23 +566,23 @@ TVector3 TTiaraBarrelPhysics::GetRandomisedPositionOfInteraction(const int i) co
 }
 ///////////////////////////////////////////////////////////////////////////////
 void TTiaraBarrelPhysics::InitializeStandardParameter(){
-  /*  //   Enable all channel
-      vector< bool > ChannelStatus;
-      m_RingChannelStatus.clear()    ;
-      m_SectorChannelStatus.clear()    ;
+  //   Enable all channel
+  vector< bool > ChannelStatus;
+  m_InnerBarrelStripUpstreamChannelStatus.clear()    ;
+  m_InnerBarrelStripDownstreamChannelStatus.clear()    ;
+  m_OuterBarrelStripChannelStatus.clear()    ;
+  m_InnerBarrelBackChannelStatus.clear()    ;
+  m_OuterBarrelBackChannelStatus.clear()    ;
 
-      ChannelStatus.resize(16,true);
-      for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-      m_RingChannelStatus[i] = ChannelStatus;
-      }
+  ChannelStatus.resize(8,true);
+  for(int i = 0 ; i < m_NumberOfDetector ; ++i){
+    m_InnerBarrelStripUpstreamChannelStatus[i] = ChannelStatus;
+    m_InnerBarrelStripDownstreamChannelStatus[i] = ChannelStatus;
+    m_OuterBarrelStripChannelStatus[i] = ChannelStatus;
+    m_InnerBarrelBackChannelStatus[i] = ChannelStatus;
+    m_OuterBarrelBackChannelStatus[i] = ChannelStatus;
+  }
 
-      ChannelStatus.resize(8,true);
-      for(int i = 0 ; i < m_NumberOfDetector ; ++i){
-      m_SectorChannelStatus[i] = ChannelStatus;
-      }
-
-      m_MaximumStripMultiplicityAllowed = m_NumberOfDetector   ;
-      */
   return;
 }
 ///////////////////////////////////////////////////////////////////////////////
