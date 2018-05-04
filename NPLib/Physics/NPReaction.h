@@ -44,6 +44,7 @@ using namespace NPL;
 #include "TGraph.h"
 #include "TCanvas.h"
 #include "TH1F.h"
+#include "TRandom3.h"
 
 using namespace std;
 
@@ -62,13 +63,16 @@ namespace NPL{
       void ReadConfigurationFile(string Path);
       void ReadConfigurationFile(NPL::InputParser);
 
-
+    private:
+      TRandom3* RandGen;
+      
     private:
       int fVerboseLevel;
 
     private: // use for Monte Carlo simulation
       bool fshoot3;
       bool fshoot4;
+      bool fLabCrossSection;
 
     private: // use to display the kinematical line
       TGraph* fKineLine3 ;
@@ -84,6 +88,7 @@ namespace NPL{
       double   fQValue;                  // Q-value in MeV
       double   fBeamEnergy;              // Beam energy in MeV
       double   fThetaCM;                 // Center-of-mass angle in radian
+      double   fExcitation1;             // Excitation energy in MeV of the beam, useful for isomers 
       double   fExcitation3;             // Excitation energy in MeV
       double   fExcitation4;             // Excitation energy in MeV
       TH1F*    fCrossSectionHist;        // Differential cross section in CM frame
@@ -93,9 +98,11 @@ namespace NPL{
       // Getters and Setters
       void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
       void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
+      void     SetExcitation1(double exci)      {fExcitation1 = exci; initializePrecomputeVariable();}
       void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
       // For retro compatibility
+      void     SetExcitationBeam(double exci)   {fExcitation1 = exci; initializePrecomputeVariable();}
       void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
       void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
@@ -106,6 +113,7 @@ namespace NPL{
         {fDoubleDifferentialCrossSectionHist = CrossSectionHist;}
       double   GetBeamEnergy() const            {return fBeamEnergy;}
       double   GetThetaCM() const               {return fThetaCM;}
+      double   GetExcitation1() const           {return fExcitation1;}
       double   GetExcitation3() const           {return fExcitation3;}
       double   GetExcitation4() const           {return fExcitation4;}
       double   GetQValue() const                {return fQValue;}
@@ -120,7 +128,7 @@ namespace NPL{
 
 
     public:
-      // Modify the CS histo to so cross section shoot is within ]HalfOpenAngleMin,HalfOpenAngleMax[
+      // Modify the CS histo so cross section shoot is within ]HalfOpenAngleMin,HalfOpenAngleMax[
       void SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax);
 
     private: // intern precompute variable
@@ -180,6 +188,7 @@ namespace NPL{
     public: // Kinematics
       // Check that the reaction is alowed
       bool CheckKinematic();
+      bool IsLabCrossSection(){return fLabCrossSection;};
 
       // Use fCrossSectionHist to shoot a Random ThetaCM and set fThetaCM to this value
       double ShootRandomThetaCM();
@@ -198,6 +207,10 @@ namespace NPL{
       // EnergyLab: energy measured in the laboratory frame
       // ExcitationEnergy: excitation energy previously calculated.
       double EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab=0);
+      // Return theoretical EnergyLab, useful for a random distribution in the lab frame
+      // ThetaLab: angle measured in the laboratory frame
+      // This uses the fExcitation4 and fQValue both set previously
+      double EnergyLabFromThetaLab(double ThetaLab); 
 
       void SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab=0);
 
