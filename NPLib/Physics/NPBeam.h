@@ -79,6 +79,7 @@ namespace NPL{
     // Set
     // void SetBeamNucleus (Nucleus* BeamNucleus)  {delete fBeamNucleus ; fBeamNucleus = new Nucleus(BeamNucleus->GetZ(),BeamNucleus->GetA());}
     void SetEnergy      (double Energy)         {fEnergy=Energy;}
+    void SetExcitationEnergy(double Excitation) {fExcitationEnergy=Excitation;}
     void SetSigmaEnergy (double SigmaEnergy)    {fSigmaEnergy=SigmaEnergy;}
     void SetMeanX       (double MeanX)          {fMeanX=MeanX;}
     void SetMeanY       (double MeanY)          {fMeanY=MeanY;}

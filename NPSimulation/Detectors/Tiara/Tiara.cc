@@ -178,18 +178,18 @@ void Tiara::ReadSensitive(const G4Event* event){
   for (InnerBarrel_itr = InnerBarrelHitMap->GetMap()->begin() ; InnerBarrel_itr != InnerBarrelHitMap->GetMap()->end() ; InnerBarrel_itr++){
     G4double* Info = *(InnerBarrel_itr->second);
 
-    // Upstream Energy
-    double EU = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
-    if(EU>EnergyThreshold){
-      m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
-      m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]);
-    }
-
     // Downstream Energy
-    double ED = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel);
+    double ED = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
     if(ED>EnergyThreshold){
       m_EventBarrel->SetFrontDownstreamE(Info[3],Info[4],ED);
       m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]);
+    }
+
+    // Upstream Energy
+    double EU = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel);
+    if(EU>EnergyThreshold){
+      m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
+      m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]);
     }
 
     // Back Energy
