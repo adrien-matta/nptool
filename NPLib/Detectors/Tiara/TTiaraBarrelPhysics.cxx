@@ -58,10 +58,12 @@ ClassImp(TTiaraBarrelPhysics)
 
     m_Take_E_Strip= true;
     m_Take_T_Back=true;
+
     m_Strip_E_Threshold = 300*keV;
     m_Back_E_Threshold = 10*keV;
     m_Maximum_FrontBack_Difference = 30*keV;
     m_OuterBack_E_Threshold = 50*keV;
+
     m_Spectra = NULL ;
   }
 
@@ -174,8 +176,15 @@ void TTiaraBarrelPhysics::PreTreat(){
     if(EB > m_Back_E_Threshold) m_mapB[key].push_back(EB);
   }
 
+
   for(unsigned int i = 0 ; i < sizeO ; i++){
-    double EO = m_EventData->GetOuterEEnergy(i);
+    //by Shuya 171208
+    //double EO = m_EventData->GetOuterEEnergy(i);
+    double EO = Cal_OuterBarrel_E(i);
+  //by Shuya 180426. This was pulled by git pull but ignored.
+  //for(unsigned int i = 0 ; i < sizeO ; i++){
+    //double EO = m_EventData->GetOuterEEnergy(i);
+
     int det = m_EventData->GetOuterEDetectorNbr(i);
     int strip = m_EventData->GetOuterEStripNbr(i);
     int key = det*10+strip; // key of the map  OuterStrip={1,2,3,4} => key
@@ -436,6 +445,8 @@ void TTiaraBarrelPhysics::AddParameterToCalibrationManager(){
     }
 
     Cal->AddParameter("TIARABARREL","B" + NPL::itoa( i+1 ) + "_BACK_E","TIARABARREL_B" + NPL::itoa( i+1 ) + "_BACK_E");
+    //by Shuya 171208
+    Cal->AddParameter("TIARABARREL","OB" + NPL::itoa( i+1 ) + "_E","TIARABARREL_OB" + NPL::itoa( i+1 ) + "_E");
   }
   return;
 
@@ -635,6 +646,14 @@ double TTiaraBarrelPhysics::Cal_Back_E(const int i){
   name+= NPL::itoa( m_EventData->GetBackEDetectorNbr(i) ) ;
   name+= "_BACK_E";
   return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetBackEEnergy(i));
+}
+//by Shuya 171208
+///////////////////////////////////////////////////////////////////////////////
+double TTiaraBarrelPhysics::Cal_OuterBarrel_E(const int i){
+  static string name; name = "TIARABARREL/OB" ;
+  name+= NPL::itoa( m_EventData->GetOuterEDetectorNbr(i));
+  name+= "_E";
+  return CalibrationManager::getInstance()->ApplyCalibration(name, m_EventData->GetOuterEEnergy(i));
 }
 
 ////////////////////////////////////////////////////////////////////////////

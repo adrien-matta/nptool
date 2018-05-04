@@ -53,6 +53,7 @@ namespace TIARA{
   const G4double ResoEnergyInnerBarrel  = 0.050*MeV ;// = 136keV FWHM
   const G4double ResoEnergyOuterBarrel  = 0.050*MeV ;// = 136keV FWHM
   const G4double ResoEnergyHyball       = 0.017*MeV ;// =  70keV FWHM
+  //const G4double ResoEnergyHyball       = 0.000*MeV ;// =  70keV FWHM
 
   const G4double EnergyThreshold = 200*keV;
 
