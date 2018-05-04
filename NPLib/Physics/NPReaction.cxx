@@ -81,7 +81,7 @@ ClassImp(Reaction)
 
     fCrossSectionHist = NULL;
     fExcitationEnergyHist = NULL;
-    fDoubleDifferentialCrossSectionHist = NULL ; 
+    fDoubleDifferentialCrossSectionHist = NULL ;
 
     fshoot3=true;
     fshoot4=true;
@@ -94,7 +94,7 @@ ClassImp(Reaction)
 // This constructor aim to provide a fast way to instantiate a reaction without input file
 // The string should be of the form "A(b,c)D@E" with E the ernegy of the beam in MeV
 Reaction::Reaction(string reaction){
-  // Instantiate the parameter to default  
+  // Instantiate the parameter to default
   // Analyse the reaction and extract revelant information
   string A,b,c,D,E;
   unsigned int i=0;
@@ -197,7 +197,7 @@ double Reaction::ShootRandomThetaCM(){
     int binY;
 
     // Those test are there for the tail event of the energy distribution
-    // In case the energy is outside the range of the 2D histo we take the 
+    // In case the energy is outside the range of the 2D histo we take the
     // closest available CS
     if(Y->FindBin(fBeamEnergy) > Y->GetLast())
       binY = Y->GetLast()-1;
@@ -266,33 +266,27 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab, double PhiLab){
+double Reaction::ReconstructRelativistic(double EnergyLab, double ThetaLab){
   // EnergyLab in MeV
   // ThetaLab in rad
   double E3 = m3 + EnergyLab;
   double p_Lab_3 = sqrt(E3*E3 - m3*m3);
-  TVector3 p_Lab_3_vec = TVector3(0,0,1);
-  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
-
-  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
+  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
   fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 
+
   double Eex = fEnergyImpulsionLab_4.Mag() - fNuclei4.Mass();
-//by Shuya 171005
-//cout << m1 << " " << m2 << " " << fNuclei4.Mass() << " " << m3 << " " << EnergyLab << " " << ThetaLab << " " << ThetaLab/deg << " " << Eex << endl;
 
   return Eex;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //Return ThetaCM
-double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab){
+double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
   double E3 = m3 + EnergyLab;
   double p_Lab_3 = sqrt(E3*E3 - m3*m3);
-  TVector3 p_Lab_3_vec = TVector3(0,0,1);
-  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
 
-  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
+  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3*sin(ThetaLab),0,p_Lab_3*cos(ThetaLab),E3);
   fEnergyImpulsionCM_3 = fEnergyImpulsionLab_3;
   fEnergyImpulsionCM_3.Boost(0,0,-BetaCM);
 
@@ -384,7 +378,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
 
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
   if(blocks.size()>0 && NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << endl << "\033[1;35m//// Two body reaction found " << endl; 
+    cout << endl << "\033[1;35m//// Two body reaction found " << endl;
 
   vector<string> token1 = {"Beam","Target","Light","Heavy"};
   vector<string> token2 = {"Beam","Target","Nuclei3","Nuclei4"};
@@ -411,9 +405,9 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       fNuclei2 = Nucleus(blocks[i]->GetString("Target"));
       fNuclei3 = Nucleus(blocks[i]->GetString("Nuclei3"));
       fNuclei4 = Nucleus(blocks[i]->GetString("Nuclei4"));
-    }    
+    }
     else{
-      cout << "ERROR: check your input file formatting \033[0m" << endl; 
+      cout << "ERROR: check your input file formatting \033[0m" << endl;
       exit(1);
     }
 
@@ -425,14 +419,14 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     }
 
     if(blocks[i]->HasToken("ExcitationEnergyLight"))
-      fExcitation3 = blocks[i]->GetDouble("ExcitationEnergyLight","MeV"); 
+      fExcitation3 = blocks[i]->GetDouble("ExcitationEnergyLight","MeV");
     else if(blocks[i]->HasToken("ExcitationEnergy3"))
-      fExcitation3 = blocks[i]->GetDouble("ExcitationEnergy3","MeV"); 
+      fExcitation3 = blocks[i]->GetDouble("ExcitationEnergy3","MeV");
 
     if(blocks[i]->HasToken("ExcitationEnergyHeavy"))
-      fExcitation4 = blocks[i]->GetDouble("ExcitationEnergyHeavy","MeV"); 
+      fExcitation4 = blocks[i]->GetDouble("ExcitationEnergyHeavy","MeV");
     else if(blocks[i]->HasToken("ExcitationEnergy4"))
-      fExcitation4 = blocks[i]->GetDouble("ExcitationEnergy4","MeV"); 
+      fExcitation4 = blocks[i]->GetDouble("ExcitationEnergy4","MeV");
 
     if(blocks[i]->HasToken("ExcitationEnergyDistribution")){
       vector<string> file = blocks[i]->GetVectorString("ExcitationEnergyDistribution");
@@ -488,13 +482,13 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     }
     if(blocks[i]->HasToken("Shoot3")){
       fshoot3 = blocks[i]->GetInt("Shoot3");
-    } 
+    }
     if(blocks[i]->HasToken("Shoot4")){
       fshoot4 = blocks[i]->GetInt("Shoot4");
-    } 
+    }
     if(blocks[i]->HasToken("ShootHeavy")){
       fshoot4 = blocks[i]->GetInt("ShootHeavy");
-    } 
+    }
     if(blocks[i]->HasToken("ShootLight")){
       fshoot3 = blocks[i]->GetInt("ShootLight");
     }
@@ -521,6 +515,7 @@ void Reaction::initializePrecomputeVariable(){
 
   s = m1*m1 + m2*m2 + 2*m2*(fBeamEnergy + m1);
   fTotalEnergyImpulsionCM = TLorentzVector(0,0,0,sqrt(s));
+  fEcm = sqrt(s) - m1 -m2;
 
   ECM_1 = (s + m1*m1 - m2*m2)/(2*sqrt(s));
   ECM_2 = (s + m2*m2 - m1*m1)/(2*sqrt(s));
@@ -550,20 +545,15 @@ void Reaction::initializePrecomputeVariable(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
-void Reaction::SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab){
+void Reaction::SetNuclei3(double EnergyLab, double ThetaLab){
+  double p3 = sqrt(pow(EnergyLab,2) + 2*m3*EnergyLab);
 
-  double E3 = m3 + EnergyLab;
-  double p_Lab_3 = sqrt(E3*E3 - m3*m3);
-  TVector3 p_Lab_3_vec = TVector3(0,0,1);
-  p_Lab_3_vec.SetMagThetaPhi(p_Lab_3, ThetaLab, PhiLab);
-
-  fEnergyImpulsionLab_3 = TLorentzVector(p_Lab_3_vec, E3);
+  fEnergyImpulsionLab_3 = TLorentzVector(p3*sin(ThetaLab),0,p3*cos(ThetaLab),EnergyLab+m3);
   fEnergyImpulsionLab_4 = fTotalEnergyImpulsionLab - fEnergyImpulsionLab_3;
 
   fNuclei3.SetEnergyImpulsion(fEnergyImpulsionLab_3);
   fNuclei4.SetEnergyImpulsion(fEnergyImpulsionLab_4);
-  
-  //ThetaCM and Energy do not depend on PhiLab
+
   fThetaCM = EnergyLabToThetaCM(EnergyLab, ThetaLab);
   fExcitation4 = ReconstructRelativistic(EnergyLab, ThetaLab);
 }
@@ -611,20 +601,20 @@ TGraph* Reaction::GetKinematicLine4(double AngleStep_CM){
   return(fKineLine4);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////   
+////////////////////////////////////////////////////////////////////////////////////////////
 TGraph* Reaction::GetTheta3VsTheta4(double AngleStep_CM)
-{	
+{
 
   vector<double> vx;
   vector<double> vy;
   double theta3,E3,theta4,E4;
 
   for (double angle=0 ; angle < 360 ; angle+=AngleStep_CM){
-    SetThetaCM(angle*deg); 
+    SetThetaCM(angle*deg);
     KineRelativistic(theta3, E3, theta4, E4);
 
-    vx.push_back(theta3/deg); 
-    vy.push_back(theta4/deg); 
+    vx.push_back(theta3/deg);
+    vy.push_back(theta4/deg);
   }
   fTheta3VsTheta4= new TGraph(vx.size(),&vx[0],&vy[0]);
   return(fTheta3VsTheta4);
@@ -730,4 +720,3 @@ void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
         fCrossSectionHist->SetBinContent(i,0);
   }
 }
-

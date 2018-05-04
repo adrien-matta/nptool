@@ -86,6 +86,7 @@ namespace NPL{
       Nucleus  fNuclei3;                 // Light ejectile
       Nucleus  fNuclei4;                 // Heavy ejectile
       double   fQValue;                  // Q-value in MeV
+      double   fEcm;                     // Ecm in MeV
       double   fBeamEnergy;              // Beam energy in MeV
       double   fThetaCM;                 // Center-of-mass angle in radian
       double   fExcitation1;             // Excitation energy in MeV of the beam, useful for isomers 
@@ -97,6 +98,7 @@ namespace NPL{
     public:
       // Getters and Setters
       void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
+      void     SetEcm(double Ecm)		{fEcm= Ecm; s=pow(Ecm+m1+m2,2); fBeamEnergy=(s-m1*m1-m2*m2)/(2*m2)-m1; initializePrecomputeVariable();}
       void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
       void     SetExcitation1(double exci)      {fExcitation1 = exci; initializePrecomputeVariable();}
       void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
@@ -106,10 +108,10 @@ namespace NPL{
       void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
       void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
-      void     SetCrossSectionHist  (TH1F*  CrossSectionHist)     
+      void     SetCrossSectionHist  (TH1F*  CrossSectionHist)
         {delete fCrossSectionHist; fCrossSectionHist   = CrossSectionHist;}
 
-      void     SetDoubleDifferentialCrossSectionHist(TH2F* CrossSectionHist) 
+      void     SetDoubleDifferentialCrossSectionHist(TH2F* CrossSectionHist)
         {fDoubleDifferentialCrossSectionHist = CrossSectionHist;}
       double   GetBeamEnergy() const            {return fBeamEnergy;}
       double   GetThetaCM() const               {return fThetaCM;}
@@ -117,6 +119,7 @@ namespace NPL{
       double   GetExcitation3() const           {return fExcitation3;}
       double   GetExcitation4() const           {return fExcitation4;}
       double   GetQValue() const                {return fQValue;}
+      double   GetEcm() const			{return fEcm;}
       Nucleus  GetNucleus1() const              {return fNuclei1;}
       Nucleus  GetNucleus2() const              {return fNuclei2;}
       Nucleus  GetNucleus3() const              {return fNuclei3;}
@@ -201,18 +204,18 @@ namespace NPL{
           double &ThetaLab4, double &KineticEnergyLab4);
 
       // Return Excitation Energy
-      double ReconstructRelativistic(double EnergyLab, double ThetaLab, double PhiLab=0);
+      double ReconstructRelativistic(double EnergyLab, double ThetaLab);
 
       // Return ThetaCM
       // EnergyLab: energy measured in the laboratory frame
       // ExcitationEnergy: excitation energy previously calculated.
-      double EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab=0);
+      double EnergyLabToThetaCM(double EnergyLab, double ThetaLab);
       // Return theoretical EnergyLab, useful for a random distribution in the lab frame
       // ThetaLab: angle measured in the laboratory frame
       // This uses the fExcitation4 and fQValue both set previously
       double EnergyLabFromThetaLab(double ThetaLab); 
 
-      void SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab=0);
+      void SetNuclei3(double EnergyLab, double ThetaLab);
 
       TGraph* GetKinematicLine3(double AngleStep_CM=1);
       TGraph* GetKinematicLine4(double AngleStep_CM=1);
