@@ -49,6 +49,7 @@
 #include "Randomize.hh"
 #include "BeamReaction.hh"
 #include "G4FastSimulationManager.hh"
+#include "G4SubtractionSolid.hh"
 using namespace CLHEP ;
 
 // NPS
@@ -69,12 +70,37 @@ Target::Target(){
   m_TargetThickness    = 0   ;
   m_TargetAngle        = 0   ;
   m_TargetRadius       = 0   ;
-  m_WindowsThickness   = 0   ;
   m_TargetDensity      = 0   ;
   m_TargetNbLayers     = 5;   // Number of steps by default
   // Set the global pointer
   TargetInstance = this;
   m_ReactionRegion=0;
+
+  m_TargetDensity = 0 ;
+  m_FrontDeformation = 0 ;
+  m_FrontThickness = 0 ;
+  m_FrontRadius = 0 ;
+  m_FrontMaterial = 0 ;
+  m_BackDeformation = 0 ;
+  m_BackRadius = 0 ;
+  m_BackThickness = 0 ;
+  m_BackMaterial = 0 ;
+  m_FrameRadius = 0 ;
+  m_FrameThickness = 0;
+  m_FrontCone = 0 ;
+  m_BackCone = 0 ;
+  m_FrameMaterial = 0 ;
+  m_ShieldInnerRadius = 0 ;
+  m_ShieldOuterRadius = 0 ;
+  m_ShieldBottomLength = 0 ;
+  m_ShieldTopLength = 0 ;
+  m_ShieldFrontRadius = 0 ; 
+  m_ShieldBackRadius = 0 ;
+  m_ShieldMaterial = 0 ;
+
+
+
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -91,7 +117,7 @@ G4Material* Target::GetMaterialFromLibrary(G4String MaterialName){
 // Called in DetecorConstruction::ReadDetextorConfiguration Method
 void Target::ReadConfiguration(NPL::InputParser parser){
   vector<NPL::InputBlock*>  starget = parser.GetAllBlocksWithToken("Target");
-  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryoTarget");
+  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryogenicTarget");
 
   if(starget.size()==1){
     cout << "////       TARGET      ////" << endl;
@@ -117,26 +143,63 @@ void Target::ReadConfiguration(NPL::InputParser parser){
   }
   else if(ctarget.size()==1){
     m_TargetType=false;
-    cout << " Cryo Target found " << endl;
-    vector<string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
-    if(ctarget[0]->HasTokenList(token)){
-      m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
-      m_TargetAngle=ctarget[0]->GetDouble("Angle","deg");
-      m_TargetMaterial= MaterialManager::getInstance()->GetMaterialFromLibrary(ctarget[0]->GetString("Material"),ctarget[0]->GetDouble("Density","g/cm3"));
-      m_WindowsThickness= ctarget[0]->GetDouble("WindowsThickness","micrometer");
-      m_WindowsMaterial= GetMaterialFromLibrary(ctarget[0]->GetString("WindowsMaterial"));
-      m_TargetRadius=ctarget[0]->GetDouble("Radius","mm");
+    cout << "//// Cryogenic Target found " << endl;
 
-      m_TargetX=ctarget[0]->GetDouble("X","mm");
-      m_TargetY=ctarget[0]->GetDouble("Y","mm");
-      m_TargetZ =ctarget[0]->GetDouble("Z","mm");
+    vector<string> CoreToken   = {"NominalThickness","Material","Density","Radius","Angle","X","Y","Z"};
+    vector<string> FrontToken  = {"FrontDeformation","FrontThickness","FrontRadius","FrontMaterial"};
+    vector<string> BackToken   = {"BackDeformation","BackThickness","BackRadius","BackMaterial"};
+    vector<string> FrameToken  = {"FrameRadius","FrameThickness","FrontCone","BackCone","FrameMaterial"};
+    vector<string> ShieldToken = {"ShieldInnerRadius","ShieldOuterRadius""ShieldBottomLength","ShieldTopLength","ShieldFrontRadius","ShieldBackRadius","ShieldMaterial"};
+
+
+
+
+    if(ctarget[0]->HasTokenList(CoreToken)){
+      MaterialManager* Mat =  MaterialManager::getInstance();
+      // Target 
+      m_TargetThickness = ctarget[0]->GetDouble("NominalThickness","micrometer");
+      m_TargetAngle = ctarget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial = Mat->GetMaterialFromLibrary(ctarget[0]->GetString("Material"),ctarget[0]->GetDouble("Density","g/cm3"));
+      m_TargetRadius = ctarget[0]->GetDouble("Radius","mm");
+      m_TargetX = ctarget[0]->GetDouble("X","mm");
+      m_TargetY = ctarget[0]->GetDouble("Y","mm");
+      m_TargetZ = ctarget[0]->GetDouble("Z","mm");
+      m_TargetDensity = ctarget[0]->GetDouble("Density","g/cm3"); 
+      m_TargetRadius = ctarget[0]->GetDouble("Radius","mm");
+
+      // Front Window
+      m_FrontDeformation = ctarget[0]->GetDouble("FrontDeformation","mm");
+      m_FrontThickness = ctarget[0]->GetDouble("FrontThickness","micrometer");
+      m_FrontRadius = ctarget[0]->GetDouble("FrontRadius","mm");
+      m_FrontMaterial = Mat->GetMaterialFromLibrary(ctarget[0]->GetString("FrontMaterial"));
+
+      // Back Window
+      m_BackDeformation = ctarget[0]->GetDouble("BackDeformation","mm");
+      m_BackRadius = ctarget[0]->GetDouble("BackRadius","mm");
+      m_BackThickness = ctarget[0]->GetDouble("BackThickness","micrometer");
+      m_BackMaterial = Mat->GetMaterialFromLibrary( ctarget[0]->GetString("BackMaterial"));
+
+      // Cell Frame
+      m_FrameRadius = ctarget[0]->GetDouble("FrameRadius","mm");
+      m_FrameThickness = ctarget[0]->GetDouble("FrameThickness","mm");
+      m_FrontCone = ctarget[0]->GetDouble("FrontCone","deg");
+      m_BackCone = ctarget[0]->GetDouble("BackCone","deg");
+      m_FrameMaterial = Mat->GetMaterialFromLibrary(ctarget[0]->GetString("FrameMaterial"));
+      // Heat Shield
+      m_ShieldInnerRadius = ctarget[0]->GetDouble("ShieldInnerRadius","mm");
+      m_ShieldOuterRadius = ctarget[0]->GetDouble("ShieldOuterRadius","mm");
+      m_ShieldBottomLength = ctarget[0]->GetDouble("ShieldBottomLength","mm");
+      m_ShieldTopLength = ctarget[0]->GetDouble("ShieldTopLength","mm");
+      m_ShieldFrontRadius = ctarget[0]->GetDouble("ShieldFrontRadius","mm"); 
+      m_ShieldBackRadius = ctarget[0]->GetDouble("ShieldBackRadius","mm");
+      m_ShieldMaterial = Mat->GetMaterialFromLibrary(ctarget[0]->GetString("ShieldMaterial"));
     }
     else{
       cout << "ERROR: Target token list incomplete, check your input file" << endl;
       exit(1);
     }
 
-    if(ctarget[0]->HasToken("NBLAYERS"))
+    if(ctarget[0]->HasToken("360AYERS"))
       m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
 
   }
@@ -174,65 +237,192 @@ void Target::ConstructDetector(G4LogicalVolume* world){
   }
 
   else {   // case of cryogenic target
-    if (m_TargetThickness > 0) {
-      m_TargetSolid = 
-        new G4Tubs("solidTarget", 0, m_TargetRadius, 
-            0.5*m_TargetThickness+m_WindowsThickness, 0*deg, 360*deg);
+    // X-Z target profile
+    unsigned int size = 100;
+    std::vector<double> OuterRadius;
+    std::vector<double> InnerRadius;
+    std::vector<double> Z;
 
-      m_TargetLogic = 
-        new G4LogicalVolume(m_TargetSolid, 
-            GetMaterialFromLibrary("Vacuum")
-            , "logicTarget");
+    // Front Bulge
+    if(m_FrontDeformation!=0){
+      double step = m_FrontRadius/size;
+      for(unsigned int i = 0 ; i < size ; i++){
+        OuterRadius.push_back(i*step);
+        Z.push_back(FrontProfile(i*step,m_TargetThickness*0.5,m_FrontDeformation,m_FrontRadius));
+      } 
+    }
 
-      m_TargetLogic->SetVisAttributes(G4VisAttributes::Invisible);
-      G4Tubs* solidTarget = 
-        new G4Tubs("solidTarget", 0, m_TargetRadius, 
-            0.5*m_TargetThickness, 0*deg, 360*deg);
+    // Nominal Part
+    OuterRadius.push_back(m_FrontRadius);
+    Z.push_back(0.5*m_TargetThickness);
 
-      G4LogicalVolume* logicTarget = 
-        new G4LogicalVolume(solidTarget, m_TargetMaterial, "logicTarget");
+    OuterRadius.push_back(m_TargetRadius);
+    Z.push_back(0.5*m_TargetThickness);
 
-      new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
-          logicTarget, "Target", m_TargetLogic, false, 0);
+    OuterRadius.push_back(m_TargetRadius);
+    Z.push_back(-0.5*m_TargetThickness);
 
-      new G4PVPlacement(0, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
-          m_TargetLogic, "Target", world, false, 0);
+    OuterRadius.push_back(m_BackRadius);
+    Z.push_back(-0.5*m_TargetThickness);
 
-      G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
-      logicTarget->SetVisAttributes(TargetVisAtt);
+
+    // Back Bulge
+    if(m_FrontDeformation!=0){
+      double step = m_BackRadius/size;
+      for(int i = size-1 ; i>=0 ; i--){
+        OuterRadius.push_back(i*step);
+        Z.push_back(BackProfile(i*step,m_TargetThickness*0.5,m_BackDeformation,m_BackRadius));
+      } 
     }
 
 
-    if (m_WindowsThickness > 0) {
-      G4ThreeVector TargetPos = G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ);
+    InnerRadius.resize(Z.size(),0);
 
-      G4Tubs* solidWindowsF =
-        new G4Tubs("solidTargetWindowsF", 0, m_TargetRadius, 
-            0.5*m_WindowsThickness, 0*deg, 360*deg);
-      G4LogicalVolume* logicWindowsF = 
-        new G4LogicalVolume(solidWindowsF, m_WindowsMaterial, 
-            "logicTargetWindowsF");
+    m_CryoTargetSolid = 
+      new G4Polycone("solidTarget", 0, 360*deg,Z.size(),&Z[0],&InnerRadius[0],&OuterRadius[0]);
 
-      G4Tubs* solidWindowsB =
-        new G4Tubs("solidTargetWindowsB", 0, m_TargetRadius, 
-            0.5*m_WindowsThickness, 0*deg, 360*deg);
-      G4LogicalVolume* logicWindowsB = 
-        new G4LogicalVolume(solidWindowsB, m_WindowsMaterial, 
-            "logicTargetWindowsB");
+    m_TargetLogic = 
+      new G4LogicalVolume(m_CryoTargetSolid, 
+          m_TargetMaterial,
+          "logicTarget");
 
-      new G4PVPlacement(0,
-          TargetPos 
-          +G4ThreeVector(0., 0., 0.5*(m_TargetThickness + m_WindowsThickness)) ,
-          logicWindowsF,"Target Window Front",m_TargetLogic,false, 0);
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
+        m_TargetLogic, "Target", world, false, 0);
 
-      new G4PVPlacement(   0,
-          TargetPos + G4ThreeVector(0., 0., -0.5*(m_TargetThickness + m_WindowsThickness)),
-          logicWindowsB,"Target Window Back",m_TargetLogic,false, 0);
+    G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
+    m_TargetLogic->SetVisAttributes(TargetVisAtt);
 
-      G4VisAttributes* WindowsVisAtt = new G4VisAttributes(G4Colour(0.5, 1., 0.5));
-      logicWindowsF->SetVisAttributes(WindowsVisAtt);
-      logicWindowsB->SetVisAttributes(WindowsVisAtt);
+
+    // Front Window 
+    OuterRadius.clear();
+    InnerRadius.clear();
+    Z.clear();
+
+    // Front Bulge
+    if(m_FrontDeformation!=0){
+      double step = m_FrontRadius/size;
+      for(unsigned int i = 0 ; i < size ; i++){
+        InnerRadius.push_back(i*step);
+        OuterRadius.push_back(i*step+m_FrontThickness);
+        Z.push_back(FrontProfile(i*step+m_FrontThickness,m_FrontThickness+m_TargetThickness*0.5,m_FrontDeformation,m_FrontRadius));
+      } 
     }
+
+    G4Polycone* FrontSolid = 
+      new G4Polycone("solidFront", 0, 360*deg,Z.size(),&Z[0],&InnerRadius[0],&OuterRadius[0]);
+
+    G4LogicalVolume* FrontLogic = 
+      new G4LogicalVolume(FrontSolid, 
+          m_FrontMaterial,
+          "logicFront");
+
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
+        FrontLogic, "Target", world, false, 0);
+    G4VisAttributes* WindowsVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5,0.5));
+    FrontLogic->SetVisAttributes(WindowsVisAtt);
+
+
+    // Back Window 
+    OuterRadius.clear();
+    InnerRadius.clear();
+    Z.clear();
+
+    // Back Bulge
+    if(m_BackDeformation!=0){
+      double step = m_BackRadius/size;
+      for(unsigned int i = 0 ; i < size ; i++){
+        InnerRadius.push_back(i*step);
+        OuterRadius.push_back(i*step+m_BackThickness);
+        Z.push_back(BackProfile(i*step+m_BackThickness,m_BackThickness+m_TargetThickness*0.5,m_BackDeformation,m_BackRadius));
+      } 
+    }
+
+    G4Polycone* BackSolid = 
+      new G4Polycone("solidBack", 0, 360*deg,Z.size(),&Z[0],&InnerRadius[0],&OuterRadius[0]);
+
+    G4LogicalVolume* BackLogic = 
+      new G4LogicalVolume(BackSolid, 
+          m_BackMaterial,
+          "logicBack");
+
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
+        BackLogic, "Target", world, false, 0);
+
+    BackLogic->SetVisAttributes(WindowsVisAtt);
+
+    // Frame
+    OuterRadius.clear();
+    InnerRadius.clear();
+    Z.clear();
+    double FrontInner = 0.5*(m_FrameThickness-m_TargetThickness) / tan(0.5*M_PI-m_FrontCone);
+    double BackInner  = 0.5*(m_FrameThickness-m_TargetThickness) / tan(0.5*M_PI-m_BackCone);
+
+    Z.push_back(m_FrameThickness*0.5); InnerRadius.push_back(FrontInner+m_FrontRadius); OuterRadius.push_back(m_FrameRadius);
+    Z.push_back(m_TargetThickness*0.5); InnerRadius.push_back(m_FrontRadius); OuterRadius.push_back(m_FrameRadius);
+    Z.push_back(m_TargetThickness*0.5); InnerRadius.push_back(m_TargetRadius); OuterRadius.push_back(m_FrameRadius);
+    Z.push_back(-m_TargetThickness*0.5); InnerRadius.push_back(m_TargetRadius); OuterRadius.push_back(m_FrameRadius);
+    Z.push_back(-m_TargetThickness*0.5); InnerRadius.push_back(m_BackRadius); OuterRadius.push_back(m_FrameRadius);
+    Z.push_back(-m_FrameThickness*0.5); InnerRadius.push_back(BackInner+m_BackRadius); OuterRadius.push_back(m_FrameRadius);
+
+    G4Polycone* FrameSolid = 
+      new G4Polycone("solidFrame", 0, 360*deg,Z.size(),&Z[0],&InnerRadius[0],&OuterRadius[0]);
+
+    G4LogicalVolume* FrameLogic = 
+      new G4LogicalVolume(FrameSolid, 
+          m_FrameMaterial,
+          "logicFrame");
+
+    new G4PVPlacement(0, G4ThreeVector(0, 0, 0), 
+        FrameLogic, "FrameTarget", world, false, 0);
+    G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.3, 0.4, 0.4,1));
+    FrameLogic->SetVisAttributes(FrameVisAtt);
+
+   G4RotationMatrix* Rotation=new G4RotationMatrix();
+    Rotation->rotateX(90*deg);
+
+
+    // Heat Shield
+    G4Tubs* ShieldMain = 
+      new G4Tubs("HeatShieldMain",
+          m_ShieldInnerRadius,m_ShieldOuterRadius,
+          m_ShieldBottomLength+m_ShieldTopLength,
+          0,360);
+
+    G4Tubs* ShieldBack = 
+      new G4Tubs("HeatShieldBack",
+          0,m_ShieldBackRadius,
+          m_ShieldInnerRadius,
+          0,360);
+
+    G4Tubs* ShieldFront = 
+      new G4Tubs("HeatShieldFront",
+          0,m_ShieldFrontRadius,
+          m_ShieldInnerRadius,
+          0,360);
+
+    G4RotationMatrix Rot ;  Rot.rotateX(90*deg);    
+     
+    G4Transform3D transformBack(Rot, G4ThreeVector(0,m_ShieldInnerRadius,-m_ShieldTopLength));
+
+    G4SubtractionSolid* subtraction =
+      new G4SubtractionSolid("Shield-Back", ShieldMain, ShieldBack,transformBack);
+
+    G4Transform3D transformFront(Rot, G4ThreeVector(0,-m_ShieldInnerRadius,-m_ShieldTopLength));
+
+    G4SubtractionSolid* ShieldSolid =
+      new G4SubtractionSolid("Shield-Front", subtraction, ShieldFront,transformFront);
+
+    G4LogicalVolume* ShieldLogic = 
+      new G4LogicalVolume(ShieldSolid, 
+          m_ShieldMaterial,
+          "logicShield");
+
+       new G4PVPlacement(Rotation, G4ThreeVector(0,m_ShieldTopLength, 0), 
+        ShieldLogic, "ShieldTarget", world, false, 0);
+    G4VisAttributes* ShieldVisAtt = new G4VisAttributes(G4Colour(0.7, 0.9, 0.9,0.5));
+    ShieldLogic->SetVisAttributes(ShieldVisAtt);
+
+
   }
 
   //SetReactionRegion();
@@ -305,10 +495,10 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
 
   else{
     //   Windows
-    if(m_WindowsThickness!=0)
+    if(m_FrontThickness!=0)
       for (G4int i = 0; i < m_TargetNbLayers; i++){
-        dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_WindowsMaterial);
-        de   = dedx  * m_WindowsThickness / (cos(IncidentTheta)* m_TargetNbLayers);
+        dedx = emCalculator.ComputeTotalDEDX(IncidentEnergy, Beam, m_FrontMaterial);
+        de   = dedx  * m_FrontThickness / (cos(IncidentTheta)* m_TargetNbLayers);
         IncidentEnergy -= de;
         if(IncidentEnergy<0){
           IncidentEnergy = 0;

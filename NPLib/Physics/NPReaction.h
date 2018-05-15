@@ -199,6 +199,9 @@ namespace NPL{
       // ExcitationEnergy: excitation energy previously calculated.
       double EnergyLabToThetaCM(double EnergyLab, double ThetaLab, double PhiLab=0);
 
+      // Check whenever the reaction is allowed at the given energy
+      bool IsAllowed(double Energy);
+      
       void SetNuclei3(double EnergyLab, double ThetaLab, double PhiLab=0);
 
       TGraph* GetKinematicLine3(double AngleStep_CM=1);

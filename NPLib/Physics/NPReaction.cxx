@@ -205,6 +205,16 @@ double Reaction::ShootRandomThetaCM(){
   }
   else
     SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
+   
+
+  // When root perform a Spline interpolation to shoot random number out of 
+  // the distribution, it can over shoot and output a number larger that 180
+  // this lead to an additional signal at 0-4 deg Lab, especially when using a 
+  // flat distribution.
+  // This fix it.
+  if(theta/deg>180)
+   theta=ShootRandomThetaCM();
+
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -220,7 +230,6 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // 2-body relativistic kinematics: direct + inverse
   // EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
   // ThetaLab3,4   : angles in rad
-
   // case of inverse kinematics
   double theta = fThetaCM;
   if (m1 > m2) theta = M_PI - fThetaCM;
@@ -245,10 +254,10 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // Kinetic Energy in the lab frame
   KineticEnergyLab3 = fEnergyImpulsionLab_3.E() - m3;
   KineticEnergyLab4 = fEnergyImpulsionLab_4.E() - m4;
-
+  
   // test for total energy conversion
-  if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
-    cout << "Problem for energy conservation" << endl;
+  //if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
+  //  cout << "Problem for energy conservation" << endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -643,3 +652,13 @@ void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
   }
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Check whenever the reaction is allowed at the given energy
+bool Reaction::IsAllowed(double Energy){
+//  cout << Energy/fNuclei1.GetA() << " " << -fQValue << endl ;
+  if(Energy/(fNuclei1.GetA()+fNuclei2.GetA()) > -fQValue)
+    return true;
+  else
+    return false; 
+  }
+      
