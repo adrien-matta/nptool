@@ -222,7 +222,9 @@ void MDM::ReadSensitive(const G4Event* event){
 			// Send Through MDM
 			m_Trace->SetScatteredMass(Mass/amu_c2);
 			m_Trace->SetScatteredCharge(Charge);
-			m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg);
+			//by Shuya 180516. m_Trace's input angle is not the angle defined in the beam frame ((0,0,1) axis), but the angle defined in the opposite direction frame (0,0,-1) axis) (Also remember the x,y coordinate are also defined in (0,0,-1) axis as well). So thetaX's sign must be changed (thetaY's sign remains same).
+			//m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg);
+			m_Trace->SetScatteredAngle(-thetaX/deg, thetaY/deg);
 			m_Trace->SetScatteredEnergy(Ekin/MeV);
 			m_Trace->SetBeamPosition(xTrgt/cm, yTrgt/cm, zTrgt/cm);
 			m_Trace->SendRay();
@@ -230,6 +232,7 @@ void MDM::ReadSensitive(const G4Event* event){
 			// Read wire1 position, angle
 			m_Trace->GetOxfordWirePositions(a,x[0],x[1],x[2],x[3],b,y[0],y[1],y[2],y[3]);
 		}
+		
 		
     // Set X, Y positions in TMDMData class
     for(int i=0; i< 4; ++i) {
