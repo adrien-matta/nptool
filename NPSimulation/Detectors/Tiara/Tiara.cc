@@ -117,8 +117,8 @@ void Tiara::ReadConfiguration(NPL::InputParser parser){
 
   blocks.clear();
 //by Shuya 180426
-  blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
-  //blocks = parser.GetAllBlocksWithToken("HyballWedge");
+  //blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
+  blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl;
@@ -194,6 +194,7 @@ void Tiara::ReadSensitive(const G4Event* event){
     if(EU>EnergyThreshold){
       m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
       m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]);
+	//cout << "BARREL " << Info[3] << " STRIP " << Info[4] << " " << Info[9]/deg << " " << Info[5] << " " << Info[6] << " " << Info[7] << endl;
     }
 
     // Back Energy
@@ -271,23 +272,17 @@ void Tiara::ReadSensitive(const G4Event* event){
 	double m_axis = -100.0;
 	double m_phi = Info[6];
 	if(Info[6]<0)	m_phi = Info[6]+2.0*M_PI;
-	//by Shuya 180516. Now the latter ones are the right angle. The angles are seen from (0,0,1) vector, so you if you set 210 deg in your .Detector file (which is seen from (0,0,-1) axis), the angle is 330 deg in (0,0,1) axis.
-	/*
+
 	if(Info[7]==1)	m_axis = 210.0/180.0*M_PI;
 	else if(Info[7]==2)	m_axis = 150.0/180.0*M_PI;
 	else if(Info[7]==3)	m_axis = 90.0/180.0*M_PI;
 	else if(Info[7]==4)	m_axis = 30.0/180.0*M_PI;
 	else if(Info[7]==5)	m_axis = 330.0/180.0*M_PI;
 	else if(Info[7]==6)	m_axis = 270.0/180.0*M_PI;
-	*/
-	if(Info[7]==1)	m_axis = 330.0/180.0*M_PI;
-	else if(Info[7]==2)	m_axis = 30.0/180.0*M_PI;
-	else if(Info[7]==3)	m_axis = 90.0/180.0*M_PI;
-	else if(Info[7]==4)	m_axis = 150.0/180.0*M_PI;
-	else if(Info[7]==5)	m_axis = 210.0/180.0*M_PI;
-	else if(Info[7]==6)	m_axis = 270.0/180.0*M_PI;
+
     	double m_StripPitchSector_Tiara = (0.5*HYBALL_ActiveWafer_Angle-(-0.5*HYBALL_ActiveWafer_Angle))/HYBALL_NumberOfRadialStrip;
 	Info[9] = (int)((m_phi - (m_axis - 0.5*HYBALL_ActiveWafer_Angle)) / m_StripPitchSector_Tiara ) + 1 ;
+
 //by Shuya 171009
       //m_EventHyball->SetSectorE(Info[7],Info[9],EF);
       m_EventHyball->SetSectorE(Info[7],Info[9],EB);
@@ -529,11 +524,15 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
     // Detector are rotate by 45deg with each other
     // Detector 3 [i=2] is perpendicular to positive y-axis, Detector 5 [i=4] is perpendicular to positive x-axis,
     G4RotationMatrix* DetectorRotation =
-      new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*45)*deg);
+//by Shuya 180521. This seems to give the right directio of Barrel geometry. Tentative. Wait to be comfirmed. 
+      //new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*45)*deg);
+      new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*-45)*deg);
 
     // There center is also rotated by 45deg
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
-    DetectorPosition.rotate((360+(2-i)*-45)*deg,G4ThreeVector(0,0,1));
+//by Shuya 180521. This seems to give the right directio of Barrel geometry. Tentative. Wait to be comfirmed. 
+    //DetectorPosition.rotate((360+(2-i)*-45)*deg,G4ThreeVector(0,0,1));
+    DetectorPosition.rotate((360+(2-i)*45)*deg,G4ThreeVector(0,0,1));
 
     // Place the Master volume with its two daugther volume at the final place
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
@@ -804,12 +803,7 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
 
   for(unsigned int i = 0 ; i < m_HyballZ.size() ; i++){
     // Place mother volume
-	//by Shuya 180516. In the following G4RotationMatrix (or Geant4 in general), the rotation phi is defined by (0,0,1) axis (not (0,0,-1) axis which is seeing from beam downstream to upstream). I.e., if you place a detector at 210 deg in your .Detector file, the x-y position of the detector must be (>0,<0). Remember, however, the 210 degree you set is the angle from (0,0,-1) axis in your analysis (<0,<0). I.e., if you want to set these detectors at the same angle, you have to conver one to the other angle.
-	double m_HyballPhiConversion = m_HyballPhi[i];
-	if(m_HyballPhi[i]>=0.0 && m_HyballPhi[i]<M_PI)	m_HyballPhiConversion = M_PI - m_HyballPhi[i];	//ex., 0deg -> 180deg, 30deg -> 150deg, 90deg -> 90deg, 150deg -> 30 deg.
-	else if(m_HyballPhi[i]>=M_PI && m_HyballPhi[i]<(2.0*M_PI))	m_HyballPhiConversion = 2.0*M_PI + (M_PI - m_HyballPhi[i]);	//ex., 180deg -> 360 deg, 210deg -> 330 deg, 270 deg -> 270 deg, 330 deg -> 210 deg. 
-    //new G4PVPlacement(new G4RotationMatrix(0,0,m_HyballPhi[i]),
-    new G4PVPlacement(new G4RotationMatrix(0,0,m_HyballPhiConversion),
+    new G4PVPlacement(new G4RotationMatrix(0,0,m_HyballPhi[i]),
         G4ThreeVector(0,0,m_HyballZ[i]),
         logicHyball,"Hyball",
         world,false,i+1);
