@@ -117,8 +117,8 @@ void Tiara::ReadConfiguration(NPL::InputParser parser){
 
   blocks.clear();
 //by Shuya 180426
-  //blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
-  blocks = parser.GetAllBlocksWithToken("HyballWedge");
+  blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
+  //blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl;
