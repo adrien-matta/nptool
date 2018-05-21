@@ -494,9 +494,7 @@ void TMDMPhysics::SendRay(double thetaX,double thetaY,double Ekin) const {
 	//
 	m_Trace->SetScatteredMass(GetParticle()->Mass()/amu_c2); // AMU
 	m_Trace->SetScatteredCharge(GetParticleQ());
-	//by Shuya 180516. m_Trace's input angle is not the angle defined in the beam frame ((0,0,1) axis), but the angle defined in the opposite direction frame (0,0,-1) axis) (Also remember the x,y coordinates in Oxford detector are also defined in (0,0,-1) axis as well). So thetaX's sign must be changed (thetaY's sign remains same).
-	//m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg); // deg (converted)
-	m_Trace->SetScatteredAngle(-thetaX/deg, thetaY/deg); // deg (converted)
+	m_Trace->SetScatteredAngle(thetaX/deg, thetaY/deg); // deg (converted)
 	m_Trace->SetScatteredEnergy(Ekin/MeV); // MeV
 			
 	m_Trace->SendRay();
