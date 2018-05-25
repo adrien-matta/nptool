@@ -357,12 +357,17 @@ unsigned int mysizeT ;
 double Eraw,Energy;
 double Traw,Time;
 int clover, crystal, segment;
+//by Shuya 170919
+bool	LG_Opt;
+bool	m_LowGainCryIsOpt = true;
+bool	m_LowGainSegIsOpt = true;
 
 //Crystal energy
 if(m_LowGainCryIsSet)
   mysizeE = m_EventData->GetMultiplicityCoreELowGain();
 else
   mysizeE = m_EventData->GetMultiplicityCoreE();
+
 for(unsigned int i = 0 ; i < mysizeE ; i++){
   if(m_LowGainCryIsSet){
     clover = m_EventData->GetCoreCloverNbrELowGain(i);
@@ -373,12 +378,55 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     clover = m_EventData->GetCoreCloverNbrE(i);
     crystal = m_EventData->GetCoreCrystalNbrE(i);
     Eraw = m_EventData->GetCoreEnergy(i);
+
+//by Shuya 170919. Use low-gain data if it is available (for high-energy gammas which might be above high-gain data's saturation level).
+//***************************************************************************************************
+    if(m_LowGainCryIsOpt)
+    {
+	LG_Opt = false;
+
+	int	m_Cry_E_Raw_Threshold_tmp = 2000;
+	//try low-gain data if high-gain data is above this threshold. If set 0 -> all low-gain, set above 5000 -> all high gain.
+        if(Eraw>=m_Cry_E_Raw_Threshold_tmp)
+    	{
+		unsigned int mysizeE2;
+		double Eraw_tmp;
+		int clover_tmp, crystal_tmp;
+
+  		mysizeE2 = m_EventData->GetMultiplicityCoreELowGain();
+
+		for(unsigned int j = 0 ; j < mysizeE2 ; j++)
+		{
+    			clover_tmp = m_EventData->GetCoreCloverNbrELowGain(j);
+    			crystal_tmp = m_EventData->GetCoreCrystalNbrELowGain(j);
+    			Eraw_tmp = m_EventData->GetCoreEnergyLowGain(j);
+
+			if(clover_tmp == clover && crystal_tmp == crystal && Eraw_tmp>=m_Cry_E_Raw_Threshold)
+			{
+				Eraw = Eraw_tmp;
+				LG_Opt = true;
+				break;
+			}
+		}
+	}
+    }
+//***************************************************************************************************
   }
   if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
-    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    //by Shuya 170919
+    //Energy =  cal->ApplyCalibration(name+"_E_LG", Eraw);
+    if(m_LowGainCryIsSet)
+    Energy =  cal->ApplyCalibration(name+"_E_LG", Eraw);
+    else
+    {
+    	if(m_LowGainCryIsOpt && LG_Opt)
+    	Energy =  cal->ApplyCalibration(name+"_E_LG", Eraw);
+	else
+    	Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    }
     if(Energy>=m_Cry_E_Threshold){
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
@@ -420,12 +468,55 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     clover = m_EventData->GetSegmentCloverNbrE(i);
     segment = m_EventData->GetSegmentSegmentNbrE(i);
     Eraw = m_EventData->GetSegmentEnergy(i);
+
+//by Shuya 170919. Use low-gain data if it is available (for high-energy gammas which might be above high-gain data's saturation level).
+//***************************************************************************************************
+    if(m_LowGainCryIsOpt)
+    {
+	LG_Opt = false;
+
+	int	m_Seg_E_Raw_Threshold_tmp = 2000;
+	//try low-gain data if high-gain data is above this threshold. If set 0 -> all low-gain, set above 5000 -> all high gain.
+        if(Eraw>=m_Seg_E_Raw_Threshold_tmp)
+    	{
+		unsigned int mysizeE2;
+		double Eraw_tmp;
+		int clover_tmp, segment_tmp;
+
+ 		mysizeE2 = m_EventData->GetMultiplicitySegmentELowGain();
+
+		for(unsigned int j = 0 ; j < mysizeE2 ; j++)
+		{
+    			clover_tmp = m_EventData->GetSegmentCloverNbrELowGain(j);
+    			segment_tmp = m_EventData->GetSegmentSegmentNbrELowGain(j);
+    			Eraw_tmp = m_EventData->GetSegmentEnergyLowGain(j);
+
+			if(clover_tmp == clover && segment_tmp == segment && Eraw_tmp>=m_Cry_E_Raw_Threshold)
+			{
+				Eraw = Eraw_tmp;
+				LG_Opt = true;
+				break;
+			}
+		}
+	}
+    }
+//***************************************************************************************************
   }
   if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
-    Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    //by Shuya 170919
+    //Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    if(m_LowGainCryIsSet)
+    Energy =  cal->ApplyCalibration(name+"_E_LG", Eraw);
+    else
+    {
+	if(m_LowGainSegIsOpt && LG_Opt)
+    	Energy =  cal->ApplyCalibration(name+"_E_LG", Eraw);
+	else
+    	Energy =  cal->ApplyCalibration(name+"_E", Eraw);
+    }
     if(Energy>=m_Seg_E_Threshold){
       Singles_CloverMap_SegEN[clover].push_back(segment);
       Singles_CloverMap_SegE[clover].push_back(Energy);
@@ -816,12 +907,16 @@ void TGeTAMUPhysics::AddParameterToCalibrationManager(){
 
     for(int cry = 0 ; cry < 4 ; cry++){ // 4 crystals
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E");
+	//by Shuya 170919
+      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E_LG","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E_LG");
 	//by Shuya 170509
       //Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T","GETAMU_D"+ NPL::itoa(det+1)+"_CRY"+NPL::itoa(cry+1)+"_T");
     }
     for( int seg = 0 ; seg < 3 ; seg++){ // 3 segments
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_SEG"+ NPL::itoa(seg+1)+"_E","GETAMU_D"+ NPL::itoa(det+1)+"_SEG"+NPL::itoa(seg+1)+"_E");
+	//by Shuya 170919
+      Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_SEG"+ NPL::itoa(seg+1)+"_E_LG","GETAMU_D"+ NPL::itoa(det+1)+"_SEG"+NPL::itoa(seg+1)+"_E_LG");
       Cal->AddParameter("GETAMU", "D"+ NPL::itoa(det+1)+"_SEG"+ NPL::itoa(seg+1)+"_T","GETAMU_D"+ NPL::itoa(det+1)+"_SEG"+NPL::itoa(seg+1)+"_T");
     }
 

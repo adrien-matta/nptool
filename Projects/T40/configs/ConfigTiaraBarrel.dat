@@ -1,0 +1,7 @@
+ConfigTiaraHyball
+	%For Hyball, change TB to TH (or whatever in two characters) in ConfigTiaraHyball.dat
+	%DISABLE_ALL TB3
+	%DISABLE_CHANNEL TB5STRIP1
+	%DISABLE_CHANNEL TB5STRIP3
+	%DISABLE_CHANNEL TB6STRIP2
+	%DISABLE_CHANNEL TB7STRIP3

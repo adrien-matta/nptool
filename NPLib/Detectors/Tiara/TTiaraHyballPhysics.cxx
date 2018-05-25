@@ -108,10 +108,13 @@ void TTiaraHyballPhysics::BuildPhysicalEvent(){
       int N = m_PreTreatedData->GetRingEDetectorNbr(couple[i].X()) ;
       int Ring = m_PreTreatedData->GetRingEStripNbr(couple[i].X()) ;
 			int Sector  = (couple[i].Y() < 0) ? // GAC - sector couple of -1 (couple[i].Y() < 0) means "sector 9"
-				k_Num_Sector : m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
+				//by Shuya 180329
+				//k_Num_Sector : m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
+				(k_Num_Sector+1) : m_PreTreatedData->GetSectorEStripNbr(couple[i].Y()) ;
 			
 			double Ring_E = m_PreTreatedData->GetRingEEnergy( couple[i].X() ) ;
-      double Sector_E = Sector == k_Num_Sector ? // GAC - set sector energy to zero if "sector 9"
+      //double Sector_E = Sector == k_Num_Sector ? // GAC - set sector energy to zero if "sector 9"
+      double Sector_E = Sector == (k_Num_Sector+1) ? // By Shuya 180329
 				0 : m_PreTreatedData->GetSectorEEnergy( couple[i].Y() ) ;
 			
       // Search for associate Time:
@@ -286,6 +289,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
 				ArrayOfGoodCouple . push_back ( TVector2(i,-1) ) ;
 			}
 		}
+		// Comment by Shuya 180329. Note if you're thinking to use only sector data (m_Take_E_Sector) without ring-sector matching, this should be a last choice. Because sector without ring is hard to accurately correct for deadlayer and target energy loss (while ring without sector is easier).
 		else{
 			// Take energy from sector only
 			for(unsigned int j = 0 ; j < sizeS ; j++) {
@@ -298,6 +302,7 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
 		// Standard case with ring+sector matching
 		// GAC - 02152018 - If no sector match is found for a ring,
 		// set sector number to "sector 9" and take phi at center of wedge
+		int numberOfRingSectorMatches = 0;	// by Shuya 180329
 		for(unsigned int i = 0 ; i < sizeR ; i++) {
 			int numberOfSectorMatches = 0;
 			for(unsigned int j = 0 ; j < sizeS ; j++){
@@ -308,14 +313,25 @@ vector < TVector2 > TTiaraHyballPhysics :: Match_Ring_Sector(){
 							< m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ) {
 						ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
 						++numberOfSectorMatches;
+						++numberOfRingSectorMatches;	//by Shuya 180329
 					}
 				}
 			}
+			/* Commented out by Shuya 180329.
 			if(numberOfSectorMatches == 0){
 				// No match: take ring only, set sector to "sector 9"
 				ArrayOfGoodCouple.push_back(TVector2(i,-1));
 			}
+			*/
 		}
+		//by Shuya 180329. I think this is probably more appropriate a place. Ring-Sector matched data should be used for ELab and Ex calculations in priority, and only if they don't exist, use Ring-only data. 
+		if(numberOfRingSectorMatches == 0){
+			for(unsigned int i = 0 ; i < sizeR ; i++) {
+			// No match: take ring only, set sector to "sector 9"
+			ArrayOfGoodCouple.push_back(TVector2(i,-1));
+			}
+		}
+
 		//   Prevent to treat event with ambiguous matchin beetween X and Y
 		//   TODO: should we also treat this like no match???
 		if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetRingEMult() ) ArrayOfGoodCouple.clear() ;
@@ -403,9 +419,13 @@ void TTiaraHyballPhysics::ReadAnalysisConfig(){
         cout << whatToDo << "  " << DataBuffer << endl;
         int Detector = atoi(DataBuffer.substr(2,1).c_str());
         vector< bool > ChannelStatus;
-        ChannelStatus.resize(24,false);
+//by Shuya 180504. The number of ring channels is 16, not 24.
+        //ChannelStatus.resize(24,false);
+        ChannelStatus.resize(16,false);
         m_RingChannelStatus[Detector-1] = ChannelStatus;
-        ChannelStatus.resize(48,false);
+//by Shuya 180504. The number of ring channels is 8, not 48.
+        //ChannelStatus.resize(48,false);
+        ChannelStatus.resize(8,false);
         m_SectorChannelStatus[Detector-1] = ChannelStatus;
       }
 
@@ -725,7 +745,9 @@ TVector3 TTiaraHyballPhysics::GetRandomisedPositionOfInteraction(const int i) co
   double rho_max2 = (rho+3.2)*(rho+3.2) ;
   double rho_rand = sqrt(Rand->Uniform(rho_min2,rho_max2));// sqrt is necessary for realistic randomise!
 	// GAC - 02142018 - Set Phi randomization over whole wedge if "sector 9"
-	double phi_half_range = Strip_Sector[i] != k_Num_Sector ? 3.4*deg : 27.2*deg;
+	//double phi_half_range = Strip_Sector[i] != k_Num_Sector ? 3.4*deg : 27.2*deg;
+	//by Shuya 180329
+	double phi_half_range = Strip_Sector[i] != (k_Num_Sector+1) ? 3.4*deg : 27.2*deg;
   double phi_rand = phi + Rand->Uniform(-phi_half_range, +phi_half_range);
   return( TVector3(rho_rand*cos(phi_rand),rho_rand*sin(phi_rand),z) ) ;
 }

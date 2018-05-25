@@ -72,6 +72,7 @@ ClassImp(Reaction)
     //
     fBeamEnergy           = 0;
     fThetaCM              = 0;
+    fExcitation1          = 0;
     fExcitation3          = 0;
     fExcitation4          = 0;
     fQValue               = 0;
@@ -84,6 +85,9 @@ ClassImp(Reaction)
 
     fshoot3=true;
     fshoot4=true;
+    RandGen=new TRandom3();
+
+    fLabCrossSection=false; // flag if the provided cross-section is in the lab or not
 
   }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -133,6 +137,7 @@ Reaction::Reaction(string reaction){
   fNuclei4 = Nucleus(D);
   fBeamEnergy = atof(E.c_str());
   fThetaCM              = 0;
+  fExcitation1          = 0;
   fExcitation3          = 0;
   fExcitation4          = 0;
   fQValue               = 0;
@@ -146,9 +151,12 @@ Reaction::Reaction(string reaction){
 
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fDoubleDifferentialCrossSectionHist = NULL ;
-
+  
   fshoot3=true;
   fshoot4=true;
+  RandGen=new TRandom3();
+
+  fLabCrossSection=false;
 
   initializePrecomputeVariable();
 }
@@ -182,7 +190,7 @@ bool Reaction::CheckKinematic(){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double Reaction::ShootRandomThetaCM(){
-  double theta;
+  double theta; // CM
   if(fDoubleDifferentialCrossSectionHist){
     // Take a slice in energy
     TAxis* Y = fDoubleDifferentialCrossSectionHist->GetYaxis();
@@ -202,6 +210,12 @@ double Reaction::ShootRandomThetaCM(){
 
     TH1D* Proj = fDoubleDifferentialCrossSectionHist->ProjectionX("proj",binY,binY);
     SetThetaCM( theta=Proj->GetRandom()*deg );
+  }
+  else if (fLabCrossSection){
+    double thetalab=fCrossSectionHist->GetRandom()*deg;//shot in lab
+    double energylab=EnergyLabFromThetaLab(thetalab); //get corresponding energy
+    theta = EnergyLabToThetaCM(energylab, thetalab); //transform to theta CM
+    SetThetaCM( theta );
   }
   else
     SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
@@ -280,6 +294,53 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
 
   return(ThetaCM);
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//Return EnergyLab
+double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
+  //ThetaLab in rad
+  
+  // NB
+  // Tis member function is in progress 
+  // Classic treatment need to be changed to relativistic!!
+  //
+
+  //Treat Exeptions
+  if(fBeamEnergy==0) return m4*fQValue/(m3+m4);
+  
+  //Solve the equation
+  double m4e = m4 + fExcitation4;
+  //Possible problem with this calculation, decide on m4e or m4 in the following formula
+  double r = sqrt(m1*m3*fBeamEnergy)/(m3+m4e);
+  double s = ((m1-m4e)*fBeamEnergy-m4e*fQValue)/(m3+m4e);
+
+  //Solve quadratic euation of T3 : T3-(2*r*cos(thetaLab)*sqrt(T3)+s = 0
+  //
+  //Solution: sqrt(T3) = r * (cos +/- sqrt(Delta)) ;
+  //where Delta =cos*cos - s/(r*r)
+   
+  //Select solutions according to delta values
+  double Delta = cos(ThetaLab)*cos(ThetaLab)-s/(r*r);
+  double EnergyLab=0;
+
+  if(Delta<0) return 0;
+  else 
+    if(Delta==0) EnergyLab =r*cos(ThetaLab);
+      else {
+       double sol1 = r*(cos(ThetaLab) + sqrt(Delta));
+       double sol2 = r*(cos(ThetaLab) - sqrt(Delta));
+       
+       if(sol1<0  && sol2<0) return 0;
+       else if(sol1>0  && sol2<0) EnergyLab =sol1*sol1;
+       else if(sol1<0  && sol2>0) EnergyLab = sol2*sol2;
+       else {
+        if(RandGen->Rndm()<0.5) EnergyLab = sol1*sol1; // choose either of the solutions
+          else EnergyLab = sol2*sol2;
+       }
+      }
+
+  return(EnergyLab);
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Reaction::Print() const{
@@ -290,6 +351,7 @@ void Reaction::Print() const{
     << fBeamEnergy << " MeV"
     << endl   ;
 
+  cout << "Exc Nuclei 1 = " << fExcitation1 << " MeV" << endl;
   cout << "Exc Nuclei 3 = " << fExcitation3 << " MeV" << endl;
   cout << "Exc Nuclei 4 = " << fExcitation4 << " MeV" << endl;
   cout << "Qgg = " << fQValue << " MeV" << endl;
@@ -349,6 +411,13 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       exit(1);
     }
 
+    if(blocks[i]->HasToken("ExcitationEnergyBeam")){
+      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergyBeam","MeV");
+    }
+    else if(blocks[i]->HasToken("ExcitationEnergy1")){
+      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergy1","MeV"); 
+    }
+
     if(blocks[i]->HasToken("ExcitationEnergyLight"))
       fExcitation3 = blocks[i]->GetDouble("ExcitationEnergyLight","MeV");
     else if(blocks[i]->HasToken("ExcitationEnergy3"))
@@ -375,6 +444,20 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       SetCrossSectionHist(CStemp);
       delete fsin;
     }
+
+    if(blocks[i]->HasToken("LabCrossSectionPath")){
+      fLabCrossSection=true;
+
+      vector<string> file = blocks[i]->GetVectorString("LabCrossSectionPath");
+      TH1F* CStemp = Read1DProfile(file[0], file[1]);
+
+      // multiply CStemp by sin(theta)
+      TF1* fsin = new TF1("sin",Form("1/(sin(x*%f/180.))",M_PI),0,180);
+      CStemp->Divide(fsin,1);
+      SetCrossSectionHist(CStemp);
+      delete fsin;
+    }
+    
 
     if(blocks[i]->HasToken("DoubleDifferentialCrossSectionPath")){
       vector<string> file = blocks[i]->GetVectorString("DoubleDifferentialCrossSectionPath");
@@ -421,7 +504,10 @@ void Reaction::initializePrecomputeVariable(){
   if(fBeamEnergy < 0)
     fBeamEnergy = 0 ;
 
-  m1 = fNuclei1.Mass();
+  if(fExcitation1>=0) fNuclei1.SetExcitationEnergy(fExcitation1); // Write over the beam excitation energy
+
+  //fNuclei1.GetExcitationEnergy() is a copy of fExcitation1
+  m1 = fNuclei1.Mass() + fNuclei1.GetExcitationEnergy();// in case of isomeric state, 
   m2 = fNuclei2.Mass();
   m3 = fNuclei3.Mass() + fExcitation3;
   m4 = fNuclei4.Mass() + fExcitation4;

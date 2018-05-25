@@ -43,7 +43,7 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   t_DetectorNbr = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   t_Position  = aStep->GetPreStepPoint()->GetPosition();
-  
+
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
   // N.B: Theta and phi are calculated with respect to (0,0,0)
   t_X = t_Position.x();
@@ -70,7 +70,7 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     t_Energy+=dummy;
   }
 
-  m_Energy[t_Index] = t_Energy; 
+  m_Energy[t_Index] = t_Energy;
   m_Time[t_Index] = t_Time;
   m_DetectorNbr[t_Index] = t_DetectorNbr;
   m_PixelFront[t_Index] = t_PixelFront;
@@ -80,10 +80,10 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   m_Z[t_Index] = t_Z;
   m_Theta[t_Index] = t_Theta;
   m_Phi[t_Index] = t_Phi;
-  
+
 
   return TRUE;
-  
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -113,7 +113,7 @@ vector<unsigned int> PS_Silicon_Images::GetIndexes(){
     map<unsigned int , double>::iterator it;
     for(it=m_Energy.begin(); it!=m_Energy.end();it++)
         indexes.push_back(it->first);
-    
+
     return indexes;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -135,7 +135,7 @@ void PS_Silicon_Images::GetARGBFront(unsigned int index,unsigned int& a,unsigned
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Images::GetARGBBack(unsigned int index,unsigned int& a,unsigned int& r,unsigned int& g,unsigned int& b){
     unsigned int Info =m_PixelBack[index];
-    
+
     a = (Info>>24)&0xff;
     r = (Info>>16)&0xff;
     g = (Info>>8)&0xff;
@@ -184,7 +184,7 @@ PS_Silicon_Rectangle::PS_Silicon_Rectangle(G4String name,G4int Level, G4double S
     m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
     m_Level = Level;
     m_Axis=axis;
-    
+
     m_Position = G4ThreeVector(-1000,-1000,-1000);
     m_DetectorNumber = -1;
     m_StripLengthNumber = -1;
@@ -198,24 +198,24 @@ PS_Silicon_Rectangle::~PS_Silicon_Rectangle(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-    
+
     // contain Energy Time, DetNbr, StripFront and StripBack
     G4double* Infos = new G4double[10];
     Infos[0]  = aStep->GetTotalEnergyDeposit();
     Infos[1]  = aStep->GetPreStepPoint()->GetGlobalTime();
-    
+
     m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
     m_Position  = aStep->GetPreStepPoint()->GetPosition();
-    
+
     // Interaction coordinates (used to fill the InteractionCoordinates branch)
     Infos[2] = m_Position.x();
     Infos[3] = m_Position.y();
     Infos[4] = m_Position.z();
     Infos[5] = m_Position.theta();
     Infos[6] = m_Position.phi();
-    
+
     m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
-    
+
     if(m_Axis=="xy"){
         m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
         m_StripWidthNumber = (int)((m_Position.y() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
@@ -228,17 +228,17 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         m_StripLengthNumber = (int)((m_Position.x() + m_StripPlaneLength / 2.) / m_StripPitchLength ) + 1  ;
         m_StripWidthNumber = (int)((m_Position.z() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
     }
-    
+
     //Rare case where particle is close to edge of silicon plan
     if (m_StripLengthNumber > m_NumberOfStripLength) m_StripLengthNumber = m_NumberOfStripLength;
     if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
-    
+
     Infos[7] = m_DetectorNumber;
     Infos[8] = m_StripLengthNumber;
     Infos[9] = m_StripWidthNumber;
-    
+
     m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
-    
+
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
     it= EvtMap->GetMap()->find(m_Index);
@@ -246,7 +246,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         G4double* dummy = *(it->second);
         Infos[0]+=dummy[0];
     }
-    
+
     EvtMap->set(m_Index, Infos);
     return TRUE;
 }
@@ -276,7 +276,7 @@ void PS_Silicon_Rectangle::clear(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Rectangle::DrawAll(){
-    
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -291,7 +291,7 @@ void PS_Silicon_Rectangle::PrintAll(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Silicon_Annular::PS_Silicon_Annular(G4String name,G4int Level, G4double StripPlaneInnerRadius, G4double StripPlaneOuterRadius, G4double PhiStart,G4double PhiStop, G4int NumberOfStripRing,G4int NumberOfStripSector,G4int NumberOfQuadrant,G4int depth)
 :G4VPrimitiveScorer(name, depth),HCID(-1){
-    
+
     m_StripPlaneInnerRadius = StripPlaneInnerRadius;
     m_StripPlaneOuterRadius = StripPlaneOuterRadius;
     m_PhiStart = PhiStart;
@@ -303,7 +303,7 @@ PS_Silicon_Annular::PS_Silicon_Annular(G4String name,G4int Level, G4double Strip
     m_StripPitchSector = (m_PhiStop-m_PhiStart)/m_NumberOfStripSector;
     m_StripPitchQuadrant = (m_PhiStop-m_PhiStart)/m_NumberOfStripQuadrant;
     m_Level = Level;
-    
+
     m_Position = G4ThreeVector(-1000,-1000,-1000);
     m_uz = G4ThreeVector(0,0,1);
     m_DetectorNumber = -1;
@@ -321,12 +321,12 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     // contain Energy Time, DetNbr, StripFront and StripBack
     G4double* Infos = new G4double[11];
     Infos[0] = aStep->GetTotalEnergyDeposit();
-    
+
     Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-    
+
     m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
     m_Position = aStep->GetPreStepPoint()->GetPosition();
-    
+
     // Interaction coordinates (used to fill the InteractionCoordinates branch)
     Infos[2] = m_Position.x();
     Infos[3] = m_Position.y();
@@ -342,7 +342,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     // we need it in [0;2pi] to calculate sector nbr in [1,NSectors]
     // only add 360 if the value is negative
     double phi = (m_Position.phi()<0)?  m_Position.phi()+2*pi : m_Position.phi() ;
-    
+
     // factor out the extra 360 degrees before strip/quad calculation
     m_StripSectorNumber   = (int) ( fmod((phi - m_PhiStart),2*pi)  / m_StripPitchSector  ) + 1 ;
     m_StripQuadrantNumber = (int) ( fmod((phi - m_PhiStart),2*pi)  / m_StripPitchQuadrant) + 1 ;
@@ -351,14 +351,14 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     if (m_StripRingNumber > m_NumberOfStripRing) m_StripRingNumber = m_NumberOfStripRing;
     if (m_StripSectorNumber > m_NumberOfStripSector) m_StripSectorNumber = m_NumberOfStripSector;
     if (m_StripQuadrantNumber > m_NumberOfStripQuadrant) m_StripQuadrantNumber = m_NumberOfStripQuadrant;
-    
+
     Infos[7] = m_DetectorNumber;
     Infos[8] = m_StripRingNumber;
     Infos[9] = m_StripSectorNumber;
     Infos[10] = m_StripQuadrantNumber;
-    
+
     m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRingNumber * 1e6 + m_NumberOfStripSector * 1e9;
-    
+
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
     it= EvtMap->GetMap()->find(m_Index);
@@ -366,7 +366,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         G4double* dummy = *(it->second);
         Infos[0]+=dummy[0];
     }
-    
+
     EvtMap->set(m_Index, Infos);
     return TRUE;
 }
@@ -390,13 +390,13 @@ void PS_Silicon_Annular::clear(){
     for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
         delete *(MapIterator->second);
     }
-    
+
     EvtMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Annular::DrawAll(){
-    
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -413,7 +413,7 @@ PS_Silicon_Resistive::PS_Silicon_Resistive(G4String name,G4int Level, G4double S
     m_NumberOfStripWidth = NumberOfStripWidth;
     m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
     m_Level = Level;
-    
+
     m_Position = G4ThreeVector(-1000,-1000,-1000);
     m_DetectorNumber = -1;
     m_StripWidthNumber = -1;
@@ -426,44 +426,44 @@ PS_Silicon_Resistive::~PS_Silicon_Resistive(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
-    
+
     // contain Energy Total, E1, E2, Time, DetNbr,  and StripWidth
     G4double* EnergyAndTime = new G4double[10];
-    
+
     EnergyAndTime[2] = aStep->GetPreStepPoint()->GetGlobalTime();
-    
+
     m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
     m_Position  = aStep->GetPreStepPoint()->GetPosition();
-    
+
     // Interaction coordinates (used to fill the InteractionCoordinates branch)
     EnergyAndTime[5] = m_Position.x();
     EnergyAndTime[6] = m_Position.y();
     EnergyAndTime[7] = m_Position.z();
     EnergyAndTime[8] = m_Position.theta();
     EnergyAndTime[9] = m_Position.phi();
-    
+
     m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
-    
+
     m_StripWidthNumber = (int)((m_Position.x() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
     // m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
-    
+
     // The energy is divided in two depending on the position
     // position along the resistive strip
     double P = (m_Position.z())/(0.5*m_StripPlaneLength);
-    // Upstream Energy
-    EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5;
-    
     // Downstream Energy
+    EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5; // downsteam collects MORE energy when P is positive
+
+    // Upstream Energy
     EnergyAndTime[1] = aStep->GetTotalEnergyDeposit()-EnergyAndTime[0];
-    
+
     EnergyAndTime[3] = m_DetectorNumber;
     EnergyAndTime[4] = m_StripWidthNumber;
-    
+
     //Rare case where particle is close to edge of silicon plan
     if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
-    
+
     m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripWidthNumber * 1e6;
-    
+
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
     it= EvtMap->GetMap()->find(m_Index);
@@ -495,13 +495,13 @@ void PS_Silicon_Resistive::clear(){
     for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
         delete *(MapIterator->second);
     }
-    
+
     EvtMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Silicon_Resistive::DrawAll(){
-    
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -510,5 +510,3 @@ void PS_Silicon_Resistive::PrintAll(){
     G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
     G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
-
-

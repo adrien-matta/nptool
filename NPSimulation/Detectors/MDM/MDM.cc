@@ -61,9 +61,9 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace MDM_NS{
   // Energy and time Resolution
-const double Width     = 250*mm ;
+const double Width     = 250*mm; // far wider than real slits
 const double Thickness = 1*m; // needs to be very thick to serve as calorimeter
-const double Zpos      = 40*cm; // of FRONT face
+const double Zpos      = 65.25*cm; // correct SLIT distanc
 const string Material  = "BC400"; // fake!!
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -203,7 +203,16 @@ void MDM::ReadSensitive(const G4Event* event){
 		// check if within acceptance
 		// saves lots of time not tracking events outside of the
 		// acceptance
-		if((fabs(thetaX) < m_Xaccept && fabs(thetaY) < m_Yaccept))
+		// GAC - now converted into a real acceptance cut on position
+		//
+		// acceptance window
+		G4double xAccept = MDM_NS::Zpos*tan(m_Xaccept);
+		G4double yAccept = MDM_NS::Zpos*tan(m_Yaccept);
+		// position at acceptance window
+		G4double xposAccept = Pos.x() - (Pos.z() - MDM_NS::Zpos)*tan(thetaX);
+		G4double yposAccept = Pos.y() - (Pos.z() - MDM_NS::Zpos)*tan(thetaY);
+		// acceptance cut
+		if(fabs(xposAccept) < xAccept && fabs(yposAccept) < yAccept)
 		{
 			// Calculate positions at TARGET
 			double xTrgt = Pos.x()/mm - (Pos.z()/mm)*tan(thetaX);
