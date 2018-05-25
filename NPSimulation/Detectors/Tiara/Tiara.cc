@@ -116,7 +116,9 @@ void Tiara::ReadConfiguration(NPL::InputParser parser){
   }
 
   blocks.clear();
+//by Shuya 180426
   blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
+  //blocks = parser.GetAllBlocksWithToken("HyballWedge");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl;
@@ -177,21 +179,28 @@ void Tiara::ReadSensitive(const G4Event* event){
     G4double* Info = *(InnerBarrel_itr->second);
 
     // Downstream Energy
-    double ED = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
+  //by Shuya 180504. Note I changed this unit from MeV to keV because Barrel data are given in keV in real data.
+    //double ED = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
+    double ED = RandGauss::shoot(Info[0]/keV,ResoEnergyInnerBarrel);
     if(ED>EnergyThreshold){
       m_EventBarrel->SetFrontDownstreamE(Info[3],Info[4],ED);
       m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]);
     }
 
     // Upstream Energy
-    double EU = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel);
+  //by Shuya 180504. Note I changed this unit from MeV to keV because Barrel data are given in keV in real data.
+    //double EU = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel);
+    double EU = RandGauss::shoot(Info[1]/keV,ResoEnergyInnerBarrel);
     if(EU>EnergyThreshold){
       m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
       m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]);
+	//cout << "BARREL " << Info[3] << " STRIP " << Info[4] << " " << Info[9]/deg << " " << Info[5] << " " << Info[6] << " " << Info[7] << endl;
     }
 
     // Back Energy
-    double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyInnerBarrel);
+  //by Shuya 180504. Note I changed this unit from MeV to keV because Barrel data are given in keV in real data.
+    //double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyInnerBarrel);
+    double EB = RandGauss::shoot(Info[1]/keV+Info[0]*keV,ResoEnergyInnerBarrel);
     if(EB>EnergyThreshold){
       m_EventBarrel->SetBackE(Info[3],EB);
       m_EventBarrel->SetBackT(Info[3],Info[2]);
@@ -216,7 +225,7 @@ void Tiara::ReadSensitive(const G4Event* event){
   for (OuterBarrel_itr = OuterBarrelHitMap->GetMap()->begin() ; OuterBarrel_itr != OuterBarrelHitMap->GetMap()->end() ; OuterBarrel_itr++){
     G4double* Info = *(OuterBarrel_itr->second);
 
-    double E = RandGauss::shoot(Info[0],ResoEnergyOuterBarrel);
+    double E = RandGauss::shoot(Info[0]/keV,ResoEnergyOuterBarrel);
     if(E>EnergyThreshold){
       m_EventBarrel->SetOuterE(Info[7],Info[9],E);
       m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]);
@@ -263,14 +272,17 @@ void Tiara::ReadSensitive(const G4Event* event){
 	double m_axis = -100.0;
 	double m_phi = Info[6];
 	if(Info[6]<0)	m_phi = Info[6]+2.0*M_PI;
+
 	if(Info[7]==1)	m_axis = 210.0/180.0*M_PI;
 	else if(Info[7]==2)	m_axis = 150.0/180.0*M_PI;
 	else if(Info[7]==3)	m_axis = 90.0/180.0*M_PI;
 	else if(Info[7]==4)	m_axis = 30.0/180.0*M_PI;
 	else if(Info[7]==5)	m_axis = 330.0/180.0*M_PI;
 	else if(Info[7]==6)	m_axis = 270.0/180.0*M_PI;
+
     	double m_StripPitchSector_Tiara = (0.5*HYBALL_ActiveWafer_Angle-(-0.5*HYBALL_ActiveWafer_Angle))/HYBALL_NumberOfRadialStrip;
 	Info[9] = (int)((m_phi - (m_axis - 0.5*HYBALL_ActiveWafer_Angle)) / m_StripPitchSector_Tiara ) + 1 ;
+
 //by Shuya 171009
       //m_EventHyball->SetSectorE(Info[7],Info[9],EF);
       m_EventHyball->SetSectorE(Info[7],Info[9],EB);
@@ -512,11 +524,15 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
     // Detector are rotate by 45deg with each other
     // Detector 3 [i=2] is perpendicular to positive y-axis, Detector 5 [i=4] is perpendicular to positive x-axis,
     G4RotationMatrix* DetectorRotation =
-      new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*45)*deg);
+//by Shuya 180521. This seems to give the right directio of Barrel geometry. Tentative. Wait to be comfirmed. 
+      //new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*45)*deg);
+      new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*-45)*deg);
 
     // There center is also rotated by 45deg
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
-    DetectorPosition.rotate((360+(2-i)*-45)*deg,G4ThreeVector(0,0,1));
+//by Shuya 180521. This seems to give the right directio of Barrel geometry. Tentative. Wait to be comfirmed. 
+    //DetectorPosition.rotate((360+(2-i)*-45)*deg,G4ThreeVector(0,0,1));
+    DetectorPosition.rotate((360+(2-i)*45)*deg,G4ThreeVector(0,0,1));
 
     // Place the Master volume with its two daugther volume at the final place
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
