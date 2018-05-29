@@ -27,7 +27,12 @@ if(NOT CMAKE_INSTALL_COMPONENT)
   endif()
 endif()
 
-if("${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
+# Is this installation the result of a crosscompile?
+if(NOT DEFINED CMAKE_CROSSCOMPILING)
+  set(CMAKE_CROSSCOMPILING "FALSE")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
    "/Users/dacox/work/nptool/NPLib/include/TJurogamData.h;/Users/dacox/work/nptool/NPLib/include/TJurogamPhysics.h;/Users/dacox/work/nptool/NPLib/include/TJurogamSpectra.h")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)

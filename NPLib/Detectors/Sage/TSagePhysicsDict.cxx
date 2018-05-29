@@ -106,7 +106,7 @@ TClass *TSagePhysics::Dictionary()
 //______________________________________________________________________________
 TClass *TSagePhysics::Class()
 {
-   if (!fgIsA.load()) { R__LOCKGUARD2(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSagePhysics*)0x0)->GetClass(); }
+   if (!fgIsA.load()) { R__LOCKGUARD(gInterpreterMutex); fgIsA = ::ROOT::GenerateInitInstanceLocal((const ::TSagePhysics*)0x0)->GetClass(); }
    return fgIsA;
 }
 
@@ -265,7 +265,7 @@ namespace ROOT {
       vector<int> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<int>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<int>", -2, "vector", 458,
+         instance("vector<int>", -2, "vector", 450,
                   typeid(vector<int>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEintgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<int>) );
@@ -328,7 +328,7 @@ namespace ROOT {
       vector<double> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<double>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<double>", -2, "vector", 458,
+         instance("vector<double>", -2, "vector", 450,
                   typeid(vector<double>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEdoublegR_Dictionary, isa_proxy, 0,
                   sizeof(vector<double>) );

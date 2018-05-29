@@ -58,6 +58,7 @@
 #include "G4FieldManager.hh"
 #include "G4TransportationManager.hh"
 #include "G4EqMagElectricField.hh"
+#include "G4MagIntegratorDriver.hh"
 
 #include "G4ChordFinder.hh"
 #include "G4UniformMagField.hh"
