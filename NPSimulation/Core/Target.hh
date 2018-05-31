@@ -37,11 +37,13 @@
 #include "G4Event.hh"
 #include "G4Material.hh"
 #include "G4Tubs.hh"
+#include "G4Polycone.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VFastSimulationModel.hh"
 // NPTool headers
 #include "NPSVDetector.hh"
 #include "NPInputParser.h"
+#include "NPFunction.h"
 using namespace std;
 using namespace CLHEP;
 
@@ -112,15 +114,39 @@ private:
   G4int       m_TargetNbLayers;
   
   // For Cryo Target
+  // this fonction generate a deformed target window shape
+//  inline double FrontProfile(double x, double offset, double b, double R) {return (offset+b+1)- cosh(x/(R/acosh(b+1)));}
+//  inline double BackProfile(double x, double offset, double b, double R)  {return   cosh(x/(R/acosh(b+1)))-(offset+b+1);}
+  inline double FrontProfile(double x, double offset, double b, double R) {return NPL::HyperbolicProfile(x,offset,b,R);}
+  inline double BackProfile(double x, double offset, double b, double R)  {return -NPL::HyperbolicProfile(x,offset,b,R);}
+
+
   G4double    m_TargetDensity;
-  G4double    m_WindowsThickness;
-  G4Material* m_WindowsMaterial;
-  
+  double      m_FrontDeformation;
+  double      m_FrontThickness;
+  double      m_FrontRadius;
+  G4Material* m_FrontMaterial;
+  double      m_BackDeformation;
+  double      m_BackRadius;
+  double      m_BackThickness;
+  G4Material* m_BackMaterial;
+  double      m_FrameRadius;
+  double      m_FrameThickness;
+  double      m_FrontCone;
+  double      m_BackCone;
+  G4Material* m_FrameMaterial;
+  double      m_ShieldInnerRadius;
+  double      m_ShieldOuterRadius;
+  double      m_ShieldBottomLength;
+  double      m_ShieldTopLength;
+  double      m_ShieldFrontRadius; 
+  double      m_ShieldBackRadius;
+  G4Material* m_ShieldMaterial;
+  G4Polycone*  m_CryoTargetSolid; 
   // Positioning
   G4double    m_TargetX;
   G4double    m_TargetY;
   G4double    m_TargetZ;
-
 
 public: // Region were reaction can occure
   void SetReactionRegion();  

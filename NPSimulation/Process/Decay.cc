@@ -85,7 +85,7 @@ G4bool Decay::IsApplicable( const G4ParticleDefinition& particleType) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-G4bool Decay::ModelTrigger(const G4FastTrack& fastTrack) {
+G4bool Decay::ModelTrigger(const G4FastTrack& ) {
   //FIXME: Solve the issue of long lived decay
   // Check that a decay is possible:
   return m_Decay.AnyAboveThreshold(NPL::ChangeNameFromG4Standard(m_CurrentName),m_ExcitationEnergy);
@@ -136,6 +136,7 @@ void Decay::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep){
     // Get the decaying particle
     int DaughterZ = Daughter[i].GetZ();
     int DaughterA = Daughter[i].GetA();
+    DaughterDef=NULL;
 
     // neutral particle
     if(DaughterZ==0){

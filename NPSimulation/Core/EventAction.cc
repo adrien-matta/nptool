@@ -26,7 +26,6 @@
 #include "G4RunManager.hh"
 #include "G4Trajectory.hh"
 #include "G4TrajectoryContainer.hh"
-
 // NPTool headers
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"

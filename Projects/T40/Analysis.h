@@ -59,9 +59,22 @@ class Analysis: public NPL::VAnalysis{
 //by Shuya 170703
   double Ex_Hyball;
   double Ex_Barrel;
-
+//GAC 180305
+	double Ex_MDM;
+	
   double ELab;
+//by Shuya 171206
+  double ELab_Hyball;
+  double ELab_Barrel;
+
   double ThetaLab;
+//by Shuya 171206
+  double ThetaLab_Hyball;
+  double ThetaLab_Barrel;
+//GAC 180305
+	double ThetaLab_MDM;
+	double ELab_MDM;
+	
   double ThetaCM;
   double TiaraIMX;
   double TiaraIMY;
@@ -71,6 +84,10 @@ class Analysis: public NPL::VAnalysis{
   bool LightParticleDetected;
 //by Shuya 171019
   double PhiLab;
+//by Shuya 171206
+  double PhiLab_Hyball;
+  double PhiLab_Barrel;
+
 // GAC 171020
 	double ThetaXLab;
 	double ThetaYLab;

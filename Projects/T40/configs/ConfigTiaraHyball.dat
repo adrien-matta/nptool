@@ -6,9 +6,9 @@ ConfigTiaraHyball
 	STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA 5
 	%If you want to use Ring signal instead of Ring-Sector average, comment this out
 	%To get weighted averaged energy, you need to input these below (default; RingE 18 keV, SectorE=22 keV)
-	TAKE_E_RING_SECTOR_Average
-	SIGMA_RING_E 0.018
-	SIGMA_SECTOR_E 0.022
+	% TAKE_E_RING_SECTOR_Average
+	% SIGMA_RING_E 0.018
+	% SIGMA_SECTOR_E 0.022
 	TAKE_E_RING
 	%TAKE_E_SECTOR
 	%TAKE_T_RING

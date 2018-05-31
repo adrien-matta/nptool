@@ -58,8 +58,35 @@ NPL::DetectorManager::DetectorManager(){
     if(NPOptionManager::getInstance()->GetCheckHistoOption())
       m_CheckSpectra = &NPL::VDetector::CheckSpectra ;
   }
-  m_WindowsThickness=0;
-  m_WindowsMaterial="";
+  m_CryoTarget=false;
+  
+  m_TargetThickness    = 0   ;
+  m_TargetAngle        = 0   ;
+  m_TargetRadius       = 0   ;
+  m_TargetDensity      = 0   ;
+  m_TargetDensity = 0 ;
+  m_FrontDeformation = 0 ;
+  m_FrontThickness = 0 ;
+  m_FrontRadius = 0 ;
+  m_FrontMaterial = "" ;
+  m_BackDeformation = 0 ;
+  m_BackRadius = 0 ;
+  m_BackThickness = 0 ;
+  m_BackMaterial = "" ;
+  m_FrameRadius = 0 ;
+  m_FrameThickness = 0;
+  m_FrontCone = 0 ;
+  m_BackCone = 0 ;
+  m_FrameMaterial = "" ;
+  m_ShieldInnerRadius = 0 ;
+  m_ShieldOuterRadius = 0 ;
+  m_ShieldBottomLength = 0 ;
+  m_ShieldTopLength = 0 ;
+  m_ShieldFrontRadius = 0 ; 
+  m_ShieldBackRadius = 0 ;
+  m_ShieldMaterial = "" ;
+
+
 }
 
 
@@ -95,7 +122,7 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   //////////// Search for Target /////////////
   ////////////////////////////////////////////
   vector<NPL::InputBlock*>  starget = parser.GetAllBlocksWithToken("Target");
-  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryoTarget");
+  vector<NPL::InputBlock*>  ctarget = parser.GetAllBlocksWithToken("CryogenicTarget");
 
   if(starget.size()==1){
     if(NPOptionManager::getInstance()->GetVerboseLevel()){
@@ -119,20 +146,57 @@ void NPL::DetectorManager::ReadConfigurationFile(string Path)   {
   else if(ctarget.size()==1){
     if(NPOptionManager::getInstance()->GetVerboseLevel())
       cout << "//// Cryogenic Target found " << endl;
-    
-    vector<string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
-    if(ctarget[0]->HasTokenList(token)){
-      m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
-      m_TargetAngle=ctarget[0]->GetDouble("Angle","deg");
-      m_TargetMaterial=ctarget[0]->GetString("Material");
-      m_WindowsThickness=ctarget[0]->GetDouble("WindowsThickness","micrometer");
-      m_WindowsMaterial=ctarget[0]->GetString("WindowsMaterial");
-      m_TargetX=ctarget[0]->GetDouble("X","mm");
-      m_TargetY=ctarget[0]->GetDouble("Y","mm");
-      m_TargetZ =ctarget[0]->GetDouble("Z","mm");
+    m_CryoTarget = true;
+    vector<string> CoreToken   = {"NominalThickness","Material","Density","Radius","Angle","X","Y","Z"};
+    vector<string> FrontToken  = {"FrontDeformation","FrontThickness","FrontRadius","FrontMaterial"};
+    vector<string> BackToken   = {"BackDeformation","BackThickness","BackRadius","BackMaterial"};
+    vector<string> FrameToken  = {"FrameRadius","FrameThickness","FrontCone","BackCone","FrameMaterial"};
+    vector<string> ShieldToken = {"ShieldInnerRadius","ShieldOuterRadius""ShieldBottomLength","ShieldTopLength","ShieldFrontRadius","ShieldBackRadius","ShieldMaterial"};
+
+
+
+    if(ctarget[0]->HasTokenList(CoreToken)){
+       // Target 
+      m_TargetThickness = ctarget[0]->GetDouble("NominalThickness","micrometer");
+      m_TargetAngle = ctarget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial = ctarget[0]->GetString("Material");
+      m_TargetDensity = ctarget[0]->GetDouble("Density","g/cm3");
+      m_TargetRadius = ctarget[0]->GetDouble("Radius","mm");
+      m_TargetX = ctarget[0]->GetDouble("X","mm");
+      m_TargetY = ctarget[0]->GetDouble("Y","mm");
+      m_TargetZ = ctarget[0]->GetDouble("Z","mm");
+      m_TargetDensity = ctarget[0]->GetDouble("Density","g/cm3"); 
+      m_TargetRadius = ctarget[0]->GetDouble("Radius","mm");
+
+      // Front Window
+      m_FrontDeformation = ctarget[0]->GetDouble("FrontDeformation","mm");
+      m_FrontThickness = ctarget[0]->GetDouble("FrontThickness","micrometer");
+      m_FrontRadius = ctarget[0]->GetDouble("FrontRadius","mm");
+      m_FrontMaterial = ctarget[0]->GetString("FrontMaterial");
+
+      // Back Window
+      m_BackDeformation = ctarget[0]->GetDouble("BackDeformation","mm");
+      m_BackRadius = ctarget[0]->GetDouble("BackRadius","mm");
+      m_BackThickness = ctarget[0]->GetDouble("BackThickness","micrometer");
+      m_BackMaterial = ctarget[0]->GetString("BackMaterial");
+
+      // Cell Frame
+      m_FrameRadius = ctarget[0]->GetDouble("FrameRadius","mm");
+      m_FrameThickness = ctarget[0]->GetDouble("FrameThickness","mm");
+      m_FrontCone = ctarget[0]->GetDouble("FrontCone","deg");
+      m_BackCone = ctarget[0]->GetDouble("BackCone","deg");
+      m_FrameMaterial = ctarget[0]->GetString("FrameMaterial");
+      // Heat Shield
+      m_ShieldInnerRadius = ctarget[0]->GetDouble("ShieldInnerRadius","mm");
+      m_ShieldOuterRadius = ctarget[0]->GetDouble("ShieldOuterRadius","mm");
+      m_ShieldBottomLength = ctarget[0]->GetDouble("ShieldBottomLength","mm");
+      m_ShieldTopLength = ctarget[0]->GetDouble("ShieldTopLength","mm");
+      m_ShieldFrontRadius = ctarget[0]->GetDouble("ShieldFrontRadius","mm"); 
+      m_ShieldBackRadius = ctarget[0]->GetDouble("ShieldBackRadius","mm");
+      m_ShieldMaterial = ctarget[0]->GetString("ShieldMaterial");
     }
     else{
-      cout << "ERROR: Target token list incomplete, check your input file" << endl;
+      cout << "ERROR: CryogenicTarget token list incomplete, check your input file" << endl;
       exit(1);
     }
   }

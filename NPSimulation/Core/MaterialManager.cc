@@ -32,6 +32,7 @@
 #include "G4VisAttributes.hh"
 #include "G4NistManager.hh"
 #include "G4MaterialPropertiesTable.hh"
+#include "G4ParticleTable.hh"
 // STL
 #include <iostream>
 #include <string>
@@ -875,7 +876,7 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
         for (G4double E=Emin; E < Emax; E+=step){
             dedx = emCalculator.ComputeTotalDEDX(E, Particle, it->second)/(MeV/micrometer);
             if(before){
-                if(abs(before-dedx)/abs(before)<0.01) step*=10; 
+                if(abs(before-dedx)/abs(before)<0.01) step*=2; 
             }
             
             before = dedx;
@@ -883,6 +884,15 @@ void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Em
         }
         
         File.close();
+    }
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//   Generate a DEDX file table using the material used in the geometry
+void MaterialManager::WriteDEDXTable(std::set<string> Particle ,G4double Emin,G4double Emax){
+  std::set<string>::iterator it;
+  for(it=Particle.begin(); it!=Particle.end() ; it++){
+     G4ParticleDefinition* p = G4ParticleTable::GetParticleTable()->FindParticle((*it));
+      WriteDEDXTable(p,Emin,Emax);
     }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

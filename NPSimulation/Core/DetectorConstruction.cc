@@ -148,7 +148,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     AddDetector(m_Target);
   }
   else{
-     blocks = parser.GetAllBlocksWithToken("CryoTarget");
+     blocks = parser.GetAllBlocksWithToken("CryogenicTarget");
      if(blocks.size()==1){
       m_Target = new Target();
       m_Target->ReadConfiguration(parser);

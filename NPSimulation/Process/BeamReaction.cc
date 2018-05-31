@@ -86,7 +86,7 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
   // If the condition is met, the event is generated 
   // if PreviousLength is NULL then the particle has taken no step yet in the 
   // region, so reaction could not happen
-  if(ratio<rand && m_PreviousLength!=0){ 
+  if(ratio<rand && m_PreviousLength!=0 && m_Reaction.IsAllowed(PrimaryTrack->GetKineticEnergy())){ 
      // Reset the static for next event
      shoot = false;
      return true;

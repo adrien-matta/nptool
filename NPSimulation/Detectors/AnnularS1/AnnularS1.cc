@@ -331,8 +331,9 @@ void AnnularS1::ReadSensitive(const G4Event* event){
       m_Event->SetS1ThetaTTime(RandGauss::shoot(Time, ResoTime));
 
       m_Event->SetS1PhiEDetectorNbr(DetNbr);
-      m_Event->SetS1PhiEStripNbr(StripPhi);
+      m_Event->SetS1PhiEStripNbr(StripPhi); 
       m_Event->SetS1PhiEEnergy(RandGauss::shoot(Energy, ResoEnergy));
+
       m_Event->SetS1PhiTDetectorNbr(DetNbr);
       m_Event->SetS1PhiTStripNbr(StripPhi);
       m_Event->SetS1PhiTTime(RandGauss::shoot(Time, ResoTime));
@@ -363,8 +364,8 @@ void AnnularS1::InitializeScorers(){
         2,
         ActiveWaferInnerRadius,
         ActiveWaferOutterRadius,
-        -22.5*deg,
-        337.5*deg,
+        -8*22.5*deg, //MUST2 campaign 2009, See: Phd Sandra Giron
+        +8*22.5*deg,
         NbrRingStrips,
         NbrSectorStrips,
         NbQuadrant);

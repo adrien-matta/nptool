@@ -473,8 +473,13 @@ G4double Target::SlowDownBeam(G4ParticleDefinition* Beam,
     return IncidentEnergy;
   }
 
+  if((0.5*m_TargetThickness+ZInteraction)<0){
+    cout<< "Something is wrong with the Z coordinate of the interaction position"<<endl;
+    cout<< "Check the value of Z(interaction) " << ZInteraction << endl;
+  }
+
   G4double ThicknessBeforeInteraction = 
-    abs(ZInteraction - 0.5*m_TargetThickness) / cos(m_TargetAngle);
+    (0.5*m_TargetThickness + ZInteraction) / cos(m_TargetAngle);
 
   G4double dedx,de;
   static G4EmCalculator emCalculator;

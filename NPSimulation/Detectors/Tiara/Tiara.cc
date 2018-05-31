@@ -27,7 +27,7 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
-#include "G4UnionSolid.hh" 
+#include "G4UnionSolid.hh"
 #include "G4ExtrudedSolid.hh"
 #include "G4TwoVector.hh"
 //G4 sensitive
@@ -74,14 +74,14 @@ Tiara::Tiara(){
   // Light Grey
   FrameVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5)) ;
   // Light Blue
-  GuardRingVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;  
+  GuardRingVisAtt = new G4VisAttributes(G4Colour(0.1, 0.1, 0.1)) ;
 
   m_boolChamber = false;
   m_boolInner = false;
   m_boolOuter = false;
   m_InnerBarrelScorer = 0 ;
-  m_OuterBarrelScorer = 0 ; 
-  m_HyballScorer = 0 ;     
+  m_OuterBarrelScorer = 0 ;
+  m_HyballScorer = 0 ;
 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -96,7 +96,7 @@ void Tiara::ReadConfiguration(NPL::InputParser parser){
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Tiara","Barrel");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
 
   vector<string> token = {"InnerBarrel","OuterBarrel","Chamber"};
 
@@ -116,10 +116,10 @@ void Tiara::ReadConfiguration(NPL::InputParser parser){
   }
 
   blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("HyballWedge");
+  blocks = parser.GetAllBlocksWithToken("TiaraHyballWedge");
 
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
 
   token.clear();
   token = {"Z","R","Phi"};
@@ -172,29 +172,29 @@ void Tiara::ReadSensitive(const G4Event* event){
   G4int InnerBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_InnerBarrelScorer/InnerBarrel");
   InnerBarrelHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(InnerBarrelCollectionID));
 
-  // Loop on the InnerBarrel map 
+  // Loop on the InnerBarrel map
   for (InnerBarrel_itr = InnerBarrelHitMap->GetMap()->begin() ; InnerBarrel_itr != InnerBarrelHitMap->GetMap()->end() ; InnerBarrel_itr++){
-    G4double* Info = *(InnerBarrel_itr->second); 
-
-    // Upstream Energy
-    double EU = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
-    if(EU>EnergyThreshold){
-      m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
-      m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]); 
-    }
+    G4double* Info = *(InnerBarrel_itr->second);
 
     // Downstream Energy
-    double ED = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel); 
+    double ED = RandGauss::shoot(Info[0],ResoEnergyInnerBarrel);
     if(ED>EnergyThreshold){
       m_EventBarrel->SetFrontDownstreamE(Info[3],Info[4],ED);
-      m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]); 
+      m_EventBarrel->SetFrontDownstreamT(Info[3],Info[4],Info[2]);
+    }
+
+    // Upstream Energy
+    double EU = RandGauss::shoot(Info[1],ResoEnergyInnerBarrel);
+    if(EU>EnergyThreshold){
+      m_EventBarrel->SetFrontUpstreamE(Info[3],Info[4],EU);
+      m_EventBarrel->SetFrontUpstreamT(Info[3],Info[4],Info[2]);
     }
 
     // Back Energy
     double EB = RandGauss::shoot(Info[1]+Info[0],ResoEnergyInnerBarrel);
     if(EB>EnergyThreshold){
       m_EventBarrel->SetBackE(Info[3],EB);
-      m_EventBarrel->SetBackT(Info[3],Info[2]); 
+      m_EventBarrel->SetBackT(Info[3],Info[2]);
     }
         // Interaction Coordinates
     ms_InterCoord->SetDetectedPositionX(Info[5]) ;
@@ -212,14 +212,14 @@ void Tiara::ReadSensitive(const G4Event* event){
   G4int OuterBarrelCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_OuterBarrelScorer/OuterBarrel");
   OuterBarrelHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(OuterBarrelCollectionID));
 
-  // Loop on the OuterBarrel map 
+  // Loop on the OuterBarrel map
   for (OuterBarrel_itr = OuterBarrelHitMap->GetMap()->begin() ; OuterBarrel_itr != OuterBarrelHitMap->GetMap()->end() ; OuterBarrel_itr++){
-    G4double* Info = *(OuterBarrel_itr->second); 
+    G4double* Info = *(OuterBarrel_itr->second);
 
     double E = RandGauss::shoot(Info[0],ResoEnergyOuterBarrel);
     if(E>EnergyThreshold){
       m_EventBarrel->SetOuterE(Info[7],Info[9],E);
-      m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]); 
+      m_EventBarrel->SetOuterT(Info[7],Info[9],Info[1]);
     }
         // Interaction Coordinates
     ms_InterCoord->SetDetectedPositionX(Info[5]) ;
@@ -238,20 +238,20 @@ void Tiara::ReadSensitive(const G4Event* event){
   G4int HyballCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Tiara_HyballScorer/Hyball");
   HyballHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(HyballCollectionID));
 
-  // Loop on the Hyball map 
+  // Loop on the Hyball map
   for (Hyball_itr = HyballHitMap->GetMap()->begin() ; Hyball_itr != HyballHitMap->GetMap()->end() ; Hyball_itr++){
-    G4double* Info = *(Hyball_itr->second); 
+    G4double* Info = *(Hyball_itr->second);
 
     // Front Energy
     double EF = RandGauss::shoot(Info[0],ResoEnergyHyball);
     if(EF>EnergyThreshold){
       int RingNumber=Info[8];
 	//by Shuya 171009
-      RingNumber=abs(RingNumber);    
-      //RingNumber=abs(RingNumber-17);    
-      Info[8]=RingNumber; 
+      RingNumber=abs(RingNumber);
+      //RingNumber=abs(RingNumber-17);
+      Info[8]=RingNumber;
       m_EventHyball->SetRingE(Info[7],Info[8],EF);
-      m_EventHyball->SetRingT(Info[7],Info[8],Info[1]); 
+      m_EventHyball->SetRingT(Info[7],Info[8],Info[1]);
     }
 
     // Back Energy
@@ -274,7 +274,7 @@ void Tiara::ReadSensitive(const G4Event* event){
 //by Shuya 171009
       //m_EventHyball->SetSectorE(Info[7],Info[9],EF);
       m_EventHyball->SetSectorE(Info[7],Info[9],EB);
-      m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]); 
+      m_EventHyball->SetSectorT(Info[7],Info[9],Info[1]);
     }
     // Interaction Coordinates
 //by Shuya 171009
@@ -321,24 +321,24 @@ void Tiara::InitializeScorers(){
 
   m_OuterBarrelScorer->RegisterPrimitive(OuterBarrel);
 
-  G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball",1, 
-      HYBALL_ActiveWafer_InnerRadius, 
-      HYBALL_ActiveWafer_OuterRadius, 
+  G4VPrimitiveScorer* Hyball= new SILICONSCORERS::PS_Silicon_Annular("Hyball",1,
+      HYBALL_ActiveWafer_InnerRadius,
+      HYBALL_ActiveWafer_OuterRadius,
       -0.5*HYBALL_ActiveWafer_Angle,0.5*HYBALL_ActiveWafer_Angle,
       HYBALL_NumberOfAnnularStrip,
       HYBALL_NumberOfRadialStrip);
 
   m_HyballScorer->RegisterPrimitive(Hyball);
 
-  //   Add All Scorer to the Global Scorer Manager 
+  //   Add All Scorer to the Global Scorer Manager
   G4SDManager::GetSDMpointer()->AddNewDetector(m_InnerBarrelScorer) ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_OuterBarrelScorer) ;  
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_OuterBarrelScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_HyballScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeRootOutput(){
-  TTree *pTree = RootOutput::getInstance()->GetTree();   
+  TTree *pTree = RootOutput::getInstance()->GetTree();
   if(!pTree->FindBranch("TiaraBarrel")){
     pTree->Branch("TiaraBarrel", "TTiaraBarrelData", &m_EventBarrel) ;
   }
@@ -346,7 +346,7 @@ void Tiara::InitializeRootOutput(){
   if(!pTree->FindBranch("TiaraHyball")){
     pTree->Branch("TiaraHyball", "TTiaraHyballData", &m_EventHyball) ;
   }
-  // This insure that the object are correctly bind in case of 
+  // This insure that the object are correctly bind in case of
   // a redifinition of the geometry in the simulation
   pTree->SetBranchAddress("TiaraBarrel", &m_EventBarrel) ;
   pTree->SetBranchAddress("TiaraHyball", &m_EventHyball) ;
@@ -375,7 +375,7 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
   PCBCrossSection.push_back(G4TwoVector(-INNERBARREL_PCB_Width/2.,0));
   PCBCrossSection.push_back(G4TwoVector(-INNERBARREL_PCB_Width/2.+l2,-INNERBARREL_PCB_Thickness*0.5));
 
-  G4ExtrudedSolid* PCBFull = 
+  G4ExtrudedSolid* PCBFull =
     new G4ExtrudedSolid("PCBFull",
         PCBCrossSection,
         INNERBARREL_PCB_Length/2.,
@@ -473,7 +473,7 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
   G4ThreeVector WaferPosition(0,
       0.5*(INNERBARREL_PCB_Thickness+INNERBARREL_InertWafer_Thickness)-INNERBARREL_PCB_WaferDepth
-      ,0); 
+      ,0);
 
   G4ThreeVector DeadLayerPositionF = WaferPosition + G4ThreeVector(0,-INNERBARREL_ActiveWafer_Thickness*0.5-INNERBARREL_ActiveWafer_DeadLayerThickness*0.5,0);
 
@@ -504,21 +504,21 @@ void Tiara::ConstructInnerBarrel(G4LogicalVolume* world){
 
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
-  G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
+  G4double DistanceFromTarget = INNERBARREL_PCB_Width*(0.5+sin(45*deg)) ;
   for( unsigned int i = 0; i < 8; i ++){
     // The following build the barrel, with detector one at the top
     // and going clowise looking upstrea
 
-    // Detector are rotate by 45deg with each other 
-    // Detector 3 [i=2] is perpendicular to positive y-axis, Detector 5 [i=4] is perpendicular to positive x-axis, 
-    G4RotationMatrix* DetectorRotation = 
-      new G4RotationMatrix(0*deg,0*deg,(2-i)*45*deg);
+    // Detector are rotate by 45deg with each other
+    // Detector 3 [i=2] is perpendicular to positive y-axis, Detector 5 [i=4] is perpendicular to positive x-axis,
+    G4RotationMatrix* DetectorRotation =
+      new G4RotationMatrix(0*deg,0*deg,(360+(2-i)*45)*deg);
 
     // There center is also rotated by 45deg
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
-    DetectorPosition.rotate((2-i)*45*deg,G4ThreeVector(0,0,1));   
+    DetectorPosition.rotate((360+(2-i)*-45)*deg,G4ThreeVector(0,0,1));
 
-    // Place the Master volume with its two daugther volume at the final place 
+    // Place the Master volume with its two daugther volume at the final place
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
         logicBarrelDetector,"Tiara_InnerBarrel_Detector",
         world,false,i+1);
@@ -544,7 +544,7 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
   PCBCrossSection.push_back(G4TwoVector(-OUTERBARREL_PCB_Width/2.,0));
   PCBCrossSection.push_back(G4TwoVector(-OUTERBARREL_PCB_Width/2.+l2,-OUTERBARREL_PCB_Thickness*0.5));
 
-  G4ExtrudedSolid* PCBFull = 
+  G4ExtrudedSolid* PCBFull =
     new G4ExtrudedSolid("PCBFull",
         PCBCrossSection,
         OUTERBARREL_PCB_Length/2.,
@@ -625,7 +625,7 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
 
   // The Distance from target is given by half the lenght of a detector
   // plus the length of a detector inclined by 45 deg.
-  G4double DistanceFromTarget = OUTERBARREL_PCB_Width*(0.5+sin(45*deg)) ; 
+  G4double DistanceFromTarget = OUTERBARREL_PCB_Width*(0.5+sin(45*deg)) ;
 
   // Place the sub volumes in the master volume
   // Last argument is the detector number, used in the scorer to get the
@@ -638,7 +638,7 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
 
   G4ThreeVector WaferPosition(0,
       0.5*(OUTERBARREL_PCB_Thickness+OUTERBARREL_ActiveWafer_Thickness)-OUTERBARREL_PCB_WaferDepth
-      ,0); 
+      ,0);
 
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
       WaferPosition,
@@ -654,15 +654,15 @@ void Tiara::ConstructOuterBarrel(G4LogicalVolume* world){
   // The following build the barrel, with detector one at the top
   // and going clowise looking upstrea
   for( unsigned int i = 0; i < 8; i ++){
-    // Detector are rotate by 45deg with each other 
-    G4RotationMatrix* DetectorRotation = 
+    // Detector are rotate by 45deg with each other
+    G4RotationMatrix* DetectorRotation =
       new G4RotationMatrix(0*deg,0*deg,i*45*deg);
 
     // There center is also rotated by 45deg
     G4ThreeVector DetectorPosition(0,DistanceFromTarget,0);
-    DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));   
+    DetectorPosition.rotate(i*45*deg,G4ThreeVector(0,0,-1));
 
-    // Place the Master volume with its daugthers at the final place 
+    // Place the Master volume with its daugthers at the final place
     new G4PVPlacement(G4Transform3D(*DetectorRotation,DetectorPosition),
         logicBarrelDetector,"Tiara_OuterBarrel_Detector",
         world,false,i+1);
@@ -679,7 +679,7 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   PCBCrossSection.push_back(G4TwoVector(125.718*mm, 73.677*mm));
   PCBCrossSection.push_back(G4TwoVector(28.108*mm , 16.473*mm));
 
-  G4ExtrudedSolid* PCBFull = 
+  G4ExtrudedSolid* PCBFull =
     new G4ExtrudedSolid("PCBFull",
         PCBCrossSection,
         0.5*HYBALL_PCB_THICKNESS,
@@ -694,14 +694,14 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   WaferCrossSection.push_back(G4TwoVector(122.677*mm, 63.508*mm ));
   WaferCrossSection.push_back(G4TwoVector(29.108*mm , 15.069*mm));
 
-  G4ExtrudedSolid* WaferFull = 
+  G4ExtrudedSolid* WaferFull =
     new G4ExtrudedSolid("WaferFull",
         WaferCrossSection,
         0.5*HYBALL_ActiveWafer_Thickness,
         G4TwoVector(0,0),1,
         G4TwoVector(0,0),1);
 
-  G4ExtrudedSolid* WaferShape = 
+  G4ExtrudedSolid* WaferShape =
     new G4ExtrudedSolid("WaferShape",
         WaferCrossSection,
         0.6*HYBALL_PCB_THICKNESS,
@@ -709,14 +709,20 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
         G4TwoVector(0,0),1);
 
   // Active Wafer
-  G4Tubs* ActiveWafer = 
+  G4Tubs* ActiveWafer =
     new G4Tubs("HyballActiveWafer",HYBALL_ActiveWafer_InnerRadius,
         HYBALL_ActiveWafer_OuterRadius,0.5*HYBALL_ActiveWafer_Thickness,
         -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
 
-  G4Tubs* ActiveWaferShape = 
+  G4Tubs* ActiveWaferShape =
     new G4Tubs("HyballActiveWaferShape",HYBALL_ActiveWafer_InnerRadius,
         HYBALL_ActiveWafer_OuterRadius,0.6*HYBALL_ActiveWafer_Thickness,
+        -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
+
+ //by Shuya 180219. Hyball DeadLayer
+  G4Tubs* Hyball_DeadLayer =
+    new G4Tubs("HyballDeadLayer",HYBALL_ActiveWafer_InnerRadius,
+        HYBALL_ActiveWafer_OuterRadius,0.5*HYBALL_DeadLayer_Thickness,
         -0.5*HYBALL_ActiveWafer_Angle,HYBALL_ActiveWafer_Angle);
 
 
@@ -751,6 +757,12 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   logicAW->SetVisAttributes(SiliconVisAtt);
   logicAW->SetSensitiveDetector(m_HyballScorer);
 
+  //by Shuya 180219
+  // logic Hyball DeadLayer
+  G4LogicalVolume* logicDL =
+    new G4LogicalVolume(Hyball_DeadLayer,m_MaterialSilicon,"logicDL", 0, 0, 0);
+  logicDL->SetVisAttributes(SiliconVisAtt);
+
   // Place all the Piece in the mother volume
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
       G4ThreeVector(0,0,0),
@@ -765,6 +777,12 @@ void Tiara::ConstructHyball(G4LogicalVolume* world){
   new G4PVPlacement(new G4RotationMatrix(0,0,0),
       G4ThreeVector(0,0,0),
       logicAW,"Hyball_ActiveWafer",
+      logicHyball,false,0);
+
+  //by Shuya 180219. Note beacause Hyball is placed in negative direction (such as -147 mm) in world coordinate, deadlayer (front side) positions must be added in positive direction.
+  new G4PVPlacement(new G4RotationMatrix(0,0,0),
+      G4ThreeVector(0,0,0.5*HYBALL_ActiveWafer_Thickness+0.5*HYBALL_DeadLayer_Thickness),
+      logicDL,"Hyball_DeadLayer",
       logicHyball,false,0);
 
   for(unsigned int i = 0 ; i < m_HyballZ.size() ; i++){
@@ -785,25 +803,25 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
   // Hyball is hold on a back plate that close the Diabolo Shaped Chamber
 
   // Making the Chamber //
-  // We make the individual pieces, starting from the inside to the outside 
+  // We make the individual pieces, starting from the inside to the outside
   // Then we merge them together using the a G4AdditionSolid
-  // The whole chamber is then placed 
+  // The whole chamber is then placed
 
   //  Central Tube
-  G4Tubs* solidCentralTube = 
+  G4Tubs* solidCentralTube =
     new G4Tubs("TiaraChamberCentralTube",CHAMBER_CentralTube_Inner_Radius,
         CHAMBER_CentralTube_Outer_Radius,CHAMBER_CentralTube_Length/2.,
         0*deg,360*deg);
 
   // Forward-Backward Cones
-  G4Cons* solidOuterCone = 
+  G4Cons* solidOuterCone =
     new G4Cons("TiaraChamberOuterCone",CHAMBER_CentralTube_Inner_Radius,
         CHAMBER_CentralTube_Outer_Radius,CHAMBER_OuterCylinder_Inner_Radius,
         CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCone_Length/2.,
         0*deg,360*deg);
 
   // Outer Cylinder
-  G4Tubs* solidOuterCylinder = 
+  G4Tubs* solidOuterCylinder =
     new G4Tubs("TiaraChamberOuterCylinder",CHAMBER_OuterCylinder_Inner_Radius,
         CHAMBER_OuterCylinder_Outer_Radius,CHAMBER_OuterCylinder_Length/2.,
         0*deg,360*deg);
@@ -812,22 +830,22 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
   G4UnionSolid* solidTiaraChamberStep1 =
     new G4UnionSolid("TiaraChamber", solidCentralTube, solidOuterCone,
         new G4RotationMatrix,
-        G4ThreeVector(0,0,CHAMBER_OuterCone_Z_Pos)); 
+        G4ThreeVector(0,0,CHAMBER_OuterCone_Z_Pos));
 
   G4UnionSolid* solidTiaraChamberStep2 =
     new G4UnionSolid("TiaraChamber", solidTiaraChamberStep1, solidOuterCone,
         new G4RotationMatrix(0,180*deg,0),
-        G4ThreeVector(0,0,-CHAMBER_OuterCone_Z_Pos)); 
+        G4ThreeVector(0,0,-CHAMBER_OuterCone_Z_Pos));
 
   G4UnionSolid* solidTiaraChamberStep3 =
     new G4UnionSolid("TiaraChamber", solidTiaraChamberStep2, solidOuterCylinder,
         new G4RotationMatrix,
-        G4ThreeVector(0,0,CHAMBER_OuterCylinder_Z_Pos)); 
+        G4ThreeVector(0,0,CHAMBER_OuterCylinder_Z_Pos));
 
   G4UnionSolid* solidTiaraChamberStep4 =
     new G4UnionSolid("TiaraChamber", solidTiaraChamberStep3, solidOuterCylinder,
         new G4RotationMatrix,
-        G4ThreeVector(0,0,-CHAMBER_OuterCylinder_Z_Pos)); 
+        G4ThreeVector(0,0,-CHAMBER_OuterCylinder_Z_Pos));
 
   // Create Logic Volume
   G4LogicalVolume* logicTiaraChamber =
@@ -847,7 +865,7 @@ void Tiara::ConstructChamber(G4LogicalVolume* world){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Tiara::InitializeMaterial(){
   m_MaterialSilicon = MaterialManager::getInstance()->GetMaterialFromLibrary("Si");
-  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al"); 
+  m_MaterialAl = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
   m_MaterialPCB = MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
   m_MaterialVacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 }
@@ -873,8 +891,3 @@ class proxy_nps_tiara{
 
 proxy_nps_tiara p_nps_tiara;
 }
-
-
-
-
-

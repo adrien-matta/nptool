@@ -210,12 +210,15 @@ void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, doubl
 
   // ENERGY //
   // Gaussian energy distribution 
-  if(fSigmaEnergy!=-1)
-    E = gRandom->Gaus(fEnergy,fSigmaEnergy);
+  if(fSigmaEnergy!=-1){
+    E=-1;
+    while(E<0)
+      E = gRandom->Gaus(fEnergy,fSigmaEnergy);
+  }
   // User Profile
   else
     E = fEnergyHist->GetRandom();
-
+  
   // POSITION/DIRECTION AT Z PROFILE//
   // Gaussian Distribution
   if(fSigmaX!=-1){

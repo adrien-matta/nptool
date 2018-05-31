@@ -24,9 +24,13 @@
 #include "PrimaryGeneratorAction.hh"
 #include "EventAction.hh"
 #include "ParticleStack.hh"
+#include "MaterialManager.hh"
 // G4
 #include "G4Run.hh"
 #include "G4RunManager.hh"
+#include "G4Event.hh"
+#include "G4VTrajectory.hh"
+
 // NPL
 #include "RootOutput.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -53,10 +57,22 @@ void RunAction::BeginOfRunAction(const G4Run* aRun){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void RunAction::EndOfRunAction(const G4Run*){
+void RunAction::EndOfRunAction(const G4Run* aRun){
     // Pass a line for nicer presentation when chainning event generator
     cout << endl;
     
     // Force the tree to be saved at the end of the run
     RootOutput::getInstance()->GetTree()->AutoSave("Overwrite SaveSelf");
+
+    // Write DEDX Tables
+    std::set<string> Particles;
+    const std::vector<const G4Event*>* events = aRun->GetEventVector();
+    unsigned int sizeE = events->size();
+    for(unsigned int e = 0 ; e < sizeE ; e++){
+      TrajectoryVector* traj = (*events)[e]->GetTrajectoryContainer()->GetVector();
+      unsigned int size = traj->size();
+      for(unsigned int i = 0 ; i < size ; i++)
+        Particles.insert( (*traj)[i]->GetParticleName());
+    }
+    MaterialManager::getInstance()->WriteDEDXTable(Particles,0,10*GeV); 
 }
