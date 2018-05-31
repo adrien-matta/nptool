@@ -203,10 +203,8 @@ void Analysis::Init(){
 
   //Original_ELab=0;
   //Original_ThetaLab=0;
-  XTarget =-1.026126;
-  YTarget =-2.3589;
-  //XTarget =0;
-  //YTarget =0;
+  XTarget =0;
+  YTarget =0;
   BeamDirection = TVector3(0,0,1);
   InitOutputBranch();
   InitInputBranch();
@@ -292,8 +290,7 @@ void Analysis::TreatEvent(){
     ThetaTHSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      //TVector3 BeamImpact(XTarget,YTarget,0);
-      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
+      TVector3 BeamImpact(XTarget,YTarget,0);
 
 	//by Shuya 171218 (because of T40 meeting's discussion)
       //TVector3 HitDirection = TH -> GetRandomisedPositionOfInteraction(countTiaraHyball) - BeamImpact ;
@@ -331,7 +328,7 @@ void Analysis::TreatEvent(){
     Energy = Si_E_TH; // calibration for hyball is in MeV
     // Correct for energy loss using the thickness of the target and the dead layer
     ELab = LightSi.EvaluateInitialEnergy( Energy ,0.61*micrometer , ThetaTHSurface); // equivalent to 0.1 um of Aluminum
-//by Shuya 170530
+//by Shuya 170530. If there is any backing material (such as C) on your target.
     //if(ThetaNormalTarget < halfpi)	ELab = LightCBacking.EvaluateInitialEnergy( ELab ,0.044*micrometer , ThetaNormalTarget); //10 ug/cm2 carbon
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
@@ -364,8 +361,7 @@ void Analysis::TreatEvent(){
     ThetaTBSurface = 0;
     ThetaNormalTarget = 0;
     if(XTarget>-1000 && YTarget>-1000){
-      //TVector3 BeamImpact(XTarget,YTarget,0);
-      TVector3 BeamImpact(XTarget, YTarget, 4.07383);
+      TVector3 BeamImpact(XTarget,YTarget,0);
 
 	//by Shuya 171218 (because of T40 meeting's discussion)
       //TVector3 HitDirection = TB -> GetRandomisedPositionOfInteraction(countTiaraBarrel) - BeamImpact ;
@@ -415,16 +411,18 @@ void Analysis::TreatEvent(){
 	      Energy = Si_E_InnerTB*keV + Si_E_OuterTB*keV;
 	    }
 
-	//by Shuya 171208. If you need E+dE for Barrel.
+	//by Shuya 171208. If you need E+dE for Barrel. Use this only when you calibrate OuterBarrel. And actually you need to correct for energy losses in Deadlayers of backside of IB and frontside of OB.
+/*
     for(unsigned int countTiaraOuterBarrel = 0 ; countTiaraOuterBarrel < TB->Outer_Strip_E.size() ; countTiaraOuterBarrel++){
 	    if(TB->Outer_Detector_N[countTiaraOuterBarrel]==TB->Detector_N[countTiaraBarrel] && TB->Outer_Strip_E[countTiaraOuterBarrel]>0){
 	      	Si_E_OuterTB = TB->Outer_Strip_E[countTiaraOuterBarrel];
 	        Energy = Si_E_InnerTB*keV + Si_E_OuterTB*keV;
 		}
 	}
+*/
 
     // Evaluate energy using the thickness, Target and Si dead layer Correction
-    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);
+    ELab = LightSi.EvaluateInitialEnergy( Energy ,0.3*micrometer, ThetaTBSurface);	//Equivalent to deadlayer thickness in Al.
     ELab = LightTarget.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
 
     /////////////////////////////

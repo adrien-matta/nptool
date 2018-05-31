@@ -231,6 +231,7 @@ void MDM::ReadSensitive(const G4Event* event){
 			m_Trace->GetOxfordWirePositions(a,x[0],x[1],x[2],x[3],b,y[0],y[1],y[2],y[3]);
 		}
 		
+		
     // Set X, Y positions in TMDMData class
     for(int i=0; i< 4; ++i) {
 			m_Event->SetHit(i, x[i], y[i], Charge, Mass/amu_c2);
