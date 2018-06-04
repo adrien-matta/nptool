@@ -40,11 +40,11 @@ G4bool PS_DECathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   // contain Energy Time, DetNbr, StripFront and StripBack
   G4double* Infos = new G4double[9];
   Infos[0] = 0;
-  Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-  
+  Infos[1] = aStep->GetPreStepPoint()->GetProperTime();
+
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
-  
+
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
   Infos[2] = m_Position.x();
   Infos[3] = m_Position.y();
@@ -52,10 +52,10 @@ G4bool PS_DECathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[5] = m_Position.theta();
   Infos[6] = m_Position.phi();
   Infos[7] = m_DetectorNumber;
- 
+
   m_Index = m_DetectorNumber * 1e3 ;
   G4String PID = aStep->GetTrack()->GetDefinition()->GetParticleName();
-    
+
     if(PID=="driftelectron"){
         Infos[0] = 1;
     }
@@ -68,7 +68,7 @@ G4bool PS_DECathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
       Infos[0]+=dummy[0];
       Infos[1]=dummy[1];
     }
-  
+
   EvtMap->set(m_Index, Infos);
   return TRUE;
 }
@@ -92,13 +92,13 @@ void PS_DECathode::clear(){
   for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
     delete *(MapIterator->second);
   }
-  
+
   EvtMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_DECathode::DrawAll(){
-  
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -126,11 +126,11 @@ G4bool PS_DEDigitizer::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   // contain Energy Time, DetNbr, StripFront and StripBack
   G4double* Infos = new G4double[9];
   Infos[0] = 0;
-  Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-  
+  Infos[1] = aStep->GetPreStepPoint()->GetProperTime();
+
   m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
   m_Position  = aStep->GetPreStepPoint()->GetPosition();
-  
+
   // Interaction coordinates (used to fill the InteractionCoordinates branch)
   Infos[2] = m_Position.x();
   Infos[3] = m_Position.y();
@@ -138,10 +138,10 @@ G4bool PS_DEDigitizer::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[5] = m_Position.theta();
   Infos[6] = m_Position.phi();
   Infos[7] = m_DetectorNumber;
- 
+
   m_Index =  aStep->GetTrack()->GetTrackID()  +  m_DetectorNumber*1e6 ;
   G4String PID = aStep->GetTrack()->GetDefinition()->GetParticleName();
-    
+
     if(PID=="driftelectron"){
         Infos[0] = 1;
     }
@@ -154,7 +154,7 @@ G4bool PS_DEDigitizer::ProcessHits(G4Step* aStep, G4TouchableHistory*){
       Infos[0]+=dummy[0];
       Infos[1]=dummy[1];
     }
-  
+
   EvtMap->set(m_Index, Infos);
   return TRUE;
 }
@@ -178,13 +178,13 @@ void PS_DEDigitizer::clear(){
   for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
     delete *(MapIterator->second);
   }
-  
+
   EvtMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_DEDigitizer::DrawAll(){
-  
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -194,5 +194,3 @@ void PS_DEDigitizer::PrintAll(){
   G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-

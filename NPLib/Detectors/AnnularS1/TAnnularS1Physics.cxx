@@ -450,50 +450,70 @@ void TAnnularS1Physics::InitializeRootOutput(){
 /////   Specific to AnnularS1Array   ////
 void TAnnularS1Physics::AddDetector(double Z){
 
+  m_NumberOfDetector++;
+
   double R_Min = 24;
   double R_Max = 48;
 
   double Phi_Min = 0  ;
   double Phi_Max = 360;
 
-  int Ring_NumberOfStrip = 16 ;
-  int Sector_NumberOfStrip = 16 ;
-  int Ring_NumberOfQuadrant = 4 ;
-  
-  double StripPitchSector = (Phi_Max-Phi_Min)/Sector_NumberOfStrip ; //radial strip spacing in rad
-  double StripPitchRing = (R_Max-R_Min)/Ring_NumberOfStrip  ; // ring strip spacing in mm
+  int NumberOfQuadrant = 4 ;
+  int NumberofRing = 16 ; //Per Quadrant
+  int NumberofSector = 16 ; //Per detector, ( 4 in each Quad)
 
-  TVector3 Strip_1_1;
+  double StripPitchSector = (Phi_Max-Phi_Min)/(NumberofSector) ; //radial strip spacing in rad
+  double StripPitchRing = (R_Max-R_Min)/NumberofRing  ; // ring strip spacing in mm
 
-  m_NumberOfDetector++;
-  Strip_1_1=TVector3(0,0,Z);
+  double Phi_0 = (8)*StripPitchSector; //Phi Offset: 1st sector starts at 180 degrees and ends at 180-22.5 degrees in the lab frame, numbering goes clockwise
+  TVector3 Strip_1_1=TVector3(0,0,Z);
+  TVector3 StripCenter = Strip_1_1;
 
   //   Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
-
   vector< vector< double > >   OneStripPositionX   ;
   vector< vector< double > >   OneStripPositionY   ;
   vector< vector< double > >   OneStripPositionZ   ;
+  
+ /* The logic behind the strip numbering of S1 in NPTOOL: 
+ The number of rings goes from 1->64, the number of sectors goes from 1->16 
+ (4 per quadrant). There's a redundancy in the fact that 1->64 already contain 
+ the information about the quadrant and the majority of these positions are 
+ indeed not physical. Example: 
+ A hit combining Ring 17 (first ring in Quadrant 2) and 
+ Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
+ of the detector frontside-backside layout. 
+ The possible (allowed hits) are R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12),
+ R(50-64)S(13-16). 
+ The three loops however takes all the possible combintation that an analysis
+ can produce. This works perfectly for cases where the detector does not have 
+ "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
+ non physical hit combinations. 
+ */
+  for(int iQuad = 0 ; iQuad < NumberOfQuadrant ; iQuad++){
+    for(int iRing = 0 ; iRing < NumberofRing; iRing++){
+      lineX.clear() ;
+      lineY.clear() ;
+      lineZ.clear() ;
+      for(int iSector = 0 ; iSector < NumberofSector ; iSector++){
+        //Build vector
+        StripCenter = Strip_1_1;
+        StripCenter = TVector3(R_Min+(iRing+0.5)*StripPitchRing,0, Z);
+        StripCenter.RotateZ( ( Phi_0 - (iSector+0.5)*StripPitchSector ) *M_PI/180.);
 
-  TVector3 StripCenter = Strip_1_1;
-  for(int q = 0 ; q < Ring_NumberOfQuadrant ; q++){
-    for(int f = 0 ; f < Ring_NumberOfStrip ; f++){
-    lineX.clear() ;
-    lineY.clear() ;
-    lineZ.clear() ;
+        // if the hit is not "allowed" (see comment above) use a default value
+        if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
+          StripCenter.SetXYZ(-100,-100, Z-100);
+        
+        lineX.push_back( StripCenter.X() );// these vectors will contain 16x4 = 64 elements
+        lineY.push_back( StripCenter.Y() );
+        lineZ.push_back( StripCenter.Z() );
+      }
 
-    for(int b = 0 ; b < Sector_NumberOfStrip ; b++){
-      StripCenter = Strip_1_1;
-      StripCenter = TVector3(R_Min+(f+0.5)*StripPitchRing,0, Z);
-      StripCenter.RotateZ((Phi_Max-(b+0.5)*StripPitchSector)*M_PI/180.);
-      lineX.push_back( StripCenter.X() );
-      lineY.push_back( StripCenter.Y() );
-      lineZ.push_back( StripCenter.Z() );
-    }
+      OneStripPositionX.push_back(lineX);
+      OneStripPositionY.push_back(lineY);
+      OneStripPositionZ.push_back(lineZ);
 
-    OneStripPositionX.push_back(lineX);
-    OneStripPositionY.push_back(lineY);
-    OneStripPositionZ.push_back(lineZ);
     }
   }
   m_StripPositionX.push_back( OneStripPositionX ) ;

@@ -46,9 +46,10 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 namespace GETAMU{
   // Energy and time Resolution
-  const G4double ResoTime    = 0      ;
-  const G4double ResoEnergy  = 0.035*MeV ;// = zzkeV of Resolution   //   Unit is MeV/2.35
-  const G4double EnergyThreshold = 50.0*keV;
+  const G4double ResoTime     = 4.25532        ;// = 10 ns FWHM  //   Unit is  ns/2.35
+  const G4double ResoCry      = 0.00085        ;// = 2 keV FWHM  //   Unit is MeV/2.35
+  const G4double ResoSeg      = 0.0085         ;// = 10 kev FWHM //   Unit is MeV/2.35
+  const G4double EnergyThreshold = 10.0*keV    ;
 }
 
 using namespace GETAMU ;

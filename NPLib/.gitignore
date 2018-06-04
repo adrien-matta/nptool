@@ -20,3 +20,4 @@ Utility/nptool-wizard
 ../Documentation/user_guide/*.blg
 NPLibVersion.h
 scripts/*.d
+*.sh

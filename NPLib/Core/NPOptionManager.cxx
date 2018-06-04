@@ -67,6 +67,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fLastAnyFile = false;
   fVerboseLevel               = 1;
   fNumberOfEntryToAnalyse     = -1;
+	fFirstEntryToAnalyse        = 0;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
@@ -139,6 +140,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--proof")                               fPROOFMode = true ;
 
     else if (argument == "-L")                                    fNumberOfEntryToAnalyse = atoi(argv[++i]) ;
+
+		else if (argument == "-F")                                    fFirstEntryToAnalyse = atoi(argv[++i]);
 
     else if (argument == "--last-sim")                            fLastSimFile = true ;
 
@@ -366,7 +369,7 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t--output　-O <arg>\t\tSet arg as the Output File Name (output tree)" << endl ;
   cout << "\t--tree-name <arg>\t\tSet arg as the Output Tree Name " << endl ;
   cout << "\t--verbose -V <arg>\t\tSet the verbose level, 0 for nothing, 1 for normal printout."<<endl;
- cout  << "\t\t\t\t\tError and warning are not affected" << endl ;
+	cout  << "\t\t\t\t\tError and warning are not affected" << endl ;
   cout << endl << "NPAnalysis only:"<<endl;
   cout << "\t--run -R <arg>\t\t\tSet arg as the run to read file list" << endl  ;
   cout << "\t--cal -C <arg>\t\t\tSet arg as the calibration file list" << endl ;
@@ -375,6 +378,7 @@ void NPOptionManager::DisplayHelp(){
   cout << "\t--check-histo -CH\t\tCheck if the Histogram looks ok and change there color if not" << endl ;
   cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << endl  ;
   cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << endl ;
+  cout << "\t-F <arg>\t\t\tSet the first event to analyse to arg (analysis goes from F -> L+F)" << endl ;
   cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << endl ;
   cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
   cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;

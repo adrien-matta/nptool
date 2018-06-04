@@ -732,7 +732,7 @@ NPL::OnlineGUI::~OnlineGUI(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Connect(){
-  m_Client->SetAddressAndPort((string) m_Address->GetDisplayText(),(int) m_Port->GetNumber());
+  m_Client->SetAddressAndPort((string) m_Address->GetDisplayText().Data(),(int) m_Port->GetNumber());
   m_Client->Connect();
   m_CanvasListTree->LoadCanvasList(m_Client->GetSpectra());
 }

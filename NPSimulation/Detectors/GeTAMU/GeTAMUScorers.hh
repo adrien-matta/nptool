@@ -69,6 +69,7 @@ private: // inherited from G4VPrimitiveScorer
 
 private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
 	G4ThreeVector m_Position  ;
+	G4ThreeVector m_LocalPosition  ;
 	G4int m_CloverNumber      ;
 	G4int m_CrystalNumber     ;
 	G4int m_Index             ;

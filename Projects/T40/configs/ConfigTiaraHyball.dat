@@ -1,0 +1,21 @@
+ConfigTiaraHyball
+	%MAX_STRIP_MULTIPLICITY
+	%Energy match up is made by if abs((RingE-SectorE)/2) < STRIP_ENERGY_MATCHING_SIGMA*STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA
+	%in unit of MeV
+	STRIP_ENERGY_MATCHING_SIGMA 0.01
+	STRIP_ENERGY_MATCHING_NUMBER_OF_SIGMA 5
+	%If you want to use Ring signal instead of Ring-Sector average, comment this out
+	%To get weighted averaged energy, you need to input these below (default; RingE 18 keV, SectorE=22 keV)
+	% TAKE_E_RING_SECTOR_Average
+	% SIGMA_RING_E 0.018
+	% SIGMA_SECTOR_E 0.022
+	TAKE_E_RING
+	%TAKE_E_SECTOR
+	%TAKE_T_RING
+	%TAKE_T_SECTOR
+	%STRIP_RING_E_RAW_THRESHOLD
+	%STRIP_SECTOR_E_RAW_THRESHOLD
+	%STRIP_RING_E_THRESHOLD
+	%STRIP_SECTOR_THRESHOLD
+	%DISABLE_ALL
+	%DISABLE_CHANNEL

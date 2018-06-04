@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+import os
+from sys import argv
+import ROOT as r
+from multiprocessing import Process
+from subprocess import call, check_output, STDOUT
+
+
+def merge_files(nthreads, fname):
+    fname = os.environ['NPTOOL'] + '/Outputs/Analysis/' + fname
+    chain = r.TChain("PhysicsTree")
+    for i in range(0, nthreads):
+        foutcmd = fname + '_' + str(i) + '.root'
+        chain.AddFile(foutcmd)
+    fout = r.TFile(fname + '.root', "recreate")
+    tout = chain.CopyTree("")
+    tout.Write()
+
+    # Global stuff
+    f0 = r.TFile.Open(fname + '_0.root')
+    fout.cd()
+    for k in f0.GetListOfKeys():
+        obj = f0.Get(k.GetName())
+        if obj.InheritsFrom("TTree") == False:
+            obj.Write(obj.GetName())
+    fout.Close()
+    f0.Close()
+
+    for i in range(0, nthreads):
+        foutcmd = fname + '_' + str(i) + '.root'
+        call(['rm', '-f', foutcmd])
+
+def run_npanalysis(args, redirect):
+    cmd = ['npanalysis']
+    f = open(os.devnull, 'w')
+    for a in args:
+        cmd.append(a)
+    if(redirect):
+        call(cmd, stdout=f, stderr=f)
+    else:
+        call(cmd)
+    f.close()
+
+
+def compile_num_entries():
+    f=open('/tmp/numEntries.cxx','w')
+    f.write('#include <iostream>\n')
+    f.write('#include \"RootInput.h\"\n')
+    f.write('int main(int argc , char** argv){std::cerr << RootInput::getInstance(argv[1])->GetChain()->GetEntries() << std::endl;}\n')
+    f.close()
+
+    rflags = check_output(['root-config', '--cflags', '--libs'])
+    callflags = ['c++', '/tmp/numEntries.cxx', '-o', '/tmp/numEntries', '-L' + os.environ['NPTOOL'] + '/NPLib/lib/', '-l' + 'NPCore', '-I' + os.environ['NPTOOL'] + '/NPLib/include']
+    call(callflags + rflags.split()) # compile
+
+    
+def get_num_entries(argv_):
+    compile_num_entries()
+    runF = 'defaultRunToTreat.txt'
+    for i in range(0, len(argv_)):
+        if argv_[i] == '-R':
+            runF = argv_[i+1]
+            
+    out=check_output(['/tmp/numEntries', runF], stderr=STDOUT)
+    out=out[0:out.rfind('\n')]
+    out=out[out.rfind('\n')+1:]
+    call(['rm', '-f', '/tmp/numEntries.cxx', '/tmp/numEntries'])
+    return long(out)
+
+    
+def run_npanalysis_parallel(nthreads, argv_):
+    nentries = get_num_entries(argv_)
+    nPerThread = nentries / nthreads
+    
+    oPos = 0
+    fout = ''
+    for i in range(0,len(argv_)):
+        if(argv_[i] == '-O'):
+            oPos = i+1
+            fout = argv_[i+1]
+            if(fout[-5:] == '.root'):
+                fout = fout[0:-5]
+    if oPos == 0:
+        fout = 'PhysicsTree'
+        argv_.append("-O")
+        argv_.append("PhysicsTree.root")
+        oPos = len(argv) - 1
+            
+    processes = []
+    for i in range(0, nthreads):
+        these_args = argv_
+        these_args[oPos] = fout + '_' + str(i) + '.root'
+        these_args = these_args[1:]
+
+        start = i*nPerThread
+        stop = (i+1)*nPerThread
+        if stop > nentries:
+            stop=nentries
+        these_args.append('-F')
+        these_args.append(str(start))
+        these_args.append('-L')
+        these_args.append(str(nPerThread))
+        
+        if( i > 0):
+            p = Process(target=run_npanalysis, args=(these_args,True,))
+        else:
+            p = Process(target=run_npanalysis, args=(these_args,False,))
+        processes.append(p)
+    for p in processes:
+        p.start()
+    for p in processes:
+        p.join()
+
+    merge_files(nthreads, fout)
+
+
+def help():
+    print '********************************************************************************'
+    print '***********************************  NPTool  ***********************************'
+    print '********************************************************************************'
+    print 'NPLib version: nplib-2-2-45\nCopyright: NPTool Collaboration\nGitHub: http://github.com/adrien-matta/nptool'
+    print '********************************************************************************'
+    print ''
+    print '----NPOptionManager Help----'
+    print ''
+    print 'List of Option'
+    print '--help -H -h                    Display this help message'
+    print '--detector  -D <arg>            Set arg as the detector configuration file'
+    print '--event-generator  -E <arg>     Set arg as the event generator file'
+    print '--output  -O <arg>              Set arg as the Output File Name (output tree)'
+    print '--tree-name <arg>               Set arg as the Output Tree Name'
+    print '--verbose -V <arg>              Set the verbose level, 0 for nothing, 1 for normal printout.'
+    print '                                Error and warning are not affected'
+    print ''
+    print 'NPAnalysis only:'
+    print '--nthreads -N <arg>             Set arg as the number of parallel jobs (default is 1)'
+    print '--run -R <arg>                  Set arg as the run to read file list'
+    print '--cal -C <arg>                  Set arg as the calibration file list'
+    print '--disable-branch                Disable of branch of Input tree except the one of the detector (faster)'
+    print '--generate-histo -GH            Instantiate the T*Spectra class of each detector'
+    print '--check-histo -CH               Check if the Histogram looks ok and change there color if not'
+    print '--input-physical -IP            Consider the Input file is containing Physics Class.'
+    print '-L <arg>                        Limit the number of events to be analysed to arg'
+    print '-F <arg>                        Set the first event to analyse to arg (analysis goes from F -> L+F)'
+    print '--last-sim                      Ignore the list of Run to treat if any and analysed the last simulated file'
+    print '--last-phy                      Ignore the list of Run to treat if any and analysed the last Physics file'
+    print '--last-res                      Ignore the list of Run to treat if any and analysed the last Result file'
+    print '--last-any                      Ignore the list of Run to treat if any and analysed the last generated root file'
+    print '--online                        Start the spectra server'
+    print ''
+    print 'NPSimulation only:'
+    print '-M <arg>                        Execute Geant4 macro <arg> at startup'
+    print '-B <arg>                        Execute in batch mode (no ui) with Geant4 macro <arg> at startup'
+    
+
+
+if __name__ == '__main__':
+    nthreads = 1
+    argv1 = []
+
+    iGen = (i for i in range(0,len(argv)))
+    for i in iGen:
+        if argv[i] == '-N' or argv[i] == '--nthreads':
+            iGen.next()
+            nthreads = int(argv[i+1])
+        elif argv[i] == '--help' or argv[i] == '-h' or argv[i] == '-H':
+            help()
+            exit()
+        else:
+            argv1.append(argv[i])
+            
+    if nthreads == 1:
+        run_npanalysis(argv1, True)
+    else:
+        run_npanalysis_parallel(nthreads, argv1)
+    
