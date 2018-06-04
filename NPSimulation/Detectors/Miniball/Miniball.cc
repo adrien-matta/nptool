@@ -57,7 +57,7 @@ namespace Miniball_NS{
 	// Energy and time Resolution
 	const double EnergyThreshold = 0.01*MeV;
 	const double ResoTime = 4.5*ns ;
-	const double ResoEnergy =  0.003*MeV ;
+	const double ResoEnergy =  0.85*keV ;
 	const double ResoAngle = 5*deg;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -95,6 +95,15 @@ void Miniball::AddMiniball(double  R, double  Theta, double  Phi, double  Alpha)
 	m_Phi.push_back(Phi);
 	m_Alpha.push_back(Alpha);
 }
+void Miniball::AddDegrader(G4String Material, double Distance, double Thickness, double Radius)
+{
+	m_DegraderMaterial.push_back(Material);
+	m_DegraderDistance.push_back(Distance);
+	m_DegraderThickness.push_back(Thickness);
+	m_DegraderRadius.push_back(Radius);
+
+}
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Miniball::BuildChamber(G4LogicalVolume* world)
 {
@@ -115,6 +124,17 @@ void Miniball::BuildChamber(G4LogicalVolume* world)
 
 		if (name != "Tessellated_Shape_6") PVPBuffer = new G4PVPlacement(LRot, LTrans, LV, name, world, false, 0 );
 	}
+}
+void Miniball::BuildDegrader(G4LogicalVolume* world)
+{
+for(unsigned int i = 0 ; i < m_DegraderMaterial.size() ; i++)
+{
+	G4Tubs* Degrader = new G4Tubs("MiniballDegrader",0.*mm,m_DegraderRadius[i]/2,m_DegraderThickness[i]/2, 0., 360.*deg);
+	G4LogicalVolume* Degrader_log = new G4LogicalVolume(Degrader,MaterialManager::getInstance()->GetMaterialFromLibrary(m_DegraderMaterial[i]),"Degrader_log", 0, 0, 0);
+    G4RotationMatrix* rot = new G4RotationMatrix();
+
+	new G4PVPlacement(rot, G4ThreeVector(0.,0.,m_DegraderDistance[i]),Degrader_log,"Degrader", world, false, i);
+		}
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
@@ -191,7 +211,7 @@ G4AssemblyVolume* Miniball::BuildClusterDetector(double Alpha){
 				else if(name.compare(0,8,"cluster0")==0 || name == "nozzle_log"){
 					G4LogicalVolume* Capsule= VPV->GetLogicalVolume(); 
 					Capsule->SetVisAttributes(Caps);
-					//Capsule->SetVisAttributes(G4VisAttributes::GetInvisible());
+					Capsule->SetVisAttributes(G4VisAttributes::GetInvisible());
 					G4RotationMatrix* Rot = VPV->GetObjectRotation(); 
 					Rot->rotateZ(alpha);
 					G4ThreeVector Pos = VPV->GetObjectTranslation(); 
@@ -225,6 +245,8 @@ void Miniball::ReadConfiguration(NPL::InputParser parser){
 
 	vector<string> token = {"R","Theta","Phi","Alpha","tempAlpha"};
 	vector<string> chamberToken = {"GDMLFilePath","GDMLFileName","GDMLWorldName"};
+	vector<string> degraderToken = {"Degrader","Distance","Thickness","Radius"};
+
 	
 	for(unsigned int i = 0 ; i < blocks.size() ; i++){
 		if(blocks[i]->HasTokenList(token)){
@@ -247,6 +269,15 @@ void Miniball::ReadConfiguration(NPL::InputParser parser){
 			m_GDMLWorld = blocks[i]->GetString("GDMLWorldName");
 
 			constructChamber = true;
+		}
+
+		else if (blocks[i]->HasTokenList(degraderToken))
+		{
+			G4String MaterialDegrader = blocks[i]->GetString("Degrader");
+			double Distance = blocks[i]->GetDouble("Distance","mm");
+			double Thickness = blocks[i]->GetDouble("Thickness","mm");
+			double Radius = blocks[i]->GetDouble("Radius","mm");
+			AddDegrader(MaterialDegrader, Distance, Thickness, Radius);
 		}
 
 		else{
@@ -273,6 +304,36 @@ void Miniball::ConstructDetector(G4LogicalVolume* world){
 		DetRot->rotateX(m_Phi[i]);
 		DetRot->rotateY(m_Theta[i]);
 
+//		cout << "DetPos " << DetPos.getTheta()*TMath::RadToDeg() <<
+//			" " << DetPos.getPhi()*TMath::RadToDeg() <<
+//			" m_ " << m_Theta[i]*TMath::RadToDeg() <<
+//			" " << m_Phi[i]*TMath::RadToDeg() << endl;
+//		cout << "DetPos " << DetPos.getX() << " " <<
+//			DetPos.getY() << " " << DetPos.getZ() <<
+//			" m_ " << m_Theta[i]*TMath::RadToDeg() <<
+//			" " << m_Phi[i]*TMath::RadToDeg() << endl;
+//		cout << "DetRot " << DetRot->getTheta()*TMath::RadToDeg() << " " << DetRot->getPhi()*TMath::RadToDeg() << " m_ " << m_Theta[i]*TMath::RadToDeg() << " " << m_Phi[i]*TMath::RadToDeg() << endl;
+//
+		double x_pos, y_pos, z_pos;
+		x_pos = DetPos.getX();
+		y_pos = DetPos.getY();
+		z_pos = DetPos.getZ();
+		double radius;
+		radius = sqrt(x_pos*x_pos + y_pos*y_pos + z_pos*z_pos);
+		double placedTheta = acos(z_pos/radius)*TMath::RadToDeg();
+		double placedPhi = atan2(y_pos,x_pos)*TMath::RadToDeg() ;
+
+		TVector3 Placement;
+		Placement.SetX(placedTheta);
+		Placement.SetY(placedPhi);
+		if (m_Phi[i] < 180.) Placement.SetZ(m_Alpha[i]);
+		else Placement.SetZ(m_Alpha[i]+180.);
+
+		TLorentzVector Placement_R;
+		Placement_R.SetVect(Placement);
+		Placement_R.SetT(m_R[i]);
+
+		m_Placed.push_back(Placement_R);
 		ClusterDetectorHolder[i]->MakeImprint(world,DetPos, DetRot,i+1);
 
 		// set a nicer name ORIGINAL
@@ -296,6 +357,9 @@ void Miniball::ConstructDetector(G4LogicalVolume* world){
 		
 	}
 	if (constructChamber) BuildChamber(world);
+
+	if (m_DegraderMaterial.size()!=0) BuildDegrader(world);
+
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
@@ -333,17 +397,40 @@ void Miniball::ReadSensitive(const G4Event* event){
 		if(Energy>Miniball_NS::EnergyThreshold){
 			double Time = RandGauss::shoot(Info[1],Miniball_NS::ResoTime);
 			int DetectorNbr = (int) Info[7];
-			TVector3 Angle;  
+			TLorentzVector Angle;
 			//Angle.SetX(RandGauss::shoot(Info[5]/deg,Miniball_NS::ResoAngle));
 			//Angle.SetY(RandGauss::shoot(Info[6]/deg,Miniball_NS::ResoAngle));
 			//Angle.SetZ(0.);
-			Angle.SetX(m_Theta[DetectorNbr-1]);
-			Angle.SetY(m_Phi[DetectorNbr-1]);
-			Angle.SetZ(m_Alpha[DetectorNbr-1]);
+			//Angle.SetX(m_Theta[DetectorNbr-1]);
+			//Angle.SetY(m_Phi[DetectorNbr-1]);
+			Angle.SetX(m_Placed[DetectorNbr-1].X());
+			Angle.SetY(m_Placed[DetectorNbr-1].Y());
+			Angle.SetZ(m_Placed[DetectorNbr-1].Z());
+			Angle.SetT(m_Placed[DetectorNbr-1].T());
 
 			m_Event->SetEnergy(DetectorNbr,Energy);
 			m_Event->SetAngle(DetectorNbr,Angle);
 			m_Event->SetTime(DetectorNbr,Time); 
+
+
+			// Quick and dirty method to grab the name of the volume out of the scorer for identifying crystals
+			Info_Calorimeter *foo  = new Info_Calorimeter();
+			G4String VolumeName = foo->GetVolumeName();
+			delete foo;
+
+	
+			vector<G4String> v_VolumeName;
+			G4String token;
+			istringstream tokenStream(VolumeName);
+
+			while (getline(tokenStream, token, '_'))
+			{
+				v_VolumeName.push_back(token);
+			}
+
+			int crystal = stoi(v_VolumeName[4]);
+
+			m_Event->SetCrystal(DetectorNbr,crystal+1);
 
 			// Interraction Coordinates
 			ms_InterCoord->SetDetectedPositionX(Info[2]) ;

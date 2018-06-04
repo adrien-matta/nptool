@@ -30,6 +30,9 @@
 // C++ headers
 #include <string>
 
+// G4 headers
+#include "G4RadioactiveDecay.hh"
+
 // NPSimulation
 #include "VEventGenerator.hh"
 #include "Target.hh"
@@ -64,6 +67,13 @@ class EventGeneratorTwoBodyReaction : public NPS::VEventGenerator
       ParticleStack* m_ParticleStack;
       bool m_ShootLight;
       bool m_ShootHeavy;
+      vector<double>*        m_InitalLevelLight;
+      vector<double>*        m_InitalPopulationLight;
+      vector<double>*        m_InitalLevelHeavy;
+      vector<double>*        m_InitalPopulationHeavy;
+      G4String               m_RadioactiveDecayLight;
+      G4String               m_RadioactiveDecayHeavy;
+
 
 
    private: // Target Parameter
@@ -76,6 +86,8 @@ class EventGeneratorTwoBodyReaction : public NPS::VEventGenerator
 
    private: // Beam Parameters
         string m_BeamName;
+
+        G4RadioactiveDecay* radioactiveDecay;
 
       // Other methods
       void Print() const;

@@ -32,6 +32,8 @@
 using namespace std;
 using namespace CLHEP;
 
+        G4String VolumeName;// Variable for extracting volume name
+
 namespace CALORIMETERSCORERS {
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
     class PS_Calorimeter : public G4VPrimitiveScorer{
@@ -79,6 +81,7 @@ namespace CALORIMETERSCORERS {
         void DrawAll();
         void PrintAll();
         
+
     private: // How much level of volume nesting should be considered
         // Give the list of the nesting level at which the copy number should be return.
         // 0 is the lowest level possible (the actual volume copy number in which the interaction happen)
@@ -89,7 +92,14 @@ namespace CALORIMETERSCORERS {
         G4int HCID;
         NPS::HitsMap<G4double*>* EvtMap;
     };
+
 }
+    class Info_Calorimeter {
+        private :
+        public :
+            //G4String GetVolumeName(G4Step*); // Small function to return the name of volume particle is in
+            G4String GetVolumeName(); // Small function to return the name of volume particle is in
+    };
 
 
 #endif

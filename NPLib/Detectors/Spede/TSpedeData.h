@@ -92,13 +92,13 @@ class TSpedeData : public TObject {
 
     //////////////////////    GETTERS    ////////////////////////
     // Energy
-    inline UShort_t GetMultEnergy() const						 	{return fSpede_E_DetectorNbr.size();}
+    inline UShort_t GetMultEnergy() const						 	{return fSpede_E_DetectorNbr.size();}//!
     inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 	{return fSpede_E_DetectorNbr[i];}//!
     inline UShort_t GetE_PixelNbr(const unsigned int &i) const 		{return fSpede_E_PixelNbr[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 		{return fSpede_Energy[i];}//!
 
     // Time
-    inline UShort_t GetMultTime() const 							{return fSpede_T_DetectorNbr.size();}
+    inline UShort_t GetMultTime() const 							{return fSpede_T_DetectorNbr.size();}//!
     inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 	{return fSpede_T_DetectorNbr[i];}//!
     inline UShort_t GetT_PixelNbr(const unsigned int &i) const 		{return fSpede_T_PixelNbr[i];}//!
     inline Double_t Get_Time(const unsigned int &i) const 			{return fSpede_Time[i];}//!

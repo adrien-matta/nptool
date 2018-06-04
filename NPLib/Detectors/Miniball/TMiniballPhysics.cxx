@@ -64,23 +64,26 @@ void TMiniballPhysics::BuildSimplePhysicalEvent() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TMiniballPhysics::BuildPhysicalEvent() {
-  // apply thresholds and calibration
-  PreTreat();
-  // match energy and time together
-  for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
-    for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
-      for (UShort_t a = 0; a < m_PreTreatedData->GetMultAngle(); a++) {
-
-        if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t) 
-         && m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetA_DetectorNbr(a)) {
-          DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-          Energy.push_back(m_PreTreatedData->Get_Energy(e));
-          Angle.push_back(m_PreTreatedData->Get_Angle(a));
-          Time.push_back(m_PreTreatedData->Get_Time(t));
+    // apply thresholds and calibration
+    PreTreat();
+    // match energy and time together
+    for (UShort_t e = 0; e < m_PreTreatedData->GetMultEnergy(); e++) {
+        for (UShort_t t = 0; t < m_PreTreatedData->GetMultTime(); t++) {
+            for (UShort_t a = 0; a < m_PreTreatedData->GetMultAngle(); a++) {
+                for (UShort_t c = 0; c < m_PreTreatedData->GetMultCrystal(); c++) {
+                    if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t) 
+                            && m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetA_DetectorNbr(a)
+                            && m_PreTreatedData->GetC_DetectorNbr(e) == m_PreTreatedData->GetC_DetectorNbr(c)) {
+                        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+                        Energy.push_back(m_PreTreatedData->Get_Energy(e));
+                        Time.push_back(m_PreTreatedData->Get_Time(t));
+                        Angle.push_back(m_PreTreatedData->Get_Angle(a));
+                        Crystal.push_back(m_PreTreatedData->Get_Crystal(c));
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -103,17 +106,24 @@ void TMiniballPhysics::PreTreat() {
     }
   }
   
-  // Angle
-  for (UShort_t i = 0; i < m_EventData->GetMultAngle(); ++i) {
-    TVector3 Angle = m_EventData->Get_Angle(i);
-    m_PreTreatedData->SetAngle(m_EventData->GetA_DetectorNbr(i), Angle);
-  }
-  
   // Time 
   for (UShort_t i = 0; i < m_EventData->GetMultTime(); ++i) {
     Double_t Time= Cal->ApplyCalibration("Miniball/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
     m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
   }
+
+  // Angle
+  for (UShort_t i = 0; i < m_EventData->GetMultAngle(); ++i) {
+    TLorentzVector Angle = m_EventData->Get_Angle(i);
+    m_PreTreatedData->SetAngle(m_EventData->GetA_DetectorNbr(i), Angle);
+  }
+  
+  // Crystal 
+  for (UShort_t i = 0; i < m_EventData->GetMultCrystal(); ++i) {
+    UShort_t Crystal = m_EventData->Get_Crystal(i);
+    m_PreTreatedData->SetCrystal(m_EventData->GetC_DetectorNbr(i), Crystal);
+  }
+  
 }
 
 
@@ -188,6 +198,7 @@ void TMiniballPhysics::Clear() {
   Energy.clear();
   Angle.clear();
   Time.clear();
+  Crystal.clear();
 }
 
 
@@ -200,6 +211,7 @@ void TMiniballPhysics::ReadConfiguration(NPL::InputParser parser) {
 
   vector<string> token = {"R","Theta","Phi","Alpha"};
   vector<string> chamberToken = {"GDMLFilePath","GDMLFileName","GDMLWorldName"};
+	vector<string> degraderToken = {"Degrader","Distance","Thickness","Radius"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
@@ -213,6 +225,8 @@ void TMiniballPhysics::ReadConfiguration(NPL::InputParser parser) {
 //      AddDetector(R,Theta,Phi);
     }
     else if (blocks[i]->HasTokenList(chamberToken)){
+    }
+    else if (blocks[i]->HasTokenList(degraderToken)){
     }
 
     else{

@@ -67,8 +67,9 @@ void TSpedeData::Dump() const {
  
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fSpede_E_DetectorNbr[i]
-         << "PixNbr: " << fSpede_E_PixelNbr[i]
-         <<" Energy: " << fSpede_Energy[i];
+         <<" PixNbr: " << fSpede_E_PixelNbr[i]
+         <<" Energy: " << fSpede_Energy[i]
+		 <<"\n";
   }
   
   // Time
@@ -77,7 +78,8 @@ void TSpedeData::Dump() const {
  
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fSpede_T_DetectorNbr[i]
-		 << "PixNbr: " << fSpede_T_PixelNbr[i]
-         << " Time: " << fSpede_Time[i];
+		 <<" PixNbr: " << fSpede_T_PixelNbr[i]
+         <<" Time: "   << fSpede_Time[i]
+		 <<"\n";
   }
 }

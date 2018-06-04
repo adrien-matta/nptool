@@ -376,6 +376,11 @@ void Reaction::ReadConfigurationFile(string Path){
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(NPL::InputParser parser){
 
+    fInitialLevel3 = new vector<double>();
+    fInitialPopulation3 = new vector<double>();
+    fInitialLevel4 = new vector<double>();
+    fInitialPopulation4 = new vector<double>();
+
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
   if(blocks.size()>0 && NPOptionManager::getInstance()->GetVerboseLevel())
     cout << endl << "\033[1;35m//// Two body reaction found " << endl;
@@ -422,11 +427,64 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       fExcitation3 = blocks[i]->GetDouble("ExcitationEnergyLight","MeV");
     else if(blocks[i]->HasToken("ExcitationEnergy3"))
       fExcitation3 = blocks[i]->GetDouble("ExcitationEnergy3","MeV");
+    else if(blocks[i]->HasToken("InitialPopulationLight")){
+        string initialPopulationFileName = blocks [i]->GetString("InitialPopulationLight");
+        ifstream filename (initialPopulationFileName);
+        double level, population;
+
+        while (filename >> level >> population)
+        {
+            fInitialLevel3->push_back(level);
+            fInitialPopulation3->push_back(population);
+
+            cout << "Level " << level << " Population " << population << "\n";
+        }
+    }
+    else if(blocks[i]->HasToken("InitialPopulation3")){
+        string initialPopulationFileName = blocks [i]->GetString("InitialPopulation3");
+        ifstream filename (initialPopulationFileName);
+        double level, population;
+
+        while (filename >> level >> population)
+        {
+            fInitialLevel3->push_back(level);
+            fInitialPopulation3->push_back(population);
+
+            cout << "Level " << level << " Population " << population << "\n";
+        }
+    }
 
     if(blocks[i]->HasToken("ExcitationEnergyHeavy"))
       fExcitation4 = blocks[i]->GetDouble("ExcitationEnergyHeavy","MeV");
     else if(blocks[i]->HasToken("ExcitationEnergy4"))
       fExcitation4 = blocks[i]->GetDouble("ExcitationEnergy4","MeV");
+    else if(blocks[i]->HasToken("InitialPopulationHeavy")){
+        string initialPopulationFileName = blocks [i]->GetString("InitialPopulationHeavy");
+        cout << initialPopulationFileName << endl;
+        ifstream filename (initialPopulationFileName);
+        double level, population;
+
+        while (filename >> level >> population)
+        {
+            fInitialLevel4->push_back(level);
+            fInitialPopulation4->push_back(population);
+
+            cout << "Level " << level << " Population " << population << "\n";
+        }
+    }
+    else if(blocks[i]->HasToken("InitialPopulation4")){
+        string initialPopulationFileName = blocks [i]->GetString("InitialPopulation4");
+        ifstream filename (initialPopulationFileName);
+        double level, population;
+
+        while (filename >> level >> population)
+        {
+            fInitialLevel4->push_back(level);
+            fInitialPopulation4->push_back(population);
+
+            cout << "Level " << level << " Population " << population << "\n";
+        }
+    }
 
     if(blocks[i]->HasToken("ExcitationEnergyDistribution")){
       vector<string> file = blocks[i]->GetVectorString("ExcitationEnergyDistribution");
@@ -491,6 +549,12 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     }
     if(blocks[i]->HasToken("ShootLight")){
       fshoot3 = blocks[i]->GetInt("ShootLight");
+    }
+    if(blocks[i]->HasToken("RadioactiveDecayLight")){
+        fDecayFile3 = blocks[i]->GetString("RadioactiveDecayLight");
+    }
+    if(blocks[i]->HasToken("RadioactiveDecayHeavy")){
+        fDecayFile4 = blocks[i]->GetString("RadioactiveDecayHeavy");
     }
   }
   SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);

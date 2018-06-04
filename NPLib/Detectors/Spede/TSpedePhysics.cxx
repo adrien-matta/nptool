@@ -103,29 +103,38 @@ void TSpedePhysics::PreTreat() {
   // This method typically applies thresholds and calibrations
   // Might test for disabled channels for more complex detector
 
+  //cout << "pre start\n";
   // clear pre-treated object
   ClearPreTreatedData();
 
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
-
+  //cout << "pre early\n";
   // Energy
   unsigned int mysize = m_EventData->GetMultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
-    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("Spede/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_PIXEL"+NPL::itoa(m_EventData->GetE_PixelNbr(i)),m_EventData->Get_Energy(i));
+    if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold && m_EventData->GetE_PixelNbr(i)< 25) {
+      Double_t Energy = Cal->ApplyCalibration("Spede/D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+
+			  "_PIXEL"+NPL::itoa(m_EventData->GetE_PixelNbr(i))+
+			  "_ENERGY",m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
         m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), m_EventData->GetE_PixelNbr(i), Energy);
       }
     }
   }
-
+  //cout << "pre mid\n";
   // Time 
   mysize = m_EventData->GetMultTime();
   for (UShort_t i = 0; i < mysize; ++i) {
-    Double_t Time= Cal->ApplyCalibration("Spede/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i))+"_PIXEL"+NPL::itoa(m_EventData->GetT_PixelNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetE_PixelNbr(i), Time);
+	  if (m_EventData->GetT_PixelNbr(i)< 25) {//TODO this is catching a mistake when particle hits not a pixel on detector...
+		//m_EventData->Dump();
+		  Double_t Time= Cal->ApplyCalibration("Spede/D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i))+
+				  "_PIXEL"+NPL::itoa(m_EventData->GetT_PixelNbr(i))+
+				  "_TIME",m_EventData->Get_Time(i));
+		  m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetT_PixelNbr(i), Time);
+	  }
   }
+  //cout <<"pre end\n\n\n";
 }
 
 
@@ -309,7 +318,7 @@ void TSpedePhysics::WriteSpectra() {
 void TSpedePhysics::AddParameterToCalibrationManager() {
   CalibrationManager* Cal = CalibrationManager::getInstance();
   for (int i = 0; i < m_NumberOfDetectors; ++i) {
-	  for (int j = 0; j < 90; ++j) {
+	  for (int j = 0; j < 24; ++j) {
 		  Cal->AddParameter("Spede", "D"+ NPL::itoa(i+1)+"_ENERGY","Spede_D"+ NPL::itoa(i+1)+"_ENERGY");
 		  Cal->AddParameter("Spede", "D"+ NPL::itoa(i+1)+"_TIME","Spede_D"+ NPL::itoa(i+1)+"_TIME");
 	  }

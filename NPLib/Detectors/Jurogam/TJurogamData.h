@@ -38,6 +38,10 @@ class TJurogamData : public TObject {
     vector<UShort_t>   fJurogam_E_DetectorNbr;
     vector<Double_t>   fJurogam_Energy;
 
+	// Crystal
+	vector<UShort_t>   fJurogam_C_DetectorNbr;
+	vector<UShort_t>   fJurogam_Crystal;
+
     // Time
     vector<UShort_t>   fJurogam_T_DetectorNbr;
     vector<Double_t>   fJurogam_Time;
@@ -84,6 +88,17 @@ class TJurogamData : public TObject {
       Set_Energy(Energy);
     };//!
 
+    // Crystal
+    inline void SetC_DetectorNbr(const UShort_t& DetNbr)
+      {fJurogam_C_DetectorNbr.push_back(DetNbr);} //!
+    inline void Set_Crystal(const UShort_t& Crystal)
+      {fJurogam_Crystal.push_back(Crystal);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetCrystal(const UShort_t& DetNbr,const UShort_t& Crystal) {
+      SetC_DetectorNbr(DetNbr);
+      Set_Crystal(Crystal);
+    };//!
+
     // Time
     inline void SetT_DetectorNbr(const UShort_t& DetNbr)
       {fJurogam_T_DetectorNbr.push_back(DetNbr);} //!
@@ -125,6 +140,14 @@ class TJurogamData : public TObject {
       {return fJurogam_E_DetectorNbr[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fJurogam_Energy[i];}//!
+
+    // Crystal
+    inline UShort_t GetMultCrystal() const
+      {return fJurogam_C_DetectorNbr.size();}
+    inline UShort_t GetC_DetectorNbr(const unsigned int &i) const 
+      {return fJurogam_C_DetectorNbr[i];}//!
+    inline Double_t Get_Crystal(const unsigned int &i) const 
+      {return fJurogam_Crystal[i];}//!
 
     // Time
     inline UShort_t GetMultTime() const

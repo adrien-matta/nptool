@@ -52,6 +52,7 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         multiplier*=10;
     }
     
+	VolumeName =  aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetName();
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
     it= EvtMap->GetMap()->find(m_Index);
@@ -128,6 +129,11 @@ G4bool PS_CalorimeterWithInteraction::ProcessHits(G4Step* aStep, G4TouchableHist
     Infos[5] = m_Position.theta();
     Infos[6] = m_Position.phi();
     
+
+	//cout << aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() << endl;
+	//VolumeName =  aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+	VolumeName =  aStep->GetPreStepPoint()->GetPhysicalVolume()->GetLogicalVolume()->GetName();
+
     for(unsigned int i = 0 ; i < mysize ; i++){
         Infos[i+7] = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]);
     }
@@ -186,3 +192,5 @@ void PS_CalorimeterWithInteraction::PrintAll(){
     G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4String Info_Calorimeter::GetVolumeName(){return VolumeName; }

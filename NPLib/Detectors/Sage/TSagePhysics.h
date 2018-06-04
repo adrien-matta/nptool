@@ -169,6 +169,11 @@ class TSagePhysics : public TObject, public NPL::VDetector {
   private:
     TSageSpectra* m_Spectra; // !
 
+	// Specific flags
+	int CarbonFoils;
+	double InnerDiameter;
+	double SiThickness;
+
   // spectra getter
   public:
     map<string, TH1*>   GetSpectra(); 

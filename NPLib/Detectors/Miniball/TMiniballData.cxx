@@ -48,13 +48,17 @@ void TMiniballData::Clear() {
   fMiniball_E_DetectorNbr.clear();
   fMiniball_Energy.clear();
 
+  // Time
+  fMiniball_T_DetectorNbr.clear();
+  fMiniball_Time.clear();
+
   // Angle
   fMiniball_A_DetectorNbr.clear();
   fMiniball_Angle.clear();
 
-  // Time
-  fMiniball_T_DetectorNbr.clear();
-  fMiniball_Time.clear();
+  // Crystal
+  fMiniball_C_DetectorNbr.clear();
+  fMiniball_Crystal.clear();
 }
 
 
@@ -72,18 +76,6 @@ void TMiniballData::Dump() const {
          << " Energy: " << fMiniball_Energy[i];
   }
   
-  // Angle
-  mysize = fMiniball_A_DetectorNbr.size();
-  cout << "Miniball_E_Mult: " << mysize << endl;
- 
-  for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fMiniball_A_DetectorNbr[i]
-         << " Angle: Theta: " << fMiniball_Angle[i].Px()
-         << " Angle: Phi: " << fMiniball_Angle[i].Py()
-         << " Angle: Alpha: " << fMiniball_Angle[i].Pz();
-  }
-  
-
   // Time
   mysize = fMiniball_T_DetectorNbr.size();
   cout << "Miniball_T_Mult: " << mysize << endl;
@@ -91,5 +83,26 @@ void TMiniballData::Dump() const {
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "DetNbr: " << fMiniball_T_DetectorNbr[i]
          << " Time: " << fMiniball_Time[i];
+  }
+
+  // Angle
+  mysize = fMiniball_A_DetectorNbr.size();
+  cout << "Miniball_A_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fMiniball_A_DetectorNbr[i]
+         << " Angle: Theta: " << fMiniball_Angle[i].Px()
+         << " Angle: Phi: " << fMiniball_Angle[i].Py()
+         << " Angle: Alpha: " << fMiniball_Angle[i].Pz();
+  }
+
+
+  // Crystal
+  mysize = fMiniball_C_DetectorNbr.size();
+  cout << "Miniball_C_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fMiniball_C_DetectorNbr[i]
+         << " Crytal: " << fMiniball_Crystal[i];
   }
 }

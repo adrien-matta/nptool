@@ -47,6 +47,9 @@ void TJurogamData::Clear() {
   // Energy
   fJurogam_E_DetectorNbr.clear();
   fJurogam_Energy.clear();
+  // Crystal
+  fJurogam_C_DetectorNbr.clear();
+  fJurogam_Crystal.clear();
   // Time
   fJurogam_T_DetectorNbr.clear();
   fJurogam_Time.clear();
@@ -75,6 +78,16 @@ void TJurogamData::Dump() const {
          << " Energy: " << fJurogam_Energy[i];
   }
   
+
+  // Crystal
+  mysize = fJurogam_C_DetectorNbr.size();
+  cout << "Jurogam_C_Mult: " << mysize << endl;
+ 
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fJurogam_C_DetectorNbr[i]
+         << " Crytal: " << fJurogam_Crystal[i];
+  }
+
   // Time
   mysize = fJurogam_T_DetectorNbr.size();
   cout << "Jurogam_T_Mult: " << mysize << endl;

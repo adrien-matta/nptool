@@ -68,6 +68,7 @@ void TJurogamPhysics::AddDetector(double R, double Theta, double Phi, string sha
   TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
   // Call the cartesian method
   AddDetector(Pos,shape,BGO);
+  //m_NumberOfDetectors++;
 } 
   
 ///////////////////////////////////////////////////////////////////////////
@@ -76,6 +77,7 @@ void TJurogamPhysics::AddDetector(TVector3 Pos, double Theta, double Phi, string
 	//TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
   // Call the cartesian method
   AddDetector(Pos,shape,BGO);
+  //m_NumberOfDetectors++;
 } 
 ///////////////////////////////////////////////////////////////////////////
 void TJurogamPhysics::BuildSimplePhysicalEvent() {
@@ -87,19 +89,25 @@ void TJurogamPhysics::BuildSimplePhysicalEvent() {
 ///////////////////////////////////////////////////////////////////////////
 void TJurogamPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
+ //cout << "phys start\n"; 
   PreTreat();
 
   // match energy and time together
   unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
   unsigned int mysizeT = m_PreTreatedData->GetMultTime();
+  unsigned int mysizeC = m_PreTreatedData->GetMultCrystal();
   for (UShort_t e = 0; e < mysizeE ; e++) {
-    for (UShort_t t = 0; t < mysizeT ; t++) {
-      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        Energy.push_back(m_PreTreatedData->Get_Energy(e));
-        Time.push_back(m_PreTreatedData->Get_Time(t));
-      }
-    }
+	  for (UShort_t t = 0; t < mysizeT ; t++) {
+		  for (UShort_t c = 0; t < mysizeC ; c++) {
+			  if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t) 
+			  && m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetC_DetectorNbr(c)) {
+				  DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
+				  Energy.push_back(m_PreTreatedData->Get_Energy(e));
+				  Time.push_back(m_PreTreatedData->Get_Time(t));
+				  Crystal.push_back(m_PreTreatedData->Get_Crystal(t));
+			  }
+		  }
+	  }
   }
   unsigned int mysizeBGOE = m_PreTreatedData->Get_BGO_MultEnergy();
   unsigned int mysizeBGOT = m_PreTreatedData->Get_BGO_MultTime();
@@ -112,19 +120,19 @@ void TJurogamPhysics::BuildPhysicalEvent() {
       }
     }
   }
+ //cout << "phys end\n"; 
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TJurogamPhysics::PreTreat() {
   // This method typically applies thresholds and calibrations
   // Might test for disabled channels for more complex detector
-
   // clear pre-treated object
+//cout <<"pre start\n";
   ClearPreTreatedData();
 
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
-
   // Energy
   unsigned int mysize = m_EventData->GetMultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
@@ -136,6 +144,11 @@ void TJurogamPhysics::PreTreat() {
     }
   }
 
+  // Crystal 
+  for (UShort_t i = 0; i < m_EventData->GetMultCrystal(); ++i) {
+    UShort_t Crystal = m_EventData->Get_Crystal(i);
+    m_PreTreatedData->SetCrystal(m_EventData->GetC_DetectorNbr(i), Crystal);
+  }
   // Time 
   mysize = m_EventData->GetMultTime();
   for (UShort_t i = 0; i < mysize; ++i) {
@@ -147,7 +160,7 @@ void TJurogamPhysics::PreTreat() {
   mysize = m_EventData->Get_BGO_MultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_BGO_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("Jurogam/BGO_ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      Double_t Energy = Cal->ApplyCalibration("Jurogam/BGO_ENERGY"+NPL::itoa(m_EventData->Get_BGO_E_DetectorNbr(i)),m_EventData->Get_BGO_Energy(i));
       if (Energy > m_E_Threshold) {
         m_PreTreatedData->Set_BGO_Energy(m_EventData->Get_BGO_E_DetectorNbr(i), Energy);
       }
@@ -160,6 +173,8 @@ void TJurogamPhysics::PreTreat() {
     Double_t Time= Cal->ApplyCalibration("Jurogam/BGO_TIME"+NPL::itoa(m_EventData->Get_BGO_T_DetectorNbr(i)),m_EventData->Get_BGO_Time(i));
     m_PreTreatedData->Set_BGO_Time(m_EventData->Get_BGO_T_DetectorNbr(i), Time);
   }
+
+//cout <<"pre end\n";
 }
 
 
@@ -232,6 +247,7 @@ void TJurogamPhysics::ReadAnalysisConfig() {
 void TJurogamPhysics::Clear() {
   DetectorNumber.clear();
   Energy.clear();
+  Crystal.clear();
   Time.clear();
   BGO_E.clear();
 }
@@ -300,9 +316,9 @@ void TJurogamPhysics::InitSpectra() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TJurogamPhysics::FillSpectra() {
-  m_Spectra -> FillRawSpectra(m_EventData);
-  m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
-  m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
+	m_Spectra -> FillRawSpectra(m_EventData);
+	m_Spectra -> FillPreTreatedSpectra(m_PreTreatedData);
+	m_Spectra -> FillPhysicsSpectra(m_EventPhysics);
 }
 
 

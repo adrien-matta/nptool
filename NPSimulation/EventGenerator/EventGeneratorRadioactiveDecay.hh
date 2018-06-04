@@ -74,6 +74,8 @@ class EventGeneratorRadioactiveDecay: public NPS::VEventGenerator{
       G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
       G4String               m_PhotonEvaporation;
       G4String               m_RadioactiveDecay ;
+      vector<double>         m_InitalLevel      ;
+      vector<double>         m_InitalPopulation ;
   };
 
 #endif

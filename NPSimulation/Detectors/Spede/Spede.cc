@@ -84,11 +84,12 @@ using namespace CLHEP;
 namespace Spede_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 10.*keV;
-  const double ResoTime = 100*ns ;
-  const double ResoEnergy = 2.7*keV ;//Sigma not actual resolution// 2.7*2.2 ~6keV
+  const double ResoTime = 0.001*ns ;
+  //const double ResoEnergy = 2.7*keV ;//Sigma not actual resolution// 2.7*2.2 ~6keV
+  const double ResoEnergy = 10*keV ;//Sigma not actual resolution// 2.7*2.2 ~6keV
   //const double Radius = 50*mm ; 
   //const double Width = 100*mm ;
-  const double Thickness = 1.0*mm ;
+  const double Thickness = 1*mm ;
   //const string Material = "BC400";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -259,56 +260,6 @@ void Spede::BuildPCB(G4double si_thickness,
     G4ThreeVector Det_pos,
     G4LogicalVolume *world)
 {
-  /*G4Tubs* SPEDE_pcb= new G4Tubs("SPEDE pcb",
-        8.5*mm,
-        70.*mm,
-        pcb_thickness/2*mm,
-        0*deg,
-        360*deg);
-    G4Material* PCB= MaterialManager::getInstance()->GetMaterialFromLibrary("PCB");
-    G4LogicalVolume* m_SPEDE_pcb = new G4LogicalVolume(SPEDE_pcb, PCB, "SPEDE_pcb_log");
-
-    G4VisAttributes *pcbVA = new G4VisAttributes(G4Colour(0.0,0.3,0.0));
-    m_SPEDE_pcb -> SetVisAttributes(pcbVA);
-  
-	//G4ThreeVector pcb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness/2);
-//	new G4PVPlacement(G4Transform3D(*Rot,pcb_pos),
-//			m_SPEDE_pcb,
-//			"SPEDE pcb", world, false,0);
-
-	//G4double cb_thickness = 3.;
-	G4Tubs* spede_cb = new G4Tubs("SpedeCoolingBlock",20./2.*mm,74./2.*mm,cb_thickness/2*mm,0,360*deg);
-	G4Material* CoolingBlockMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Cu");
-
-	G4LogicalVolume* m_SPEDE_cb = new G4LogicalVolume(spede_cb, CoolingBlockMaterial, "SPEDE_cb_log");
-
-	G4VisAttributes *cbVA = new G4VisAttributes(G4Colour(1.0,0.3,0.0));
-	m_SPEDE_cb -> SetVisAttributes(cbVA);
-
-	//G4ThreeVector cb_pos = Det_pos + Det_pos.unit()*(si_thickness/2+pcb_thickness+cb_thickness/2);
-
-	//new G4PVPlacement(G4Transform3D(*Rot,cb_pos),
-	//		m_SPEDE_cb,
-	//		"SPEDE cb", world, false,0);
-*/
-
-	//TESTING for target interactions
-	/*
-	G4double target_thickness = 10.;//in um
-	G4Tubs* spede_target = new G4Tubs("SpedeTarget",0.*mm,2./2.*mm,target_thickness/2*um,0,360*deg);
-	G4Material* TargetMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Au");
-
-	G4LogicalVolume* m_SPEDE_target = new G4LogicalVolume(spede_target, TargetMaterial, "SPEDE_target_log");
-
-	G4VisAttributes *targetVA = new G4VisAttributes(G4Colour(1.0,0.3,0.0));
-	m_SPEDE_target -> SetVisAttributes(targetVA);
-
-	G4ThreeVector target_pos = G4ThreeVector(0,0,0);
-
-	new G4PVPlacement(G4Transform3D(*Rot,target_pos),
-			m_SPEDE_target,
-			"SPEDE target", world, false,0);//*/
-
     G4RotationMatrix* rot = new G4RotationMatrix();
     rot->rotateY(180*deg);
     G4ThreeVector offset;
@@ -540,108 +491,53 @@ void Spede::BuildChamber(G4LogicalVolume *world)
     // =========================================================================
     // SPEDE chamber
     // =========================================================================
-    G4int nmbRZ;
+	//G4Material* ChamberMaterial= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+	/*
+	G4GDMLParser m_gdmlparser;
+	//m_gdmlparser.Read(m_GDMLPath+m_GDMLName);
+	//if (m_gdmlparser.IsValid("myGeometry.gdml"))
+	m_gdmlparser.Read("myGeometry.gdml",false);
+	//m_gdmlparser.Read("box.gdml",false);
+	//m_gdmlparser.Read("spede_part.gdml",false);
+	G4String worldvolume = "world_logical";
 
-    //G4double TCInner = 154.*mm/2;
-    //G4double TCOuter = 164.*mm/2;
-    G4double TCWidth = 95.*mm/2;
+	const G4GDMLAuxMapType* auxmap = m_gdmlparser.GetAuxMap();
+	std::cout << "Found " << auxmap->size()
+		<< " volume(s) with auxiliary information."
+		<< G4endl << G4endl;
+	for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();
+			iter!=auxmap->end(); iter++) 
+	{
+		G4cout << "Volume " << ((*iter).first)->GetName()
+			<< " has the following list of auxiliary information: "
+			<< G4endl << G4endl;
+		for (G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();
+				vit!=(*iter).second.end(); vit++)
+		{
+			std::cout << "--> Type: " << (*vit).type
+				<< " Value: " << (*vit).value << std::endl;
+		}
+	}
+	G4cout << G4endl;
+	m_LogicalGDML= m_gdmlparser.GetVolume(worldvolume);
 
-    nmbRZ = 4;
+	//G4VPhysicalVolume* gmdltest;
 
-    double TCr[] ={0.,
-        0.+16.5,
-        0.+16.5+62,
-        0.+16.5+62+13.5};
+	//gmdltest = m_gdmlparser.GetWorldVolume();
+	string name;
+	for (int i = 0; i < m_LogicalGDML->GetNoDaughters(); i++)
+	{
+		G4VPhysicalVolume* VPV = m_LogicalGDML->GetDaughter(i);
+		G4LogicalVolume* LV = m_LogicalGDML->GetDaughter(i)->GetLogicalVolume();
+		G4ThreeVector LTrans = VPV->GetTranslation();
+		G4RotationMatrix* LRot = VPV->GetRotation();
+		//LRot->rotateY(180.*deg);
 
-    double TCz1[] ={132./2,
-        159./2,
-        159./2,
-        140./2};
+		name = LV->GetSolid()->GetName();
 
-    double TCz2[] ={134.5/2,
-        161.5/2,
-        161.5/2,
-        142.5/2};
-
-    G4VSolid* TCBody = new G4Polycone(
-            "TCBody",
-            0.*deg,
-            360.*deg,
-            nmbRZ,
-            TCr,
-            TCz1,
-            TCz2);
-
-    nmbRZ = 3;
-
-    double TCP1r[] = {0.,
-        52.7/2,
-        99./2};
-    double TCP1z1[] = {150./2,
-        60./2,
-        60./2};
-    double TCP1z2[] = {154./2,
-        64./2,
-        64./2};
-
-    G4VSolid* TCPol1 = new G4Polycone(
-            "TCPol1",
-            0.*deg,// start angle phi
-            360.*deg,// total angle phi
-            nmbRZ,// Numbers of corners in the r,z space
-            TCP1r,
-            TCP1z1,
-            TCP1z2);
-
-    nmbRZ = 5;
-
-    double TCP2r[] = {62.,
-        62.-29.4,
-        62.-47.,
-        62.-47.00001,
-        0.};
-    double TCP2z1[] = {129./2,
-        59./2,
-        59./2,
-        40./2,
-        40./2};
-    double TCP2z2[] = {142./2,
-        61.5/2,
-        61.5/2,
-        61.5/2,
-        61.5/2};
-
-    G4VSolid* TCPol2 = new G4Polycone(
-            "TCPol2",
-            0.*deg,// start angle phi
-            360.*deg,// total angle phi
-            nmbRZ,// Numbers of corners in the r,z space
-            TCP2r,
-            TCP2z1,
-            TCP2z2);
-
-    G4ThreeVector position;
-
-    G4Material* ChamberMaterial= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
-
-/*
-    G4LogicalVolume* Chamber_log
-      = new G4LogicalVolume(TCBody, ChamberMaterial, "TargetChamber_log");
-
-    position.set(0, 0, -44.5);
-    new G4PVPlacement(0, position, Chamber_log, "TargetChamber", world, false, 0);
-
-    G4LogicalVolume* TCPol1_log
-        =new G4LogicalVolume(TCPol1, ChamberMaterial,"TCPol1_log");
-
-    position.set(0, 0, TCWidth);
-    new G4PVPlacement(0,position, TCPol1_log, "TC_pol1_phys", world, false, 0);
-
-    G4LogicalVolume* TCPol2_log
-        =new G4LogicalVolume(TCPol2, ChamberMaterial,"TCPol2_log");
-
-    position.set(0, 0, -TCWidth-62.*mm);
-    new G4PVPlacement(0,position, TCPol2_log, "TC_pol2_phys", world, false, 0);
+		////if (name != "Tessellated_Shape_6") 
+		PVPBuffer = new G4PVPlacement(LRot, LTrans, LV, name, world, false, 0 );
+	}
 */
     // CAD model rotation and position
     G4RotationMatrix * rot = new G4RotationMatrix();
@@ -654,9 +550,11 @@ void Spede::BuildChamber(G4LogicalVolume *world)
 	G4VSolid* cad_solid;
 	G4LogicalVolume* cad_logical;
 
-	
 	//Read in file
-	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_al.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_al.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_al.stl";
+	filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_chamber_only.stl";
+	//filename = "/Users/dacox/work/nptool/NPSimulation/Detectors/Spede/spede_chamber_only_very_coarse_mesh.stl";
 
 	//Create the mesh
     mesh = new CADMesh((char*) filename.c_str());
@@ -676,7 +574,6 @@ void Spede::BuildChamber(G4LogicalVolume *world)
 	//colour
     //cad_logical->SetVisAttributes(G4Color(0.8, 0.8, 0.8, 0.7));
     cad_logical->SetVisAttributes(G4Color(0.8, 0.8, 0.8));
-
 }
 void Spede::ConstructEMField(G4String fieldFileName)
 {
@@ -809,9 +706,9 @@ void Spede::ConstructDetector(G4LogicalVolume* world){
       BuildPCB(si_thickness, pcb_thickness, Rot, Det_pos, world);
 	  BuildChamber(world);
 
-	  new G4PVPlacement(G4Transform3D(G4RotationMatrix(0.,0.,0.),Det_pos),
-			  BuildSiliconDetector(),
-			  "Spede",world,false,i+1);
+	    new G4PVPlacement(G4Transform3D(G4RotationMatrix(0.,0.,0.),Det_pos),
+				BuildSiliconDetector(),
+				"Spede",world,false,i+1);
     }
     else if(m_Shape[i] == "Foil")
     {

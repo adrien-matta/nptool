@@ -28,7 +28,7 @@ using namespace std;
 
 // ROOT
 #include "TObject.h"
-#include "TVector3.h"
+#include "TLorentzVector.h"
 
 class TMiniballData : public TObject {
   //////////////////////////////////////////////////////////////
@@ -39,9 +39,13 @@ class TMiniballData : public TObject {
     vector<UShort_t>   fMiniball_E_DetectorNbr;
     vector<Double_t>   fMiniball_Energy;
 
+    // Crystal
+    vector<UShort_t>   fMiniball_C_DetectorNbr;
+    vector<UShort_t>   fMiniball_Crystal;
+
     // Angle
     vector<UShort_t>   fMiniball_A_DetectorNbr;
-    vector<TVector3>   fMiniball_Angle;
+    vector<TLorentzVector>   fMiniball_Angle;
 
     // Time
     vector<UShort_t>   fMiniball_T_DetectorNbr;
@@ -81,13 +85,24 @@ class TMiniballData : public TObject {
       Set_Energy(Energy);
     };//!
 
+    // Crystal
+    inline void SetC_DetectorNbr(const UShort_t& DetNbr)
+      {fMiniball_C_DetectorNbr.push_back(DetNbr);} //!
+    inline void Set_Crystal(const UShort_t& Crystal)
+      {fMiniball_Crystal.push_back(Crystal);}//!
+    // Prefer global setter so that all vectors have the same size
+    inline void SetCrystal(const UShort_t& DetNbr,const UShort_t& Crystal) {
+      SetC_DetectorNbr(DetNbr);
+      Set_Crystal(Crystal);
+    };//!
+
     // Angle
     inline void SetA_DetectorNbr(const UShort_t& DetNbr)
       {fMiniball_A_DetectorNbr.push_back(DetNbr);} //!
-    inline void Set_Angle(const TVector3& Angle)
+    inline void Set_Angle(const TLorentzVector& Angle)
       {fMiniball_Angle.push_back(Angle);}//!
     // Prefer global setter so that all vectors have the same size
-    inline void SetAngle(const UShort_t& DetNbr,const TVector3& Angle) {
+    inline void SetAngle(const UShort_t& DetNbr,const TLorentzVector& Angle) {
       SetA_DetectorNbr(DetNbr);
       Set_Angle(Angle);
     };//!
@@ -114,12 +129,20 @@ class TMiniballData : public TObject {
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fMiniball_Energy[i];}//!
 
+    // Crystal
+    inline UShort_t GetMultCrystal() const
+      {return fMiniball_C_DetectorNbr.size();}
+    inline UShort_t GetC_DetectorNbr(const unsigned int &i) const 
+      {return fMiniball_C_DetectorNbr[i];}//!
+    inline Double_t Get_Crystal(const unsigned int &i) const 
+      {return fMiniball_Crystal[i];}//!
+
     // Angle
     inline UShort_t GetMultAngle() const
       {return fMiniball_A_DetectorNbr.size();}
     inline UShort_t GetA_DetectorNbr(const unsigned int &i) const 
       {return fMiniball_A_DetectorNbr[i];}//!
-    inline TVector3 Get_Angle(const unsigned int &i) const 
+    inline TLorentzVector Get_Angle(const unsigned int &i) const 
       {return fMiniball_Angle[i];}//!
 
 

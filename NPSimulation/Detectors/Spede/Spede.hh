@@ -39,6 +39,7 @@ using namespace std;
 #include "NPInputParser.h"
 
 #include "G4ElectroMagneticField.hh"
+#include "G4GDMLParser.hh"
 
 #include "SpedeHVField.hh"
 class SpedeHVField;
@@ -121,6 +122,22 @@ class Spede : public NPS::VDetector{
     vector<double>  m_R; 
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
+
+    G4GDMLParser m_gdmlparser;
+    G4AssemblyVolume* m_ClusterDetector;
+    vector <G4AssemblyVolume*> ClusterDetectorHolder;
+    int ClusterDetectorCounter;
+
+    G4LogicalVolume* m_LogicalGDML;
+    G4VPhysicalVolume* m_PhysicalGDML;
+
+    G4String m_GDMLPath;
+    G4String m_GDMLName;
+    G4String m_GDMLWorld;
+    G4bool constructChamber;
+
+    // If don't you will have a Warning unused variable 'myPVP'
+    G4VPhysicalVolume* PVPBuffer ;
     
     //   Shape type
     vector<string> m_Shape ;

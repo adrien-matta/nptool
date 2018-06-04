@@ -117,7 +117,7 @@ Jurogam::Jurogam()
 	endCapMaterial     = fMat->GetMaterial("DurAl");
 	contactMaterial    = fMat->GetMaterial("Lithium");
 
-	useAbsorber = false; // By default the absorbers are always in!
+	useAbsorber = true; // By default the absorbers are always in!
 
 	//Default materials
 
@@ -578,12 +578,17 @@ void  Jurogam::CreatePhaseIBGOSolids()
 	// BGO Shield Aluminium part
 	// ---------------------------------------
 
-	G4VSolid* BGOShieldTubs = new G4Tubs("BGOShieldTubs",
-			PhaseIBGOShieldInnerRadius,
-			PhaseIBGOShieldOuterRadius,
-			(PhaseIBGOShieldLength/2.)*mm,
-			0.*deg,
-			360.*deg);
+	//G4VSolid* BGOShieldTubs = new G4Tubs("BGOShieldTubs",
+	//		PhaseIBGOShieldInnerRadius,
+	//		PhaseIBGOShieldOuterRadius,
+	//		(PhaseIBGOShieldLength/2.)*mm,
+	//		0.*deg,
+	//		360.*deg);
+
+	G4VSolid* BGOShieldTubs = new G4Box("BGOShieldTubs",
+			100*mm,
+			100*mm,
+			(PhaseIBGOShieldLength/2.)*mm);
 
 
 	G4VSolid* subInnerCone = new G4Cons("subInnerCone",
@@ -609,7 +614,10 @@ void  Jurogam::CreatePhaseIBGOSolids()
 
 	// Subtract the hole from the shield tubs = IceCreamCone1
 	G4VSolid* IceCreamCone1 = new G4SubtractionSolid ("IceCreamCone1",BGOShieldTubs,subInnerPart,0,vec2);
-
+	//G4SubtractionSolid* IceCreamCone1 = new G4SubtractionSolid ("IceCreamCone1",BGOShieldTubs,subInnerCone,0,G4ThreeVector(0,0,-130.885/2*mm));
+	//G4VSolid* IceCreamCone1 = new G4SubtractionSolid("IceCreamCone1",BGOShieldTubs,subInnerTubs,0,G4ThreeVector(0,0,-65*mm));
+//PhaseISolidBGOShield = new G4SubtractionSolid ("foo",BGOShieldTubs,subInnerTubs,0,vec2);
+//PhaseISolidBGOShield = new G4UnionSolid("subInnerPart",subInnerCone,subInnerTubs,0,vec);
 	//Rotation of slicer cube
 	//G4RotationMatrix slicerot1;
 	slicerot1.set(0,0,0);
@@ -696,7 +704,11 @@ void  Jurogam::CreatePhaseIBGOSolids()
 		= new G4SubtractionSolid("IceCreamCone",IceCreamCone9,IceCreamSlicer,
 				&slicerot1,vec3);
 
-	PhaseISolidBGOShield = IceCreamCone;
+	//PhaseISolidBGOShield = IceCreamCone;
+	//PhaseIBGOShieldOuterRadius
+	G4VSolid* OuterShieldTube = new G4Tubs("OuterShieldTube", PhaseIBGOShieldOuterRadius, PhaseIBGOShieldOuterRadius+100*mm, PhaseIBGOShieldLength/2., 0., 360.*deg);
+	G4VSolid* IceCreamConeFinal = new G4SubtractionSolid("IceCreamConeFinal",IceCreamCone,OuterShieldTube,0,G4ThreeVector(0,0,0));
+	PhaseISolidBGOShield = IceCreamConeFinal;
 
 	//------------------------------------------------------------------
 	// Absorbers used in front of the detectors
@@ -1188,7 +1200,7 @@ G4LogicalVolume* Jurogam::BuildClover()
 
 		for(G4int l = 0; l < 4; l++)
 		{
-			logicGeLeaf[l]     = new G4LogicalVolume(solidGeLeaf,     geMaterial,      "clover_Leaf",   0, 0, 0);
+			logicGeLeaf[l]     = new G4LogicalVolume(solidGeLeaf,     geMaterial,      "clover_Leaf_"+to_string(l),   0, 0, 0);
 			logicGeLeaf[l]->SetSensitiveDetector(m_JurogamScorer);
 			logicPassivated[l] = new G4LogicalVolume(solidPassivated,    geMaterial,      "passivatedGe",  0, 0, 0);
 			logicContact[l]    = new G4LogicalVolume(solidContact, contactMaterial, "inner_contact", 0, 0, 0);
@@ -1220,19 +1232,19 @@ G4LogicalVolume* Jurogam::BuildClover()
 
 	G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 	G4VisAttributes* visAttActive0 = new G4VisAttributes( G4Colour(1.0,0.5,0.5) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 	G4VisAttributes* visAttActive1 = new G4VisAttributes( G4Colour(0.5,1.0,0.5) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 	G4VisAttributes* visAttActive2 = new G4VisAttributes( G4Colour(0.5,0.5,1.0) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 	G4VisAttributes* visAttActive3 = new G4VisAttributes( G4Colour(0.0,1.0,1.0) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 
 	G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
 	visAttPassive->SetForceWireframe(true);
@@ -1240,11 +1252,11 @@ G4LogicalVolume* Jurogam::BuildClover()
 
 	G4VisAttributes* visAttLiContact = new G4VisAttributes(G4Colour(1.0,0.0,1.0) );
 	//visAttLiContact->SetVisibility(false);
-	visAttLiContact->SetVisibility(true);
+	visAttLiContact->SetVisibility(false);
 
 	G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
 	//visAttHole->SetVisibility(false);
-	visAttHole->SetVisibility(true);
+	visAttHole->SetVisibility(false);
 
 	logicEndCap->SetVisAttributes(visAttAlCap);
 	logicVacuum->SetVisAttributes(visAttGeVac);
@@ -1432,20 +1444,20 @@ void Jurogam::PhaseIPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 	//a The active layer will appear in yellow colour.
 	G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
 	//visAttActive->SetForceWireframe(true);
-	visAttActive->SetVisibility(true);
+	visAttActive->SetVisibility(false);
 
 	G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
-	visAttHole->SetVisibility(true);
+	visAttHole->SetVisibility(false);
 	//visAttHole->SetVisibility(false);
 
 	G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
 	visAttGeVac->SetForceWireframe(true);
 	//visAttGeVac->SetVisibility(true);
-	visAttGeVac->SetVisibility(true);
+	visAttGeVac->SetVisibility(false);
 
 	G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
 	//visAttPassive->SetVisibility(true);
-	visAttPassive->SetVisibility(true);
+	visAttPassive->SetVisibility(false);
 
 	G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,1.0,1.0) );
 	visAttAlCap->SetVisibility(true);
@@ -1515,10 +1527,10 @@ void Jurogam::PhaseIBGOPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bo
 			(shieldradius)*sin(position.getTheta())*sin(position.getPhi()),
 			(shieldradius)*cos(position.getTheta()));
 
-	PhaseIPhysiBGOShield = new G4PVPlacement(//&rotation, //G4ThreeVector(position.x(),position.y(),position.z()), shieldpos,
+	PhaseIPhysiBGOShield = new G4PVPlacement(
 			G4Transform3D(rotation,shieldpos),
 			//G4ThreeVector(0,0,0),
-			PhaseILogicBGOShield,
+			PhaseILogicBGOShield,//TODO This is causing a problem
 			"PhaseIBGOShield",
 			logiMother,
 			true,
@@ -1539,6 +1551,14 @@ void Jurogam::PhaseIBGOPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bo
 			false,
 			copyNo,
 			checkOverlaps);
+	//PhaseIPhysiBGOCrystal = new G4PVPlacement(crysrot,
+	//		crystrans,
+	//		PhaseILogicBGOCrystal,
+	//		"PhaseIBGOCrystal",
+	//		logiMother,
+	//		false,
+	//		copyNo,
+	//		checkOverlaps);
 
 	// Visualization attributes
 
@@ -2129,8 +2149,27 @@ void Jurogam::ReadSensitive(const G4Event* event)
 			int DetectorNbr = (int) Info[2];
 			m_Event->SetEnergy(DetectorNbr,Energy);
 			m_Event->SetTime(DetectorNbr,Time); 
-			//for (int i =0; i< 3; i++) cout << Info[i]<< "\n";
-			//cout << "\n";
+
+			Info_Calorimeter *foo  = new Info_Calorimeter();
+			G4String VolumeName = foo->GetVolumeName();
+			delete foo;
+
+			size_t found=VolumeName.find("clover");
+			if (found!=std::string::npos)
+			{
+				vector<G4String> v_VolumeName;
+				G4String token;
+				istringstream tokenStream(VolumeName);
+
+				while (getline(tokenStream, token, '_'))
+				{
+					v_VolumeName.push_back(token);
+				}
+
+				int crystal = stoi(v_VolumeName[2]);
+				m_Event->SetCrystal(DetectorNbr,crystal+1);
+			}
+			else m_Event->SetCrystal(DetectorNbr,0);
 		}
 	}
 	// clear map for next event

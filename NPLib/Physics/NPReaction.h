@@ -92,6 +92,12 @@ namespace NPL{
       double   fExcitation1;             // Excitation energy in MeV of the beam, useful for isomers 
       double   fExcitation3;             // Excitation energy in MeV
       double   fExcitation4;             // Excitation energy in MeV
+      vector<double>* fInitialLevel3;      // Initial population levels 
+      vector<double>* fInitialLevel4;      // Initial population levels 
+      vector<double>* fInitialPopulation3; // Initial level population
+      vector<double>* fInitialPopulation4; // Initial level population
+      string   fDecayFile3;   // Decay file for nucleus
+      string   fDecayFile4;   // Decay file for nucleus
       TH1F*    fCrossSectionHist;        // Differential cross section in CM frame
       TH2F*    fDoubleDifferentialCrossSectionHist; // Diff. CS CM frame vs Beam E
       TH1F*    fExcitationEnergyHist;    // Distribution of Excitation energy
@@ -103,6 +109,12 @@ namespace NPL{
       void     SetExcitation1(double exci)      {fExcitation1 = exci; initializePrecomputeVariable();}
       void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
       void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
+      void     SetInitialLevel3(vector<double>* level) {fInitialLevel3 = level;}
+      void     SetInitialLevel4(vector<double>* level) {fInitialLevel4 = level;}
+      void     SetInitialPopulation3(vector<double> *population) {fInitialPopulation3 = population;}
+      void     SetInitialPopulation4(vector<double> *population) {fInitialPopulation4 = population;}
+      void     SetDecayFile3(string file)       {fDecayFile3 = file;}
+      void     SetDecayFile4(string file)       {fDecayFile4 = file;}
       // For retro compatibility
       void     SetExcitationBeam(double exci)   {fExcitation1 = exci; initializePrecomputeVariable();}
       void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
@@ -118,6 +130,12 @@ namespace NPL{
       double   GetExcitation1() const           {return fExcitation1;}
       double   GetExcitation3() const           {return fExcitation3;}
       double   GetExcitation4() const           {return fExcitation4;}
+      vector<double>* GetInitialLevel3()        {return fInitialLevel3;}
+      vector<double>* GetInitialLevel4()        {return fInitialLevel4;}
+      vector<double>* GetInitialPopulation3()   {return fInitialPopulation3;}
+      vector<double>* GetInitialPopulation4()   {return fInitialPopulation4;}
+      string   GetDecayFile3() const            {return fDecayFile3;}
+      string   GetDecayFile4() const            {return fDecayFile4;}
       double   GetQValue() const                {return fQValue;}
       double   GetEcm() const			{return fEcm;}
       Nucleus  GetNucleus1() const              {return fNuclei1;}

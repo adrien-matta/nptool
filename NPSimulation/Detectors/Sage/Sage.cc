@@ -154,32 +154,32 @@ G4LogicalVolume* Sage::BuildSiliconDetector()
 void Sage::ConstructChamber(G4LogicalVolume* world)
 {
 	//Chamber
-	G4ThreeVector ChamberPlacement (-sin(Sage_NS::SageRotation)*1.047*m,0.,cos(Sage_NS::SageRotation)*1.047*m);//Rotated
+	G4ThreeVector ChamberPlacement (sin(Sage_NS::SageRotation)*1.047*m,0.,-cos(Sage_NS::SageRotation)*1.047*m);//Rotated
 	//"magnet (don't acutally generate field)
-	G4ThreeVector UpstreamCoilPlacement (-sin(Sage_NS::SageRotation)*85.5*mm,0.,cos(Sage_NS::SageRotation)*85.5*mm);//Rotated
-	G4ThreeVector DownstreamCoilPlacement (0.,0., -39.0*mm);
+	G4ThreeVector UpstreamCoilPlacement (sin(Sage_NS::SageRotation)*85.5*mm,0.,-cos(Sage_NS::SageRotation)*85.5*mm);//Rotated
+	G4ThreeVector DownstreamCoilPlacement (0.,0., 39.0*mm);
 	//Target chamber and wheel
-	G4ThreeVector TargetChamberPlacement (0.,0.,2.*mm);
-	G4ThreeVector TargetChamberBackPlatePlacement (0,0,-23.1*mm);
-	G4ThreeVector TargetWheelPlacement (-33.75*mm,0,-0.86*mm);
-	G4ThreeVector TWFPlacement (-(33.75+172/2-80)*mm,0.*mm,(-0.86+0.8+0.8)*mm);
-	G4ThreeVector TWBPlacement ((-33.75+156/2-92)*mm,0.8*mm,(-0.86-0.7-0.6-14.)*mm);
-	G4ThreeVector TWGearPlacement( -33.75*mm, 0., -0.86*mm-12.5/2*mm-0.8*mm);
-	G4ThreeVector TWMotorPlacement( -105.*mm, -8.*mm, 5.*mm + 25./2*mm);
+	G4ThreeVector TargetChamberPlacement (0.,0.,-2.*mm);
+	G4ThreeVector TargetChamberBackPlatePlacement (0,0,23.1*mm);
+	G4ThreeVector TargetWheelPlacement (33.75*mm,0,0.86*mm);
+	G4ThreeVector TWFPlacement ((33.75+172/2-80)*mm,0.*mm,-(-0.86+0.8+0.8)*mm);
+	G4ThreeVector TWBPlacement (49.75*mm,0.8*mm,-(-0.86-0.7-0.6-14.)*mm);
+	G4ThreeVector TWGearPlacement( 34.*mm, 0., -(-0.86*mm-12.5/2*mm-0.8*mm));
+	G4ThreeVector TWMotorPlacement( 105.*mm, -8.*mm, -(5.*mm + 25./2*mm));
 	//Support between target and main chamber
-	G4ThreeVector ConnectorPlacement (-sin(Sage_NS::SageRotation)*91.*mm,0.,cos(Sage_NS::SageRotation)*91.*mm);//Rotated
+	G4ThreeVector ConnectorPlacement (sin(Sage_NS::SageRotation)*91.*mm,0.,-cos(Sage_NS::SageRotation)*91.*mm);//Rotated
 	//Carbon foil unit
-	G4ThreeVector CF1Placement (-sin(Sage_NS::SageRotation)*87.5*mm,0.,cos(Sage_NS::SageRotation)*87.5*mm);//Rotated
-	G4ThreeVector CF2Placement (-sin(Sage_NS::SageRotation)*36.5*mm,0.,cos(Sage_NS::SageRotation)*36.5*mm);//Rotated
-	G4ThreeVector CFTubePlacement (-sin(Sage_NS::SageRotation)*62.*mm,0.,cos(Sage_NS::SageRotation)*62.*mm);//Rotated  // TODO check distance
+	G4ThreeVector CF1Placement (sin(Sage_NS::SageRotation)*87.5*mm,0.,-cos(Sage_NS::SageRotation)*87.5*mm);//Rotated
+	G4ThreeVector CF2Placement (sin(Sage_NS::SageRotation)*36.5*mm,0.,-cos(Sage_NS::SageRotation)*36.5*mm);//Rotated
+	G4ThreeVector CFTubePlacement (sin(Sage_NS::SageRotation)*62.*mm,0.,-cos(Sage_NS::SageRotation)*62.*mm);//Rotated  // TODO check distance
 	//High voltagbe barrier (again doesn't generate the field)
-	G4ThreeVector HVPlacement (-sin(Sage_NS::SageRotation)*605.04*mm,0.,cos(Sage_NS::SageRotation)*605.04*mm);//Rotated   // TODO check distance from OPERA3D
+	G4ThreeVector HVPlacement (sin(Sage_NS::SageRotation)*605.04*mm,0.,-cos(Sage_NS::SageRotation)*605.04*mm);//Rotated   // TODO check distance from OPERA3D
 
 	G4RotationMatrix* yRot180deg = new G4RotationMatrix();
-	yRot180deg->rotateY(180.*deg);
+	yRot180deg->rotateY(0.*deg);
 
 	G4RotationMatrix* yRot180degPlusSageAngle = new G4RotationMatrix();
-	yRot180degPlusSageAngle->rotateY(180.*deg);
+	yRot180degPlusSageAngle->rotateY(0.*deg);
 	yRot180degPlusSageAngle->rotateY(Sage_NS::SageRotation);
 
 	G4RotationMatrix* SageAngle= new G4RotationMatrix();
@@ -444,7 +444,8 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	G4VSolid* TgtWheelMain = new G4Tubs("TgtWheelMain", 30./2*mm, 105./2*mm, 1.6/2*mm, 0., 360.*deg);
 	G4VSolid* TgtWheelHole = new G4Tubs("TgtWheelHole", 0*mm, 19./2*mm, 15./2*mm, 0., 360.*deg);
 	G4VSolid* TgtWheelHole2Circle = new G4Tubs("TgtWheelHole2Circle", 0*mm, 10./2*mm, 15./2*mm, 0., 360.*deg);
-	G4VSolid* TgtWheelHole2Box = new G4Box("TgtWheelHole2Box", 5./2*mm, 10./2*mm, 15./2*mm);
+	//G4VSolid* TgtWheelHole2Box = new G4Box("TgtWheelHole2Box", 5./2*mm, 10./2*mm, 15./2*mm);
+	G4VSolid* TgtWheelHole2Box = new G4Box("TgtWheelHole2Box", 4./2*mm, 10./2*mm, 15./2*mm);
 
 	// Target frame
 	G4VSolid* TgtFrameBox = new G4Box("TgtFrameBox",20./2*mm, 25./2*mm, 0.6/2*mm);
@@ -454,10 +455,10 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 	// Target wheel
 	G4UnionSolid* TgtWheelHole2uni
-		= new G4UnionSolid("TgtWheelHole2uni", TgtWheelHole2Box,TgtWheelHole2Circle,0,G4ThreeVector(2.6*mm,0,0));
+		= new G4UnionSolid("TgtWheelHole2uni", TgtWheelHole2Box,TgtWheelHole2Circle,0,G4ThreeVector(2.5*mm,0,0));
 
 	G4UnionSolid* TgtWheelHole2uni2
-		= new G4UnionSolid("TgtWheelHole2uni2", TgtWheelHole2uni,TgtWheelHole2Circle,0,G4ThreeVector(-2.6*mm,0,0));
+		= new G4UnionSolid("TgtWheelHole2uni2", TgtWheelHole2uni,TgtWheelHole2Circle,0,G4ThreeVector(-2.5*mm,0,0));
 
 	G4double hole_radius = 33.75*mm;
 	//G4ThreeVector TgtWheelHolePlacement(33.75*mm,0.,0);
@@ -496,23 +497,81 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 
 	G4SubtractionSolid* TgtWheel7
-		= new G4SubtractionSolid("TgtWheel7", TgtWheel6,TgtWheelHole2uni2,zRot330degW,
+		= new G4SubtractionSolid("TgtWheel7", TgtWheel6,TgtWheelHole2Box,zRot150degW,
 				G4ThreeVector(hole_radius*cos(30*deg)*mm,hole_radius*sin(30*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel7a
+		= new G4SubtractionSolid("TgtWheel7a", TgtWheel7,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(30*deg)*mm,(2.5*mm+hole_radius)*sin(30*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel7b
+		= new G4SubtractionSolid("TgtWheel7b", TgtWheel7a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(30*deg)*mm,(-2.5*mm+hole_radius)*sin(30*deg)*mm,0));
+
 	G4SubtractionSolid* TgtWheel8
-		= new G4SubtractionSolid("TgtWheel8", TgtWheel7,TgtWheelHole2uni2,zRot90degW,
+		= new G4SubtractionSolid("TgtWheel8", TgtWheel7b,TgtWheelHole2Box,zRot90degW,
 				G4ThreeVector(hole_radius*cos(90*deg)*mm,hole_radius*sin(90*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel8a
+		= new G4SubtractionSolid("TgtWheel8a", TgtWheel8,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(90*deg)*mm,(2.5*mm+hole_radius)*sin(90*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel8b
+		= new G4SubtractionSolid("TgtWheel8b", TgtWheel8a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(90*deg)*mm,(-2.5*mm+hole_radius)*sin(90*deg)*mm,0));
+
 	G4SubtractionSolid* TgtWheel9
-		= new G4SubtractionSolid("TgtWheel9", TgtWheel8,TgtWheelHole2uni2,zRot30degW,
+		= new G4SubtractionSolid("TgtWheel9", TgtWheel8b,TgtWheelHole2Box,zRot30degW,
 				G4ThreeVector(hole_radius*cos(150*deg)*mm,hole_radius*sin(150*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel9a
+		= new G4SubtractionSolid("TgtWheel9a", TgtWheel9,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(150*deg)*mm,(2.5*mm+hole_radius)*sin(150*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel9b
+		= new G4SubtractionSolid("TgtWheel9b", TgtWheel9a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(150*deg)*mm,(-2.5*mm+hole_radius)*sin(150*deg)*mm,0));
+
 	G4SubtractionSolid* TgtWheel10
-		= new G4SubtractionSolid("TgtWheel10", TgtWheel9,TgtWheelHole2uni2,zRot330degW,
+		= new G4SubtractionSolid("TgtWheel10", TgtWheel9b,TgtWheelHole2Box,zRot330degW,
 				G4ThreeVector(hole_radius*cos(210*deg)*mm,hole_radius*sin(210*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel10a
+		= new G4SubtractionSolid("TgtWheel10a", TgtWheel10,TgtWheelHole2Circle,zRot270degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(210*deg)*mm,(2.5*mm+hole_radius)*sin(210*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel10b
+		= new G4SubtractionSolid("TgtWheel10b", TgtWheel10a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(210*deg)*mm,(-2.5*mm+hole_radius)*sin(210*deg)*mm,0));
+
 	G4SubtractionSolid* TgtWheel11
-		= new G4SubtractionSolid("TgtWheel11", TgtWheel10,TgtWheelHole2uni2,zRot90degW,
+		= new G4SubtractionSolid("TgtWheel11", TgtWheel10b,TgtWheelHole2Box,zRot270degW,
 				G4ThreeVector(hole_radius*cos(270*deg)*mm,hole_radius*sin(270*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel11a
+		= new G4SubtractionSolid("TgtWheel11a", TgtWheel11,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(270*deg)*mm,(2.5*mm+hole_radius)*sin(270*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel11b
+		= new G4SubtractionSolid("TgtWheel11b", TgtWheel11a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(270*deg)*mm,(-2.5*mm+hole_radius)*sin(270*deg)*mm,0));
+
 	G4SubtractionSolid* TgtWheel12
-		= new G4SubtractionSolid("TgtWheel12", TgtWheel11,TgtWheelHole2uni2,zRot30degW,
+		= new G4SubtractionSolid("TgtWheel12", TgtWheel11b,TgtWheelHole2Box,zRot210degW,
 				G4ThreeVector(hole_radius*cos(330*deg)*mm,hole_radius*sin(330*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel12a
+		= new G4SubtractionSolid("TgtWheel12a", TgtWheel12,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((2.5*mm+hole_radius)*cos(330*deg)*mm,(2.5*mm+hole_radius)*sin(330*deg)*mm,0));
+	G4SubtractionSolid* TgtWheel12b
+		= new G4SubtractionSolid("TgtWheel12b", TgtWheel12a,TgtWheelHole2Circle,zRot330degW,
+				G4ThreeVector((-2.5*mm+hole_radius)*cos(330*deg)*mm,(-2.5*mm+hole_radius)*sin(330*deg)*mm,0));
+
+
+	//G4SubtractionSolid* TgtWheel8
+	//	= new G4SubtractionSolid("TgtWheel8", TgtWheel7,TgtWheelHole2uni2,zRot90degW,
+	//			G4ThreeVector(hole_radius*cos(90*deg)*mm,hole_radius*sin(90*deg)*mm,0));
+	//G4SubtractionSolid* TgtWheel9
+	//	= new G4SubtractionSolid("TgtWheel9", TgtWheel8,TgtWheelHole2uni2,zRot30degW,
+	//			G4ThreeVector(hole_radius*cos(150*deg)*mm,hole_radius*sin(150*deg)*mm,0));
+	//G4SubtractionSolid* TgtWheel10
+	//	= new G4SubtractionSolid("TgtWheel10", TgtWheel9,TgtWheelHole2uni2,zRot330degW,
+	//			G4ThreeVector(hole_radius*cos(210*deg)*mm,hole_radius*sin(210*deg)*mm,0));
+	//G4SubtractionSolid* TgtWheel11
+	//	= new G4SubtractionSolid("TgtWheel11", TgtWheel10,TgtWheelHole2uni2,zRot90degW,
+	//			G4ThreeVector(hole_radius*cos(270*deg)*mm,hole_radius*sin(270*deg)*mm,0));
+	//G4SubtractionSolid* TgtWheel12
+	//	= new G4SubtractionSolid("TgtWheel12", TgtWheel11,TgtWheelHole2uni2,zRot30degW,
+	//			G4ThreeVector(hole_radius*cos(330*deg)*mm,hole_radius*sin(330*deg)*mm,0));
 
 	/*-----------------------------Target Wheel support-----------------------------*/
 	G4VSolid* TWF1 = new G4Box("TWF1", 172./2*mm, 150./2*mm, 1.6/2*mm);//Main plate
@@ -671,7 +730,7 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 	/* -------------  Target wheel - dwg part no. np??????   --------------------*/
 	G4LogicalVolume* TgtWheel_log
-		= new G4LogicalVolume(TgtWheel12, ChamberMaterial, "TgtWheel_log");
+		= new G4LogicalVolume(TgtWheel12b, ChamberMaterial, "TgtWheel_log");
 
 	G4LogicalVolume* TgtFrame_log
 		= new G4LogicalVolume(TgtFrame, ChamberMaterial, "TgtFrame_log");
@@ -760,14 +819,17 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 			world,
 			false, 0,Overlap);
 
-	new G4PVPlacement(0,
+	G4RotationMatrix* TWRot = new G4RotationMatrix();
+	TWRot->rotateY(180.*deg);
+
+	new G4PVPlacement(TWRot,
 			TWFPlacement,
 			TWF_log,
 			"TWF",
 			world,
 			false, 0,Overlap);
 
-	new G4PVPlacement(0,
+	new G4PVPlacement(TWRot,
 			TWBPlacement,
 			TWB_log,
 			"TWB",
@@ -798,7 +860,10 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 			world,
 			false, 0, Overlap);
 
-	new G4PVPlacement(yRot180deg,
+	G4RotationMatrix* DoorPlaceRot = new G4RotationMatrix();
+	DoorPlaceRot->rotateY(180.*deg);
+
+	new G4PVPlacement(DoorPlaceRot,
 			TargetChamberPlacement,
 			TCDoor_log,
 			"TC_door_phys",
@@ -903,7 +968,7 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 
 	/*Target chamber*/
 	//TargetChamber_log -> SetVisAttributes(greyVA);
-	TargetChamber_log->SetVisAttributes (G4VisAttributes::Invisible);
+	TargetChamber_log->SetVisAttributes (G4VisAttributes::Invisible);//TODO visualising this causes Qt to hang
 
 	/*Back plate of the target chamber*/
 	//TgtChamberBackPlate_log -> SetVisAttributes(blackVA);
@@ -911,8 +976,8 @@ void Sage::ConstructChamber(G4LogicalVolume* world)
 	//TgtChamberBackPlate_log->SetVisAttributes (G4VisAttributes::Invisible);
 
 	/*Target wheel*/
-	//TgtWheel_log->SetVisAttributes(blueVA);
-	TgtWheel_log->SetVisAttributes (G4VisAttributes::Invisible);
+	TgtWheel_log->SetVisAttributes(blueVA);
+	//TgtWheel_log->SetVisAttributes (G4VisAttributes::Invisible);
 
 	/*Target frame*/
 	TgtFrame_log-> SetVisAttributes(redVA);
@@ -1054,14 +1119,14 @@ void Sage::ReadConfiguration(NPL::InputParser parser)
 void Sage::ConstructDetector(G4LogicalVolume* world)
 {
 	ConstructChamber(world);
-	ConstructEMField("SageEMField.table");
+	ConstructEMField("SageEMFieldInverted.table");
 	for (unsigned short i = 0 ; i < m_R.size() ; i++)
 	{
 
 		G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
 		G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
 		G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
-		G4ThreeVector Det_pos = G4ThreeVector(-sin(Sage_NS::SageRotation)*(wZ+wX), wY, cos(Sage_NS::SageRotation)*wZ) ;
+		G4ThreeVector Det_pos = G4ThreeVector(sin(Sage_NS::SageRotation)*(wZ+wX), wY, -cos(Sage_NS::SageRotation)*wZ) ;
 
 		Det_pos+=Det_pos.unit()*SiThickness*0.5;
 
@@ -1098,6 +1163,7 @@ void Sage::InitializeRootOutput()
 //TODO Make this behave more like annular detector readout, e.g. SharcQQQ
 void Sage::ReadSensitive(const G4Event* event)
 {
+//cout << "Scorer started\n";
 	m_Event->Clear();
 
 	G4THitsMap<G4double*>* PixelHitMap;
@@ -1117,10 +1183,13 @@ void Sage::ReadSensitive(const G4Event* event)
 			int PixelNbr = (int) Info[8];
 			m_Event->SetEnergy(DetectorNbr, PixelNbr, Energy);
 			m_Event->SetTime(DetectorNbr, PixelNbr, Time); 
+			//if (PixelNbr>90) cout << "look at this!!!! " << PixelNbr << endl;
+			//cout << PixelNbr << endl;
 		}
 	}
 	// clear map for next event
 	PixelHitMap->clear();
+	//cout << "Scorer done\n";
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 ////////////////////////////////////////////////////////////////   

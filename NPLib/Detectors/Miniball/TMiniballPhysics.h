@@ -66,8 +66,9 @@ class TMiniballPhysics : public TObject, public NPL::VDetector {
   public:
     vector<int>      DetectorNumber;
     vector<double>   Energy;
-    vector<TVector3> Angle;
     vector<double>   Time;
+    vector<TLorentzVector> Angle;
+    vector<UShort_t> Crystal;
 
 
   //////////////////////////////////////////////////////////////

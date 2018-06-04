@@ -68,6 +68,7 @@ void TSagePhysics::AddDetector(double R, double Theta, double Phi, string shape)
   TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
   // Call the cartesian method
   AddDetector(Pos,shape);
+  //m_NumberOfDetectors++;
 } 
   
 ///////////////////////////////////////////////////////////////////////////
@@ -80,6 +81,7 @@ void TSagePhysics::BuildSimplePhysicalEvent() {
 ///////////////////////////////////////////////////////////////////////////
 void TSagePhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
+ //cout << "phys start\n"; 
   PreTreat();
 
   // match energy and time together
@@ -96,36 +98,44 @@ void TSagePhysics::BuildPhysicalEvent() {
       }
     }
   }
+ //cout << "phys end\n"; 
 }
 
 ///////////////////////////////////////////////////////////////////////////
 void TSagePhysics::PreTreat() {
+	//cout <<"pre start\n";
   // This method typically applies thresholds and calibrations
   // Might test for disabled channels for more complex detector
 
   // clear pre-treated object
   ClearPreTreatedData();
-
+  //cout << "1\n";
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
+  //cout << "2\n";
   // Energy
   unsigned int mysize = m_EventData->GetMultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("Sage/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+"_PIXEL"+NPL::itoa(m_EventData->GetE_PixelNbr(i)),m_EventData->Get_Energy(i));
+      Double_t Energy = Cal->ApplyCalibration("Sage/D"+NPL::itoa(m_EventData->GetE_DetectorNbr(i))+
+			  "_PIXEL"+NPL::itoa(m_EventData->GetE_PixelNbr(i))+
+			  "_ENERGY",m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
         m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), m_EventData->GetE_PixelNbr(i), Energy);
       }
     }
   }
-
+  //cout << "pre mid\n";
   // Time 
   mysize = m_EventData->GetMultTime();
   for (UShort_t i = 0; i < mysize; ++i) {
-    Double_t Time= Cal->ApplyCalibration("Sage/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i))+"_PIXEL"+NPL::itoa(m_EventData->GetT_PixelNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetE_PixelNbr(i), Time);
+    Double_t Time= Cal->ApplyCalibration("Sage/D"+NPL::itoa(m_EventData->GetT_DetectorNbr(i))+
+			"_PIXEL"+NPL::itoa(m_EventData->GetT_PixelNbr(i))+
+			"_TIME",m_EventData->Get_Time(i));
+    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), m_EventData->GetT_PixelNbr(i), Time);
   }
+  //cout <<"pre end\n\n\n";
 }
 
 
@@ -212,6 +222,7 @@ void TSagePhysics::ReadConfiguration(NPL::InputParser parser) {
 
   vector<string> cart = {"POS","Shape"};
   vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> foil = {"CarbonFoil","InnerDiameter","SiThickness"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(cart)){
@@ -231,6 +242,13 @@ void TSagePhysics::ReadConfiguration(NPL::InputParser parser) {
       string Shape = blocks[i]->GetString("Shape");
       AddDetector(R,Theta,Phi,Shape);
     }
+	else if(blocks[i]->HasTokenList(foil)){
+		if(NPOptionManager::getInstance()->GetVerboseLevel())
+			cout << endl << "////  Sage " << i+1 <<  endl;
+		CarbonFoils = blocks[i]->GetInt("CarbonFoil");
+		InnerDiameter = blocks[i]->GetDouble("InnerDiameter","mm");
+		SiThickness = blocks[i]->GetDouble("SiThickness","mm");
+	}
     else{
       cout << "ERROR: check your input file formatting " << endl;
       exit(1);

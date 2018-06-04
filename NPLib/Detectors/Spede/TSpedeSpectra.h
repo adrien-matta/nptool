@@ -57,7 +57,7 @@ class TSpedeSpectra : public VSpectra {
   // Detector parameters 
   private:
     unsigned int fNumberOfDetectors;
-	const unsigned int fNumberOfPixels=90;
+	const unsigned int fNumberOfPixels=24;
 };
 
 #endif

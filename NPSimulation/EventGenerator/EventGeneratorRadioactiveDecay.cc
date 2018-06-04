@@ -57,6 +57,9 @@ EventGeneratorRadioactiveDecay::EventGeneratorRadioactiveDecay()
     m_Z            = 0;
     m_A            = 0;
     m_ParticleStack = ParticleStack::getInstance();
+
+    /* initialize random seed: */
+    srand (time(NULL));
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorRadioactiveDecay::~EventGeneratorRadioactiveDecay()
@@ -92,7 +95,20 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
 		  m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
 	  if(blocks[i]->HasToken("ExcitationEnergy"))
 		  m_ExcitationEnergy=blocks[i]->GetDouble("ExcitationEnergy","keV");
+      if(blocks[i]->HasToken("InitialPopulation"))
+      {
+          G4String initialPopulationFileName = blocks [i]->GetString("InitialPopulation");
 
+          ifstream filename (initialPopulationFileName);
+          G4double level, population;
+          while (filename >> level >> population)
+          {
+             m_InitalLevel.push_back(level);
+             m_InitalPopulation.push_back(population);
+            
+             cout << "Level " << level << " Population " << population << "\n";
+          }
+      }
 	  if(blocks[i]->HasToken("PhotonEvaporation"))
       {
           G4String command = "/grdm/setPhotoEvaporationFile ";
@@ -156,7 +172,28 @@ void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
 
     G4int Z = m_Z, A = m_A;
     G4double ionCharge   = 0.*eplus;
-    G4double excitEnergy = m_ExcitationEnergy;
+    G4double excitEnergy = 0.;
+    G4double populationSum = 0;
+    
+    if (m_ExcitationEnergy != 0) excitEnergy = m_ExcitationEnergy;
+    else if (m_InitalLevel.size() > 0)
+    {
+        //G4double startLevel = rand() % 1;
+        float startLevel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        for (unsigned int i = 0; i < m_InitalLevel.size(); i++)
+        {
+            populationSum += m_InitalPopulation[i];
+            //cout << populationSum << " " << startLevel << "\n";
+            if (populationSum > startLevel)
+            {
+                excitEnergy = m_InitalLevel[i] * keV;
+                break;
+            }
+        } 
+    }
+
+    //cout << "chosen start " << excitEnergy << endl;
+
 
     G4ParticleDefinition* ion = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
 

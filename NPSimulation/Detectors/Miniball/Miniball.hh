@@ -24,6 +24,7 @@
 // C++ header
 #include <string>
 #include <vector>
+#include "TLorentzVector.h"
 using namespace std;
 
 // G4 headers
@@ -55,6 +56,9 @@ class Miniball : public NPS::VDetector{
         double Theta,
         double Phi,
         double Alpha);  
+
+    void AddDegrader(G4String Material, G4double Distance, G4double Thickness, G4double Radius);
+    void BuildDegrader(G4LogicalVolume*);
 
 
     G4AssemblyVolume* BuildClusterDetector(double Alpha);
@@ -123,6 +127,13 @@ class Miniball : public NPS::VDetector{
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
     vector<double>  m_Alpha; 
+
+    vector<G4String> m_DegraderMaterial;
+    vector<double> m_DegraderDistance;
+    vector<double> m_DegraderThickness;
+    vector<double> m_DegraderRadius;
+
+    vector<TLorentzVector> m_Placed;
 
     //   Shape type
     vector<string> m_Shape ;
