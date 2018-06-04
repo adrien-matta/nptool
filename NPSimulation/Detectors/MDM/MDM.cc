@@ -234,7 +234,7 @@ void MDM::ReadSensitive(const G4Event* event){
 		
     // Set X, Y positions in TMDMData class
     for(int i=0; i< 4; ++i) {
-			m_Event->SetHit(i, x[i], y[i], Charge, Mass/amu_c2);
+			m_Event->SetHit(i, x[i], y[i], Charge, Mass/amu_c2, Ekin/MeV);
     }
   
     ++indx;
