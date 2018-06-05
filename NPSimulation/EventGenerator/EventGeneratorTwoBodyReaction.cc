@@ -96,6 +96,26 @@ void EventGeneratorTwoBodyReaction::Print() const{
 //    Inherit from VEventGenerator
 
 void EventGeneratorTwoBodyReaction::ReadConfiguration(NPL::InputParser parser){
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
+    for(unsigned int i = 0 ; i < blocks.size() ; i++)
+    {
+        m_Z                 =blocks[i]->GetInt("Z");
+        m_A                 =blocks[i]->GetInt("A");
+        if(blocks[i]->HasToken("PhotonEvaporation"))
+        {
+            G4String command = "/grdm/setPhotoEvaporationFile ";
+            G4String fileName = blocks[i]->GetString("PhotonEvaporation");
+            m_PhotonEvaporation=command+
+                to_string(m_Z)+" "+
+                to_string(m_A)+" "+
+                fileName;
+            cout << "Reading file " << fileName << endl;
+            G4UImanager* UI = G4UImanager::GetUIpointer();
+            if (m_PhotonEvaporation) UI->ApplyCommand(m_PhotonEvaporation);
+        }
+    }
+
   m_Reaction->ReadConfigurationFile(parser);
   m_ShootLight = m_Reaction->GetShoot3();
   m_ShootHeavy = m_Reaction->GetShoot4();;

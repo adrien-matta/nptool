@@ -74,6 +74,9 @@ class EventGeneratorTwoBodyReaction : public NPS::VEventGenerator
       G4String               m_RadioactiveDecayLight;
       G4String               m_RadioactiveDecayHeavy;
 
+      G4String               m_PhotonEvaporation;
+      G4int                  m_Z                ;
+      G4int                  m_A                ;
 
 
    private: // Target Parameter
