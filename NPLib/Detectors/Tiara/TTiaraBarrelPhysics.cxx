@@ -78,6 +78,7 @@ void TTiaraBarrelPhysics::BuildPhysicalEvent(){
 
   unsigned int sizeU = m_PreTreatedData->GetFrontUpstreamEMult();
   unsigned int sizeO = m_PreTreatedData->GetOuterEMult();
+  EventMultiplicity = sizeU;
 
   static string name; // token
 
