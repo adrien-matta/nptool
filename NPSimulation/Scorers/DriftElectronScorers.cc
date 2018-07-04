@@ -57,7 +57,7 @@ G4bool PS_DECathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   G4String PID = aStep->GetTrack()->GetDefinition()->GetParticleName();
 
     if(PID=="driftelectron"){
-        Infos[0] = 1;
+        Infos[0] = aStep->GetTrack()->GetWeight();
     }
 
     // Check if the particle has interact before, if yes, add up the number of electron.

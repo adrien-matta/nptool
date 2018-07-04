@@ -128,7 +128,6 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   
 
   if(!aMaterialPropertiesTable->ConstPropertyExists("DE_PAIRENERGY") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_YIELD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_TRANSVERSALSPREAD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_LONGITUDINALSPREAD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_DRIFTSPEED") )
