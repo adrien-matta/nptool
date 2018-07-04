@@ -117,7 +117,6 @@ void G4IonizationWithDE::BuildPhysicsTable(const G4ParticleDefinition&)
 //
   G4VParticleChange*
 G4IonizationWithDE::AtRestDoIt(const G4Track& aTrack, const G4Step& aStep)
-
   // This routine simply calls the equivalent PostStepDoIt since all the
   // necessary information resides in aStep.GetTotalEnergyDeposit()
 
@@ -140,15 +139,6 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   aParticleChange.Initialize(aTrack);
 
   const G4Material* aMaterial = aTrack.GetMaterial();
-
-  G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
-
-  G4ThreeVector x0 = pPreStepPoint->GetPosition();
-  G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
-  G4double      t0 = pPreStepPoint->GetGlobalTime();
-
-  G4double TotalEnergyDeposit = aStep.GetTotalEnergyDeposit();
-
   // Get the material table
   G4MaterialPropertiesTable* aMaterialPropertiesTable =
     aMaterial->GetMaterialPropertiesTable();
@@ -157,59 +147,87 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   
 
   if(!aMaterialPropertiesTable->ConstPropertyExists("DE_PAIRENERGY") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_YIELD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_TRANSVERSALSPREAD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_LONGITUDINALSPREAD") ||
      !aMaterialPropertiesTable->ConstPropertyExists("DE_DRIFTSPEED") )
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
  
 
+  G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
+  const G4TouchableHandle& handle = pPreStepPoint->GetTouchableHandle();
+
+  G4ThreeVector x0 = pPreStepPoint->GetPosition();
+  G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
+  G4double      t0 = pPreStepPoint->GetGlobalTime();
+
+  G4double TotalEnergyDeposit = aStep.GetTotalEnergyDeposit();
+
+  
   G4double v_drift=
     aMaterialPropertiesTable->GetConstProperty("DE_DRIFTSPEED");
   G4double pair_energy=
     aMaterialPropertiesTable->GetConstProperty("DE_PAIRENERGY");
-  G4double IonizationWithDEYield = 0;
-  IonizationWithDEYield=
-    aMaterialPropertiesTable->GetConstProperty("DE_YIELD");
 
-  G4int number_electron = IonizationWithDEYield*TotalEnergyDeposit/pair_energy;
+  // Physical number of electron produced
+  G4int number_electron = TotalEnergyDeposit/pair_energy;
   number_electron = G4Poisson(number_electron);
-    //if no electron leave
-  if(number_electron<1){
+
+  // Tracked electron produced
+  // 100 per mm per step to have a good statistical accuracy
+  
+  G4int tracked_electron = (aStep.GetStepLength()/mm)*5;
+
+  //if no electron leave
+  if(tracked_electron<1){
     aParticleChange.SetNumberOfSecondaries(0);
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
-  aParticleChange.SetNumberOfSecondaries(number_electron);
+  aParticleChange.SetNumberOfSecondaries(tracked_electron);
+  aParticleChange.SetSecondaryWeightByProcess(true);
 
-  // Create the secondary tracks
-  for(G4int i = 0 ; i < number_electron ; i++){
+
+
   // Electron follow the field direction
   // The field direction is taken from the field manager
-  G4double* fieldArr = new G4double[6];
-  G4double  Point[4]={x0.x(),x0.y(),x0.z(),t0};
-  G4FieldManager* fMng = pPreStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->
-    GetFieldManager();
+  //Everything common to all created DE:
+  static G4double  fieldArr[6];
+  static G4double  Point[4];
+  Point[0] = x0.x();
+  Point[1] = x0.y();
+  Point[2] = x0.z();
+  Point[3] = t0;
+
+  G4FieldManager* fMng = handle->GetVolume()->GetLogicalVolume()->GetFieldManager();
 
   G4ElectroMagneticField* field = (G4ElectroMagneticField*)fMng->GetDetectorField();
-  field->GetFieldValue(Point,fieldArr) ;
+  field->GetFieldValue(Point,&fieldArr[0]) ;
 
   // Electron move opposite to the field direction, hance the minus sign
   G4ThreeVector p(-fieldArr[3],-fieldArr[4],-fieldArr[5]);
   // Normalised the drift direction
   p = p.unit();
 
-    // Random Position along the step with matching time
+  G4ThreeVector delta = aStep.GetDeltaPosition();
+  G4double     deltaT = aStep.GetDeltaTime();
+  static G4ParticleDefinition* DEDefinition = G4DriftElectron::DriftElectron();
+  G4double velocity = v_drift/c_light;
+  G4int parentID = aTrack.GetTrackID();
+  
+  // Create the secondary tracks
+  for(G4int i = 0 ; i < tracked_electron ; i++){ // always create 100 electron, but with weight
+      // Random Position along the step with matching time
     G4double rand = G4UniformRand();
-    G4ThreeVector pos = x0 + rand * aStep.GetDeltaPosition();
-    G4double time = t0+ rand* aStep.GetDeltaTime(); 
+    G4ThreeVector pos = x0 + rand * delta;
+    G4double time = t0 + rand* deltaT; 
 
-    G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
-     G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
-    aSecondaryTrack->SetVelocity(v_drift/c_light);
-
-    aSecondaryTrack->SetParentID(aTrack.GetTrackID());
-    aSecondaryTrack->SetTouchableHandle(aStep.GetPreStepPoint()->GetTouchableHandle());
+    G4DynamicParticle* particle = new G4DynamicParticle(DEDefinition,p, pair_energy);
+    G4Track* aSecondaryTrack = new G4Track(particle,time,pos);
+    aSecondaryTrack->SetVelocity(velocity);
+    aSecondaryTrack->SetParentID(parentID);
+    aSecondaryTrack->SetTouchableHandle(handle);
+    // Set the weight, ie, how many electron the track represents 
+    aSecondaryTrack->SetWeight(number_electron/tracked_electron);
     aParticleChange.AddSecondary(aSecondaryTrack);
   }
 
