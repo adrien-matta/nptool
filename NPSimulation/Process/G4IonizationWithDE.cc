@@ -186,8 +186,6 @@ G4IonizationWithDE::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   aParticleChange.SetNumberOfSecondaries(tracked_electron);
   aParticleChange.SetSecondaryWeightByProcess(true);
 
-
-
   // Electron follow the field direction
   // The field direction is taken from the field manager
   //Everything common to all created DE:
