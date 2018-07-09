@@ -43,6 +43,9 @@ class TMDMData : public TObject {
     // Y - position
     vector<Double_t>   fMDM_Ypos;
 
+		// Kinetic Energy
+		vector<Double_t>   fMDM_Kinetic_Energy;
+		
 		// Particle ID
 		vector<UShort_t>   fMDM_Particle_Charge;
 		vector<Double_t>   fMDM_Particle_Mass;
@@ -71,10 +74,11 @@ class TMDMData : public TObject {
   public:
     //////////////////////    SETTERS    ////////////////////////
     //
-		inline void SetHit(UShort_t DetNbr, Double_t x, Double_t y, UShort_t charge, Double_t mass){
+		inline void SetHit(UShort_t DetNbr, Double_t x, Double_t y, UShort_t charge, Double_t mass, Double_t eKin = 0){
       fMDM_DetectorNbr.push_back(DetNbr);
       fMDM_Xpos.push_back(x);
       fMDM_Ypos.push_back(y);
+			fMDM_Kinetic_Energy.push_back(eKin);
 			fMDM_Particle_Mass.push_back(mass);
 			fMDM_Particle_Charge.push_back(charge);
     };//!
@@ -91,6 +95,9 @@ class TMDMData : public TObject {
 		// Y - position
     inline Double_t Get_Ypos(const unsigned int &i) const 
       {return fMDM_Ypos[i];}//!
+		// Kinetic Energy
+		inline Double_t Get_Kinetic_Energy(const unsigned int &i) const 
+      {return fMDM_Kinetic_Energy[i];}//!
 		// Particle ID
 		inline Double_t GetParticleMass(const unsigned int& i) const
 		  {return fMDM_Particle_Mass[i];}//!
@@ -99,7 +106,7 @@ class TMDMData : public TObject {
 		
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary
-  ClassDef(TMDMData,2)  // MDMData structure
+  ClassDef(TMDMData,3)  // MDMData structure
 };
 
 #endif

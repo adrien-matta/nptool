@@ -98,19 +98,11 @@ G4DEAmplification::~G4DEAmplification(){}
 G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 {
 
-//  if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" )
-//    return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-
   // Get the primary track
   aParticleChange.Initialize(aTrack);
 
   const G4Material* aMaterial = aTrack.GetMaterial();
 
-  G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
-
-  G4ThreeVector x0 = pPreStepPoint->GetPosition();
-  G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
-  G4double      t0 = pPreStepPoint->GetGlobalTime();
 
   // Get the material table
   G4MaterialPropertiesTable* aMaterialPropertiesTable =
@@ -118,41 +110,50 @@ G4DEAmplification::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
   if (!aMaterialPropertiesTable){ // Does the table exist
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
-  
-  if(!aMaterialPropertiesTable->ConstPropertyExists("DE_AMPLIFICATION") ||
-     !aMaterialPropertiesTable->ConstPropertyExists("DE_YIELD"))
+
+  if(!aMaterialPropertiesTable->ConstPropertyExists("DE_AMPLIFICATION"))
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
-  
+
+
+  G4StepPoint* pPreStepPoint  = aStep.GetPreStepPoint();
+
+  G4ThreeVector x0 = pPreStepPoint->GetPosition();
+  G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
+  G4double      t0 = pPreStepPoint->GetGlobalTime();
+
   G4double pair_energy = pPreStepPoint->GetKineticEnergy();
 
   G4double amplification = aMaterialPropertiesTable->GetConstProperty("DE_AMPLIFICATION");
-  G4double Yield = aMaterialPropertiesTable->GetConstProperty("DE_YIELD");
 
-  G4int number_electron = amplification*Yield;
-    //if no electron leave
-  if(number_electron<1){
+
+  double OriginalW = aTrack.GetWeight();
+  // Number of Physical electron to be created
+  G4int number_electron = amplification*OriginalW;
+  //Number of tracked electron effectively created instead
+  G4int tracked_electron = 10;
+
+  //if no electron leave
+  if(tracked_electron<1){
     aParticleChange.SetNumberOfSecondaries(0);
     return G4VRestDiscreteProcess::PostStepDoIt(aTrack, aStep);
   }
 
-  aParticleChange.SetNumberOfSecondaries(number_electron);
-  // Create the secondary tracks
-  for(G4int i = 0 ; i < number_electron ; i++){
-    // Random direction at creation
-    G4double cost = 1-2*G4UniformRand();
-    G4double theta = acos(cost);
-    G4double phi = twopi*G4UniformRand();
-    G4ThreeVector p;
-    p.setRThetaPhi(1,theta,phi); 
+  static G4ParticleDefinition* DEDef = G4DriftElectron::DriftElectron();
+  G4TouchableHandle handle = pPreStepPoint->GetTouchableHandle();
+  G4int ParentID = aTrack.GetTrackID();
 
-    G4DynamicParticle* particle = new G4DynamicParticle(G4DriftElectron::DriftElectron(),p, pair_energy);
+   aParticleChange.SetNumberOfSecondaries(tracked_electron);
+  aParticleChange.SetSecondaryWeightByProcess(true);
+  // Create the secondary tracks
+  for(G4int i = 0 ; i < tracked_electron ; i++){
+     G4DynamicParticle* particle = new G4DynamicParticle(DEDef,p0, pair_energy);
+     // The secondary track follow the original one
      G4Track* aSecondaryTrack = new G4Track(particle,t0,x0);
 
-    aSecondaryTrack->SetTouchableHandle(
-        aStep.GetPreStepPoint()->GetTouchableHandle());
     aSecondaryTrack->SetCreatorProcess(this);
-    aSecondaryTrack->SetParentID(aTrack.GetTrackID());
-    aSecondaryTrack->SetTouchableHandle(aStep.GetPreStepPoint()->GetTouchableHandle());
+    aSecondaryTrack->SetParentID(ParentID);
+    aSecondaryTrack->SetTouchableHandle(handle);
+    aSecondaryTrack->SetWeight(number_electron/tracked_electron);
     aParticleChange.AddSecondary(aSecondaryTrack);
   }
   // to kill the primary track to avoid it being re-amplified
@@ -183,10 +184,10 @@ G4double G4DEAmplification::GetMeanLifeTime(const G4Track& aTrack,
     G4ForceCondition* condition)
 {
   if(aTrack.GetCreatorProcess()->GetProcessName()=="DEAmplification" ){
-   *condition = NotForced;
+    *condition = NotForced;
     return DBL_MAX;
   }
-    
+
   *condition = StronglyForced;
   return DBL_MAX;
 }
