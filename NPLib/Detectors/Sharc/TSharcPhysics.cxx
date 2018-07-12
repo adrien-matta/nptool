@@ -50,7 +50,7 @@ ClassImp(TSharcPhysics)
     m_Spectra           = NULL;
     m_NumberOfDetector = 0 ;
     m_MaximumStripMultiplicityAllowed = 10;
-    m_StripEnergyMatchingSigma = 0.060    ;
+    m_StripEnergyMatchingSigma = 0.060 ; //keV
     m_StripEnergyMatchingNumberOfSigma = 5;
 
     // Threshold
@@ -746,7 +746,6 @@ void TSharcPhysics::AddQQQDetector( double R,double Phi,double Z){
 
   double QQQ_Phi_Min = 2.0*M_PI/180.  ;
   double QQQ_Phi_Max = 83.6*M_PI/180. ;
-  Phi= Phi*M_PI/180.;
 
   int    QQQ_Radial_NumberOfStrip = 16 ;
   int    QQQ_Sector_NumberOfStrip = 24 ;
