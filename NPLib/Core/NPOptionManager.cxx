@@ -37,7 +37,7 @@ NPOptionManager* NPOptionManager::getInstance(int argc, char** argv){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-NPOptionManager* NPOptionManager::getInstance(string arg){
+NPOptionManager* NPOptionManager::getInstance(std::string arg){
 
   if (instance == 0) instance = new NPOptionManager(arg);
 
@@ -45,6 +45,10 @@ NPOptionManager* NPOptionManager::getInstance(string arg){
 
 }
 void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
+  if(argc==1)
+    DisplayHelp();
+
+
   // Default Setting
   fDefaultReactionFileName    = "defaultReaction.reaction";
   fDefaultDetectorFileName    = "defaultDetector.detector";
@@ -90,7 +94,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
 
 
   for (int i = 0; i < argc; i++) {
-    string argument = argv[i];
+    std::string argument = argv[i];
     if (argument == "-H" || argument == "-h" || argument == "--help") DisplayHelp();
 
     else if (argument == "--event-generator" && argc >= i + 1)    fReactionFileName    = argv[++i] ;
@@ -110,6 +114,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--run" && argc >= i + 1)                fRunToReadFileName   = argv[++i] ;
 
     else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[++i] ;
+
+    else if (argument == "-T" && argc >= i + 2)                   CreateRunToTreatFile(argv[++i],argv[++i]);
 
     else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[++i] ;
 
@@ -161,17 +167,33 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     DisplayVersion();
 }
 ////////////////////////////////////////////////////////////////////////////////
+void NPOptionManager::CreateRunToTreatFile(std::string file, std::string tree){
+  
+  std::ofstream run(".RunToTreat.txt");
+  if(!run.is_open())
+    exit(1);
+
+  run << "TTreeName" << std::endl;
+  run << " " << tree << std::endl;
+  run << "RootFileName" << std::endl;
+  run << " " << file << std::endl << std::endl;
+  run.close();
+  fRunToReadFileName=".RunToTreat.txt";
+  }
+
+
+////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::DisplayVersion(){
   if(fVerboseLevel>0){
-    string line;
+    std::string line;
     line.resize(80,'*');
-    cout << line << endl;
-    cout << "***********************************  NPTool  ***********************************"<< endl;
-    cout << line << endl;
-    cout << " NPLib version: nplib-"<< NPL::version_major <<"-" << NPL::version_minor << "-" << NPL::version_deta <<endl;
-    cout << " Copyright: NPTool Collaboration "<<endl;
-    cout << " GitHub: http://github.com/adrien-matta/nptool"<<endl; ;
-    cout << line << endl;
+    std::cout << line << std::endl;
+    std::cout << "***********************************  NPTool  ***********************************"<< std::endl;
+    std::cout << line << std::endl;
+    std::cout << " NPLib version: nplib-"<< NPL::version_major <<"-" << NPL::version_minor << "-" << NPL::version_deta <<std::endl;
+    std::cout << " Copyright: NPTool Collaboration "<<std::endl;
+    std::cout << " GitHub: http://github.com/adrien-matta/nptool"<<std::endl; ;
+    std::cout << line << std::endl;
 
   }
 }
@@ -180,11 +202,11 @@ NPOptionManager::NPOptionManager(int argc, char** argv){
   ReadTheInputArgument(argc,argv);
 }
 ////////////////////////////////////////////////////////////////////////////////
-NPOptionManager::NPOptionManager(string arg){  
-  vector<char *> args;
-  istringstream iss(arg);
+NPOptionManager::NPOptionManager(std::string arg){  
+  std::vector<char *> args;
+  std::stringstream iss(arg);
 
-  string token;
+  std::string token;
   while(iss >> token) {
     char *arg = new char[token.size() + 1];
     copy(token.begin(), token.end(), arg);
@@ -211,11 +233,11 @@ void NPOptionManager::CheckEventGenerator(){
   bool checkFile = true;
 
   // NPTool path
-  string GlobalPath = getenv("NPTOOL");
-  string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + fReactionFileName;
+  std::string GlobalPath = getenv("NPTOOL");
+  std::string StandardPath = GlobalPath + "/Inputs/EventGenerator/" + fReactionFileName;
 
   // ifstream to configfile
-  ifstream ConfigFile;
+  std::ifstream ConfigFile;
 
   // test if config file is in local path
   ConfigFile.open(fReactionFileName.c_str());
@@ -241,11 +263,11 @@ void NPOptionManager::CheckDetectorConfiguration(){
   bool checkFile = true;
 
   // NPTool path
-  string GlobalPath = getenv("NPTOOL");
-  string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + fDetectorFileName;
+  std::string GlobalPath = getenv("NPTOOL");
+  std::string StandardPath = GlobalPath + "/Inputs/DetectorConfiguration/" + fDetectorFileName;
 
   // ifstream to configfile
-  ifstream ConfigFile;
+  std::ifstream ConfigFile;
 
   // test if config file is in local path
   ConfigFile.open(fDetectorFileName.c_str());
@@ -273,7 +295,7 @@ void NPOptionManager::CheckG4Macro(){
     return ;
 
   // ifstream to configfile
-  ifstream MacroFile( fG4MacroPath );
+  std::ifstream MacroFile( fG4MacroPath );
 
   if (!MacroFile.is_open()) {
     SendErrorAndExit("G4MacroPath");
@@ -288,7 +310,7 @@ void NPOptionManager::CheckG4Macro(){
 bool NPOptionManager::IsDefault(const char* type) const{
   bool result = false;
 
-  string stype = type;
+  std::string stype = type;
   if (stype == "EventGenerator") {
     if (fReactionFileName == fDefaultReactionFileName) result = true;
   }
@@ -312,7 +334,7 @@ bool NPOptionManager::IsDefault(const char* type) const{
   }
  
   else {
-    cout << "NPOptionManager::IsDefault() unkwown keyword" << endl;
+    std::cout << "NPOptionManager::IsDefault() unkwown keyword" << std::endl;
   }
 
   return result;
@@ -322,21 +344,21 @@ bool NPOptionManager::IsDefault(const char* type) const{
 ////////////////////////////////////////////////////////////////////////////////
 // This method tests if the input files are the default ones
 void NPOptionManager::SendErrorAndExit(const char* type) const{
-  string stype = type;
+  std::string stype = type;
   if (stype == "EventGenerator") {
-    cout << endl;
-    cout << "**********************************       Error       **********************************" << endl;
-    cout << "* No event generator file found in $NPTool/Inputs/EventGenerator or local directories *" << endl;
-    cout << "***************************************************************************************" << endl;
-    cout << endl;
+    std::cout << std::endl;
+    std::cout << "**********************************       Error       **********************************" << std::endl;
+    std::cout << "* No event generator file found in $NPTool/Inputs/EventGenerator or local directories *" << std::endl;
+    std::cout << "***************************************************************************************" << std::endl;
+    std::cout << std::endl;
     exit(1);
   }
   else if (stype == "DetectorConfiguration") {
-    cout << endl;
-    cout << "***********************************       Error       ***********************************" << endl;
-    cout << "* No detector geometry file found in $NPTool/Inputs/DetectorConfiguration or local directories *" << endl;
-    cout << "*****************************************************************************************" << endl;
-    cout << endl;
+    std::cout << std::endl;
+    std::cout << "***********************************       Error       ***********************************" << std::endl;
+    std::cout << "* No detector geometry file found in $NPTool/Inputs/DetectorConfiguration or local directories *" << std::endl;
+    std::cout << "*****************************************************************************************" << std::endl;
+    std::cout << std::endl;
     exit(1);
   }
   else if (stype == "Calibration") {
@@ -344,16 +366,16 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
   else if (stype == "RunToTreat") {
   }
   else if (stype == "G4MacroPath") {
-    cout << endl;
-    cout << "***********************************       Error       ***********************************" << endl;
-    cout << "*                  No Geant4 macro file found in the provided path                      *" << endl;
-    cout << "*****************************************************************************************" << endl;
-    cout << endl;
+    std::cout << std::endl;
+    std::cout << "***********************************       Error       ***********************************" << std::endl;
+    std::cout << "*                  No Geant4 macro file found in the provided path                      *" << std::endl;
+    std::cout << "*****************************************************************************************" << std::endl;
+    std::cout << std::endl;
     exit(1);
   }
 
   else {
-    cout << "NPOptionManager::SendErrorAndExit() unkwown keyword" << endl;
+    std::cout << "NPOptionManager::SendErrorAndExit() unkwown keyword" << std::endl;
   }
 }
 
@@ -361,34 +383,36 @@ void NPOptionManager::SendErrorAndExit(const char* type) const{
 ////////////////////////////////////////////////////////////////////////////////
 void NPOptionManager::DisplayHelp(){
   DisplayVersion();
-  cout << endl << "----NPOptionManager Help----" << endl << endl ;
-  cout << "List of Option " << endl ;
-  cout << "\t--help　-H -h\t\t\tDisplay this help message" << endl ;
-  cout << "\t--detector　-D <arg>\t\tSet arg as the detector configuration file" << endl ;
-  cout << "\t--event-generator　-E <arg>\tSet arg as the event generator file" << endl ;
-  cout << "\t--output　-O <arg>\t\tSet arg as the Output File Name (output tree)" << endl ;
-  cout << "\t--tree-name <arg>\t\tSet arg as the Output Tree Name " << endl ;
-  cout << "\t--verbose -V <arg>\t\tSet the verbose level, 0 for nothing, 1 for normal printout."<<endl;
-	cout  << "\t\t\t\t\tError and warning are not affected" << endl ;
-  cout << endl << "NPAnalysis only:"<<endl;
-  cout << "\t--run -R <arg>\t\t\tSet arg as the run to read file list" << endl  ;
-  cout << "\t--cal -C <arg>\t\t\tSet arg as the calibration file list" << endl ;
-  cout << "\t--disable-branch\t\tDisable of branch of Input tree except the one of the detector (faster)" << endl  ;
-  cout << "\t--generate-histo -GH\t\tInstantiate the T*Spectra class of each detector" << endl ;
-  cout << "\t--check-histo -CH\t\tCheck if the Histogram looks ok and change there color if not" << endl ;
-  cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << endl  ;
-  cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << endl ;
-  cout << "\t-F <arg>\t\t\tSet the first event to analyse to arg (analysis goes from F -> L+F)" << endl ;
-  cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << endl ;
-  cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << endl ;
-  cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << endl ;
-  cout << "\t--last-any\t\t\tIgnore the list of Run to treat if any and analysed the last generated root file" << endl ;
-  cout << "\t--online  \t\t\tStart the spectra server" << endl ;
-  cout << endl << "NPSimulation only:"<<endl;
-  cout << "\t-M <arg>\t\t\tExecute Geant4 macro <arg> at startup" << endl ;
-  cout << "\t-B <arg>\t\t\tExecute in batch mode (no ui) with Geant4 macro <arg> at startup" << endl ;
+  std::cout << std::endl << "----NPOptionManager Help----" << std::endl << std::endl ;
+  std::cout << "List of Option " << std::endl ;
+  std::cout << "\t--help　-H -h\t\t\tDisplay this help message" << std::endl ;
+  std::cout << "\t--detector　-D <arg>\t\tSet arg as the detector configuration file" << std::endl ;
+  std::cout << "\t--event-generator　-E <arg>\tSet arg as the event generator file" << std::endl ;
+  std::cout << "\t--output　-O <arg>\t\tSet arg as the Output File Name (output tree)" << std::endl ;
+  std::cout << "\t--tree-name <arg>\t\tSet arg as the Output Tree Name " << std::endl ;
+  std::cout << "\t--verbose -V <arg>\t\tSet the verbose level, 0 for nothing, 1 for normal printout."<<std::endl;
+	std::cout  << "\t\t\t\t\tError and warning are not affected" << std::endl ;
+  std::cout << std::endl << "NPAnalysis only:"<<std::endl;
+  std::cout << "\t--run -R <arg>\t\t\tSet arg as the run to read file list" << std::endl  ;
+  std::cout << "\t-T <name> <file>\t\tTree <name> from root file <file>" << std::endl  ;
 
-  cout << endl << endl ;
+  std::cout << "\t--cal -C <arg>\t\t\tSet arg as the calibration file list" << std::endl ;
+  std::cout << "\t--disable-branch\t\tDisable of branch of Input tree except the one of the detector (faster)" << std::endl  ;
+  std::cout << "\t--generate-histo -GH\t\tInstantiate the T*Spectra class of each detector" << std::endl ;
+  std::cout << "\t--check-histo -CH\t\tCheck if the Histogram looks ok and change there color if not" << std::endl ;
+  std::cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << std::endl  ;
+  std::cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << std::endl ;
+  std::cout << "\t-F <arg>\t\t\tSet the first event to analyse to arg (analysis goes from F -> L+F)" << std::endl ;
+  std::cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << std::endl ;
+  std::cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << std::endl ;
+  std::cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << std::endl ;
+  std::cout << "\t--last-any\t\t\tIgnore the list of Run to treat if any and analysed the last generated root file" << std::endl ;
+  std::cout << "\t--online  \t\t\tStart the spectra server" << std::endl ;
+  std::cout << std::endl << "NPSimulation only:"<<std::endl;
+  std::cout << "\t-M <arg>\t\t\tExecute Geant4 macro <arg> at startup" << std::endl ;
+  std::cout << "\t-B <arg>\t\t\tExecute in batch mode (no ui) with Geant4 macro <arg> at startup" << std::endl ;
+
+  std::cout << std::endl << std::endl ;
 
   // exit current program
   exit(0);
@@ -403,8 +427,8 @@ void NPOptionManager::Destroy(){
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-string NPOptionManager::GetLastFile(){
-  string path = getenv("NPTOOL");
+std::string NPOptionManager::GetLastFile(){
+  std::string path = getenv("NPTOOL");
   if(fLastSimFile)
     return (path+"/.last_sim_file");
 

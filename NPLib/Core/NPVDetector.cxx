@@ -24,22 +24,21 @@
  *****************************************************************************/
 #include "NPVDetector.h"
 #include "NPOptionManager.h"
-using namespace NPL ;
 
-ClassImp(VDetector);
+ClassImp(NPL::VDetector);
 
 // Constructor
-VDetector::VDetector(){
+NPL::VDetector::VDetector(){
 }
 
 
 // Destructor
-VDetector::~VDetector(){
+NPL::VDetector::~VDetector(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 namespace NPL{
-  static string itoa_array[10000];
+  static std::string itoa_array[10000];
 
   class itoa_proxy{
     public:

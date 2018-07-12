@@ -31,10 +31,10 @@ using namespace std;
 
 RootOutput* RootOutput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
-RootOutput* RootOutput::getInstance(TString fileNameBase, TString treeNameBase){
+RootOutput* RootOutput::getInstance(std::string fileNameBase, std::string treeNameBase){
   // A new instance of RootOutput is created if it does not exist:
   if (instance == 0) {
-    instance = new RootOutput(fileNameBase, treeNameBase);
+    instance = new RootOutput(fileNameBase.c_str(), treeNameBase.c_str());
   }
 
   // The instance of RootOutput is returned:
@@ -50,19 +50,19 @@ void RootOutput::Destroy(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RootOutput::RootOutput(TString fileNameBase, TString treeNameBase){
+RootOutput::RootOutput(std::string fileNameBase, std::string treeNameBase){
   TDirectory* currentPath= gDirectory;
 
   // The file extension is added to the file name:
-  TString GlobalPath = getenv("NPTOOL");
+  std::string GlobalPath = getenv("NPTOOL");
 
   // The ROOT file is created
   if(!NPOptionManager::getInstance()->GetPROOF()){
-    TString fileName = GlobalPath + "/Outputs/";
-    if (fileNameBase.Contains("root")) fileName += fileNameBase;
+    std::string fileName = GlobalPath + "/Outputs/";
+    if (fileNameBase.find("root")!=std::string::npos) fileName += fileNameBase;
     else fileName += fileNameBase + ".root";
 
-    pRootFile = new TFile(fileName, "RECREATE");
+    pRootFile = new TFile(fileName.c_str(), "RECREATE");
 
     if(treeNameBase=="SimulatedTree"){
       string path = getenv("NPTOOL");
@@ -118,7 +118,7 @@ RootOutput::RootOutput(TString fileNameBase, TString treeNameBase){
     pRootFile = 0 ;
   }
 
-  pRootTree = new TTree(treeNameBase, "Data created / analysed with the NPTool package");
+  pRootTree = new TTree(treeNameBase.c_str(), "Data created / analysed with the NPTool package");
   pRootList = new TList();
 
   // Init TAsciiFile objects
@@ -134,35 +134,35 @@ void RootOutput::InitAsciiFiles(){
 
   // Event generator
   // Get file name from NPOptionManager
-  TString fileNameEG = OptionManager->GetReactionFile();
+  std::string fileNameEG = OptionManager->GetReactionFile();
   pEventGenerator = new TAsciiFile();
-  pEventGenerator->SetNameTitle("EventGenerator", fileNameEG.Data());
-  pEventGenerator->Append(fileNameEG.Data());
+  pEventGenerator->SetNameTitle("EventGenerator", fileNameEG.c_str());
+  pEventGenerator->Append(fileNameEG.c_str());
   pEventGenerator->Write(0,TAsciiFile::kOverwrite);
   
   // Detector configuration 
   // Get file name from NPOptionManager
-  TString fileNameDC = OptionManager->GetDetectorFile();
+  std::string fileNameDC = OptionManager->GetDetectorFile();
   pDetectorConfiguration = new TAsciiFile();
-  pDetectorConfiguration->SetNameTitle("DetectorConfiguration", fileNameDC.Data());
-  pDetectorConfiguration->Append(fileNameDC.Data());
+  pDetectorConfiguration->SetNameTitle("DetectorConfiguration", fileNameDC.c_str());
+  pDetectorConfiguration->Append(fileNameDC.c_str());
   pDetectorConfiguration->Write(0,TAsciiFile::kOverwrite);
 
   // Run to treat file
   // Get file name from NPOptionManager
   pRunToTreatFile = new TAsciiFile();
   if (!OptionManager->IsDefault("RunToTreat")) {
-    TString fileNameRT = OptionManager->GetRunToReadFile();
-    pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.Data());
-    pRunToTreatFile->Append(fileNameRT.Data());
+    std::string fileNameRT = OptionManager->GetRunToReadFile();
+    pRunToTreatFile->SetNameTitle("RunToTreat", fileNameRT.c_str());
+    pRunToTreatFile->Append(fileNameRT.c_str());
     pRunToTreatFile->Write(0,TAsciiFile::kOverwrite);
   }
 
   // Calibration files
   pCalibrationFile = new TAsciiFile();
   if (!OptionManager->IsDefault("Calibration")) {
-    TString fileNameCal = OptionManager->GetCalibrationFile();
-    pCalibrationFile->SetNameTitle("Calibration", fileNameCal.Data());
+    std::string fileNameCal = OptionManager->GetCalibrationFile();
+    pCalibrationFile->SetNameTitle("Calibration", fileNameCal.c_str());
     pCalibrationFile->Write(0,TAsciiFile::kOverwrite);
   }
 
@@ -227,14 +227,14 @@ RootOutput::~RootOutput(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TFile* RootOutput::InitFile(TString fileNameBase){
+TFile* RootOutput::InitFile(std::string fileNameBase){
 
   if(NPOptionManager::getInstance()->GetPROOF()){
-    TString GlobalPath = getenv("NPTOOL");
-    TString fileName = GlobalPath + "/Outputs/Analysis/";
-    if (fileNameBase.Contains("root")) fileName += fileNameBase;
+    std::string GlobalPath = getenv("NPTOOL");
+    std::string fileName = GlobalPath + "/Outputs/Analysis/";
+    if (fileNameBase.find("root")!=std::string::npos) fileName += fileNameBase;
     else fileName += fileNameBase + ".root";
-    pRootFile = new TFile(fileName, "RECREATE");
+    pRootFile = new TFile(fileName.c_str(), "RECREATE");
     pRootFile->Flush();
     return pRootFile;
   }

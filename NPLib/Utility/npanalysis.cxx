@@ -22,30 +22,30 @@ void ProgressDisplay(clock_t&,clock_t&,unsigned long&, unsigned long&, unsigned 
 int main(int argc , char** argv){
   // command line parsing
   NPOptionManager* myOptionManager = NPOptionManager::getInstance(argc,argv);
-  string inputfilename = myOptionManager->GetRunToReadFile();
+  std::string inputfilename = myOptionManager->GetRunToReadFile();
   // if input files are not given, use those from TAsciiFile
   if (myOptionManager->IsDefault("DetectorConfiguration")) {
-    string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
+    std::string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("DetectorConfiguration");
     if(name!="fail"){
       myOptionManager->SetDetectorFile(name);
-     cout << "\033[1;33mInfo: No Detector file given, using Input tree one \033[0m"<<endl;;
+     std::cout << "\033[1;33mInfo: No Detector file given, using Input tree one \033[0m" << std::endl;;
     }  
   }
 
   if (myOptionManager->IsDefault("EventGenerator")) {
-    string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
+    std::string name = RootInput::getInstance(inputfilename)->DumpAsciiFile("EventGenerator");
     if(name!="fail"){
     myOptionManager->SetReactionFile(name);
-    cout << "\033[1;33mInfo: No Event file given, using Input tree one \033[0m"<<endl;;
+    std::cout << "\033[1;33mInfo: No Event file given, using Input tree one \033[0m" << std::endl;;
     }
   }
 
   // get input files from NPOptionManager
-  string detectorfileName    = myOptionManager->GetDetectorFile();
-  string OutputfileName      = myOptionManager->GetOutputFile();
+  std::string detectorfileName    = myOptionManager->GetDetectorFile();
+  std::string OutputfileName      = myOptionManager->GetOutputFile();
 
   // Instantiate RootOutput
-  string TreeName="NPTool_Tree";
+  std::string TreeName="NPTool_Tree";
 
   // User decided of the name
   if(!myOptionManager->IsDefault("TreeName")){
@@ -76,7 +76,7 @@ int main(int argc , char** argv){
   myDetector->InitializeRootOutput();
   // Attempt to load an analysis
   NPL::VAnalysis* UserAnalysis = NULL;
-  string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
+  std::string libName = "./libNPAnalysis" + myOptionManager->GetSharedLibExtension();
   dlopen(libName.c_str(),RTLD_NOW | RTLD_GLOBAL);
   char* error = dlerror();
   if(error==NULL){
@@ -161,7 +161,7 @@ int main(int argc , char** argv){
     }
 
     else{
-      cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" <<endl;
+      std::cout << "\033[1;31m ERROR: You are requesting to rebuild a Physics Tree without any User Analysis, nothing to be done\033[0m" << std::endl;
       // Quit without error
       exit(0);
     }
@@ -171,19 +171,19 @@ int main(int argc , char** argv){
     if(!IsPhysics){ 
       for (unsigned long i = first_entry ; i < nentries + first_entry; i++) { 
         // Get the raw Data
-	//cout << "!" << endl;
+	//std::cout << "!" << std::endl;
         Chain -> GetEntry(i);
-	//cout << "!!" << endl;
+	//std::cout << "!!" << std::endl;
         // Build the current event
         myDetector->BuildPhysicalEvent();
-	//cout << "!!!" << endl;
+	//std::cout << "!!!" << std::endl;
         // User Analysis
         UserAnalysis->TreatEvent();
-	//cout << "!!!!" << endl;
+	//std::cout << "!!!!" << std::endl;
         // Fill the tree      
         tree->Fill();
       
-	//cout << "!!!!!" << endl;
+	//std::cout << "!!!!!" << std::endl;
         current_tree = Chain->GetTreeNumber()+1;
         ProgressDisplay(begin,end,treated,inter,nentries,mean_rate,displayed,current_tree,total_tree);
         

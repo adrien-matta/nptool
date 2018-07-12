@@ -29,6 +29,7 @@
 //   STL
 #include <string>
 #include <map>
+#include <vector>
  
 #if __cplusplus > 199711L 
 #include <thread>
@@ -36,10 +37,9 @@
 #include <condition_variable>
 #endif
 
-using namespace std ;
 
 typedef void(NPL::VDetector::*VDetector_FuncPtr)(void);
-// This class manage a map of virtual detector
+// This class manage a std::map of virtual detector
 namespace NPL{
   class DetectorManager{
     public:
@@ -47,19 +47,19 @@ namespace NPL{
       ~DetectorManager();
 
     public:
-      void        ReadConfigurationFile(string Path);
+      void        ReadConfigurationFile(std::string Path);
       void        BuildPhysicalEvent();
       void        BuildSimplePhysicalEvent();
       void        InitializeRootInput();
       void        InitializeRootOutput();
-      void        AddDetector(string,VDetector*);
-      VDetector*  GetDetector(string);
+      void        AddDetector(std::string,VDetector*);
+      VDetector*  GetDetector(std::string);
       void        ClearEventPhysics();
       void        ClearEventData();
       void        InitSpectra();
       void        WriteSpectra();
-      vector< map< string, TH1* > > GetSpectra();  
-      vector<string> GetDetectorList();
+      std::vector< std::map< std::string, TH1* > > GetSpectra();  
+      std::vector<std::string> GetDetectorList();
 
     public: // for online spectra server
       void SetSpectraServer();
@@ -69,9 +69,9 @@ namespace NPL{
       NPL::SpectraServer* m_SpectraServer;
 
     private:   
-      // The map containning all detectors
+      // The std::map containning all detectors
       // Using a Map one can access to any detector using its name
-      map<string,VDetector*> m_Detector;
+      std::map<std::string,VDetector*> m_Detector;
 
     private: // Function pointer to accelerate the code execution
       VDetector_FuncPtr m_BuildPhysicalPtr;
@@ -82,8 +82,8 @@ namespace NPL{
       
     #if __cplusplus > 199711L 
     private: // Thread Pool defined if C++11 is available
-      vector<std::thread> m_ThreadPool;
-      vector<bool> m_Ready;
+      std::vector<std::thread> m_ThreadPool;
+      std::vector<bool> m_Ready;
       bool m_stop;
       std::mutex m_ThreadMtx;
       std::condition_variable m_CV;
@@ -100,14 +100,14 @@ namespace NPL{
       double m_TargetThickness;
       double m_TargetAngle;
       double m_TargetRadius;
-      string m_TargetMaterial;
+      std::string m_TargetMaterial;
       double m_TargetX;
       double m_TargetY;
       double m_TargetZ;
   
       // Additional info for cryogenic target
       double m_WindowsThickness;
-      string m_WindowsMaterial;
+      std::string m_WindowsMaterial;
   
 
       // Special treatment for the target for the moment
@@ -116,9 +116,9 @@ namespace NPL{
 
     public:
       double GetTargetThickness()       {return m_TargetThickness;}
-      string GetTargetMaterial()        {return m_TargetMaterial;}
+      std::string GetTargetMaterial()        {return m_TargetMaterial;}
       double GetWindowsThickness(){return m_WindowsThickness;}
-      string GetWindowsMaterial() {return m_WindowsMaterial;}
+      std::string GetWindowsMaterial() {return m_WindowsMaterial;}
       double GetTargetRadius()          {return m_TargetRadius;}
       double GetTargetAngle()           {return m_TargetAngle;}
       double GetTargetX()               {return m_TargetX;}
