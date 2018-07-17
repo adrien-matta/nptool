@@ -19,12 +19,18 @@ configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
 set(DETLIST ${ETLIST})
 
 #activate Multithreading (on by default)
-if(NOT NPMULTITHREADING)
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=0")
+if(NOT DEFINED NPMULTITHREADING) 
+  set(NPMULTITHREADING 1)
+  else()
+  set(NPMULTITHREADING ${NPMULTITHREADING})
+endif()
+
+if(NPMULTITHREADING)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=1")
  message("Building application with MultiThreading Support")
  else()
- set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=1")
- message("Building application with MutilThreading Support")
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=0")
+ message("Building application with no MutilThreading Support")
 endif()
 
 
