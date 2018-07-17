@@ -60,13 +60,14 @@ NPL::DetectorManager::DetectorManager(){
   }
   m_WindowsThickness=0;
   m_WindowsMaterial="";
+
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 //   Default Desstructor
 NPL::DetectorManager::~DetectorManager(){
-#if __cplusplus > 199711L
+#if __cplusplus > 199711L && NPMULTITHREADING
   StopThread();
 #endif
   if(m_SpectraServer)
@@ -99,8 +100,8 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
 
   if(starget.size()==1){
     if(NPOptionManager::getInstance()->GetVerboseLevel()){
-    std::cout << "////       TARGET      ////" << std::endl;
-    std::cout << "//// Solid Target found " << std::endl;
+      std::cout << "////       TARGET      ////" << std::endl;
+      std::cout << "//// Solid Target found " << std::endl;
     }
     std::vector<std::string> token = {"Thickness","Radius","Material","Angle","X","Y","Z"};
     if(starget[0]->HasTokenList(token)){
@@ -119,7 +120,7 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
   else if(ctarget.size()==1){
     if(NPOptionManager::getInstance()->GetVerboseLevel())
       std::cout << "//// Cryogenic Target found " << std::endl;
-    
+
     std::vector<std::string> token = {"Thickness","Radius","Material","Density","WindowsThickness","WindowsMaterial","Angle","X","Y","Z"};
     if(ctarget[0]->HasTokenList(token)){
       m_TargetThickness= ctarget[0]->GetDouble("Thickness","micrometer");
@@ -147,30 +148,26 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
   std::vector<std::string> token = parser.GetAllBlocksToken();
   // Look for detectors among them
   for(unsigned int i = 0 ; i < token.size() ; i++){
-  VDetector* detector = theFactory->Construct(token[i]);
-  if(detector!=NULL && check.find(token[i])==check.end()){
-    if(NPOptionManager::getInstance()->GetVerboseLevel()){
-      std::cout << "/////////////////////////////////////////" << std::endl;
-      std::cout << "//// Adding Detector " << token[i] << std::endl; 
+    VDetector* detector = theFactory->Construct(token[i]);
+    if(detector!=NULL && check.find(token[i])==check.end()){
+      if(NPOptionManager::getInstance()->GetVerboseLevel()){
+        std::cout << "/////////////////////////////////////////" << std::endl;
+        std::cout << "//// Adding Detector " << token[i] << std::endl; 
+      }
+      detector->ReadConfiguration(parser);
+      if(NPOptionManager::getInstance()->GetVerboseLevel())
+        std::cout << "/////////////////////////////////////////" << std::endl;
+
+      // Add array to the VDetector Vector
+      AddDetector(token[i], detector);
+      check.insert(token[i]);
     }
-    detector->ReadConfiguration(parser);
-    if(NPOptionManager::getInstance()->GetVerboseLevel())
-      std::cout << "/////////////////////////////////////////" << std::endl;
-    
-    // Add array to the VDetector Vector
-    AddDetector(token[i], detector);
-    check.insert(token[i]);
-  }
-  else if(detector!=NULL)
-    delete detector;
+    else if(detector!=NULL)
+      delete detector;
   }
   // Now That the detector lib are loaded, we can instantiate the root input
   std::string runToReadfileName = NPOptionManager::getInstance()->GetRunToReadFile();
   RootInput::getInstance(runToReadfileName);
-
-  // Now that the detector are all added, they can initialise their Branch to the Root I/O
-  //InitializeRootInput();
-  //InitializeRootOutput();
 
   // If Requiered, they can also instiantiate their control histogramm
   if(NPOptionManager::getInstance()->GetGenerateHistoOption())
@@ -180,7 +177,7 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
   CalibrationManager::getInstance()->LoadParameterFromFile();
 
   // Start the thread if multithreading supported
-#if __cplusplus > 199711L
+#if __cplusplus > 199711L && NPMULTITHREADING
   InitThreadPool();
 #endif
 
@@ -189,32 +186,21 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::BuildPhysicalEvent(){
-#if __cplusplus > 199711L
-  // add new job
-//std::cout << "TEST0a" << std::endl;
-  std::map<std::string,VDetector*>::iterator it;
-  unsigned int i = 0;
-  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-//std::cout << "TEST0" << std::endl;
-    m_Ready[i++]=true;
-  }
-//std::cout << "TEST1" << std::endl;
-  { // aquire the sub thread lock
-    std::unique_lock<std::mutex> lk(m_ThreadMtx);
-  }
-  m_CV.notify_all();
+#if __cplusplus > 199711L && NPMULTITHREADING
+    // add new job
+    m_Ready.flip();
+    std::this_thread::yield();
 
-//std::cout << "TEST2" << std::endl;
   while(!IsDone()){
-//std::cout << "TEST2a" << std::endl;
-     //std::this_thread::yield();
-  }
-//std::cout << "TEST2b" << std::endl;
+    std::this_thread::yield();
+    }
 
 #else 
-//std::cout << "TEST3" << std::endl;
-  std::map<std::string,VDetector*>::iterator it;
-  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
+  static std::map<std::string,VDetector*>::iterator it;
+  static std::map<std::string,VDetector*>::iterator begin=m_Detector.begin();
+  static std::map<std::string,VDetector*>::iterator end= m_Detector.end();
+
+  for (it =begin; it != end; ++it) {
     (it->second->*m_ClearEventPhysicsPtr)();
     (it->second->*m_BuildPhysicalPtr)();
     if(m_FillSpectra){
@@ -224,21 +210,7 @@ void NPL::DetectorManager::BuildPhysicalEvent(){
     }
   }
 #endif
-}
-
-///////////////////////////////////////////////////////////////////////////////
-void NPL::DetectorManager::BuildSimplePhysicalEvent(){
-  ClearEventPhysics();
-  std::map<std::string,VDetector*>::iterator it;
-
-  for (it = m_Detector.begin(); it != m_Detector.end(); ++it) {
-    it->second->BuildSimplePhysicalEvent();
-    if(NPOptionManager::getInstance()->GetGenerateHistoOption()){
-      it->second->FillSpectra();
-      if(NPOptionManager::getInstance()->GetCheckHistoOption())
-        it->second->CheckSpectra();
-    }
-  }
+  return;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -282,10 +254,10 @@ NPL::VDetector* NPL::DetectorManager::GetDetector(std::string name){
     std::cout << std::endl;
     std::cout << "**********************************       Error       **********************************" << std::endl;
     std::cout << " No Detector " << name << " found in the Detector Manager" << std::endl;
-		std::cout << " Available Detectors: " << std::endl;
-		for(std::map<std::string,VDetector*>::iterator i = m_Detector.begin(); i != m_Detector.end(); ++i) {
-			std::cout << "\t" << i->first << std::endl;
-		}
+    std::cout << " Available Detectors: " << std::endl;
+    for(std::map<std::string,VDetector*>::iterator i = m_Detector.begin(); i != m_Detector.end(); ++i) {
+      std::cout << "\t" << i->first << std::endl;
+    }
     std::cout << "***************************************************************************************" << std::endl;
     std::cout << std::endl;
     exit(1);
@@ -311,15 +283,15 @@ void NPL::DetectorManager::ClearEventData(){
 void NPL::DetectorManager::InitSpectra(){
   bool batch = false;
   if(gROOT){
-     batch = gROOT->IsBatch();
-     gROOT->ProcessLine("gROOT->SetBatch()");
+    batch = gROOT->IsBatch();
+    gROOT->ProcessLine("gROOT->SetBatch()");
   }
   std::map<std::string,VDetector*>::iterator it;
   for (it = m_Detector.begin(); it != m_Detector.end(); ++it) 
     it->second->InitSpectra();
 
   if(gROOT&&!batch)
-   gROOT->ProcessLine("gROOT->SetBatch(kFALSE)");
+    gROOT->ProcessLine("gROOT->SetBatch(kFALSE)");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -353,7 +325,8 @@ std::vector<std::string> NPL::DetectorManager::GetDetectorList(){
 
   return DetectorList;
 }
-#if __cplusplus > 199711L 
+#if __cplusplus > 199711L && NPMULTITHREADING
+
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::InitThreadPool(){
   StopThread();
@@ -377,34 +350,30 @@ void NPL::DetectorManager::InitThreadPool(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){ 
-  std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  std::vector<bool>::iterator it = m_Ready.begin()+id;
+  // Let the main thread start 
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
   while(true){
-    { // Aquire the lock
-////std::cout << "WWWW" << std::endl;
-      std::unique_lock<std::mutex> lk(m_ThreadMtx);    
-      // wait for work to be given
-      while(!m_Ready[id]){
-        m_CV.wait(lk);
-      }
-
+    // Do the job if possible
+    if(m_Ready[id]){
       // Do the job
       (det->*m_ClearEventPhysicsPtr)();
       (det->*m_BuildPhysicalPtr)();
       if(m_FillSpectra){
         (det->*m_FillSpectra)();
-        if(m_CheckSpectra)
+       if(m_CheckSpectra)
           (det->*m_CheckSpectra)();
       }
-      
-      // Reset Ready flag
-      m_Ready[id]=false;
-      // Quite if stopped
-      if(m_stop)
-        return;
+     m_Ready[id].flip();
+     std::this_thread::yield();
+   }
+   else{
+    std::this_thread::yield();
+   }
 
-    } // Realease the lock
-
+    // Return if stopped
+    if(m_stop){
+      return;
+      }
   }   
 }
 ////////////////////////////////////////////////////////////////////////////////
@@ -412,20 +381,16 @@ void NPL::DetectorManager::StopThread(){
   // make sure the last thread are schedule before stopping;
   std::this_thread::yield();
   m_stop=true;
-  m_CV.notify_all();
+  std::this_thread::yield();
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::DetectorManager::IsDone(){
-int ijk=0;
-//std::cout << m_Ready.size() << " !" << std::endl;
-  for(std::vector<bool>::iterator it =  m_Ready.begin() ; it!=m_Ready.end() ; it++){
+  static std::vector<bool>::iterator it;
+  static std::vector<bool>::iterator begin = m_Ready.begin(); 
+  static std::vector<bool>::iterator end = m_Ready.end();
+  for( it = begin ; it!=end ; it++){
     if((*it))
-{
-ijk++;
-//std::cout << *it << std::endl;
-//std::cout << ijk << std::endl;
       return false;
-}
   }
   return true;
 }
@@ -439,7 +404,7 @@ void NPL::DetectorManager::SetSpectraServer(){
     std::vector<TCanvas*> canvas = it->second->GetCanvas();
     size_t mysize = canvas.size();
     for (size_t i = 0 ; i < mysize ; i++){} 
-      //m_SpectraServer->AddCanvas(canvas[i]);
+    //m_SpectraServer->AddCanvas(canvas[i]);
   }
 
   // Avoid warning on gcc
@@ -453,7 +418,7 @@ void NPL::DetectorManager::StopSpectraServer(){
     m_SpectraServer->Destroy();
   else
     std::cout <<"WARNING: requesting to stop spectra server, which is not started" << std::endl; 
-  
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -259,13 +259,11 @@ double CalibrationManager::ApplyResistivePositionCalibration(const std::string& 
     return DeltaRawValue ;
   }
 
-  std::vector<double> Coeff = it->second  ;
-
   // Check that the number of coeff is ok
   if(it->second.size()!=2) 
     return DeltaRawValue ; 
 
-  double CalibratedValue = (DeltaRawValue-Coeff[0])/(Coeff[1]);
+  double CalibratedValue = (DeltaRawValue-it->second[0])/(it->second[1]);
 
   return CalibratedValue ;
 }
@@ -315,20 +313,16 @@ bool CalibrationManager::ApplyThreshold(const std::string& ParameterPath, const 
     return false;
   }
 
-  // Else we take the second part of the element (first is index, ie: parameter path)
-  // Second is the std::vector of Coeff
-  std::vector<double> Coeff = it->second  ;
-
   // The std::vector size give the degree of calibration
   // We just apply the coeff and returned the calibrated value
 
-  double ThresholdValue = 0 ;
+  double ThresholdValue ;
 
-  if(Coeff.size()==2){ // CATS style
-    ThresholdValue = Coeff[0] + 3*Coeff[1];
+  if(it->second.size()==2){ // CATS style
+    ThresholdValue = it->second[0] + 3*it->second[1];
   }
   else{ // Standard Threshold
-    ThresholdValue = Coeff[0];
+    ThresholdValue = it->second[0];
   }
 
 

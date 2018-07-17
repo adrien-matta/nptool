@@ -49,7 +49,6 @@ namespace NPL{
     public:
       void        ReadConfigurationFile(std::string Path);
       void        BuildPhysicalEvent();
-      void        BuildSimplePhysicalEvent();
       void        InitializeRootInput();
       void        InitializeRootOutput();
       void        AddDetector(std::string,VDetector*);
@@ -80,13 +79,11 @@ namespace NPL{
       VDetector_FuncPtr m_FillSpectra;
       VDetector_FuncPtr m_CheckSpectra;
       
-    #if __cplusplus > 199711L 
+    #if __cplusplus > 199711L && NPMULTITHREADING 
     private: // Thread Pool defined if C++11 is available
       std::vector<std::thread> m_ThreadPool;
       std::vector<bool> m_Ready;
       bool m_stop;
-      std::mutex m_ThreadMtx;
-      std::condition_variable m_CV;
 
     public: // Init the Thread Pool
       void StopThread();
@@ -116,9 +113,9 @@ namespace NPL{
 
     public:
       double GetTargetThickness()       {return m_TargetThickness;}
-      std::string GetTargetMaterial()        {return m_TargetMaterial;}
-      double GetWindowsThickness(){return m_WindowsThickness;}
-      std::string GetWindowsMaterial() {return m_WindowsMaterial;}
+      std::string GetTargetMaterial()   {return m_TargetMaterial;}
+      double GetWindowsThickness()      {return m_WindowsThickness;}
+      std::string GetWindowsMaterial()  {return m_WindowsMaterial;}
       double GetTargetRadius()          {return m_TargetRadius;}
       double GetTargetAngle()           {return m_TargetAngle;}
       double GetTargetX()               {return m_TargetX;}

@@ -197,7 +197,6 @@ RootOutput::~RootOutput(){
     cout << endl << "Root Output summary" << endl;
     cout << "  - Number of entries in the Tree: " << pRootTree->GetEntries() << endl;
     cout << "  - Number of bites written to file: " << pRootTree->Write(0, TObject::kOverwrite) << endl;
-     
     pRootFile->Flush();
     pRootFile->Purge(1);
 
