@@ -46,6 +46,7 @@
 #include "TGComboBox.h"
 #include "TASImage.h"
 #include "TH2.h"
+#include "NPCore.h"
 ClassImp(NPL::OnlineGUI);
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::ExecuteMacro(string name){
@@ -53,7 +54,7 @@ void NPL::ExecuteMacro(string name){
   static struct dirent *ent;
   static string path; 
   path = "./online_macros/";
-  name += ".C";
+  name += ".cxx";
   if ((dir = opendir (path.c_str())) != NULL) {
     while ((ent = readdir (dir)) != NULL) {
       if(ent->d_name==name)
@@ -665,7 +666,7 @@ void NPL::OnlineGUI::MakeGui(){
 
 
   // Center //
-  m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,700,490,!kSunkenFrame);  
+  m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,10000,10000,!kSunkenFrame);  
   m_EmbeddedCanvas->SetAutoFit(true);
   m_Center->AddFrame(m_EmbeddedCanvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
   TCanvas* c = NULL;
@@ -739,12 +740,29 @@ void NPL::OnlineGUI::Connect(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Update(){
-  if(m_Client->Update()){
-    // Do some stuff with the histo
-  }
+    TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+    int current = gPad->GetNumber();
+    TList* first = c->GetListOfPrimitives();
+    int size= first->GetSize();
+    for(unsigned int i =  0 ; i < size ;i++){
+      if(first->At(i)->InheritsFrom(TPad::Class())){
+      dynamic_cast<TPad*>(first->At(i))->cd();
+      TList* list = gPad->GetListOfPrimitives();
+      int Hsize = list->GetSize();
+      for(int h = 0 ; h < Hsize ; h++){
+        TObject* obj = list->At(h);
+        if(obj->InheritsFrom(TH1::Class())){
+          m_Client->Update(obj->GetName());
+          obj->Paint();
+          ExecuteMacro(obj->GetName());
+          gPad->Update();
+        }
+      }
+     }
+    }
+    c->cd(current);
+    c->Update();
 
-  else
-    m_Connect->SetState(kButtonUp);  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -786,7 +804,7 @@ NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCan
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
   m_Main = main;
   m_EmbeddedCanvas = canvas;
-  //LoadCanvasList(Spectra);
+  m_OldCurrent     = "_void_";
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::CanvasList::~CanvasList(){
@@ -801,8 +819,8 @@ void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
     m_EmbeddedCanvas->GetContainer()->Resize(0,0);
     m_EmbeddedCanvas->GetContainer()->Resize(size);
     c->SetHighLightColor(kAzure+7); // color of active pad
+    c->Draw();
     c->Update();
-    ExecuteMacro(c->GetName());
     c->cd(1);
   }
 }
@@ -812,12 +830,20 @@ void NPL::CanvasList::AddItem(TCanvas* c,TGListTreeItem* parent){
   item->SetPictures(m_popen, m_pclose);
   if(parent)
     parent->SetPictures(m_pfolder,m_pfolder);
-  string path = c->GetName();
   m_Canvas[c->GetName()]=c;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::Clear(){
+  m_OldCurrent=m_EmbeddedCanvas->GetCanvas()->GetName();
+  
+  std::map<std::string,TCanvas*>::iterator it ;
+  // delete all old canvas
+  for(it=m_Canvas.begin(); it!=m_Canvas.end();it++){
+    delete it->second;
+    }
   m_Canvas.clear();
+
+  // Clear the list tree
   TGListTreeItem* item =  m_ListTree->GetFirstItem() ;
   while(item){
     m_ListTree->DeleteItem(item);
@@ -839,7 +865,7 @@ void NPL::CanvasList::SetStatusText(const char* txt, int pi){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
-    const char *text0, *text1, *text3;
+  const char *text0, *text1, *text3;
   char text2[50];
   text0 = selected->GetTitle();
   SetStatusText(text0,0);
@@ -857,6 +883,7 @@ void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
 void NPL::CanvasList::LoadCanvasList(TList* Spectra){
   if(!Spectra)
     return;
+  Clear();
   NPL::InputParser parser("CanvasList.txt",false);
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
   vector<std::string> token = {"Path","Divide","Histo"};
@@ -870,16 +897,23 @@ void NPL::CanvasList::LoadCanvasList(TList* Spectra){
       TCanvas* c = new TCanvas(name.c_str(), 5000,5000,0);
       c->Divide(divide[0],divide[1]);
 
-
       unsigned int size = histo.size();
       for(unsigned int h = 0 ; h < size ; h++){
         c->cd(h+1);
+        string padname=name+"_"+NPL::itoa(h);
+        gPad->SetName(padname.c_str());
         TH1* hist = (TH1*) Spectra->FindObject(histo[h].c_str());
         if(hist){
           hist->UseCurrentStyle();
           hist->Draw("colz");
+          ExecuteMacro(hist->GetName());
         }
       }
+      if(m_EmbeddedCanvas && m_OldCurrent == c->GetName()){
+        m_EmbeddedCanvas->AdoptCanvas(c);
+      }
+
+
       TGListTreeItem*  item  =  NULL;
       TGListTreeItem*  pitem =  NULL;
 

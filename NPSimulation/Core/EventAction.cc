@@ -33,7 +33,6 @@
 #include "ParticleStack.hh"
 
 #include<iostream>
-using namespace std;
 
 EventAction* EventAction::m_EventAction=0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -59,6 +58,7 @@ void EventAction::BeginOfEventAction(const G4Event* event){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::EndOfEventAction(const G4Event* event){
+    m_detector->ReadAllSensitive(event) ;
     m_detector->ReadAllSensitive(event) ;
     static TTree* tree =  RootOutput::getInstance()->GetTree();
     tree->Fill();

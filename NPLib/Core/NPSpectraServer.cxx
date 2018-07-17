@@ -66,7 +66,7 @@ void NPL::SpectraServer::CheckRequest(){
   if(m_Server && m_Monitor){
     TSocket* s ;
     m_Monitor->ResetInterrupt();
-    if((s=m_Monitor->Select(100))!=(TSocket*)-1){
+    if((s=m_Monitor->Select(1))!=(TSocket*)-1){
       HandleSocket(s);
       }
   }
@@ -103,47 +103,43 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
 
     // send requested object back
     static TMessage answer(kMESS_OBJECT);
+    answer.SetCompressionLevel(1);
     answer.Reset();
-    
+    TObject* h =NULL;
    if (!strcmp(request, "RequestSpectra")){
+     std::cout << "Prepare" << std::endl;
       answer.WriteObject(m_Spectra);
+      std::cout << "Compress" << std::endl;
+      answer.Compress();
+      std::cout << "Send " << std::endl;
       s->Send(answer);
-      m_Delta[s].Clear();
+      std::cout << "done" << std::endl;
     }
-    
-    else if (!strcmp(request, "RequestDelta")){
-      answer.WriteObject(&m_Delta[s]);
-      s->Send(answer);
-      m_Delta[s].Clear();
+  
+    else if (h=m_Spectra->FindObject(request)){
+     answer.WriteObject(h);
+     s->Send(answer);
     }
-    
+
     else if (!strcmp(request, "RequestClear")){
      // TO DO 
     }
-    else // answer nothing
+    else{ // answer nothing
+      std::cout << "Fail to respond to request : " << request << std::endl; 
       s->Send(answer);
+    }
   }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::SpectraServer::FillSpectra(std::string name,double valx){
+void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx){
   // Fill the local histo
   ((TH1*) m_Spectra->FindObject(name.c_str()))->Fill(valx);
-  
-  // Fill the Delta for each Socket
-  std::map<TSocket*,NPL::DeltaSpectra >::iterator it;
-  for(it = m_Delta.begin(); it!=m_Delta.end() ; it++){
-    it->second.Fill(name,valx);
-  }
 }
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::SpectraServer::FillSpectra(std::string name,double valx,double valy){
+void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx,const double& valy){
   // Fill the local histo
   ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
   
-  std::map<TSocket*,NPL::DeltaSpectra >::iterator it;
-  for(it = m_Delta.begin(); it!=m_Delta.end() ; it++){
-    it->second.Fill(name,valx,valy);  
-  }
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::AddSpectra(TH1* h){

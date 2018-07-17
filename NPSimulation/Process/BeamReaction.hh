@@ -46,6 +46,7 @@ namespace NPS{
       string m_BeamName;
       double m_PreviousEnergy;
       double m_PreviousLength;
+      bool   m_active;// is the process active
   };
 }
 

@@ -13,4 +13,13 @@ Canvas
  Histo= MM@Telescope_STRX_RAW_MULT MM@Telescope_STRY_RAW_MULT
  
 
+Canvas
+  Path= test
+  Divide= 2 2 
+  Histo= h1 h2
+
+Canvas
+  Path= pipo
+  Divide= 2 2 
+  Histo= h2 h1
 

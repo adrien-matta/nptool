@@ -41,10 +41,9 @@
 #include "NPSpectraClient.h"
 #include "NPElog.h"
 #include<map>
-using namespace std;
 
 namespace NPL{
-   void ExecuteMacro(string name);
+   void ExecuteMacro(std::string name);
   
   class CanvasList {
     RQ_OBJECT("CanvasList")
@@ -52,15 +51,16 @@ namespace NPL{
       TGMainFrame* m_Main;
       TGListTree* m_ListTree;
       TRootEmbeddedCanvas* m_EmbeddedCanvas; 
+      std::string          m_OldCurrent;
       TGTab* m_Tab;
-      map<string,TCanvas*> m_Canvas;
+      std::map<std::string,TCanvas*> m_Canvas;
       const TGPicture* m_popen;     
       const TGPicture* m_pclose;   
       const TGPicture* m_pfolder;   
 
       Pixel_t m_BgColor;
       Pixel_t m_FgColor;
-      vector<TGStatusBar*> m_StatusBar;
+      std::vector<TGStatusBar*> m_StatusBar;
 
     public:
       CanvasList(TGMainFrame* main, TGCanvas* parent, TRootEmbeddedCanvas* canvas, TList*);

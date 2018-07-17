@@ -37,6 +37,7 @@ NPS::BeamReaction::BeamReaction(G4String modelName,G4Region* envelope) :
   ReadConfiguration();
   m_PreviousEnergy=0 ;
   m_PreviousLength=0 ;
+  m_active = 0;
   }
 
 
@@ -54,6 +55,8 @@ void NPS::BeamReaction::ReadConfiguration(){
  NPL::InputParser input(NPOptionManager::getInstance()->GetReactionFile());
  m_Reaction.ReadConfigurationFile(input);
  m_BeamName=NPL::ChangeNameToG4Standard(m_Reaction.GetNucleus1().GetName());
+ if(m_Reaction.GetNucleus3().GetName()!="")
+   m_active = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -67,6 +70,9 @@ G4bool NPS::BeamReaction::IsApplicable( const G4ParticleDefinition& particleType
 
 ////////////////////////////////////////////////////////////////////////////////
 G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
+  if(!m_active)
+    return false;
+
   static bool shoot = false;
   static double rand = 0;
   const G4Track* PrimaryTrack = fastTrack.GetPrimaryTrack();   
