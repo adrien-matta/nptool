@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 include(CheckCXXCompilerFlag)
 project(NPLib CXX)
 set(CMAKE_BUILD_TYPE Release)
-
 # Setting the policy to match Cmake version
 cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
@@ -18,6 +17,15 @@ set(NPLIB_VERSION_DETA 45)
 
 configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
 set(DETLIST ${ETLIST})
+
+#activate Multithreading (on by default)
+if(NOT NPMULTITHREADING)
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=0")
+ else()
+ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPMULTITHREADING=1")
+endif()
+
+
 
 string(COMPARE EQUAL "${DETLIST}" "" rdet)
 if(rdet)

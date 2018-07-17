@@ -43,7 +43,7 @@
 #include<map>
 
 namespace NPL{
-   void ExecuteMacro(std::string name);
+   void ExecuteMacro(const std::string& name);
   
   class CanvasList {
     RQ_OBJECT("CanvasList")

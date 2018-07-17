@@ -73,18 +73,18 @@ class TCATSData : public TObject {
     /////////////////////           GETTERS           ////////////////////////
     // X
     inline UShort_t	GetCATSMultX()		              const {return fCATS_DetX.size();}
-    inline UShort_t	GetCATSDetX(const Int_t& i)	    const {return fCATS_DetX.at(i);}
-    inline UShort_t	GetCATSStripX(const Int_t& i)   const {return fCATS_StripX.at(i);}
-    inline UShort_t	GetCATSChargeX(const Int_t& i)	const {return fCATS_ChargeX.at(i);}
+    inline UShort_t	GetCATSDetX(const Int_t& i)	    const {return fCATS_DetX[i];}
+    inline UShort_t	GetCATSStripX(const Int_t& i)   const {return fCATS_StripX[i];}
+    inline UShort_t	GetCATSChargeX(const Int_t& i)	const {return fCATS_ChargeX[i];}
     // Y
     inline UShort_t	GetCATSMultY()		              const {return fCATS_DetY.size();}
-    inline UShort_t	GetCATSDetY(const Int_t& i)	    const {return fCATS_DetY.at(i);}
-    inline UShort_t	GetCATSStripY(const Int_t& i)   const {return fCATS_StripY.at(i);}
-    inline UShort_t	GetCATSChargeY(const Int_t& i)	const {return fCATS_ChargeY.at(i);}
+    inline UShort_t	GetCATSDetY(const Int_t& i)	    const {return fCATS_DetY[i];}
+    inline UShort_t	GetCATSStripY(const Int_t& i)   const {return fCATS_StripY[i];}
+    inline UShort_t	GetCATSChargeY(const Int_t& i)	const {return fCATS_ChargeY[i];}
     //Q fil
     inline UShort_t	GetCATSMultQ()                 const {return fCATS_DetQ.size();}
-    inline UShort_t	GetCATSDetQ(const Int_t& i)    const {return fCATS_DetQ.at(i);}
-    inline UShort_t	GetCATSCharge(const Int_t& i)  const {return fCATS_Charge.at(i);}
+    inline UShort_t	GetCATSDetQ(const Int_t& i)    const {return fCATS_DetQ[i];}
+    inline UShort_t	GetCATSCharge(const Int_t& i)  const {return fCATS_Charge[i];}
 
     ClassDef(TCATSData,2)  // CATSData structure
 };

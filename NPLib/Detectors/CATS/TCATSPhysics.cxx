@@ -435,7 +435,7 @@ void TCATSPhysics::Clear(){
 }
 
 ////////////////////////////////////////////////////////////////////////////
-bool TCATSPhysics :: IsValidChannel(const string DetectorType, const int Detector , const int channel) {
+bool TCATSPhysics :: IsValidChannel(const string& DetectorType, const int& Detector , const int& channel) {
   if(DetectorType == "X")
     return *(m_XChannelStatus[Detector-1].begin()+channel-1);
 

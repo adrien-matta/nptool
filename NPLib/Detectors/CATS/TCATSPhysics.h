@@ -171,7 +171,7 @@ class TCATSPhysics : public TObject, public NPL::VDetector
     void SetRawDataPointer(void* rawDataPointer) {m_EventData = (TCATSData*)rawDataPointer;}
 
     //   Return false if the channel is disabled by user
-    bool IsValidChannel(const string DetectorType, const int Detector , const int channel);
+    bool IsValidChannel(const string& DetectorType, const int& Detector , const int& channel);
     void InitializeStandardParameter();
     void AddParameterToCalibrationManager();
     void ReadAnalysisConfig();
@@ -213,12 +213,12 @@ namespace CATS_LOCAL{
   //   tranform an integer to a string
   string itoa(int value);
 
-  double fCATS_X_Q(const TCATSData* Data, const int i);
-  double fCATS_Y_Q(const TCATSData* Data, const int i);
-  bool fCATS_Threshold_X(const TCATSData* Data, const int i);
-  bool fCATS_Threshold_Y(const TCATSData* Data, const int i);
-  double fCATS_Ped_X(const TCATSData* m_EventData, const int i);
-  double fCATS_Ped_Y(const TCATSData* m_EventData, const int i);
+  double fCATS_X_Q(const TCATSData* Data, const int& i);
+  double fCATS_Y_Q(const TCATSData* Data, const int& i);
+  bool fCATS_Threshold_X(const TCATSData* Data, const int& i);
+  bool fCATS_Threshold_Y(const TCATSData* Data, const int& i);
+  double fCATS_Ped_X(const TCATSData* m_EventData, const int& i);
+  double fCATS_Ped_Y(const TCATSData* m_EventData, const int& i);
 }
 
 #endif

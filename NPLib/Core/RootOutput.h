@@ -28,11 +28,10 @@
 #include "TAsciiFile.h"
 
 // ROOT headers
-#include "TString.h"
 #include "TFile.h"
 #include "TTree.h"
 #include "TList.h"
-
+#include <string>
 
 class RootOutput{
 public:
@@ -41,8 +40,8 @@ public:
   // the user to get a pointer to the existing instance or to create it if
   // it does not yet exist:
   // (see the constructor for an explanation of the arguments)
-  static RootOutput* getInstance(TString fileNameBase = "Simulation",
-                                 TString treeNameBase = "SimulatedTree");
+  static RootOutput* getInstance(std::string fileNameBase = "Simulation",
+                                 std::string treeNameBase = "SimulatedTree");
   
   // The analysis class instance can be deleted by calling the Destroy
   // method (NOTE: The class destructor is protected, and can thus not be
@@ -51,7 +50,7 @@ public:
   
 protected:
   // Constructor (protected)
-  RootOutput(TString fileNameBase, TString treeNameBase);
+  RootOutput(std::string fileNameBase, std::string treeNameBase);
   
   // Destructor (protected)
   virtual ~RootOutput();
@@ -76,7 +75,7 @@ public:
   TAsciiFile* GetAsciiFileCalibration()           {return pCalibrationFile;}
   TAsciiFile* GetAsciiFileRunToTreat()            {return pRunToTreatFile;}
   TAsciiFile* GetAsciiFileAnalysisConfig()        {return pAnalysisConfigFile;}
-  TFile*      InitFile(TString fileNameBase); // use only for proof environment
+  TFile*      InitFile(std::string fileNameBase); // use only for proof environment
   
 private:
   TFile      *pRootFile;
