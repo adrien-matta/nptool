@@ -37,9 +37,9 @@ namespace NPS{
 
     public:
       void ReadConfiguration();
-      virtual G4bool IsApplicable(const G4ParticleDefinition&);
-      virtual G4bool ModelTrigger(const G4FastTrack &);
-      virtual void DoIt(const G4FastTrack&, G4FastStep&);
+      G4bool IsApplicable(const G4ParticleDefinition&);
+      G4bool ModelTrigger(const G4FastTrack &);
+      void DoIt(const G4FastTrack&, G4FastStep&);
  
     private:
       NPL::Reaction m_Reaction;

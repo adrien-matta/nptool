@@ -74,7 +74,7 @@ Target::Target(){
   m_TargetNbLayers     = 5;   // Number of steps by default
   // Set the global pointer
   TargetInstance = this;
-  m_ReactionRegion=0;
+  m_ReactionRegion=NULL;
 
   m_TargetDensity = 0 ;
   m_FrontDeformation = 0 ;

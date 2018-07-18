@@ -293,7 +293,7 @@ void PhysicsList::AddStepMax(){
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddParametrisation(){
   G4FastSimulationManagerProcess* BeamReaction =
-			new G4FastSimulationManagerProcess("NPSProcess");
+			new G4FastSimulationManagerProcess("NPSimulationProcess");
 
 // For 10.3 and higher
 #ifndef theParticleIterator  
@@ -305,7 +305,7 @@ void PhysicsList::AddParametrisation(){
 		  G4ParticleDefinition* particle = theParticleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
       std::string name = particle->GetParticleName();
-       pmanager->AddDiscreteProcess(BeamReaction);
+      pmanager->AddDiscreteProcess(BeamReaction);
       // Add a Step limiter to the beam particle. 
       // This will be used to limit the step of the beam in the target
       pmanager->AddProcess(new G4StepLimiter,-1,-1,5);

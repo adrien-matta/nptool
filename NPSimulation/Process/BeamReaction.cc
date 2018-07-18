@@ -37,7 +37,7 @@ NPS::BeamReaction::BeamReaction(G4String modelName,G4Region* envelope) :
   ReadConfiguration();
   m_PreviousEnergy=0 ;
   m_PreviousLength=0 ;
-  m_active = 0;
+  m_active = true;
   }
 
 
@@ -55,13 +55,22 @@ void NPS::BeamReaction::ReadConfiguration(){
  NPL::InputParser input(NPOptionManager::getInstance()->GetReactionFile());
  m_Reaction.ReadConfigurationFile(input);
  m_BeamName=NPL::ChangeNameToG4Standard(m_Reaction.GetNucleus1().GetName());
- if(m_Reaction.GetNucleus3().GetName()!="")
+ if(m_Reaction.GetNucleus3().GetName()!=""){
    m_active = true;
+    }
+ else{
+   m_active = false;
+   
+   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 G4bool NPS::BeamReaction::IsApplicable( const G4ParticleDefinition& particleType) {
-  std::string particleName = particleType.GetParticleName();
+  if(!m_active)
+    return false;
+
+  static std::string particleName;
+  particleName = particleType.GetParticleName();
   if (particleName.find(m_BeamName)!=std::string::npos) {
     return true;
   }
@@ -70,9 +79,6 @@ G4bool NPS::BeamReaction::IsApplicable( const G4ParticleDefinition& particleType
 
 ////////////////////////////////////////////////////////////////////////////////
 G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
-  if(!m_active)
-    return false;
-
   static bool shoot = false;
   static double rand = 0;
   const G4Track* PrimaryTrack = fastTrack.GetPrimaryTrack();   
@@ -83,7 +89,11 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
   double in = solid->DistanceToOut(P,V);
   double out = solid->DistanceToOut(P,-V);
   double ratio  = in / (out+in) ; 
-    // Generate a random for this event
+  
+  if(ratio!=ratio)
+    ratio =1;
+
+  // Generate a random for this event
   if(!shoot){
     rand =  G4RandFlat::shoot();
     shoot = true;
