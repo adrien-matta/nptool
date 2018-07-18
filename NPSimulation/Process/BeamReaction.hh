@@ -27,6 +27,7 @@
 #include "G4VFastSimulationModel.hh"
 #include "PhysicsList.hh"
 #include "NPReaction.h"
+#include "TReactionConditions.h"
 class G4VPhysicalVolume;
 namespace NPS{
   class BeamReaction : public G4VFastSimulationModel{
@@ -47,6 +48,14 @@ namespace NPS{
       double m_PreviousEnergy;
       double m_PreviousLength;
       bool   m_active;// is the process active
+      double m_StepSize;
+   
+   private:
+     TReactionConditions* m_ReactionConditions;
+ 
+   public:
+    void AttachReactionConditions();
+    void SetStepSize(double step){m_StepSize=step;};
   };
 }
 

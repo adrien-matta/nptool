@@ -217,18 +217,20 @@ double Reaction::ShootRandomThetaCM(){
     theta = EnergyLabToThetaCM(energylab, thetalab); //transform to theta CM
     SetThetaCM( theta );
   }
-  else
-    SetThetaCM( theta=fCrossSectionHist->GetRandom()*deg );
+  else{
+    // When root perform a Spline interpolation to shoot random number out of 
+    // the distribution, it can over shoot and output a number larger that 180
+    // this lead to an additional signal at 0-4 deg Lab, especially when using a 
+    // flat distribution.
+    // This fix it.
+    theta=181;
+    if(theta/deg>180)
+      theta=fCrossSectionHist->GetRandom();
+
+    SetThetaCM( theta*deg );
+    }
    
-
-  // When root perform a Spline interpolation to shoot random number out of 
-  // the distribution, it can over shoot and output a number larger that 180
-  // this lead to an additional signal at 0-4 deg Lab, especially when using a 
-  // flat distribution.
-  // This fix it.
-  if(theta/deg>180)
-   theta=ShootRandomThetaCM();
-
+    
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -247,10 +249,9 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // case of inverse kinematics
   double theta = fThetaCM;
   if (m1 > m2) theta = M_PI - fThetaCM;
-
   fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
   fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
-
+  
   fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
   fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
   fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
@@ -733,8 +734,10 @@ void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
 ///////////////////////////////////////////////////////////////////////////////
 // Check whenever the reaction is allowed at the given energy
 bool Reaction::IsAllowed(double Energy){
-//  cout << Energy/fNuclei1.GetA() << " " << -fQValue << endl ;
-  if(Energy/(fNuclei1.GetA()+fNuclei2.GetA()) > -fQValue)
+  double AvailableEnergy = Energy + fNuclei1.Mass() + fNuclei2.Mass();
+  double RequiredEnergy  = fNuclei3.Mass() + fNuclei4.Mass();
+
+  if(AvailableEnergy>RequiredEnergy)
     return true;
   else
     return false; 

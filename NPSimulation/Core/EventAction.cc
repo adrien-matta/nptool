@@ -59,7 +59,6 @@ void EventAction::BeginOfEventAction(const G4Event* event){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void EventAction::EndOfEventAction(const G4Event* event){
     m_detector->ReadAllSensitive(event) ;
-    m_detector->ReadAllSensitive(event) ;
     static TTree* tree =  RootOutput::getInstance()->GetTree();
     tree->Fill();
     if(treated%10000==0){

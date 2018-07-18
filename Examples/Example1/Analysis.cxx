@@ -74,14 +74,30 @@ void Analysis::TreatEvent(){
   // and apply by hand the experimental resolution
   // This is because the beam diagnosis are not simulated
   // PPAC position resolution on target is assumed to be 1mm
-  double XTarget = Rand.Gaus(Initial->GetIncidentPositionX(),1);
-  double YTarget = Rand.Gaus(Initial->GetIncidentPositionY(),1);
+  double XTarget = Initial->GetIncidentPositionX();
+  double YTarget = Initial->GetIncidentPositionY();
+  double ZTarget = Initial->GetIncidentPositionZ();
+  
+  // Get the beam direction and position at entrance of the world
   TVector3 BeamDirection = Initial->GetBeamDirection();
-  // Beam energy is measured using F3 and F2 plastic TOF
-  double BeamEnergy = Rand.Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
-  BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness/2.,0);
+  TVector3 BeamPosition(XTarget,YTarget,ZTarget);
+ 
+  // Get the Beam position on Target 
+  BeamPosition+=abs(ZTarget)*BeamDirection;
+  
+  // Randomize beam position on target to simulate PPAC response
+  BeamPosition.SetX(Rand.Gaus(BeamPosition.X(),1));
+  BeamPosition.SetY(Rand.Gaus(BeamPosition.Y(),1));
+  BeamPosition.SetZ(0);
+  XTarget = BeamPosition.X();
+  YTarget = BeamPosition.Y();
+  ZTarget = 0;
 
+  // Beam energy is measured using F3 and F2 plastic TOF with 4.5 MeV Resolution
+  double BeamEnergy = Rand.Gaus(Initial->GetIncidentInitialKineticEnergy(),4.5);
+  BeamEnergy = Li11CD2.Slow(BeamEnergy,TargetThickness*0.5,0);
   He10Reaction->SetBeamEnergy(BeamEnergy);
+  
   //////////////////////////// LOOP on MUST2 + SSSD Hit //////////////////
   for(unsigned int countSSSD = 0 ; countSSSD < SSSD->Energy.size() ; countSSSD++){
     for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -127,7 +143,7 @@ void Analysis::TreatEvent(){
         /************************************************/
 
         // Part 2 : Impact Energy
-        Energy = ELab = 0;
+        Energy = ELab = E_M2 = 0;
         Si_E_M2 = M2->Si_E[countMust2];
         CsI_E_M2= M2->CsI_E[countMust2];
         E_SSSD = SSSD->Energy[countSSSD];
@@ -135,7 +151,6 @@ void Analysis::TreatEvent(){
         // if CsI
         if(CsI_E_M2>0 ){
           // The energy in CsI is calculate form dE/dx Table because 
-          // 20um resolution is poor
           Energy = 
             He3Si.EvaluateEnergyFromDeltaE(Si_E_M2,300*micrometer,
                 ThetaM2Surface, 0.01*MeV, 
@@ -149,11 +164,11 @@ void Analysis::TreatEvent(){
         E_M2 += Si_E_M2;
 
         // Evaluate energy using the thickness 
-        ELab = He3Al.EvaluateInitialEnergy( Energy ,2*0.4*micrometer , ThetaM2Surface); 
-        ELab = He3Si.EvaluateInitialEnergy( ELab ,20*micrometer , ThetaM2Surface);
-        ELab = He3Al.EvaluateInitialEnergy( ELab ,0.4*micrometer , ThetaM2Surface);
+        ELab = He3Al.EvaluateInitialEnergy( Energy , 2*0.4*micrometer , ThetaM2Surface); 
+        ELab = He3Si.EvaluateInitialEnergy( ELab   , 20*micrometer    , ThetaM2Surface);
+        ELab = He3Al.EvaluateInitialEnergy( ELab   , 0.4*micrometer   , ThetaM2Surface);
         // Target Correction
-        ELab   = He3CD2.EvaluateInitialEnergy( ELab ,TargetThickness/2., ThetaNormalTarget);
+        ELab = He3CD2.EvaluateInitialEnergy( ELab ,TargetThickness*0.5, ThetaNormalTarget);
         /************************************************/
 
         /************************************************/

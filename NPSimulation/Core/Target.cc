@@ -424,15 +424,13 @@ void Target::ConstructDetector(G4LogicalVolume* world){
 
 
   }
-
-  //SetReactionRegion();
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Target::SetReactionRegion(){
   if(!m_ReactionRegion){
     m_ReactionRegion= new G4Region("NPSimulationProcess");
     m_ReactionRegion->AddRootLogicalVolume(m_TargetLogic);
-    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.));
+    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.)); 
   }
 
   G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();
@@ -444,6 +442,7 @@ void Target::SetReactionRegion(){
   m_ReactionModel.clear();
   G4VFastSimulationModel* fsm;
   fsm = new NPS::BeamReaction("BeamReaction",m_ReactionRegion);
+  ((NPS::BeamReaction*) fsm)->SetStepSize(m_TargetThickness/10.);
   m_ReactionModel.push_back(fsm); 
   fsm = new NPS::Decay("Decay",m_ReactionRegion);
   m_ReactionModel.push_back(fsm); 
