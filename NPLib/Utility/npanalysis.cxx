@@ -55,7 +55,7 @@ int main(int argc , char** argv){
   }
 
   // Case of a Physics tree produced
-  else if(!myOptionManager->GetInputPhysicalTreeOption()){ //
+  else if(!myOptionManager->GetInputPhysicalTreeOption()){ 
     TreeName="PhysicsTree";
     if(myOptionManager->IsDefault("OutputFileName"))
       OutputfileName="PhysicsTree";
@@ -85,7 +85,7 @@ int main(int argc , char** argv){
     UserAnalysis = NPL::AnalysisFactory::getInstance()->Construct(); 
     UserAnalysis->SetDetectorManager(myDetector);
     UserAnalysis->Init();
-  }
+  } 
   else{
     std::string str_error=error;
     if(str_error.find("image not found")!=std::string::npos ||str_error.find("No such file or directory")!=std::string::npos )

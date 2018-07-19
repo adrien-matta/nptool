@@ -30,6 +30,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <iostream>
 #if __cplusplus > 199711L 
 #include <thread>
 #include <mutex>
@@ -93,7 +94,6 @@ namespace NPL{
 #endif
 
     private: // Target property
-     
       double m_TargetThickness;
       double m_TargetAngle;
       double m_TargetRadius;
@@ -125,49 +125,43 @@ namespace NPL{
       double      m_ShieldFrontRadius; 
       double      m_ShieldBackRadius;
       std::string m_ShieldMaterial;
-
-    public:
-      inline bool IsCryogenic(){return m_CryoTarget;};
-      inline double GetTargetThickness      () {return m_TargetThickness;}
-      inline double GetTargetDensity      () {return  m_TargetDensity;}
-      inline double GetFrontDeformation   () {return  m_FrontDeformation;}
-      inline double GetFrontThickness     () {return  m_FrontThickness;}
-      inline double GetFrontRadius        () {return  m_FrontRadius;}
-      inline std::string GetFrontMaterial      () {return  m_FrontMaterial;}
-      inline double GetBackDeformation    () {return  m_BackDeformation;}
-      inline double GetBackRadius         () {return  m_BackRadius;}
-      inline double GetBackThickness      () {return  m_BackThickness;}
-      inline std::string GetBackMaterial       () {return  m_BackMaterial;}
-      inline double GetFrameRadius        () {return  m_FrameRadius;}
-      inline double GetFrameThickness     () {return  m_FrameThickness;}
-      inline double GetFrontCone          () {return  m_FrontCone;}
-      inline double GetBackCone           () {return  m_BackCone;}
-      inline std::string GetFrameMaterial      () {return  m_FrameMaterial;}
-      inline double GetShieldInnerRadius  () {return  m_ShieldInnerRadius;}
-      inline double GetShieldOuterRadius  () {return  m_ShieldOuterRadius;}
-      inline double GetShieldBottomLength () {return  m_ShieldBottomLength;}
-      inline double GetShieldTopLength    () {return  m_ShieldTopLength;}
-      inline double GetShieldFrontRadius  () {return  m_ShieldFrontRadius;} 
-      inline double GetShieldBackRadius   () {return  m_ShieldBackRadius;}
-      inline std::string GetShieldMaterial     () {return  m_ShieldMaterial;}
-
-      double m_WindowsThickness;
+      double      m_WindowsThickness;
       std::string m_WindowsMaterial;
-  
+ 
+    public: // those are define in cxx, otherwise the return value depend on context !?
+      bool IsCryogenic(); // {return  m_CryoTarget;};
+      double GetTargetThickness(); // {return m_TargetThickness;};
+      double GetNominalTargetThickness(); // {return  m_TargetThickness;};
+      double GetTargetDensity(); // {return  m_TargetDensity;};
+      double GetFrontDeformation(); // {return  m_FrontDeformation;};
+      double GetFrontThickness(); // {return  m_FrontThickness;};
+      double GetFrontRadius(); // {return  m_FrontRadius;};
+      std::string GetFrontMaterial(); // {return  m_FrontMaterial;};
+      double GetBackDeformation(); // {return  m_BackDeformation;};
+      double GetBackRadius(); // {return  m_BackRadius;};
+      double GetBackThickness(); // {return  m_BackThickness;};
+      std::string GetBackMaterial(); // {return  m_BackMaterial;};
+      double GetFrameRadius(); // {return  m_FrameRadius;};
+      double GetFrameThickness(); // {return  m_FrameThickness;};
+      double GetFrontCone(); // {return  m_FrontCone;};
+      double GetBackCone(); // {return  m_BackCone;};
+      std::string GetFrameMaterial(); // {return  m_FrameMaterial;};
+      double GetShieldInnerRadius(); // {return  m_ShieldInnerRadius;};
+      double GetShieldOuterRadius(); // {return  m_ShieldOuterRadius;};
+      double GetShieldBottomLength(); // {return  m_ShieldBottomLength;};
+      double GetShieldTopLength(); // {return  m_ShieldTopLength;};
+      double GetShieldFrontRadius(); // {return  m_ShieldFrontRadius;}; 
+      double GetShieldBackRadius(); // {return  m_ShieldBackRadius;};
+      std::string GetShieldMaterial(); // {return  m_ShieldMaterial;};
+      std::string GetTargetMaterial(); // {return m_TargetMaterial;};
+      double GetWindowsThickness(); // {return m_WindowsThickness;};
+      std::string GetWindowsMaterial(); // {return m_WindowsMaterial;};
+      double GetTargetRadius(); // {return m_TargetRadius;};
+      double GetTargetAngle(); // {return m_TargetAngle;};
+      double GetTargetX(); // {return m_TargetX;};
+      double GetTargetY(); // {return m_TargetY;};
+      double GetTargetZ(); // {return m_TargetZ;}; 
 
-      // Special treatment for the target for the moment
-      // If necessary we should change it to treat it as 
-      // a full "detector"
-
-    public:
-      std::string GetTargetMaterial()   {return m_TargetMaterial;}
-      double GetWindowsThickness()      {return m_WindowsThickness;}
-      std::string GetWindowsMaterial()  {return m_WindowsMaterial;}
-      double GetTargetRadius()          {return m_TargetRadius;}
-      double GetTargetAngle()           {return m_TargetAngle;}
-      double GetTargetX()               {return m_TargetX;}
-      double GetTargetY()               {return m_TargetY;}
-      double GetTargetZ()               {return m_TargetZ;} 
   };
 }
 

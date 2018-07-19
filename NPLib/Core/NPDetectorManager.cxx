@@ -45,6 +45,8 @@ using namespace NPUNITS;
 #include"TCanvas.h"
 #include "TROOT.h"
 ///////////////////////////////////////////////////////////////////////////////
+//double NPL::DetectorManager::GetTargetThickness    () {return  m_TargetThickness;}
+
 //   Default Constructor
 NPL::DetectorManager::DetectorManager(){
   m_BuildPhysicalPtr = &NPL::VDetector::BuildPhysicalEvent;
@@ -128,12 +130,12 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
     }
     std::vector<std::string> token = {"Thickness","Radius","Material","Angle","X","Y","Z"};
     if(starget[0]->HasTokenList(token)){
-      m_TargetThickness= starget[0]->GetDouble("Thickness","micrometer");
-      m_TargetAngle=starget[0]->GetDouble("Angle","deg");
-      m_TargetMaterial=starget[0]->GetString("Material");
-      m_TargetX=starget[0]->GetDouble("X","mm");
-      m_TargetY=starget[0]->GetDouble("Y","mm");
-      m_TargetZ=starget[0]->GetDouble("Z","mm");
+      m_TargetThickness = starget[0]->GetDouble("Thickness","micrometer");
+      m_TargetAngle = starget[0]->GetDouble("Angle","deg");
+      m_TargetMaterial = starget[0]->GetString("Material");
+      m_TargetX = starget[0]->GetDouble("X","mm");
+      m_TargetY = starget[0]->GetDouble("Y","mm");
+      m_TargetZ = starget[0]->GetDouble("Z","mm");
     }
     else{
       std::cout << "ERROR: Target token list incomplete, check your input file" << std::endl;
@@ -149,8 +151,6 @@ void NPL::DetectorManager::ReadConfigurationFile(std::string Path)   {
     std::vector<std::string> BackToken   = {"BackDeformation","BackThickness","BackRadius","BackMaterial"};
     std::vector<std::string> FrameToken  = {"FrameRadius","FrameThickness","FrontCone","BackCone","FrameMaterial"};
     std::vector<std::string> ShieldToken = {"ShieldInnerRadius","ShieldOuterRadius""ShieldBottomLength","ShieldTopLength","ShieldFrontRadius","ShieldBackRadius","ShieldMaterial"};
-
-
 
     if(ctarget[0]->HasTokenList(CoreToken)){
        // Target 
@@ -488,4 +488,38 @@ void NPL::DetectorManager::CheckSpectraServer(){
     std::cout <<"WARNING: requesting to check spectra server, which is not started" << std::endl; 
 
 }
+////////////////////////////////////////////////////////////////////////////////
+bool NPL::DetectorManager::IsCryogenic() {return  m_CryoTarget;};
+double NPL::DetectorManager::GetTargetThickness() {return m_TargetThickness;};
+double NPL::DetectorManager::GetNominalTargetThickness() {return  m_TargetThickness;};
+double NPL::DetectorManager::GetTargetDensity() {return  m_TargetDensity;};
+double NPL::DetectorManager::GetFrontDeformation() {return  m_FrontDeformation;};
+double NPL::DetectorManager::GetFrontThickness() {return  m_FrontThickness;};
+double NPL::DetectorManager::GetFrontRadius() {return  m_FrontRadius;};
+std::string NPL::DetectorManager::GetFrontMaterial() {return  m_FrontMaterial;};
+double NPL::DetectorManager::GetBackDeformation() {return  m_BackDeformation;};
+double NPL::DetectorManager::GetBackRadius() {return  m_BackRadius;};
+double NPL::DetectorManager::GetBackThickness() {return  m_BackThickness;};
+std::string NPL::DetectorManager::GetBackMaterial() {return  m_BackMaterial;};
+double NPL::DetectorManager::GetFrameRadius() {return  m_FrameRadius;};
+double NPL::DetectorManager::GetFrameThickness() {return  m_FrameThickness;};
+double NPL::DetectorManager::GetFrontCone() {return  m_FrontCone;};
+double NPL::DetectorManager::GetBackCone() {return  m_BackCone;};
+std::string NPL::DetectorManager::GetFrameMaterial() {return  m_FrameMaterial;};
+double NPL::DetectorManager::GetShieldInnerRadius() {return  m_ShieldInnerRadius;};
+double NPL::DetectorManager::GetShieldOuterRadius() {return  m_ShieldOuterRadius;};
+double NPL::DetectorManager::GetShieldBottomLength() {return  m_ShieldBottomLength;};
+double NPL::DetectorManager::GetShieldTopLength() {return  m_ShieldTopLength;};
+double NPL::DetectorManager::GetShieldFrontRadius() {return  m_ShieldFrontRadius;}; 
+double NPL::DetectorManager::GetShieldBackRadius() {return  m_ShieldBackRadius;};
+std::string NPL::DetectorManager::GetShieldMaterial() {return  m_ShieldMaterial;};
+std::string NPL::DetectorManager::GetTargetMaterial() {return m_TargetMaterial;};
+double NPL::DetectorManager::GetWindowsThickness() {return m_WindowsThickness;};
+std::string NPL::DetectorManager::GetWindowsMaterial() {return m_WindowsMaterial;};
+double NPL::DetectorManager::GetTargetRadius() {return m_TargetRadius;};
+double NPL::DetectorManager::GetTargetAngle() {return m_TargetAngle;};
+double NPL::DetectorManager::GetTargetX() {return m_TargetX;};
+double NPL::DetectorManager::GetTargetY() {return m_TargetY;};
+double NPL::DetectorManager::GetTargetZ() {return m_TargetZ;}; 
+
 

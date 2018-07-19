@@ -8,9 +8,9 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
+ * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : march 2025                                               *
+ * Creation Date  : march 2015                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -21,10 +21,11 @@
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-#include"NPVAnalysis.h"
+#include "NPVAnalysis.h"
 #include "TMust2Physics.h"
 #include "TSSSDPhysics.h"
 #include "TInitialConditions.h"
+#include "TReactionConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
@@ -47,6 +48,10 @@ class Analysis: public NPL::VAnalysis{
     double ELab;
     double ThetaLab;
     double ThetaCM;
+    double BeamEnergy;
+    double OriginalELab;
+    double OriginalThetaLab;
+    double OriginalBeamEnergy;
     NPL::Reaction* He10Reaction;
 
     // intermediate variable
@@ -64,7 +69,6 @@ class Analysis: public NPL::VAnalysis{
     double E_M2 ;
     double Si_X_M2;
     double Si_Y_M2;
-    double ZTarget;
     double TargetThickness;
 
     NPL::EnergyLoss He3CD2  ;
@@ -75,5 +79,6 @@ class Analysis: public NPL::VAnalysis{
     TMust2Physics* M2;
     TSSSDPhysics* SSSD;
     TInitialConditions* Initial;
+    TReactionConditions* ReactionConditions;
 };
 #endif

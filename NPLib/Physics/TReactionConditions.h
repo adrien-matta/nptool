@@ -100,10 +100,10 @@ public:
     
     /////////////////////           GETTERS           ////////////////////////
     // Beam parameter
-    string GetBeamParticleName   () const  {return fRC_Beam_Particle_Name   ;}//!
-    double GetBeamReactionEnergy  () const  {return fRC_Beam_Reaction_Energy  ;}//!
-    double GetBeamEmittanceTheta () const  {return fRC_Beam_Emittance_Theta ;}//!
-    double GetBeamEmittancePhi   () const  {return fRC_Beam_Emittance_Phi   ;}//!
+    string GetBeamParticleName    () const  {return fRC_Beam_Particle_Name   ;}//!
+    double GetBeamEnergy          () const  {return fRC_Beam_Reaction_Energy  ;}//!
+    double GetBeamEmittanceTheta  () const  {return fRC_Beam_Emittance_Theta ;}//!
+    double GetBeamEmittancePhi    () const  {return fRC_Beam_Emittance_Phi   ;}//!
     double GetBeamEmittanceThetaX () const  {return fRC_Beam_Emittance_ThetaX ;}//!
     double GetBeamEmittancePhiY   () const  {return fRC_Beam_Emittance_PhiY   ;}//!
     
