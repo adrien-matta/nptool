@@ -56,11 +56,10 @@
 #include "NPSDetectorFactory.hh"
 #include "MaterialManager.hh"
 #include "DetectorMessenger.hh"
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
-  m_Target   = 0;
-  m_Chamber  = 0 ;
+  m_Target   = NULL;
+  m_Chamber  = NULL ;
   m_Messenger =  new DetectorMessenger(this);
   m_ReadSensitivePtr = &NPS::VDetector::ReadSensitive;
 }
@@ -73,8 +72,6 @@ DetectorConstruction::~DetectorConstruction(){
 G4VPhysicalVolume* DetectorConstruction::Construct(){
   return ReadConfigurationFile();
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
@@ -90,7 +87,6 @@ void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
   // Add Detector to TTree
   NewDetector->InitializeRootOutput();
 }
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -110,7 +106,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   world_log = new G4LogicalVolume(world_box, Vacuum, "world_log", 0, 0, 0);
   world_phys = new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
 
-  G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
   world_log->SetVisAttributes(VisAtt);
 
   //------------------------------------------------------------------
@@ -152,7 +148,7 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     AddDetector(m_Target);
   }
   else{
-     blocks = parser.GetAllBlocksWithToken("CryoTarget");
+     blocks = parser.GetAllBlocksWithToken("CryogenicTarget");
      if(blocks.size()==1){
       m_Target = new Target();
       m_Target->ReadConfiguration(parser);

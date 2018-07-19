@@ -76,7 +76,7 @@ ClassImp(TMust2Physics)
 
     for(int i = 0 ; i < 16 ; ++i){
       m_SiLi_MatchingX[0]=112;
-      m_SiLi_MatchingY[0]=112;
+      m_SiLi_MatchingY[1]=112;
 
       m_SiLi_MatchingX[1]=112;
       m_SiLi_MatchingY[1]=80;
@@ -128,52 +128,52 @@ ClassImp(TMust2Physics)
     m_CsI_MatchingX.resize(16,0);
     m_CsI_MatchingY.resize(16,0);
     for(int i = 0 ; i < 16 ; ++i){
-      m_CsI_MatchingX[0]=80;
-      m_CsI_MatchingY[0]=48;
+      m_CsI_MatchingX[0]=112;
+      m_CsI_MatchingY[0]=112;
 
       m_CsI_MatchingX[1]=112;
-      m_CsI_MatchingY[1]=48;
+      m_CsI_MatchingY[1]=80;
 
-      m_CsI_MatchingX[2]=80;
-      m_CsI_MatchingY[2]=16;
+      m_CsI_MatchingX[2]=112;
+      m_CsI_MatchingY[2]=48;
 
       m_CsI_MatchingX[3]=112;
       m_CsI_MatchingY[3]=16;
       //
-      m_CsI_MatchingX[4]=48;
-      m_CsI_MatchingY[4]=80;
+      m_CsI_MatchingX[4]=80;
+      m_CsI_MatchingY[4]=16;
 
-      m_CsI_MatchingX[5]=16;
-      m_CsI_MatchingY[5]=80;
+      m_CsI_MatchingX[5]=80;
+      m_CsI_MatchingY[5]=48;
 
-      m_CsI_MatchingX[6]=48;
-      m_CsI_MatchingY[6]=112;
+      m_CsI_MatchingX[6]=80;
+      m_CsI_MatchingY[6]=80;
 
-      m_CsI_MatchingX[7]=16;
+      m_CsI_MatchingX[7]=80;
       m_CsI_MatchingY[7]=112;
       //
       m_CsI_MatchingX[8]=48;
       m_CsI_MatchingY[8]=48;
 
-      m_CsI_MatchingX[9]=16;
+      m_CsI_MatchingX[9]=48;
       m_CsI_MatchingY[9]=48;
 
       m_CsI_MatchingX[10]=48;
-      m_CsI_MatchingY[10]=16;
+      m_CsI_MatchingY[10]=80;
 
-      m_CsI_MatchingX[11]=16;
-      m_CsI_MatchingY[11]=16;
+      m_CsI_MatchingX[11]=48;
+      m_CsI_MatchingY[11]=112;
       //
-      m_CsI_MatchingX[12]=80;
-      m_CsI_MatchingY[12]=80;
+      m_CsI_MatchingX[12]=16;
+      m_CsI_MatchingY[12]=16;
 
-      m_CsI_MatchingX[13]=112;
-      m_CsI_MatchingY[13]=80;
+      m_CsI_MatchingX[13]=16;
+      m_CsI_MatchingY[13]=48;
 
-      m_CsI_MatchingX[14]=80;
-      m_CsI_MatchingY[14]=112;
+      m_CsI_MatchingX[14]=16;
+      m_CsI_MatchingY[14]=80;
 
-      m_CsI_MatchingX[15]=112;
+      m_CsI_MatchingX[15]=16;
       m_CsI_MatchingY[15]=112;
     }
 
@@ -191,7 +191,9 @@ void TMust2Physics::BuildSimplePhysicalEvent(){
 ///////////////////////////////////////////////////////////////////////////
 
 void TMust2Physics::BuildPhysicalEvent(){
+
   PreTreat();
+
   bool check_SILI = false ;
   bool check_CSI  = false ;
 
@@ -203,8 +205,9 @@ void TMust2Physics::BuildPhysicalEvent(){
   m_SiLiTMult = m_PreTreatedData->GetMMSiLiTMult();
   m_CsIEMult = m_PreTreatedData->GetMMCsIEMult();
   m_CsITMult = m_PreTreatedData->GetMMCsITMult();
-  if( CheckEvent() == 1 ){
+  if( 1 /*CheckEvent() == 1*/ ){
     vector< TVector2 > couple = Match_X_Y() ;
+
     EventMultiplicity = couple.size();
     for(unsigned int i = 0 ; i < couple.size() ; ++i){
       check_SILI = false ;
@@ -324,7 +327,7 @@ void TMust2Physics::PreTreat(){
   m_SiLiTMult = m_EventData->GetMMSiLiTMult();
   m_CsIEMult = m_EventData->GetMMCsIEMult();
   m_CsITMult = m_EventData->GetMMCsITMult();
-  //   X
+ //   X
   //   E
   for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
     if( m_EventData->GetMMStripXEEnergy(i)>m_Si_X_E_RAW_Threshold && IsValidChannel(0, m_EventData->GetMMStripXEDetectorNbr(i), m_EventData->GetMMStripXEStripNbr(i)) ){
@@ -421,14 +424,15 @@ bool TMust2Physics :: ResolvePseudoEvent(){
 vector < TVector2 > TMust2Physics :: Match_X_Y(){
   vector < TVector2 > ArrayOfGoodCouple ;
   m_StripXEMult = m_PreTreatedData->GetMMStripXEMult();
-  m_StripYEMult = m_PreTreatedData->GetMMStripXEMult();
-
+  m_StripYEMult = m_PreTreatedData->GetMMStripYEMult();
+  
   // Prevent code from treating very high multiplicity Event
   // Those event are not physical anyway and that improve speed.
-  if( m_StripXEMult > m_MaximumStripMultiplicityAllowed || m_StripYEMult > m_MaximumStripMultiplicityAllowed )
+  if( m_StripXEMult > m_MaximumStripMultiplicityAllowed || m_StripYEMult > m_MaximumStripMultiplicityAllowed ){
     return ArrayOfGoodCouple;
+    }
 
-  for(unsigned int i = 0 ; i < m_StripXEMult ; ++i){
+  for(unsigned int i = 0 ; i < m_StripXEMult ; i++){
     for(unsigned int j = 0 ; j < m_StripYEMult ; j++){
       //   if same detector check energy
       if ( m_PreTreatedData->GetMMStripXEDetectorNbr(i) == m_PreTreatedData->GetMMStripYEDetectorNbr(j) ){
@@ -449,7 +453,7 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(){
           }
 
           // Special Option, if the event is between two SiLi pad , it is rejected.
-          if(m_Ignore_not_matching_SiLi){
+          else if(m_Ignore_not_matching_SiLi){
             bool check_validity=false;
             for (unsigned int hh = 0 ; hh<16 ; ++hh ){
               if( Match_Si_SiLi(m_PreTreatedData->GetMMStripXEStripNbr(i), m_PreTreatedData->GetMMStripYEStripNbr(j) , hh+1) )
@@ -461,7 +465,9 @@ vector < TVector2 > TMust2Physics :: Match_X_Y(){
           }
 
           // Regular case, keep the event
-          else ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+          else {
+            ArrayOfGoodCouple . push_back ( TVector2(i,j) ) ;
+            }
         }
       }
     }
@@ -850,7 +856,7 @@ void TMust2Physics::ReadConfiguration(NPL::InputParser parser){
   InitializeStandardParameter();
   ReadAnalysisConfig();
 }
-///////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////
 void TMust2Physics::InitSpectra(){
   m_Spectra = new TMust2Spectra(m_NumberOfTelescope);
 }
@@ -968,18 +974,13 @@ void TMust2Physics::AddTelescope( TVector3 C_X1_Y1,
 
   m_NumberOfTelescope++;
 
-  //   Geometry Parameter
-  double Face = 97.3; //mm
-  double NumberOfStrip = 128;
-  double StripPitch = Face/NumberOfStrip ; //mm
-
   //   Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y strip are allong X axis)
   TVector3 U = C_X128_Y1 - C_X1_Y1 ;
-  double Ushift = (U.Mag()-Face)/2.;
+  double Ushift = (U.Mag()-98)/2.;
   U = U.Unit();
   //   Vector V on Telescope Face (parallele to X Strip)
   TVector3 V = C_X1_Y128 - C_X1_Y1 ;
-  double Vshift = (V.Mag() -Face)/2. ;
+  double Vshift = (V.Mag() -98)/2. ;
   V = V.Unit() ;
 
   //   Position Vector of Strip Center
@@ -987,6 +988,10 @@ void TMust2Physics::AddTelescope( TVector3 C_X1_Y1,
   //   Position Vector of X=1 Y=1 Strip
   TVector3 Strip_1_1;
 
+  //   Geometry Parameter
+  double Face = 98; //mm
+  double NumberOfStrip = 128;
+  double StripPitch = Face/NumberOfStrip ; //mm
   //   Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
 
@@ -1095,7 +1100,7 @@ void TMust2Physics::AddTelescope(   double theta,
   U.Rotate( beta_w * Pi/180. , W ) ;
   V.Rotate( beta_w * Pi/180. , W ) ;
 
-  double Face = 97.3                     ; //mm
+  double Face = 98                     ; //mm
   double NumberOfStrip = 128             ;
   double StripPitch = Face/NumberOfStrip   ; //mm
 
@@ -1144,7 +1149,9 @@ TVector3 TMust2Physics::GetPositionOfInteraction(const int i) const{
   TVector3 Position = TVector3 (   GetStripPositionX( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )    ,
       GetStripPositionY( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )      ,
       GetStripPositionZ( TelescopeNumber[i] , Si_X[i] , Si_Y[i] )      ) ;
+
   return(Position) ;
+
 }
 
 TVector3 TMust2Physics::GetTelescopeNormal( const int i) const{

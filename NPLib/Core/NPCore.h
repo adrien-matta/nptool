@@ -24,6 +24,7 @@
 
 #include<string>
 namespace NPL{
+  std::string itoa(const int&); 
   void SendWarning(std::string Class, std::string Warning);
   void SendInformation(std::string Class, std::string Information);
   void SendErrorAndExit(std::string Class,std::string Error);

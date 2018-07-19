@@ -47,18 +47,16 @@ void Analysis::Init() {
   // get reaction information
   myReaction.ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
   OriginalBeamEnergy = myReaction.GetBeamEnergy();
-
   // target thickness
   TargetThickness = m_DetectorManager->GetTargetThickness();
   string TargetMaterial = m_DetectorManager->GetTargetMaterial();
   // Cryo target case
-  WindowsThickness = m_DetectorManager->GetWindowsThickness(); 
-  string WindowsMaterial = m_DetectorManager->GetWindowsMaterial();
+  WindowsThickness = 0;//m_DetectorManager->GetWindowsThickness(); 
+  string WindowsMaterial = "";//m_DetectorManager->GetWindowsMaterial();
 
-  // energy losses
+ // energy losses
   string light=NPL::ChangeNameToG4Standard(myReaction.GetNucleus3().GetName());
   string beam=NPL::ChangeNameToG4Standard(myReaction.GetNucleus1().GetName());
-
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",100);

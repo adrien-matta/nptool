@@ -404,22 +404,25 @@ void Plastic::ReadSensitive(const G4Event* event){
   G4int sizeN = DetectorNumberHitMap->entries()    ;
   G4int sizeE = EnergyHitMap->entries()          ;
   G4int sizeT = TimeHitMap->entries()          ;
+  vector<double> energy;
+    vector<double> time;
+    vector<int>    det;
+
+
 
   // Loop on Plastic Number
   for (G4int l = 0 ; l < sizeN ; l++) {
     G4int N     =      *(DetectorNumber_itr->second)    ;
     G4int NTrackID  =   DetectorNumber_itr->first - N  ;
-
-
-    if (N > 0) {
-      m_Event->SetPlasticNumber(N) ;
+      if (N > 0) {
+      det.push_back(N);
       //  Energy
       Energy_itr = EnergyHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeE ; h++) {
         G4int ETrackID  =   Energy_itr->first  - N      ;
         G4double E     = *(Energy_itr->second)         ;
         if (ETrackID == NTrackID) {
-          m_Event->SetEnergy(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
+          energy.push_back(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
         }
         Energy_itr++;
       }
@@ -431,7 +434,7 @@ void Plastic::ReadSensitive(const G4Event* event){
         G4int TTrackID  =   Time_itr->first   - N    ;
         G4double T     = *(Time_itr->second)      ;
         if (TTrackID == NTrackID) {
-          m_Event->SetTime(RandGauss::shoot(T, ResoTime)) ;
+          time.push_back(RandGauss::shoot(T, ResoTime)) ;
         }
         Time_itr++;
       }
@@ -481,9 +484,13 @@ void Plastic::ReadSensitive(const G4Event* event){
       }
 
     }
-
     DetectorNumber_itr++;
   }
+ unsigned int size=energy.size();
+ for(unsigned int i = 0 ; i < size ; i++){
+   m_Event->SetEnergyAndTime(det[i],energy[i],time[i]);
+   }
+
 
   // clear map for next event
   TimeHitMap->clear()   ;

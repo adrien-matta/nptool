@@ -546,7 +546,7 @@ proxy_MDM p_MDM;
 
 
 #ifdef HAVE_MINUIT2
-#pragma message "Compiling TMDMPhysics with Minuit2 support"
+//#pragma message "Compiling TMDMPhysics with Minuit2 support"
 
 // Define real routines using minuit2
 //

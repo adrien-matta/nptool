@@ -10,7 +10,7 @@
 /*****************************************************************************
  * Original Author: Adrien MATTA  contact address: a.matta@surrey.ac.uk      *
  *                                                                           *
- * Creation Date  : march 2025                                               *
+ * Creation Date  : march 2015                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -33,9 +33,8 @@ namespace NPL{
       virtual void TreatEvent(){};
       virtual void Init(){};
       virtual void End(){};
-      
-      void SetDetectorManager(NPL::DetectorManager*);
-
+      void SetDetectorManager(NPL::DetectorManager* det ) {m_DetectorManager=det;}
+    
     protected:
       NPL::DetectorManager* m_DetectorManager;
   };

@@ -148,12 +148,13 @@ G4LogicalVolume* Chio::BuildDetector(){
     G4Material* Fe= MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
     G4Material* Al= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
 
-    G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
+    //G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("CF4",0.0693276*bar,273.15*kelvin);
+    G4Material* CF4= MaterialManager::getInstance()->GetGasFromLibrary("iC4H10",8.*bar/1000.,273.15*kelvin);
+
     G4Material* Mylar= MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
 
     G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      
     MPT->AddConstProperty("DE_PAIRENERGY",30*eV);
-    MPT->AddConstProperty("DE_YIELD",1e-2);
     //  MPT->AddConstProperty("DE_AMPLIFICATION",1e4);
     MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
     MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/microsecond);
@@ -181,7 +182,7 @@ G4LogicalVolume* Chio::BuildDetector(){
         logicGas,
         "ChioGas",m_SquareDetector,false,0);
 
-    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(-2.5*cm,0,0)),
+    new G4PVPlacement(G4Transform3D(*Rot,G4ThreeVector(2.5*cm,0,0)),
         logicGrid,
         "ChioGrid",logicGas,false,0);
 

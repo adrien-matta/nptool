@@ -139,14 +139,11 @@ void TPlasticPhysics::ReadConfiguration(NPL::InputParser parser) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::AddParameterToCalibrationManager()
-{
+void TPlasticPhysics::AddParameterToCalibrationManager(){
   CalibrationManager* Cal = CalibrationManager::getInstance();
 
-  for(int i = 0 ; i < NumberOfDetector ; i++)
-  {
-    for( int j = 0 ; j < 16 ; j++)
-    {
+  for(int i = 0 ; i < NumberOfDetector ; i++){
+    for( int j = 0 ; j < 16 ; j++){
       Cal->AddParameter("Plastic", "Detector"+ NPL::itoa(i+1)+"_E","Plastic_Detector"+ NPL::itoa(i+1)+"_E")   ;
       Cal->AddParameter("Plastic", "Detector"+ NPL::itoa(i+1)+"_T","Plastic_Detector"+ NPL::itoa(i+1)+"_T")   ;   
     }
@@ -155,16 +152,14 @@ void TPlasticPhysics::AddParameterToCalibrationManager()
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::InitializeRootInputRaw() 
-{
-  TChain* inputChain = RootInput::getInstance()->GetChain()     ;
-  inputChain->SetBranchStatus ( "Plastic"       , true )        ;
-  inputChain->SetBranchStatus ( "fPlastic_*"    , true )        ;
-  inputChain->SetBranchAddress( "Plastic"       , &EventData )  ;
+void TPlasticPhysics::InitializeRootInputRaw() {
+  TChain* inputChain = RootInput::getInstance()->GetChain();
+  inputChain->SetBranchStatus ( "Plastic"   , true );
+  inputChain->SetBranchStatus ( "fPlastic_*", true );
+  inputChain->SetBranchAddress( "Plastic"   , &EventData );
 }
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::InitializeRootInputPhysics()
-{
+void TPlasticPhysics::InitializeRootInputPhysics(){
   TChain* inputChain = RootInput::getInstance()->GetChain();
   inputChain->SetBranchStatus ( "Plastic", true );
   inputChain->SetBranchStatus ( "DetectorNumber", true );
@@ -173,31 +168,27 @@ void TPlasticPhysics::InitializeRootInputPhysics()
   inputChain->SetBranchAddress( "Plastic", &EventPhysics );
 }
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::InitializeRootOutput()
-{
-  TTree* outputTree = RootOutput::getInstance()->GetTree()            ;
+void TPlasticPhysics::InitializeRootOutput(){
+  TTree* outputTree = RootOutput::getInstance()->GetTree();
   outputTree->Branch( "Plastic" , "TPlasticPhysics" , &EventPhysics ) ;
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::BuildPhysicalEvent()
-{
-  BuildSimplePhysicalEvent()   ;
+void TPlasticPhysics::BuildPhysicalEvent(){
+  BuildSimplePhysicalEvent();
 }
 
 ///////////////////////////////////////////////////////////////////////////
-void TPlasticPhysics::BuildSimplePhysicalEvent()
-{
-  for(unsigned int i = 0 ; i < EventData->GetEnergyMult() ; i++)
-  {
-    DetectorNumber.push_back( EventData->GetPlasticNumber(i) )   ;
+void TPlasticPhysics::BuildSimplePhysicalEvent(){
+  unsigned int size =  EventData->GetMult();
+  for(unsigned int i = 0 ; i < size ; i++){
+    DetectorNumber.push_back(EventData->GetPlasticNumber(i));
     static string str;
-    str = "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_E";
-    Energy.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetEnergy(i) ) );
-    str = "Plastic/Detector" + NPL::itoa( EventData->GetPlasticNumber(i) ) +"_T";
-    Time.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetTime(i) ) );
-  }
-
+    str = "Plastic/Detector" + NPL::itoa(EventData->GetPlasticNumber(i)) +"_E";
+    Energy.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetEnergy(i)));
+    str = "Plastic/Detector" + NPL::itoa(EventData->GetPlasticNumber(i)) +"_T";
+    Time.push_back(CalibrationManager::getInstance()->ApplyCalibration(str ,EventData->GetTime(i)));
+  } 
 }
 
 ////////////////////////////////////////////////////////////////////////////////

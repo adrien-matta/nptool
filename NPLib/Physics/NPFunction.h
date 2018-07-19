@@ -39,6 +39,7 @@ using namespace std;
 #include "TFile.h"
 #include "TRandom.h"
 #include "TRandom2.h"
+#include "TVector3.h"
 
 namespace NPL{
 
@@ -54,11 +55,17 @@ namespace NPL{
   // False for a Root file
   bool OpenASCIIorROOTFile(string filename, ifstream &ASCII , TFile &ROOT);
   
-  void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma= 10000);
+  void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y);
   
   // Change nucleus name from G4 standard to Physics standard (11Li vs Li11)
   string ChangeNameToG4Standard(string name);
   string ChangeNameFromG4Standard(string name);
+
+  // Hyperbolic shape generator for cryogenic target deformation
+  inline double HyperbolicProfile(double x, double offset, double b, double R) {return (offset+b+1)- cosh(x/(R/acosh(b+1)));}
+  // Crossing point between a TVector3 direction and an Hyperbolic Profile
+  TVector3 HyperbolicProfileCrossing(TVector3 origin,TVector3 direction, double offset, double b, double R);
+
 }
 
 #endif

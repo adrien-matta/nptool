@@ -26,7 +26,6 @@
 #include "G4RunManager.hh"
 #include "G4Trajectory.hh"
 #include "G4TrajectoryContainer.hh"
-
 // NPTool headers
 #include "EventAction.hh"
 #include "DetectorConstruction.hh"
@@ -34,7 +33,6 @@
 #include "ParticleStack.hh"
 
 #include<iostream>
-using namespace std;
 
 EventAction* EventAction::m_EventAction=0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

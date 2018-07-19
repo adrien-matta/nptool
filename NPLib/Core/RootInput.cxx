@@ -30,10 +30,11 @@
 #include "RootInput.h"
 #include "TAsciiFile.h"
 #include "NPOptionManager.h"
+#include "NPInputParser.h"
 
 RootInput* RootInput::instance = 0;
 ////////////////////////////////////////////////////////////////////////////////
-RootInput* RootInput::getInstance(string configFileName){
+RootInput* RootInput::getInstance(std::string configFileName){
   // A new instance of RootInput is created if it does not exist:
   if (instance == 0) {
     instance = new RootInput(configFileName);
@@ -52,8 +53,8 @@ void RootInput::Destroy(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-RootInput::RootInput(string configFileName){
-  string lastfile= NPOptionManager::getInstance()->GetLastFile();
+RootInput::RootInput(std::string configFileName){
+  std::string lastfile= NPOptionManager::getInstance()->GetLastFile();
   if(lastfile!="VOID"){
     configFileName = lastfile;
   }
@@ -63,40 +64,36 @@ RootInput::RootInput(string configFileName){
   bool CheckRootFileName = false;
 
   // Read configuration file Buffer
-  string lineBuffer, dataBuffer;
+  std::string lineBuffer, dataBuffer;
 
   // Open file
-  cout << endl;
-  cout << "/////////// ROOT Input files ///////////" << endl;
-  cout << "Initializing input TChain" << endl;
+  std::cout << std::endl;
+  std::cout << "/////////// ROOT Input files ///////////" << std::endl;
+  std::cout << "Initializing input TChain using: " << configFileName << std::endl;
 
-  ifstream inputConfigFile;
+  std::ifstream inputConfigFile;
   inputConfigFile.open(configFileName.c_str());
-
   pRootFile  = NULL;
-  pRootChain = new TChain();
-
   if (!inputConfigFile.is_open()) {
-    cout << "\033[1;31mWarning : Run to Read file: " << configFileName << " not found\033[0m" << endl; 
+    std::cout << "\033[1;31mWarning : Run to Read file: " << configFileName << " not found\033[0m" << std::endl; 
     //exit(1);
   }
 
   else {
     while (!inputConfigFile.eof()) {
       getline(inputConfigFile, lineBuffer);
-
       // search for token giving the TTree name
       if (lineBuffer.compare(0, 9, "TTreeName") == 0) {
         inputConfigFile >> dataBuffer;
         // initialize pRootChain
-        pRootChain->SetName(dataBuffer.c_str());
+        pRootChain = new TChain(dataBuffer.c_str());
         CheckTreeName = true ;
         // If the tree come from a simulation, the InteractionCoordinates
         // and InitialConditions lib are loaded
         if(dataBuffer=="SimulatedTree"){
-          string path = getenv("NPTOOL");
+          std::string path = getenv("NPTOOL");
           path+="/NPLib/lib/";
-          string libName="libNPInteractionCoordinates"+NPOptionManager::getInstance()->GetSharedLibExtension();
+          std::string libName="libNPInteractionCoordinates"+NPOptionManager::getInstance()->GetSharedLibExtension();
           libName=path+libName;
           dlopen(libName.c_str(),RTLD_NOW);
           libName="libNPInitialConditions"+NPOptionManager::getInstance()->GetSharedLibExtension();
@@ -119,16 +116,16 @@ RootInput::RootInput(string configFileName){
 
           else if (!inputConfigFile.eof()) {
             pRootChain->Add(dataBuffer.c_str());
-            cout << "Adding file " << dataBuffer << " to TChain" << endl;
+            std::cout << "Adding file " << dataBuffer << " to TChain" << std::endl;
 
             // Test if the file is a regex or a single file
             double counts;
-            string command = "ls " + dataBuffer + " > .ls_return";
+            std::string command = "ls " + dataBuffer + " > .ls_return";
             counts= system(command.c_str());
-            ifstream return_ls(".ls_return");
+            std::ifstream return_ls(".ls_return");
             
-            string files;
-            string firstfile;
+            std::string files;
+            std::string firstfile;
             while(return_ls >> files){
               if(counts == 0)
                 firstfile = files;
@@ -142,43 +139,43 @@ RootInput::RootInput(string configFileName){
       }
     }
     if( pRootChain->GetEntries() ==0){
-      cout << "\033[1;31m**** ERROR: No entries to analyse ****\033[0m" << endl; 
+      std::cout << "\033[1;31m**** ERROR: No entries to analyse ****\033[0m" << std::endl; 
       exit(1);
     }
     else{
-      cout << "\033[1;32mROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain\033[0m" << endl ;
+      std::cout << "\033[1;32mROOTInput:  " << pRootChain->GetEntries() << " entries loaded in the input chain\033[0m" << std::endl ;
     }
 
   }
 
   if (!CheckRootFileName || !CheckTreeName) 
-    cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << endl;
+    std::cout << "\033[1;33mWARNING: Token not found for InputTree Declaration : Input Tree may not be instantiate properly\033[0m" << std::endl;
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void RootInput::AddFriendChain(string RunToAdd){
+void RootInput::AddFriendChain(std::string RunToAdd){
   NumberOfFriend++;
-  ostringstream suffix_buffer;
+  std::ostringstream suffix_buffer;
   suffix_buffer << "_" << NumberOfFriend ; 
-  string suffix = suffix_buffer.str();
+  std::string suffix = suffix_buffer.str();
   bool CheckTreeName     = false;
   bool CheckRootFileName = false;
 
   // Read configuration file Buffer
-  string lineBuffer, dataBuffer;
+  std::string lineBuffer, dataBuffer;
 
   // Open file
-  ifstream inputConfigFile;
+  std::ifstream inputConfigFile;
   inputConfigFile.open(RunToAdd.c_str());
 
   TChain* localChain = new TChain();
-
-  cout << "/////////////////////////////////" << endl;
-  cout << "Adding friend to current TChain" << endl;
+  
+  std::cout << "/////////////////////////////////" << std::endl;
+  std::cout << "Adding friend to current TChain" << std::endl;
 
   if (!inputConfigFile) {
-    cout << "Run to Add file :" << RunToAdd << " not found " << endl; 
+    std::cout << "Run to Add file :" << RunToAdd << " not found " << std::endl; 
     return;
   }
 
@@ -210,7 +207,7 @@ void RootInput::AddFriendChain(string RunToAdd){
 
           else if (!inputConfigFile.eof()) {
             localChain->Add(dataBuffer.c_str());
-            cout << "Adding file " << dataBuffer << " to TChain" << endl;
+            std::cout << "Adding file " << dataBuffer << " to TChain" << std::endl;
           }
         }
       }
@@ -218,38 +215,38 @@ void RootInput::AddFriendChain(string RunToAdd){
   }
 
   if (!CheckRootFileName || !CheckTreeName) 
-    cout << "WARNING: Token not found for InputTree Declaration : Input Tree has not be Added to the current Chain" << endl;
+    std::cout << "WARNING: Token not found for InputTree Declaration : Input Tree has not be Added to the current Chain" << std::endl;
 
   else
     pRootChain->AddFriend( localChain->GetName() );
 
-  cout << "/////////////////////////////////" << endl;
+  std::cout << "/////////////////////////////////" << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-string RootInput::DumpAsciiFile(const char* type, const char* folder){
-  string name="fail";
+std::string RootInput::DumpAsciiFile(const char* type, const char* folder){
+  std::string name="fail";
 
-  string sfolder = folder;
+  std::string sfolder = folder;
   // create folder if not existing
   // first test if folder exist
   struct stat dirInfo;
   int res = stat(folder, &dirInfo);
   if (res != 0) {   // if folder does not exist, create it
-    string cmd = "mkdir " + sfolder;
-    if (system(cmd.c_str()) != 0) cout << "RootInput::DumpAsciiFile() problem creating directory" << endl;
+    std::string cmd = "mkdir " + sfolder;
+    if (system(cmd.c_str()) != 0) std::cout << "RootInput::DumpAsciiFile() problem creating directory" << std::endl;
   }
 
-  string stype = type;
+  std::string stype = type;
   if (stype == "EventGenerator") {
     TAsciiFile *aFile = (TAsciiFile*)pRootFile->Get(stype.c_str());
 
     if(aFile)
     {
       // build file name
-      string title = aFile->GetTitle();
+      std::string title = aFile->GetTitle();
       size_t pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
+      if (pos != std::string::npos) name = sfolder + title.substr(pos);
       else name = sfolder + "/" + title;
       aFile->WriteToFile(name.c_str());
     }
@@ -260,9 +257,9 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder){
     if(aFile)
     {
       // build file name
-      string title = aFile->GetTitle();
+      std::string title = aFile->GetTitle();
       size_t pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
+      if (pos != std::string::npos) name = sfolder + title.substr(pos);
       else name = sfolder + "/" + title;
       aFile->WriteToFile(name.c_str());
     }
@@ -273,9 +270,9 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder){
     if(aFile)
     {
       // build file name
-      string title = aFile->GetTitle();
+      std::string title = aFile->GetTitle();
       size_t pos = title.rfind("/");
-      if (pos != string::npos) name = sfolder + title.substr(pos);
+      if (pos != std::string::npos) name = sfolder + title.substr(pos);
       else name = sfolder + "/" + title;
       aFile->WriteToFile(name.c_str());
     }
@@ -284,7 +281,7 @@ string RootInput::DumpAsciiFile(const char* type, const char* folder){
   else if (stype == "RunToTreat") {
   }
   else {
-    cout << "RootInput::DumpAsciiFile() unkwown keyword" << endl;
+    std::cout << "RootInput::DumpAsciiFile() unkwown keyword" << std::endl;
   }
 
   return name;
@@ -296,17 +293,17 @@ RootInput::~RootInput(){
   struct stat dirInfo;
   int res = stat("./.tmp", &dirInfo);
   if (res == 0) {   // if does exist, delete it
-    if (system("rm -rf ./.tmp") != 0) cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << endl; 
+    if (system("rm -rf ./.tmp") != 0) std::cout << "RootInput::~RootInput() problem deleting ./.tmp directory" << std::endl; 
   }
-  cout << endl << "Root Input summary" << endl;
-  cout << "  - Number of bites read: " << pRootFile->GetBytesRead() << endl;
-  cout << "  - Number of transactions: " << pRootFile->GetReadCalls() << endl;
+  std::cout << std::endl << "Root Input summary" << std::endl;
+  std::cout << "  - Number of bites read: " << pRootFile->GetBytesRead() << std::endl;
+  std::cout << "  - Number of transactions: " << pRootFile->GetReadCalls() << std::endl;
   // Close the Root file
   pRootFile->Close();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-TChain* MakeFriendTrees(string RunToRead1,string RunToRead2){
+TChain* MakeFriendTrees(std::string RunToRead1,std::string RunToRead2){
   RootInput:: getInstance(RunToRead1)	;
   RootInput:: getInstance()->AddFriendChain(RunToRead2);
   return RootInput:: getInstance()->GetChain();

@@ -68,7 +68,8 @@ namespace NPL{
     double fMeanPhiY;
     double fSigmaThetaX;
     double fSigmaPhiY;
-    
+    double fZEmission;
+    double fZProfile;
     // case of user given distribution
     TH1F* fEnergyHist;
     TH2F* fXThetaXHist;

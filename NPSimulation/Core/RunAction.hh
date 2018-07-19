@@ -25,6 +25,8 @@
 // G4 headers
 #include "G4UserRunAction.hh"
 #include "globals.hh"
+#include <set>
+#include <string>
 
 class G4Run;
 
@@ -35,9 +37,10 @@ class RunAction : public G4UserRunAction{
 
     virtual void BeginOfRunAction(const G4Run*);
     virtual void EndOfRunAction(const G4Run*);
+
   private:
     int m_RunNumber;
-    
+    std::set<std::string> m_Particle;
 };
 
 

@@ -36,9 +36,9 @@
 
 // NPL
 #include "NPInputParser.h"
+#include "NPCore.h"
 
 namespace NPL {
-  std::string itoa(const int&); 
 
   class VDetector{
     public:
