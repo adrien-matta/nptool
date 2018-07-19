@@ -29,6 +29,8 @@
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
+
+#include"NPDetectorManager.h"
 class Analysis: public NPL::VAnalysis{
   public:
     Analysis();
