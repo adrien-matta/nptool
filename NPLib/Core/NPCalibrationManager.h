@@ -52,7 +52,7 @@ class CalibrationManager{
 
     // call like : myCalibrationManager->AddParameter( "MUST2" ,"Telescope5_Si_X38_E", "T5_Si_X38_E" )
     // return false if the token is not found in the file list
-    bool AddParameter(std::string DetectorName , std::string ParameterName , std::string Token)    ;      
+    bool AddParameter(std::string DetectorName , std::string ParameterName , std::string Token,std::vector<double> def=std::vector<double>())    ;      
 
     // call like : myCalibrationManager->ApplyCalibration( "MUST2/Telescope5_Si_X38_E" , RawEnergy )
     // return the Calibrated value

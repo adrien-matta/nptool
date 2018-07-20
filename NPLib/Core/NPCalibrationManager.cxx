@@ -95,9 +95,12 @@ CalibrationManager::~CalibrationManager()
 {}
 
 //////////////////////////////////////////////////////////////////
-bool CalibrationManager::AddParameter(std::string DetectorName , std::string ParameterName , std::string Token ){
+bool CalibrationManager::AddParameter(std::string DetectorName , std::string ParameterName , std::string Token, std::vector<double> def ){
   std::string ParameterPath = DetectorName + "/" + ParameterName ;
   fToken[Token] = ParameterPath ;
+  // Case where a default value is given
+  if(def.size()!=0)
+    fCalibrationCoeff[ParameterPath] = def;
   return true;
 }
 
