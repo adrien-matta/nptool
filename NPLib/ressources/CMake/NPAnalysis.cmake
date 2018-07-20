@@ -17,4 +17,4 @@ if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*Clang.*")
 endif()
 
 add_library(NPAnalysis SHARED Analysis.cxx)
-target_link_libraries(NPAnalysis ${ROOT_LIBRARIES} -L${NPLIB}/lib -lNPCore -lNPPhysics -lNPInteractionCoordinates -lNPInitialConditions)
+target_link_libraries (NPAnalysis ${ROOT_LIBRARIES} -L${NPLIB}/lib -lNPCore -lNPPhysics -lNPInteractionCoordinates -lNPInitialConditions -lNPReactionConditions)
