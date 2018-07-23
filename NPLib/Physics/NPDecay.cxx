@@ -216,7 +216,9 @@ bool NPL::SingleDecay::GenerateEvent(double MEx, double MEK, double MPX, double 
    DPx[pos]=NucleiLV.X();
    DPy[pos]=NucleiLV.Y();
    DPz[pos]=NucleiLV.Z();
+   return true;
   }
+  return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// Decay ///////////////////////////////////////
@@ -388,10 +390,12 @@ void NPL::DecayStore::GenerateEvent(std::string MotherName, double MEx,
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::DecayStore::AnyAboveThreshold(std::string MotherName, double MEx){
-  if(m_Store.find(MotherName)!=m_Store.end())
+  if(m_Store.find(MotherName)!=m_Store.end()){
     m_Store[MotherName].AnyAboveThreshold(MEx);
-  else
-    return false;
+    return true;
+  }
+    
+  return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
 std::set<std::string> NPL::DecayStore::GetAllMotherName(){

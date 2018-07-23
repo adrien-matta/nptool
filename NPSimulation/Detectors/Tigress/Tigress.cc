@@ -592,11 +592,11 @@ void Tigress::ReadSensitive(const G4Event* event){
 
 		G4double* Info = *(HPGE_itr->second);
 
-		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
-		G4double Time     =  Info[1];
-		G4int CloverNbr   = (int)Info[7];
+//		G4double Energy   =  Info[0]; // RandGauss::shoot(Info[0], ResoEnergy/2.334);
+//		G4double Time     =  Info[1];
+//		G4int CloverNbr   = (int)Info[7];
 		G4int CrystalNbr  = (int)Info[8];
-    
+   
 		// Figure out segment number, in progress
 		G4int SegmentNbr = 0;
 		G4double zpos = Info[4]; // mm
@@ -604,13 +604,6 @@ void Tigress::ReadSensitive(const G4Event* event){
 		else if(CrystalNbr == 1 || CrystalNbr == 4) { SegmentNbr = 1; } // RIGHT
 		else                                        { SegmentNbr = 3; } // LEFT
 		
-		// To avoid warning for now, in progress
-    Energy=Energy;
-    Time=Time;
-    CloverNbr=CloverNbr;
-    CrystalNbr=CrystalNbr;
-    SegmentNbr=SegmentNbr;
-    
 		//m_TigressData->SetCoreE(CloverNbr, CrystalNbr, Energy/keV);
 		//m_TigressData->SetCoreT(CloverNbr, CrystalNbr, Time/ns);
 		//m_TigressData->SetSegmentE(CloverNbr, SegmentNbr, Energy/keV);

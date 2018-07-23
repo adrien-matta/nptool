@@ -1,4 +1,3 @@
-
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -68,7 +67,7 @@ void NPL::SpectraServer::CheckRequest(){
     m_Monitor->ResetInterrupt();
     if((s=m_Monitor->Select(1))!=(TSocket*)-1){
       HandleSocket(s);
-      }
+    }
   }
 }
 
@@ -106,8 +105,8 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     answer.SetCompressionLevel(1);
     answer.Reset();
     TObject* h =NULL;
-   if (!strcmp(request, "RequestSpectra")){
-     std::cout << "Prepare" << std::endl;
+    if (!strcmp(request, "RequestSpectra")){
+      std::cout << "Prepare" << std::endl;
       answer.WriteObject(m_Spectra);
       std::cout << "Compress" << std::endl;
       answer.Compress();
@@ -115,18 +114,22 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
       s->Send(answer);
       std::cout << "done" << std::endl;
     }
-  
-    else if (h=m_Spectra->FindObject(request)){
-     answer.WriteObject(h);
-     s->Send(answer);
-    }
 
     else if (!strcmp(request, "RequestClear")){
-     // TO DO 
+      // TO DO 
     }
-    else{ // answer nothing
-      std::cout << "Fail to respond to request : " << request << std::endl; 
-      s->Send(answer);
+
+    else{
+      h = m_Spectra->FindObject(request);
+      if (h){
+        answer.WriteObject(h);
+        s->Send(answer);
+      }
+
+      else{ // answer nothing
+        std::cout << "Fail to respond to request : " << request << std::endl; 
+        s->Send(answer);
+      }
     }
   }
 }
@@ -139,7 +142,7 @@ void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx)
 void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx,const double& valy){
   // Fill the local histo
   ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
-  
+
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::AddSpectra(TH1* h){

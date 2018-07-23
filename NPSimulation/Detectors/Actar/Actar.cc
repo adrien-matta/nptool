@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
  * Creation Date  : September 2017                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Actar simulation                             *
+ *  This class describe  Actar simulation                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -186,8 +186,8 @@ G4LogicalVolume* Actar::BuildDetector(){
                                  1*um*0.5,2*mm*0.5);
 
         // Cathode
-        G4Box* sCathode = new G4Box("Actar_Cathode",26.5*cm*0.5,
-                                    1*um*0.5,25.6*cm*0.5);
+        //G4Box* sCathode = new G4Box("Actar_Cathode",26.5*cm*0.5,
+        //                            1*um*0.5,25.6*cm*0.5);
 
 
 
@@ -244,7 +244,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         G4LogicalVolume* logicGas = new G4LogicalVolume(sCage,DriftGasMaterial,"logic_Gas",0,0,0);
         G4LogicalVolume* logicNose = new G4LogicalVolume(sNose,Al,"logic_Nose",0,0,0);
         G4LogicalVolume* logicPad = new G4LogicalVolume(sPad,Cu,"logic_Pad",0,0,0);
-        G4LogicalVolume* logicCathode = new G4LogicalVolume(sCathode,Cu,"logic_Cathode",0,0,0);
+        //G4LogicalVolume* logicCathode = new G4LogicalVolume(sCathode,Cu,"logic_Cathode",0,0,0);
         G4LogicalVolume* logicWindows = new G4LogicalVolume(sWindows,Mylar,"logic_Windows",0,0,0);
 
         G4RotationMatrix* Rot = new G4RotationMatrix();
