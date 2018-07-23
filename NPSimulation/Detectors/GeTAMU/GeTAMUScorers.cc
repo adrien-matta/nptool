@@ -15,8 +15,9 @@ using namespace GETAMUSCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_GeTAMU::PS_GeTAMU(G4String name,G4int Level,G4int depth)
-  :G4VPrimitiveScorer(name, depth),HCID(-1){
+PS_GeTAMU::PS_GeTAMU(G4String name,G4int ,G4int depth)
+  :G4VPrimitiveScorer(name, depth){
+  HCID=-1;
 	m_Position = G4ThreeVector(-1000,-1000,-1000);
   m_LocalPosition = G4ThreeVector(-1000,-1000,-1000);
 	m_CloverNumber  = -1;
