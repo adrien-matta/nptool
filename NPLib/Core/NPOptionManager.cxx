@@ -115,7 +115,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
 
     else if (argument == "-R" && argc >= i + 1)                   fRunToReadFileName   = argv[++i] ;
 
-    else if (argument == "-T" && argc >= i + 2)                   CreateRunToTreatFile(argv[++i],argv[++i]);
+    else if (argument == "-T" && argc >= i + 2)                   { std::string file = argv[++i] ; std::string tree = argv[++i]; CreateRunToTreatFile(file,tree);}
 
     else if (argument == "--cal" && argc >= i + 1)                fCalibrationFileName = argv[++i] ;
 
