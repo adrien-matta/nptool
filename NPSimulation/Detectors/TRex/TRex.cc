@@ -134,7 +134,7 @@ G4LogicalVolume* TRex::BuildChamber(){
       cout << "TRex geometry is based on Munich Group Simulation exported in GDML"<< endl;
       string basepath = getenv("NPTOOL");
       string path=basepath+"/NPSimulation/Detectors/TRex/TRex_Miniball.gdml";
-      m_gdmlparser.Read(path);
+      m_gdmlparser.Read(path,false);
     }
     m_Chamber= m_gdmlparser.GetVolume("chamber_log");
   }

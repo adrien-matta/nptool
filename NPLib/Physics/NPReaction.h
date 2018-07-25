@@ -215,6 +215,9 @@ namespace NPL{
       // This uses the fExcitation4 and fQValue both set previously
       double EnergyLabFromThetaLab(double ThetaLab); 
 
+      // Check whenever the reaction is allowed at the given energy
+      bool IsAllowed(double Energy);
+      
       void SetNuclei3(double EnergyLab, double ThetaLab);
 
       TGraph* GetKinematicLine3(double AngleStep_CM=1);

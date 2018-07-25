@@ -49,16 +49,14 @@ namespace NPL{
     public:
       void HandleSocket(TSocket* s);
       void AddSpectra(TH1* h);
-      //void AddSpectra(TH2* h);
-      void FillSpectra(std::string name,double valx);
-      void FillSpectra(std::string name,double valx, double valy);
+      void FillSpectra(const std::string& name,const double& valx);
+      void FillSpectra(const std::string& name,const double& valx, const double& valy);
       void CheckRequest();
 
     private:
       bool m_stop;
       TServerSocket* m_Server;     
       TMonitor* m_Monitor;     
-      std::map<TSocket*,NPL::DeltaSpectra > m_Delta;
       TList* m_Sockets;
       TList* m_Spectra;
   };

@@ -12,7 +12,7 @@
  * Last update    : may 2012 morfouac@ipno.in2p3.fr                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class manage a nucleus, data are read in the nubtab03.asc file      *
+ *  This class manage a nucleus, data are read in the nubtab12.asc file      *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -24,16 +24,7 @@
 // NPTOOL headers
 #include "NPNucleus.h"
 using namespace NPL;
-//#include "Constant.h"
 
-// Use CLHEP System of unit and Physical Constant
-//#include "CLHEP/Units/GlobalSystemOfUnits.h"
-//#include "CLHEP/Units/PhysicalConstants.h"
-#include "NPGlobalSystemOfUnits.h"
-#include "NPPhysicalConstants.h"
-#ifdef NP_SYSTEM_OF_UNITS_H
-using namespace NPUNITS;
-#endif
 
 // C++ headers
 #include <iostream>
@@ -54,6 +45,7 @@ Nucleus::Nucleus(){
   fCharge= 0;
   fAtomicWeight= 0;
   fMassExcess= 0;
+  fExcitationEnergy=0;
   fSpinParity= "";
   fSpin= 0;
   fParity= "";
@@ -66,15 +58,19 @@ Nucleus::Nucleus(string isotope){
 }
 
 void Nucleus::SetUp(string isotope){
-  //----------- Constructor Using nubtab03.asc by name----------
+  //----------- Constructor Using nubtab12.asc by name----------
   // open the file to read and check if it is open
-
-  // Replace the p,d,t,a by there standard name:
+  fExcitationEnergy=0; 
+  // Replace the n,p,d,t,a by there standard name:
   if(isotope=="p") isotope="1H";
 	else if(isotope=="n") isotope="1n";
   else if(isotope=="d") isotope="2H";
   else if(isotope=="t") isotope="3H";
   else if(isotope=="a") isotope="4He";
+  else if(isotope=="n") isotope="1n";
+  else if(isotope=="neutron") isotope="1n";
+  else if(isotope=="g") isotope="gamma";
+  else if(isotope=="gamma") isotope="gamma";
 	else if(isotope=="4n"){ // tetraneutron @Eres = 0
 		string line = "004 0000   4n      32285.268   0.0005                       219.4    ys 0.6    1/2+          00 02PaDGt   B-=100";
 		Extract(line.data());
@@ -83,7 +79,7 @@ void Nucleus::SetUp(string isotope){
 	
   ifstream inFile;
   string Path = getenv("NPTOOL") ;
-  string FileName = Path + "/NPLib/Physics/nubtab03.asc";
+  string FileName = Path + "/NPLib/Physics/nubtab12.asc";
   inFile.open(FileName.c_str());
 
   // reading the file
@@ -109,7 +105,7 @@ void Nucleus::SetUp(string isotope){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 Nucleus::Nucleus(int Z, int A)
 {
-  //----------- Constructor Using nubtab03.asc by Z and A----------
+  //----------- Constructor Using nubtab12.asc by Z and A----------
 
 	if(Z==0 && A==4){
 		SetUp("4n");
@@ -118,7 +114,7 @@ Nucleus::Nucleus(int Z, int A)
   // open the file to read and check if it is open
   ifstream inFile;
   string Path = getenv("NPTOOL") ;
-  string FileName = Path + "/NPLib/Physics/nubtab03.asc";
+  string FileName = Path + "/NPLib/Physics/nubtab12.asc";
   inFile.open(FileName.c_str());
 
   // reading the file
@@ -219,9 +215,6 @@ void Nucleus::Extract(string line){
   fSpinParity = s_spinparity.data();
   size_t found_p = s_spinparity.find("+");
   size_t found_m = s_spinparity.find("-");
-  //   size_t found_( = s_jpi.find("(");
-  //   size_t found_) = s_jpi.find(")");
-  //   size_t found_# = s_jpi.find("#");
   // parity
   if (found_p != string::npos) fParity = "+";
   if (found_m != string::npos) fParity = "-";

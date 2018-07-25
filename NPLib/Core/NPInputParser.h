@@ -110,7 +110,7 @@ namespace NPL{
       void Clear();
       std::vector<InputBlock*> GetAllBlocksWithToken(std::string Token);
       std::vector<InputBlock*> GetAllBlocksWithTokenAndValue(std::string Token,std::string Value);
-
+      std::vector<std::string> GetAllBlocksValues(std::string);
       std::vector<std::string> GetAllBlocksToken();
 
 

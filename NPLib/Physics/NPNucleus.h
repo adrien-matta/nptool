@@ -28,14 +28,20 @@
 // NPTOOL headers
 #include "NPGlobalSystemOfUnits.h"
 #include "NPPhysicalConstants.h"
+
 #ifdef NP_SYSTEM_OF_UNITS_H
 using namespace NPUNITS;
+#endif
+
+#ifdef HEP_PHYSICAL_CONSTANTS_H
+using namespace CLHEP;
 #endif
 
 // C++ headers
 #include <string>
 using namespace std;
 
+#include <iostream>
 namespace NPL {
   class Nucleus {
     
@@ -50,16 +56,16 @@ namespace NPL {
     
   private :
     //intrinsic properties
-    string      fName;         // Nucleus name
-    string	    fNucleusName;
-    int         fCharge;       // Nucleus charge
-    int         fAtomicWeight; // Nucleus atomic weight
-    double      fMassExcess;   // Nucleus mass excess in keV
-    string      fSpinParity;   // Nucleus spin and parity
-    double      fSpin;         // Nucleus spin
-    string      fParity;       // Nucleus parity
-    double      fLifeTime;     // life time
-
+    string fName;         // Nucleus name
+    string fNucleusName;
+    int    fCharge;       // Nucleus charge
+    int    fAtomicWeight; // Nucleus atomic weight
+    double fMassExcess;   // Nucleus mass excess in keV
+    string fSpinParity;   // Nucleus spin and parity
+    double fSpin;         // Nucleus spin
+    string fParity;       // Nucleus parity
+    double fLifeTime;     // life time
+    double fExcitationEnergy; // Excitation Energy
     //kinematic properties
     double fKineticEnergy;
     double fBeta;
@@ -102,18 +108,19 @@ namespace NPL {
     double			GetBeta()			    const		{return fBeta;}
     double			GetGamma()			  const		{return fGamma;}
     double			GetVelocity()	   	const		{return fVelocity;}
-    TLorentzVector	GetEnergyImpulsion() const				{return fEnergyImpulsion;}
-    void				SetName(const char* name)				{fName = name;}
-    void				SetZ(int charge)						{fCharge = charge;}
-    void				SetA(int mass)							{fAtomicWeight = mass;}
-    void				SetMassExcess(double massexcess)		{fMassExcess = massexcess;}
+    TLorentzVector	GetEnergyImpulsion() const {return fEnergyImpulsion;}
+    double      GetExcitationEnergy() const {return fExcitationEnergy;}
+    void				SetName(const char* name)	{fName = name;}
+    void				SetZ(int charge)					{fCharge = charge;}
+    void				SetA(int mass)						{fAtomicWeight = mass;}
+    void				SetMassExcess(double massexcess) {fMassExcess = massexcess;}
     void				SetSpinParity(const char* spinparity)	{fSpinParity = spinparity;}
-    void				SetSpin(double spin)					{fSpin = spin;}
-    void				SetParity(const char* parity)			{fParity = parity;}
+    void				SetSpin(double spin) {fSpin = spin;}
+    void				SetParity(const char* parity)	{fParity = parity;}
     void        SetLifeTime(double LifeTime) {fLifeTime=LifeTime;}
-    void				SetKineticEnergy(double energy)			{fKineticEnergy = energy; EnergyToBrho(); EnergyToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
-    void				SetBrho(double brho)					{fBrho = brho; BrhoToEnergy(); BrhoToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
-    void				SetTimeOfFlight(double tof)				{fTimeOfFlight = tof; TofToEnergy(); TofToBrho(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
+    void				SetKineticEnergy(double energy)	{fKineticEnergy = energy; EnergyToBrho(); EnergyToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
+    void				SetBrho(double brho) {fBrho = brho; BrhoToEnergy(); BrhoToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
+    void				SetTimeOfFlight(double tof) {fTimeOfFlight = tof; TofToEnergy(); TofToBrho(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
     void				SetEnergyImpulsion(TLorentzVector P) 	{fEnergyImpulsion = P;
       fKineticEnergy = P.E() - Mass();
       EnergyToBrho();
@@ -121,12 +128,13 @@ namespace NPL {
       EnergyToBeta();
       BetaToGamma();
       BetaToVelocity();}
+    void SetExcitationEnergy(double Ex) {fExcitationEnergy=Ex;}
     void				SetBeta(double beta)					{fBeta = beta; BetaToGamma(); BetaToEnergy(); EnergyToTof(); EnergyToBrho();BetaToVelocity();}
       double GetEnergyCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost);
       double GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, double relativisticboost);
     
     // Nuclear mass in MeV
-    double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2);}
+    double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2+fExcitationEnergy);}
       double GetBindingEnergy() const {return (fCharge*proton_mass_c2 + (fAtomicWeight-fCharge)*neutron_mass_c2 + fCharge*electron_mass_c2 - fAtomicWeight*amu_c2 - fMassExcess/1000);}
     void        Print() const   ;
   };

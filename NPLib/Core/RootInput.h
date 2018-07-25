@@ -30,7 +30,6 @@
 #include "TFile.h"
 #include "TChain.h"
 
-using namespace std;
 
 
 class RootInput
@@ -41,7 +40,7 @@ public:
    // the user to get a pointer to the existing instance or to create it if
    // it does not yet exist:
    // (see the constructor for an explanation of the arguments)
-   static RootInput* getInstance(string configFileName = "configFile");
+   static RootInput* getInstance(std::string configFileName = "configFile");
 
    // The analysis class instance can be deleted by calling the Destroy
    // method (NOTE: The class destructor is protected, and can thus not be
@@ -50,7 +49,7 @@ public:
 
 protected:
    // Constructor (protected)
-   RootInput(string configFileName);
+   RootInput(std::string configFileName);
 
    // Destructor (protected)
    virtual ~RootInput();
@@ -64,7 +63,7 @@ private:
    static RootInput* instance;
 
 public:
-   string DumpAsciiFile(const char* type, const char* folder = "./.tmp");
+   std::string DumpAsciiFile(const char* type, const char* folder = "./.tmp");
 
 public:
    // Return the private chain and file
@@ -73,7 +72,7 @@ public:
    void     SetChain(TChain* c)  {pRootChain = c;} 
 
    // Add a Friend chain to the input chain
-   void     AddFriendChain(string RunToAdd);
+   void     AddFriendChain(std::string RunToAdd);
 
 private:
    TChain   *pRootChain;
@@ -83,6 +82,6 @@ private:
 };
 
 // A convenient function related to Root Input, coded Here so it can be called within ROOT CINT
-TChain* MakeFriendTrees(string,string);
+TChain* MakeFriendTrees(std::string,std::string);
 
 #endif // ROOTINPUT_HH

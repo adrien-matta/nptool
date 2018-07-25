@@ -46,18 +46,20 @@
 #include "TGComboBox.h"
 #include "TASImage.h"
 #include "TH2.h"
+#include "NPCore.h"
 ClassImp(NPL::OnlineGUI);
 ////////////////////////////////////////////////////////////////////////////////
-void NPL::ExecuteMacro(string name){
+void NPL::ExecuteMacro(const std::string& name){
   static DIR *dir;
   static struct dirent *ent;
-  static string path; 
+  static std::string path; 
   path = "./online_macros/";
-  name += ".C";
+  static std::string filename;
+  filename = name+".cxx";
   if ((dir = opendir (path.c_str())) != NULL) {
     while ((ent = readdir (dir)) != NULL) {
-      if(ent->d_name==name)
-        gROOT->ProcessLine(Form(".x online_macros/%s",name.c_str()));
+      if(ent->d_name==filename)
+        gROOT->ProcessLine(Form(".x online_macros/%s",filename.c_str()));
     }
     closedir (dir);
   }
@@ -159,8 +161,8 @@ void NPL::OnlineGUI::ResetCurrent(){
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Eloging(){
 
-  vector<std::string> attributes;
-  vector<std::string> val;
+  std::vector<std::string> attributes;
+  std::vector<std::string> val;
 
   std::map<std::string,TGTextEntry*>::iterator it ;
   for(it = m_ElogAttributes.begin(); it != m_ElogAttributes.end() ; it++){
@@ -243,9 +245,9 @@ void NPL::OnlineGUI::ApplyRangeCurrent(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::FitCurrent(){
-  static string gauss_formula = "([0]*[3]/([2]*sqrt(2*3.14159265359)))*exp(-0.5*(x-[1])*(x-[1])/([2]*[2]))";
+  static std::string gauss_formula = "([0]*[3]/([2]*sqrt(2*3.14159265359)))*exp(-0.5*(x-[1])*(x-[1])/([2]*[2]))";
 
-  static string full_formula = gauss_formula +"+[P0]+[P1]*x";
+  static std::string full_formula = gauss_formula +"+[P0]+[P1]*x";
   TList* list = gPad->GetListOfPrimitives();
     int Hsize = list->GetSize();
     for(int h = 0 ; h < Hsize ; h++){
@@ -314,8 +316,8 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->SetLayoutBroken(kTRUE);
   m_Main->AddFrame(m_ButtonBar,new TGLayoutHints(kLHintsLeft|kLHintsTop));
 
-  string NPLPath = gSystem->Getenv("NPTOOL");  
-  string path_quit = NPLPath+"/NPLib/Core/icons/power.xpm";
+  std::string NPLPath = gSystem->Getenv("NPTOOL");  
+  std::string path_quit = NPLPath+"/NPLib/Core/icons/power.xpm";
   m_Quit = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_quit.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Quit->SetBackgroundColor(m_BgColor);
   m_Quit->SetToolTipText("Quit");
@@ -323,9 +325,9 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->AddFrame(m_Quit, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Quit->MoveResize(10,5,32,32);
 
-  string path_connect = NPLPath+"/NPLib/Core/icons/plugin.xpm";
+  std::string path_connect = NPLPath+"/NPLib/Core/icons/plugin.xpm";
   m_Connect = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_connect.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
-  string path_connected = NPLPath+"/NPLib/Core/icons/brightness.xpm"; 
+  std::string path_connected = NPLPath+"/NPLib/Core/icons/brightness.xpm"; 
   m_Connect->SetDisabledPicture(gClient->GetPicture(path_connected.c_str()));
   m_Connect->SetBackgroundColor(m_BgColor);
   m_Connect->SetForegroundColor(m_BgColor);
@@ -334,7 +336,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->AddFrame(m_Connect, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Connect->MoveResize(52,5,32,32);
 
-  string path_update = NPLPath+"/NPLib/Core/icons/download.xpm";
+  std::string path_update = NPLPath+"/NPLib/Core/icons/download.xpm";
   m_Update = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_update.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Update->SetBackgroundColor(m_BgColor);
   m_Update->SetForegroundColor(m_BgColor);
@@ -342,7 +344,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_ButtonBar->AddFrame(m_Update, new TGLayoutHints(kLHintsLeft | kLHintsTop,2,2,2,2));
   m_Update->MoveResize(400,5,32,32);
 
-  string path_clock= NPLPath+"/NPLib/Core/icons/clock.xpm";
+  std::string path_clock= NPLPath+"/NPLib/Core/icons/clock.xpm";
   m_Clock = new TGPictureButton(m_ButtonBar,gClient->GetPicture(path_clock.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Clock->SetBackgroundColor(m_BgColor);
   m_Clock->SetForegroundColor(m_BgColor);
@@ -588,7 +590,7 @@ void NPL::OnlineGUI::MakeGui(){
   m_Right->AddFrame(m_SaveAsBar, new TGLayoutHints(kLHintsTop|kLHintsExpandX));
 
   // SaveAs button
-  string path_print= NPLPath + "/NPLib/Core/icons/print.xpm";
+  std::string path_print= NPLPath + "/NPLib/Core/icons/print.xpm";
   m_SaveAs= new TGPictureButton(m_SaveAsBar,gClient->GetPicture(path_print.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_SaveAs->SetBackgroundColor(m_FgColor);
   m_SaveAs->SetToolTipText("SaveAs");
@@ -619,15 +621,15 @@ void NPL::OnlineGUI::MakeGui(){
   m_Right->AddFrame(m_SaveAsLine, new TGLayoutHints(kLHintsExpandX,2,2,2,2));  
 
   // Elog button
-  string path_elog= NPLPath +  "/NPLib/Core/icons/booklet.xpm";
+  std::string path_elog= NPLPath +  "/NPLib/Core/icons/booklet.xpm";
   m_Eloging= new TGPictureButton(m_Right,gClient->GetPicture(path_elog.c_str()),-1,TGPictureButton::GetDefaultGC()(),kChildFrame);
   m_Eloging->SetBackgroundColor(m_FgColor);
   m_Eloging->SetToolTipText("Elog");
   m_Right->AddFrame(m_Eloging, new TGLayoutHints(kLHintsTop|kLHintsLeft,10,10,10,10));
 
   // Elog attributes menu
-  std::map<std::string , vector <std::string> > attributes  = m_Elog.GetAttributesValues();
-  std::map<std::string , vector <std::string> >::iterator it;
+  std::map<std::string , std::vector <std::string> > attributes  = m_Elog.GetAttributesValues();
+  std::map<std::string , std::vector <std::string> >::iterator it;
   for(it = attributes.begin() ; it != attributes.end() ; it++){
     TGVerticalFrame* attframe= new TGVerticalFrame(m_Right,10000,80);
     attframe->SetBackgroundColor(m_FgColor);
@@ -665,7 +667,7 @@ void NPL::OnlineGUI::MakeGui(){
 
 
   // Center //
-  m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,700,490,!kSunkenFrame);  
+  m_EmbeddedCanvas = new TRootEmbeddedCanvas("Display",m_Center,10000,10000,!kSunkenFrame);  
   m_EmbeddedCanvas->SetAutoFit(true);
   m_Center->AddFrame(m_EmbeddedCanvas,new TGLayoutHints(kLHintsLeft | kLHintsBottom | kLHintsExpandX | kLHintsExpandY));
   TCanvas* c = NULL;
@@ -732,19 +734,36 @@ NPL::OnlineGUI::~OnlineGUI(){
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Connect(){
-  m_Client->SetAddressAndPort((string) m_Address->GetDisplayText().Data(),(int) m_Port->GetNumber());
+  m_Client->SetAddressAndPort((std::string) m_Address->GetDisplayText().Data(),(int) m_Port->GetNumber());
   m_Client->Connect();
   m_CanvasListTree->LoadCanvasList(m_Client->GetSpectra());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::OnlineGUI::Update(){
-  if(m_Client->Update()){
-    // Do some stuff with the histo
-  }
+    TCanvas* c = m_EmbeddedCanvas->GetCanvas();
+    int current = gPad->GetNumber();
+    TList* first = c->GetListOfPrimitives();
+    int size= first->GetSize();
+    for(unsigned int i =  0 ; i < size ;i++){
+      if(first->At(i)->InheritsFrom(TPad::Class())){
+      dynamic_cast<TPad*>(first->At(i))->cd();
+      TList* list = gPad->GetListOfPrimitives();
+      int Hsize = list->GetSize();
+      for(int h = 0 ; h < Hsize ; h++){
+        TObject* obj = list->At(h);
+        if(obj->InheritsFrom(TH1::Class())){
+          m_Client->Update(obj->GetName());
+          obj->Paint();
+          ExecuteMacro(obj->GetName());
+          gPad->Update();
+        }
+      }
+     }
+    }
+    c->cd(current);
+    c->Update();
 
-  else
-    m_Connect->SetState(kButtonUp);  
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -771,9 +790,9 @@ void NPL::OnlineGUI::AutoUpdate(){
 ////////////////////////////////////////////////////////////////////////////////
 
 NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCanvas* canvas,TList* Spectra){
-  string NPLPath = gSystem->Getenv("NPTOOL");  
-  string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
-  string path_icon_folder = NPLPath+"/NPLib/Core/icons/folder.xpm";
+  std::string NPLPath = gSystem->Getenv("NPTOOL");  
+  std::string path_icon = NPLPath+"/NPLib/Core/icons/polaroid.xpm";
+  std::string path_icon_folder = NPLPath+"/NPLib/Core/icons/folder.xpm";
 
   m_popen = gClient->GetPicture(path_icon.c_str());
   m_pclose = gClient->GetPicture(path_icon.c_str());
@@ -786,7 +805,7 @@ NPL::CanvasList::CanvasList(TGMainFrame* main, TGCanvas* parent,TRootEmbeddedCan
   m_ListTree->Connect("DoubleClicked(TGListTreeItem*,Int_t)","NPL::CanvasList",this,"OnDoubleClick(TGListTreeItem*,Int_t)");
   m_Main = main;
   m_EmbeddedCanvas = canvas;
-  //LoadCanvasList(Spectra);
+  m_OldCurrent     = "_void_";
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::CanvasList::~CanvasList(){
@@ -801,8 +820,8 @@ void NPL::CanvasList::OnDoubleClick(TGListTreeItem* item, Int_t btn){
     m_EmbeddedCanvas->GetContainer()->Resize(0,0);
     m_EmbeddedCanvas->GetContainer()->Resize(size);
     c->SetHighLightColor(kAzure+7); // color of active pad
+    c->Draw();
     c->Update();
-    ExecuteMacro(c->GetName());
     c->cd(1);
   }
 }
@@ -812,12 +831,20 @@ void NPL::CanvasList::AddItem(TCanvas* c,TGListTreeItem* parent){
   item->SetPictures(m_popen, m_pclose);
   if(parent)
     parent->SetPictures(m_pfolder,m_pfolder);
-  string path = c->GetName();
   m_Canvas[c->GetName()]=c;
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::Clear(){
+  m_OldCurrent=m_EmbeddedCanvas->GetCanvas()->GetName();
+  
+  std::map<std::string,TCanvas*>::iterator it ;
+  // delete all old canvas
+  for(it=m_Canvas.begin(); it!=m_Canvas.end();it++){
+    delete it->second;
+    }
   m_Canvas.clear();
+
+  // Clear the list tree
   TGListTreeItem* item =  m_ListTree->GetFirstItem() ;
   while(item){
     m_ListTree->DeleteItem(item);
@@ -839,7 +866,7 @@ void NPL::CanvasList::SetStatusText(const char* txt, int pi){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
-    const char *text0, *text1, *text3;
+  const char *text0, *text1, *text3;
   char text2[50];
   text0 = selected->GetTitle();
   SetStatusText(text0,0);
@@ -857,33 +884,41 @@ void NPL::CanvasList::EventInfo(int event,int px,int py,TObject* selected){
 void NPL::CanvasList::LoadCanvasList(TList* Spectra){
   if(!Spectra)
     return;
+  Clear();
   NPL::InputParser parser("CanvasList.txt",false);
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
-  vector<std::string> token = {"Path","Divide","Histo"};
+  std::vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Canvas");
+  std::vector<std::string> token = {"Path","Divide","Histo"};
   gROOT->ProcessLine("gROOT->SetBatch(kTRUE)");
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
-      vector<std::string> path = blocks[i]->GetVectorString("Path");
-      vector<int> divide = blocks[i]->GetVectorInt("Divide");
-      vector<std::string> histo = blocks[i]->GetVectorString("Histo");
-      string name = path[path.size()-1];
+      std::vector<std::string> path = blocks[i]->GetVectorString("Path");
+      std::vector<int> divide = blocks[i]->GetVectorInt("Divide");
+      std::vector<std::string> histo = blocks[i]->GetVectorString("Histo");
+      std::string name = path[path.size()-1];
       TCanvas* c = new TCanvas(name.c_str(), 5000,5000,0);
       c->Divide(divide[0],divide[1]);
-
 
       unsigned int size = histo.size();
       for(unsigned int h = 0 ; h < size ; h++){
         c->cd(h+1);
+        std::string padname=name+"_"+NPL::itoa(h);
+        gPad->SetName(padname.c_str());
         TH1* hist = (TH1*) Spectra->FindObject(histo[h].c_str());
         if(hist){
           hist->UseCurrentStyle();
           hist->Draw("colz");
+          ExecuteMacro(hist->GetName());
         }
       }
+      if(m_EmbeddedCanvas && m_OldCurrent == c->GetName()){
+        m_EmbeddedCanvas->AdoptCanvas(c);
+      }
+
+
       TGListTreeItem*  item  =  NULL;
       TGListTreeItem*  pitem =  NULL;
 
-      string item_path="";
+      std::string item_path="";
       for(unsigned int j = 0 ; j < path.size()-1 ; j++){
         item_path+="/"+path[j];
         item = m_ListTree->FindItemByPathname(item_path.c_str());

@@ -81,7 +81,7 @@ style->SetFrameFillColor(kGray+3);
 
   style->SetTitlePS("nptool");
 
-  const UInt_t Number = 2;
+/*  const UInt_t Number = 2;
   Double_t Red[Number]    = { 0,0   };
   Double_t Green[Number]  = { 0,0.8 };
   Double_t Blue[Number]   = { 0,1.00 };
@@ -89,5 +89,7 @@ style->SetFrameFillColor(kGray+3);
   Double_t Length[Number] = { 0,1.00 };
   Int_t nb=255;
   TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
-  style->SetNumberContours(99);
+*/
+ style->SetNumberContours(99);
+ style->SetPalette();
 }

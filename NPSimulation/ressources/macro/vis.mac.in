@@ -35,8 +35,18 @@
 # Draw smooth trajectories at end of event, showing trajectory points
 /vis/scene/add/trajectories smooth
 
-# Select colour by particle ID:
-/vis/modeling/trajectories/create/drawByParticleID
+# Select colour by parent ID:
+/vis/modeling/trajectories/create/drawByAttribute DrawByParentID
+/vis/modeling/trajectories/DrawByParentID/setAttribute PID
+/vis/modeling/trajectories/DrawByParentID/addInterval Beam 0 1
+/vis/modeling/trajectories/DrawByParentID/Beam/setLineColourRGBA 0 0 1 1
+/vis/modeling/trajectories/DrawByParentID/addInterval Reaction 1 2
+/vis/modeling/trajectories/DrawByParentID/Reaction/setLineColourRGBA 0 1 0.5 1
+/vis/modeling/trajectories/DrawByParentID/addInterval Decay  2 10
+/vis/modeling/trajectories/DrawByParentID/Decay/setLineColourRGBA 1 0 1 1
+
+
+/vis/modeling/trajectories/select DrawByParentID
 
 # To superimpose all of the events from a given run:
 /vis/scene/endOfEventAction accumulate

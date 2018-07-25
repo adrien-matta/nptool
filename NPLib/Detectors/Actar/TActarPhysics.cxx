@@ -302,6 +302,7 @@ vector<TCanvas*> TActarPhysics::GetCanvas() {
     //vector<TCanvas*> empty;
     //return empty;
   //}
+  return vector<TCanvas*>();
 }
 
 

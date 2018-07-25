@@ -30,7 +30,6 @@
 #include <map>
 #include <vector>
 #include <string>
-using namespace std;
 
 class VSpectra {
   public:
@@ -39,10 +38,10 @@ class VSpectra {
     virtual ~VSpectra(){};
 
   public:
-    // Instantiate and register histo to maps
-    TH1* AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family);
-    TH1* AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
-        Int_t nbinsy, Double_t ylow, Double_t yup, string family);
+    // Instantiate and register histo to std::maps
+    TH1* AddHisto1D(std::string name, std::string title, Int_t nbinsx, Double_t xlow, Double_t xup, std::string family);
+    TH1* AddHisto2D(std::string name, std::string title, Int_t nbinsx, Double_t xlow, Double_t xup, 
+        Int_t nbinsy, Double_t ylow, Double_t yup, std::string family);
 
   public:
     // Initialization methods
@@ -58,32 +57,32 @@ class VSpectra {
     virtual void CheckSpectra(){};
 
   public:
-    // get map histo which will be used for GSpectra in GUser
-    map< string, TH1* > GetMapHisto() const {return fMapHisto;}
-    TH1* GetSpectra(const string& family, const string& name);    
-    TH1* GetSpectra(const string& FamilyAndName);    
+    // get std::map histo which will be used for GSpectra in GUser
+    std::map< std::string, TH1* > GetMapHisto() const {return fMapHisto;}
+    TH1* GetSpectra(const std::string& family, const std::string& name);    
+    TH1* GetSpectra(const std::string& FamilyAndName);    
     // TEMP FIX
-//    TH1* GetHisto(const string& family, const string& name){return GetSpectra(family,name);};    
-//    TH1* GetHisto(const string& FamilyAndName){return GetSpectra(FamilyAndName);};    
+//    TH1* GetHisto(const std::string& family, const std::string& name){return GetSpectra(family,name);};    
+//    TH1* GetHisto(const std::string& FamilyAndName){return GetSpectra(FamilyAndName);};    
 
-    void FillSpectra(const string& family, const string& name, double val);
-    void FillSpectra(const string& family, const string& name, double x, double y);
-    void FillSpectra(const string& familyAndname, double val);
-    void FillSpectra(const string& familyAndname, double x, double y);
+    void FillSpectra(const std::string& family, const std::string& name, double val);
+    void FillSpectra(const std::string& family, const std::string& name, double x, double y);
+    void FillSpectra(const std::string& familyAndname, double val);
+    void FillSpectra(const std::string& familyAndname, double x, double y);
 
 
-    void WriteSpectra(string filename = "VOID");      
+    void WriteSpectra(std::string filename = "VOID");      
      
   protected:
-    // map holding histo pointers and their family names
-    map< string, TH1* > fMapHisto;
+    // std::map holding histo pointers and their family names
+    std::map< std::string, TH1* > fMapHisto;
     
   private: // Name of the Detector
-   string m_name;
+   std::string m_name;
 
   public:
-   inline void SetName(string name) {m_name=name;}
-   inline string GetName() {return m_name;}
+   inline void SetName(std::string name) {m_name=name;}
+   inline std::string GetName() {return m_name;}
 };
 
 #endif

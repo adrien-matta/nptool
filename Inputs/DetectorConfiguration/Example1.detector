@@ -1,9 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
- THICKNESS= 18 micrometer
- RADIUS=  30 mm
- MATERIAL= CD2
- ANGLE= 0 deg
+ Thickness= 18 micrometer
+ Radius=  30 mm
+ Material= CD2
+ Angle= 0 deg
  X= 0 mm
  Y= 0 mm 
  Z= 0 mm

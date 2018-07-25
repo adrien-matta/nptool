@@ -42,12 +42,12 @@ void Analysis::Init(){
   myReaction->ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
 
   string ligth,heavy;
-  if(myReaction->GetNucleus3()->GetZ()==1 && myReaction->GetNucleus3()->GetA()==1)
+  if(myReaction->GetNucleus3().GetZ()==1 && myReaction->GetNucleus3().GetA()==1)
     ligth = "proton";
   else
     ligth = "deuteron";
 
-  heavy = "N17";
+  heavy = "Ga80";
 
 
   Sharc = (TSharcPhysics*)  m_DetectorManager -> GetDetector("Sharc");

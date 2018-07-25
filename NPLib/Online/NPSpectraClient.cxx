@@ -24,11 +24,11 @@
 #include<iostream>
 #include<sstream>
 #include"NPCore.h"
+#include"TH2.h"
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraClient::SpectraClient(){
   m_Sock =NULL;
   m_Spectra=NULL; 
-  m_Delta = NULL;
   m_Address = "localhost";
   m_Port = 9092;
 }
@@ -36,7 +36,6 @@ NPL::SpectraClient::SpectraClient(){
 NPL::SpectraClient::SpectraClient(std::string address, int port){
   m_Sock =NULL;
   m_Spectra=NULL; 
-  m_Delta = NULL;
   m_Address = address;
   m_Port = port;
 }
@@ -52,8 +51,6 @@ NPL::SpectraClient::~SpectraClient(){
     delete m_Spectra;
     m_Spectra=NULL;
   }
-  if(m_Delta)
-    delete m_Delta;
 }
 ////////////////////////////////////////////////////////////////////////////////
 bool NPL::SpectraClient::Connect(){
@@ -112,7 +109,8 @@ bool NPL::SpectraClient::Sync(){
       delete m_Spectra;
       m_Spectra = NULL;
     }
-    
+   
+    //message->Uncompress();
     m_Spectra = (TList*) message->ReadObject(message->GetClass());
     if(m_Spectra){
       NPL::SendInformation("NPL::SpectraClient","Successful sync of spectra list");
@@ -126,14 +124,14 @@ bool NPL::SpectraClient::Sync(){
   }
 
   else{
-    NPL::SendInformation("NPL::SpectraClient","Server return empty sepctra list");
+    NPL::SendInformation("NPL::SpectraClient","Server returned an empty message");
     return false;
   }
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-bool NPL::SpectraClient::Update(){
+bool NPL::SpectraClient::Update(std::string name){
   if(!m_Sock || !(m_Sock->IsValid())){
     if(m_Sock){
       m_Sock->Close("force");
@@ -146,7 +144,7 @@ bool NPL::SpectraClient::Update(){
   }
 
   TMessage* message=NULL;
-  m_Sock->Send("RequestDelta");
+  m_Sock->Send(name.c_str());
 
   if(m_Sock->Recv(message)<=0){
     if(m_Sock){
@@ -161,16 +159,12 @@ bool NPL::SpectraClient::Update(){
   }
 
   if(message){
-    if(m_Delta)
-      delete m_Delta;
-     
-    m_Delta = (NPL::DeltaSpectra*) message->ReadObject(message->GetClass());
-   
-    if(m_Delta && m_Spectra){
-      m_Delta->UpdateLocalSpectra(m_Spectra);
-      }
-    else
-      NPL::SendWarning("NPL::SpectraClient","Local Spectra or received Delta are NULL");
+    // Get the current spectra
+    TH1* h = (TH1*) m_Spectra->FindObject(name.c_str());
+    // Get the new one
+    TH1* n = (TH1*) message->ReadObject(message->GetClass());
+    UpdateTH1(h,n); 
+    delete n;  
     return true;
   }
   
@@ -184,4 +178,22 @@ bool NPL::SpectraClient::Update(){
 TList* NPL::SpectraClient::GetSpectra(){
   return m_Spectra;
 }
+////////////////////////////////////////////////////////////////////////////////
+void NPL::SpectraClient::UpdateTH1(TH1* Old , TH1* New){
+  // Save the Ranges on the different axis
+  double minX = Old->GetXaxis()->GetBinLowEdge(Old->GetXaxis()->GetFirst());
+  double maxX = Old->GetXaxis()->GetBinUpEdge(Old->GetXaxis()->GetLast());
+  double minY = Old->GetYaxis()->GetBinLowEdge(Old->GetYaxis()->GetFirst());
+  double maxY = Old->GetYaxis()->GetBinUpEdge(Old->GetYaxis()->GetLast());
+
+  // Put new stuff in old object
+  New->Copy(*Old) ;    
+  // Reset the axis range
+  Old->SetAxisRange(minX,maxX);
+  if(Old->GetDimension()==2)
+    Old->SetAxisRange(minY,maxY,"Y");
+   
+  // Refresh style
+  Old->UseCurrentStyle();      
+ }
 

@@ -42,7 +42,8 @@ MDMTrace::Rayin::Rayin(const string& filename, bool check):
     cerr << "Creating link \"rayin.dat\" to the file \"" << filename << "\"...\n";
     stringstream sstr;
     sstr << "ln -fs " <<filename << " rayin.dat";
-    system(sstr.str().c_str());
+    int ret;
+    ret = system(sstr.str().c_str());
   }
 }
 
@@ -50,7 +51,8 @@ MDMTrace::Rayin::~Rayin()
 {
   if(isOwner) {
     cerr << "Removing link \"rayin.dat\"...\n";
-    system("rm -f rayin.dat");
+    int ret;
+    ret = system("rm -f rayin.dat");
   }
 }
 
