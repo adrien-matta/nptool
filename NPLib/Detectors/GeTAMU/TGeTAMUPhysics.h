@@ -142,8 +142,10 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     double m_Seg_E_Threshold;
     int m_Cry_E_Raw_Threshold;
     int m_Seg_E_Raw_Threshold;
-    int m_Cry_Gain_Crossover;
-    int m_Seg_Gain_Crossover;
+    int m_Cry_E_Raw_ADC_Overflow;
+    int m_Seg_E_Raw_ADC_Overflow;
+    int m_Cry_E_Gain_Crossover;
+    int m_Seg_E_Gain_Crossover;
     int m_AddBackMode;
     bool m_LowGainCryIsSet;
     bool m_LowGainSegIsSet;

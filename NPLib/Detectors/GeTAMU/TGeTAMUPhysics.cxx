@@ -57,8 +57,12 @@ ClassImp(TGeTAMUPhysics)
     m_Cry_E_Raw_Threshold = 100 ;
     m_Seg_E_Raw_Threshold = 100 ;
     //Gain Crossover
-    m_Cry_Gain_Crossover = 5000 ;
-    m_Seg_Gain_Crossover = 5000 ; 
+    m_Cry_E_Gain_Crossover = 5000 ;
+    m_Seg_E_Gain_Crossover = 5000 ; 
+    //ADC Overflow
+    m_Cry_E_Raw_ADC_Overflow = 4096 ;
+    m_Cry_E_Raw_ADC_Overflow = 4096 ;
+
     //Add Back mode
     m_AddBackMode = 1;
 
@@ -206,15 +210,26 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         cout << whatToDo << " " << m_Seg_E_Threshold << endl;
       }
 
-      else if (whatToDo== "CRY_GAIN_CROSSOVER") {
+      else if (whatToDo== "CRY_E_GAIN_CROSSOVER") {
         AnalysisConfigFile >> DataBuffer;
-        m_Cry_Gain_Crossover = atof(DataBuffer.c_str());
-        cout << whatToDo << " " << m_Cry_Gain_Crossover << endl;
+        m_Cry_E_Gain_Crossover = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Gain_Crossover << endl;
       }
-      else if (whatToDo== "SEG_GAIN_CROSSOVER") {
+      else if (whatToDo== "SEG_E_GAIN_CROSSOVER") {
         AnalysisConfigFile >> DataBuffer;
-        m_Seg_Gain_Crossover = atof(DataBuffer.c_str());
-        cout << whatToDo << " " << m_Seg_Gain_Crossover << endl;
+        m_Seg_E_Gain_Crossover = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Gain_Crossover << endl;
+      }
+
+      else if (whatToDo== "CRY_E_RAW_ADC_OVERFLOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Cry_E_Raw_ADC_Overflow = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Raw_ADC_Overflow << endl;
+      }
+      else if (whatToDo== "SEG_E_RAW_ADC_OVERFLOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Seg_E_Raw_ADC_Overflow = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Raw_ADC_Overflow << endl;
       }
 
       else if (whatToDo== "ADC_RANDOM_BIN") {
@@ -404,7 +419,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
 
 
 
-        if(Eraw>=m_Cry_Gain_Crossover)
+        if(Eraw>=m_Cry_E_Gain_Crossover)
     	{
 		unsigned int mysizeE2;
 		double Eraw_tmp;
@@ -429,7 +444,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     }
 //***************************************************************************************************
   }
-  if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
+  if(Eraw>=m_Cry_E_Raw_Threshold && Eraw<m_Cry_E_Raw_ADC_Overflow && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
@@ -494,7 +509,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
 	LG_Opt = false;
 
 
-        if(Eraw>=m_Seg_Gain_Crossover)
+        if(Eraw>=m_Seg_E_Gain_Crossover)
     	{
 		unsigned int mysizeE2;
 		double Eraw_tmp;
@@ -519,7 +534,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     }
 //***************************************************************************************************
   }
-  if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
+  if(Eraw>=m_Seg_E_Raw_Threshold && Eraw<m_Seg_E_Raw_ADC_Overflow && IsValidChannel(1, clover, segment)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
