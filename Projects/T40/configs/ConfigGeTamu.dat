@@ -11,10 +11,13 @@ ConfigGeTamu
   CRY_E_THRESHOLD 50
   SEG_E_THRESHOLD 50
 
+  %%%%%%%% Flag to remove ADC overflow channel
+  CRY_E_RAW_ADC_OVERFLOW 4096
+  SEG_E_RAW_ADC_OVERFLOW 4096
 
   %%%%%%%% Crossover Point for low/high gain ADCs in "channels". 5000 = all high gain, 0 = all low gain
-  CRY_GAIN_CROSSOVER 5000
-  SEG_GAIN_CROSSOVER 5000
+  CRY_E_GAIN_CROSSOVER 5000
+  SEG_E_GAIN_CROSSOVER 5000
 
   %%%%%%%% ADD Back scheme for the analysis
   ADD_BACK_CLOVER
