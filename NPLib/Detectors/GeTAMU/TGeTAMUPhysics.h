@@ -102,6 +102,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     map<int, vector <int> > Singles_CloverMap_CryEN; //! cry number energy
     map<int, vector <int> > Singles_CloverMap_SegEN; //1 seg number
     map<int, vector <double> > Singles_CloverMap_CryE; //! cry energy
+    map<int, vector <double> > Singles_CloverMap_CryRaw; //! cry raw
     map<int, vector <double> > Singles_CloverMap_SegE; //! seg energy
     map<int, vector <int> > Singles_CloverMap_CryTN; //! cry number time
     map<int, vector <int> > Singles_CloverMap_SegTN; //! seg number
@@ -111,6 +112,7 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
   public: // Data Member
     //sorting parameters
     vector<double> Singles_E;
+    vector<double> Singles_Raw;
     vector<double> Singles_T;
     vector<double> Singles_DC;   // Doppler Corrected Energy (filled externaly)
     vector<double> Singles_Theta;
@@ -140,6 +142,8 @@ class TGeTAMUPhysics :  public TObject, public NPL::VDetector{
     double m_Seg_E_Threshold;
     int m_Cry_E_Raw_Threshold;
     int m_Seg_E_Raw_Threshold;
+    int m_Cry_Gain_Crossover;
+    int m_Seg_Gain_Crossover;
     int m_AddBackMode;
     bool m_LowGainCryIsSet;
     bool m_LowGainSegIsSet;
