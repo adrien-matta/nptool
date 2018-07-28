@@ -36,7 +36,7 @@ void ShowResults(){
     
     // E-TOF
     c1->cd(2);
-    chain->Draw("-MUST2.Si_T:SSSD.Energy+MUST2.Si_E>>hIDT(1000,0,35,1000,-30,0)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5","colz");
+    chain->Draw("MUST2.Si_T:SSSD.Energy+MUST2.Si_E>>hIDT(1000,0,35,500,450,500)","MUST2.CsI_E<0 && MUST2.TelescopeNumber<5","colz");
 
 
     ETOF->Draw("same");

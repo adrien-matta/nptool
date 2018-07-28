@@ -896,24 +896,32 @@ map< string , TH1*> TMust2Physics::GetSpectra() {
 void TMust2Physics::AddParameterToCalibrationManager()
 {
   CalibrationManager* Cal = CalibrationManager::getInstance();
+  // Good for simulation, close to typical values
+  vector<double> standardX = {-63, 63./8192.};
+  vector<double> standardY = {63, -63./8192.};
+  vector<double> standardCsI = {-250, 250./8192.};
+  vector<double> standardSiLi = {-250, 250./8192.};
+  vector<double> standardT = {-1000, 1000./8192.};
+
+
 
   for(int i = 0 ; i < m_NumberOfTelescope ; ++i){
 
     for( int j = 0 ; j < 128 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T")   ;
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_E",standardX)   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_E",standardY)   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_X"+NPL::itoa(j+1)+"_T",standardT )   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_Si_Y"+NPL::itoa(j+1)+"_T",standardT )   ;
     }
 
     for( int j = 0 ; j < 16 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E")   ;
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T")   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_E",standardSiLi)   ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_SiLi"+NPL::itoa(j+1)+"_T",standardT )   ;
     }
 
     for( int j = 0 ; j < 16 ; ++j){
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E")      ;
-      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T")      ;
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_E",standardCsI);
+      Cal->AddParameter("MUST2", "T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T","MUST2_T"+NPL::itoa(i+1)+"_CsI"+NPL::itoa(j+1)+"_T",standardT )      ;
     }
   }
 
