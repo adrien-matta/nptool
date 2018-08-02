@@ -47,6 +47,7 @@
 #include "EventGeneratorBeam.hh"
 #include "EventGeneratorGammaDecay.hh"
 #include "EventGeneratorParticleDecay.hh"
+#include "EventGeneratorAGATAEventFile.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
@@ -142,6 +143,15 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
   blocks = parser.GetAllBlocksWithToken("ParticleDecay");
   if (blocks.size()>0) {
     NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
+    myEventGenerator->ReadConfiguration(parser);
+    myEventGenerator->InitializeRootOutput();
+    myEventGenerator->SetTarget(m_detector->GetTarget());
+    m_EventGenerator.push_back(myEventGenerator);
+  }
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithToken("AGATAEventFile");
+  if (blocks.size()>0) {
+    NPS::VEventGenerator* myEventGenerator = new EventGeneratorAGATAEventFile();
     myEventGenerator->ReadConfiguration(parser);
     myEventGenerator->InitializeRootOutput();
     myEventGenerator->SetTarget(m_detector->GetTarget());

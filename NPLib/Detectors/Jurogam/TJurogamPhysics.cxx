@@ -89,16 +89,17 @@ void TJurogamPhysics::BuildSimplePhysicalEvent() {
 ///////////////////////////////////////////////////////////////////////////
 void TJurogamPhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
- //cout << "phys start\n"; 
+  //cout << "phys start\n"; 
   PreTreat();
 
   // match energy and time together
   unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
   unsigned int mysizeT = m_PreTreatedData->GetMultTime();
   unsigned int mysizeC = m_PreTreatedData->GetMultCrystal();
+  //cout << mysizeE << " " << mysizeT << " " << mysizeC << endl;
   for (UShort_t e = 0; e < mysizeE ; e++) {
 	  for (UShort_t t = 0; t < mysizeT ; t++) {
-		  for (UShort_t c = 0; t < mysizeC ; c++) {
+		  for (UShort_t c = 0; c < mysizeC ; c++) {
 			  if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t) 
 			  && m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetC_DetectorNbr(c)) {
 				  DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
@@ -111,10 +112,11 @@ void TJurogamPhysics::BuildPhysicalEvent() {
   }
   unsigned int mysizeBGOE = m_PreTreatedData->Get_BGO_MultEnergy();
   unsigned int mysizeBGOT = m_PreTreatedData->Get_BGO_MultTime();
+  //cout << mysizeBGOE << " " << mysizeBGOT << endl;
   for (UShort_t e = 0; e < mysizeBGOE ; e++) {
     for (UShort_t t = 0; t < mysizeBGOT ; t++) {
       if (m_PreTreatedData->Get_BGO_E_DetectorNbr(e) == m_PreTreatedData->Get_BGO_T_DetectorNbr(t)) {
-        //DetectorNumber.push_back(m_PreTreatedData->Get_BGO_E_DetectorNbr(e));
+        BGODetectorNumber.push_back(m_PreTreatedData->Get_BGO_E_DetectorNbr(e));
         BGO_E.push_back(m_PreTreatedData->Get_BGO_Energy(e));
         //Time.push_back(m_PreTreatedData->Get_BGO_Time(t));
       }
@@ -249,6 +251,7 @@ void TJurogamPhysics::Clear() {
   Energy.clear();
   Crystal.clear();
   Time.clear();
+  BGODetectorNumber.clear();
   BGO_E.clear();
 }
 

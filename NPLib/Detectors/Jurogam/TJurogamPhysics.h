@@ -67,6 +67,7 @@ class TJurogamPhysics : public TObject, public NPL::VDetector {
     vector<double>   Energy;
     vector<UShort_t> Crystal;
     vector<double>   Time;
+    vector<int>      BGODetectorNumber;
 	vector<double>	 BGO_E;
 
   /// A usefull method to bundle all operation to add a detector

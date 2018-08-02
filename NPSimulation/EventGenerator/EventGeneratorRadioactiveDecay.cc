@@ -77,6 +77,21 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
 
     for(unsigned int i = 0 ; i < blocks.size() ; i++)
     {
+        if(blocks[i]->HasToken("PhotonEvaporation"))
+        {
+            G4String command = "/grdm/setPhotoEvaporationFile ";
+            G4String fileName = blocks[i]->GetString("PhotonEvaporation");
+            m_PhotonEvaporation=command+
+                to_string(m_Z)+" "+
+                to_string(m_A)+" "+
+                fileName;
+            cout << "Reading file " << fileName << endl;
+            G4UImanager* UI = G4UImanager::GetUIpointer();
+            if (m_PhotonEvaporation) UI->ApplyCommand(m_PhotonEvaporation);
+        }
+    }
+    for(unsigned int i = 0 ; i < blocks.size() ; i++)
+    {
         if(blocks[i]->HasTokenList(token))
         {
             m_Z                 =blocks[i]->GetInt("Z");
@@ -108,16 +123,6 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
             
              cout << "Level " << level << " Population " << population << "\n";
           }
-      }
-	  if(blocks[i]->HasToken("PhotonEvaporation"))
-      {
-          G4String command = "/grdm/setPhotoEvaporationFile ";
-          G4String fileName = blocks[i]->GetString("PhotonEvaporation");
-          m_PhotonEvaporation=command+
-                  to_string(m_Z)+" "+
-                  to_string(m_A)+" "+
-                  fileName;
-          cout << "Reading file " << fileName << endl;
       }
 	  if(blocks[i]->HasToken("RadioactiveDecay"))
       {
