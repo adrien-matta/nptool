@@ -27,7 +27,7 @@
 // Local physic directly implemented from the Hadronthrapy example
 // Physic dedicated to the ion-ion inelastic processes
 #include "NPIonIonInelasticPhysic.hh"
-
+#include "Decay.hh"
 // G4
 #include "G4SystemOfUnits.hh"
 #include "G4RunManager.hh"
@@ -37,6 +37,7 @@
 #include "G4UnitsTable.hh"
 #include "G4ProcessManager.hh"
 #include "G4FastSimulationManagerProcess.hh"
+#include "G4StepLimiter.hh"
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
@@ -283,7 +284,7 @@ void PhysicsList::ConstructProcess(){
     em_option.SetAuger(true);
     
     AddParametrisation();
-    
+
     return;
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -291,9 +292,8 @@ void PhysicsList::AddStepMax(){
 }
 /////////////////////////////////////////////////////////////////////////////
 void PhysicsList::AddParametrisation(){
-/*
-	G4FastSimulationManagerProcess* drift =
-			new G4FastSimulationManagerProcess("DriftElectron");
+  G4FastSimulationManagerProcess* BeamReaction =
+			new G4FastSimulationManagerProcess("NPSimulationProcess");
 
 // For 10.3 and higher
 #ifndef theParticleIterator  
@@ -304,10 +304,12 @@ void PhysicsList::AddParametrisation(){
 	while ((*theParticleIterator)()){
 		  G4ParticleDefinition* particle = theParticleIterator->value();
       G4ProcessManager* pmanager = particle->GetProcessManager();
-
-      if(particle->GetParticleName()=="e-")
-        pmanager->AddDiscreteProcess(drift);
-  }*/
+      std::string name = particle->GetParticleName();
+      pmanager->AddDiscreteProcess(BeamReaction);
+      // Add a Step limiter to the beam particle. 
+      // This will be used to limit the step of the beam in the target
+      pmanager->AddProcess(new G4StepLimiter,-1,-1,5);
+  }
 }
 
 

@@ -2,7 +2,7 @@
 %%%%%%%%% Reaction file for 11Li(d,3He)10He reaction %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Beam
-  Particle= 11Li
+  Particle= 10He
   Energy= 553
  SigmaEnergy= 20
  SigmaThetaX= 0.6138

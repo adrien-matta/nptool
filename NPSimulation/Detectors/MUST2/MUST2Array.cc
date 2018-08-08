@@ -44,7 +44,8 @@
 #include "SiliconScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPOptionManager.h"
-
+// NPL
+#include "NPCore.h"
 //ROOT
 #include "RootOutput.h"
 
@@ -758,9 +759,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
-        m_Event->SetStripXE(detectorNbr,b+1,energyX);
+        m_Event->SetStripXE(detectorNbr,b+1,NPL::EnergyToADC(energyX,0,63,8192,16384));
         // Time 
-        m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
+        double timeX = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+        m_Event->SetStripXT(detectorNbr,b+1,NPL::EnergyToADC(timeX,0,1000,8192,16384));
       }
       else{ // Interstrip X, keep maximum shared energy
         double rand = G4UniformRand();
@@ -769,9 +771,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           if(energyX>0.1*keV){
             trig.insert(detectorNbr);
             // Energy 
-            m_Event->SetStripXE(detectorNbr,b+1,energyX) ; 
+            m_Event->SetStripXE(detectorNbr,b+1,NPL::EnergyToADC(energyX,0,63,8192,16384)) ; 
             // Time 
-            m_Event->SetStripXT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
+            double timeX = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+            m_Event->SetStripXT(detectorNbr,b+1,NPL::EnergyToADC(timeX,0,1000,8192,16384));
           } 
         }
         else{
@@ -780,10 +783,11 @@ void MUST2Array::ReadSensitive(const G4Event* event){
             trig.insert(detectorNbr);
 
             // Energy 
-            m_Event->SetStripXE(detectorNbr,g+1,energyX) ;  
+            m_Event->SetStripXE(detectorNbr,g+1,NPL::EnergyToADC(energyX,0,63,8192,16384)) ;  
             // Time 
-            m_Event->SetStripXT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
-          }
+            double timeX = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+            m_Event->SetStripXT(detectorNbr,b+1,NPL::EnergyToADC(timeX,0,1000,8192,16384));
+           }
         }
       }
     }
@@ -799,10 +803,11 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       if(r==0){
         trig.insert(detectorNbr);
         // Energy 
-        m_Event->SetStripYE(detectorNbr,b+1,energyY);
+        m_Event->SetStripYE(detectorNbr,b+1,NPL::EnergyToADC(energyY,0,63,8192,0));
         // Time 
-        m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust)); 
-      }
+        double timeY = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+        m_Event->SetStripYT(detectorNbr,b+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
+       }      
       else{ // Interstrip Y, keep both strip with shared energy
         double rand = G4UniformRand();
         double energyY1 = rand*energyY;
@@ -810,19 +815,22 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           trig.insert(detectorNbr);
 
           // Energy 
-          m_Event->SetStripYE(detectorNbr,b+1,energyY1); 
+          m_Event->SetStripYE(detectorNbr,b+1,NPL::EnergyToADC(energyY1,0,63,8192,0)); 
+
           // Time 
-          m_Event->SetStripYT(detectorNbr,b+1,RandGauss::shoot(time, ResoTimeMust));
-        }
+          double timeY = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+          m_Event->SetStripYT(detectorNbr,b+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
+        } 
 
         if(energyY1>0.1*keV){
           trig.insert(detectorNbr);
           double energyY2 = (1-rand)*energyY;
           // Energy 
-          m_Event->SetStripYE(detectorNbr,g+1,energyY2);  
+          m_Event->SetStripYE(detectorNbr,g+1,NPL::EnergyToADC(energyY2,0,63,8192,0));  
           // Time 
-          m_Event->SetStripYT(detectorNbr,g+1,RandGauss::shoot(time, ResoTimeMust));
-        }
+          double timeY = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
+          m_Event->SetStripYT(detectorNbr,b+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
+        } 
       }
     }
  
@@ -859,8 +867,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
     for(SiLi_itr = SiLiHitMap->GetMap()->begin(); SiLi_itr!=SiLiHitMap->GetMap()->end() ; SiLi_itr++){
       G4double* Info = *(SiLi_itr->second);
       if(Info[7]==*itr){//matching telescope number
-        m_Event->SetSiLiE(Info[7],Info[8],RandGauss::shoot(Info[0],ResoSiLi));
-        m_Event->SetSiLiT(Info[7],Info[8],RandGauss::shoot(Info[1],ResoTimeMust));
+        double ESiLi = RandGauss::shoot(Info[0],ResoSiLi);
+        m_Event->SetSiLiE(Info[7],Info[8],NPL::EnergyToADC(ESiLi,0,250,8192,16384));
+        double timeSiLi = RandGauss::shoot(Info[1],ResoTimeMust);
+        m_Event->SetSiLiT(Info[7],Info[8],NPL::EnergyToADC(timeSiLi,0,1000,16384,8192));
       }
     }
   }
@@ -871,8 +881,10 @@ void MUST2Array::ReadSensitive(const G4Event* event){
       G4double* Info = *(CsI_itr->second);
       
       if(Info[7]==*itr){//matching telescope number
-        m_Event->SetCsIE(Info[7],Info[8],RandGauss::shoot(Info[0],ResoCsI));
-        m_Event->SetCsIT(Info[7],Info[8],RandGauss::shoot(Info[1],ResoTimeMust));
+        double ECsI = RandGauss::shoot(Info[0],ResoCsI);
+        m_Event->SetCsIE(Info[7],Info[8],NPL::EnergyToADC(ECsI,0,250,8192,16384));
+        double timeCsI = RandGauss::shoot(Info[1],ResoTimeMust);
+        m_Event->SetCsIT(Info[7],Info[8],NPL::EnergyToADC(timeCsI,0,1000,16384,8192));
       }
     }
   }

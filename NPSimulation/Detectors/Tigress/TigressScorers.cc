@@ -15,7 +15,7 @@ using namespace TIGRESSSCORERS;
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Tigress::PS_Tigress(G4String name,G4int Level,G4int depth)
+PS_Tigress::PS_Tigress(G4String name,G4int ,G4int depth)
   :G4VPrimitiveScorer(name, depth),HCID(-1){
 	m_Position = G4ThreeVector(-1000,-1000,-1000);
 	m_CloverNumber  = -1;

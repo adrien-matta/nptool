@@ -89,7 +89,8 @@ void EventGeneratorGammaDecay::ReadConfiguration(NPL::InputParser parser){
     else
       AddCascade(E, BranchingRatio);
   }
-PrepareCascade();
+  
+  PrepareCascade();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

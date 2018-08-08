@@ -28,12 +28,11 @@
 // C++ headers
 #include <vector>
 #include <string>
-using namespace std;
 
 
 class TAsciiFile : public TNamed {
  private :
-   vector<string>   fLines;
+   std::vector<std::string>   fLines;
 
  protected :
    void ReadFile(const char* inputAsciiFile);

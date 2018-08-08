@@ -49,6 +49,8 @@ void TMDMData::Clear() {
   fMDM_Xpos.clear();
   // Y
   fMDM_Ypos.clear();
+	//
+	fMDM_Kinetic_Energy.clear();
 	// ID
 	fMDM_Particle_Mass.clear();
 	fMDM_Particle_Charge.clear();
@@ -69,6 +71,7 @@ void TMDMData::Dump() const {
     cout << "DetNbr: " << fMDM_DetectorNbr[i]
          << ", X position: " << fMDM_Xpos[i]
          << ", Y position: " << fMDM_Ypos[i]
+				 << ", Kinetic Energy: " << fMDM_Kinetic_Energy[i]
 				 << ", Particle Mass: " << fMDM_Particle_Mass[i]
 				 << ", Particle Charge: " << fMDM_Particle_Charge[i] << endl;
 	}

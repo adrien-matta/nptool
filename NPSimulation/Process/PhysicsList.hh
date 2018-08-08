@@ -84,7 +84,7 @@ class PhysicsList: public G4VUserPhysicsList{
     void AddParametrisation();
     void AddPackage(const G4String& name);
     void BiasCrossSectionByFactor(double factor);
-  
+
   private:
     std::map<std::string,G4VPhysicsConstructor*>  m_PhysList;
     G4EmConfigurator em_config;
@@ -96,7 +96,7 @@ class PhysicsList: public G4VUserPhysicsList{
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;
-    
+ 			  
   private: // Physics option
     std::string m_EmList;
     double m_IonBinaryCascadePhysics;

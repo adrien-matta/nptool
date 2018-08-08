@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe the PrimaryGeneratorAction Messenger                               *
+ *  This class describe the PrimaryGeneratorAction Messenger                 *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *

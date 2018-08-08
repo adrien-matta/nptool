@@ -51,17 +51,14 @@ class TPlasticData : public TObject {
    
    //Mult
    // E
-   inline double   GetEnergyMult() const { return fPlastic_Energy.size() ;}
-   // (T)
-   inline double   GetTimeMult()   const { return fPlastic_Time.size() ;}
-   // (N)
-   inline int      GetPlasticNumberMult() const { return fPlastic_Number.size() ;}
+   inline double   GetMult() const { return fPlastic_Energy.size() ;}
    
    /////////////////////           SETTERS           ////////////////////////
    // (E)
-   inline void   SetEnergy(const double& E)     { fPlastic_Energy.push_back(E) ;}
-   inline void   SetTime(const double&  T)      { fPlastic_Time.push_back(T) ;}
-   inline void   SetPlasticNumber(const int& N) { fPlastic_Number.push_back(N) ;}
+   inline void SetEnergyAndTime(const int& N, const double& E, const double& T)
+    { fPlastic_Energy.push_back(E);
+      fPlastic_Time.push_back(T) ;
+      fPlastic_Number.push_back(N); }
    //
    ClassDef(TPlasticData,1)  // PlasticData structure
 };

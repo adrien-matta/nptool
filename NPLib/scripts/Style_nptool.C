@@ -80,13 +80,15 @@ void Style_nptool(){
   style->SetFuncWidth(2);
 
   // Create the color gradiant 
-  const UInt_t Number = 2;
-  Double_t Red[Number]    = { 0,0   };
-  Double_t Green[Number]  = { 0,0.8 };
-  Double_t Blue[Number]   = { 0,1.00 };
+//  const UInt_t Number = 2;
+//  Double_t Red[Number]    = { 0,0   };
+//  Double_t Green[Number]  = { 0,0.8 };
+//  Double_t Blue[Number]   = { 0,1.00 };
 
-  Double_t Length[Number] = { 0,1.00 };
-  Int_t nb=255;
-  TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
+//  Double_t Length[Number] = { 0,1.00 };
+//  Int_t nb=255;
+//  TColor::CreateGradientColorTable(Number,Length,Red,Green,Blue,nb);
   style->SetNumberContours(99);
+  style->SetPalette(0);
+
 }

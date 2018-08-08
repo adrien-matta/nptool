@@ -49,6 +49,7 @@ ClassImp(TCATSPhysics)
     m_EventPhysics 			= this			    ;
     m_NumberOfCATS      = 0             ;
     m_Spectra           = NULL          ;
+    m_Zproj             = 0             ;
   }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -108,7 +109,11 @@ void TCATSPhysics::BuildSimplePhysicalEvent(){
 
 //////////////////////////////////////////////////////////////////////////////		
 void TCATSPhysics::BuildPhysicalEvent(){
+
+
+
   PreTreat();
+
   // Look how many CATS were fired
   // use a set to identify which detector has been hit
   set<int> DetectorHitX; // X only
@@ -164,7 +169,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
       if(NX == DetMaxX[j] ){
         Buffer_X_Q[j][StrX-1]= CATS_X_Q;
         QsumX[j]+= CATS_X_Q;	
-        if(CATS_X_Q > Buffer_X_Q[j][StripMaxX[j] -1]){ 
+        if(CATS_X_Q > Buffer_X_Q[j][StripMaxX[j]-1]){ 
           StripMaxX[j] = StrX ; 
           ChargeMaxX[j]= CATS_X_Q; 
         }
@@ -185,7 +190,7 @@ void TCATSPhysics::BuildPhysicalEvent(){
       if(NY == DetMaxY[j] ){
         Buffer_Y_Q[j][StrY-1]= CATS_Y_Q;
         QsumY[j]+= CATS_Y_Q;	
-        if(CATS_Y_Q > Buffer_Y_Q[j][StripMaxY[j] -1]){ 
+        if(CATS_Y_Q > Buffer_Y_Q[j][StripMaxY[j]-1]){ 
           StripMaxY[j] = StrY ; 
           ChargeMaxY[j]= CATS_Y_Q; 
         }
@@ -198,9 +203,9 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
   for(unsigned int i  = 0 ; i < NumberOfCATSHit ; i++ ){       
     // Return the position in strip unit
-     // Convention: the collected charge is atrributed to the center of the strip
-     // (histogram convention) so that a reconstructed position for a single strip
-     // goes from strip index -0.5 to strip index +0.5
+    // Convention: the collected charge is atrributed to the center of the strip
+    // (histogram convention) so that a reconstructed position for a single strip
+    // goes from strip index -0.5 to strip index +0.5
     double PosX =  ReconstructionFunctionX[DetMaxX[i]-1](Buffer_X_Q[i],StripMaxX[i]);
     double PosY =  ReconstructionFunctionY[DetMaxY[i]-1](Buffer_Y_Q[i],StripMaxY[i]);
     StripNumberX.push_back(PosX);
@@ -208,8 +213,8 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
     // a shift - -1 is made to have PosX in between -0.5 and 27.5
     // for the following calculation of the position in the lab.
-    PosX = PosX -1;
-    PosY = PosY -1;
+    PosX = PosX;
+    PosY = PosY;
 
     // sx and sy are the X and Y strip number between which the PosX and PosY are
     int sx0 = (int) PosX;
@@ -227,6 +232,9 @@ void TCATSPhysics::BuildPhysicalEvent(){
 
       PositionX.push_back(px0+(px1-px0)*(PosX-sx0));  
       PositionY.push_back(py0+(py1-py0)*(PosY-sy0));  
+      //PositionX.push_back(2.54*(PosX-14));  
+      //PositionY.push_back(2.54*(PosY-14));  
+
       PositionZ.push_back(StripPositionZ[DetMaxX[i]-1]);
     }
 
@@ -235,14 +243,23 @@ void TCATSPhysics::BuildPhysicalEvent(){
   // At least two CATS need to gave back position in order to reconstruct on Target 
   if(PositionX.size()>1){
     if(DetMaxX[0]<DetMaxX[1]){
-      double t = -PositionZ[1]/(PositionZ[1]-PositionZ[0]);
+
+      // cout << "Test  " << m_Zproj << endl ;
+      // cout << "Test2  " <<  PositionZ[0]<< endl ;
+      // cout << "Test3  " <<  PositionZ[1]<< endl ;
+      double t = (m_Zproj-PositionZ[1])/(PositionZ[1]-PositionZ[0]);
+      // cout << "t  " << t << endl ;
+      // cout << "X1  " << PositionX[0] << endl ;
+      // cout << "X2  " << PositionX[1] << endl ;
       PositionOnTargetX= PositionX[1] + (PositionX[1]-PositionX[0])*t;
       PositionOnTargetY= PositionY[1] + (PositionY[1]-PositionY[0])*t; 
+
+      //cout << "X3  " << PositionOnTargetX << endl ;
       BeamDirection = GetBeamDirection();
     }
 
     else{
-      double t = -PositionZ[0]/(PositionZ[0]-PositionZ[1]);
+      double t = (m_Zproj-PositionZ[1])/(PositionZ[0]-PositionZ[1]);
       PositionOnTargetX= PositionX[0] + (PositionX[0]-PositionX[1])*t;
       PositionOnTargetY= PositionY[0] + (PositionY[0]-PositionY[1])*t; 
       BeamDirection = GetBeamDirection();
@@ -418,7 +435,7 @@ void TCATSPhysics::Clear(){
 }
 
 ////////////////////////////////////////////////////////////////////////////
-bool TCATSPhysics :: IsValidChannel(const string DetectorType, const int Detector , const int channel) {
+bool TCATSPhysics :: IsValidChannel(const string& DetectorType, const int& Detector , const int& channel) {
   if(DetectorType == "X")
     return *(m_XChannelStatus[Detector-1].begin()+channel-1);
 
@@ -562,6 +579,12 @@ void TCATSPhysics::ReadAnalysisConfig(){
         cout << " " << DataBuffer << endl ;
         // Set the Reconstruction Methods using above information 
         SetReconstructionMethod(CATSNumber,XorY,DataBuffer);
+      }
+
+      else if (whatToDo == "ZPROJ") {
+        AnalysisConfigFile >> DataBuffer;
+        cout << whatToDo << "  " << DataBuffer << endl ;
+        m_Zproj = atoi(DataBuffer.c_str());
       }
 
       else {ReadingStatus = false;}
@@ -844,7 +867,7 @@ namespace CATS_LOCAL{
 
 
   ////////////////////////////////////////////////////////////////////////
-  double fCATS_X_Q(const TCATSData* m_EventData , const int i){
+  double fCATS_X_Q(const TCATSData* m_EventData , const int& i){
     static string name; 
     name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
@@ -852,10 +875,11 @@ namespace CATS_LOCAL{
     name+= NPL::itoa( m_EventData->GetCATSStripX(i) ) ;
     name+= "_Q";
     return CalibrationManager::getInstance()->ApplyCalibration( name,   
-        m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
+        m_EventData->GetCATSChargeX(i) + gRandom->Rndm() );
+    //m_EventData->GetCATSChargeX(i) + gRandom->Rndm() - fCATS_Ped_X(m_EventData, i) );
   }
   ////////////////////////////////////////////////////////////////////////
-  double fCATS_Y_Q(const TCATSData* m_EventData , const int i){
+  double fCATS_Y_Q(const TCATSData* m_EventData , const int& i){
     static string name; 
     name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
@@ -863,10 +887,11 @@ namespace CATS_LOCAL{
     name+= NPL::itoa( m_EventData->GetCATSStripY(i) ) ;
     name+= "_Q";
     return CalibrationManager::getInstance()->ApplyCalibration( name ,   
-        m_EventData->GetCATSChargeY(i) + gRandom->Rndm() - fCATS_Ped_Y(m_EventData, i) );
+        m_EventData->GetCATSChargeY(i) + gRandom->Rndm() );
+    //m_EventData->GetCATSChargeY(i) + gRandom->Rndm() - fCATS_Ped_Y(m_EventData, i) );
   }
   ////////////////////////////////////////////////////////////////////////
-  bool fCATS_Threshold_X(const TCATSData* m_EventData , const int i){
+  bool fCATS_Threshold_X(const TCATSData* m_EventData , const int& i){
     static string name; 
     name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
@@ -876,7 +901,7 @@ namespace CATS_LOCAL{
         m_EventData->GetCATSChargeX(i));
   }
   ////////////////////////////////////////////////////////////////////////
-  bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int i){
+  bool fCATS_Threshold_Y(const TCATSData* m_EventData , const int& i){
     static string name; 
     name ="CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
@@ -886,7 +911,7 @@ namespace CATS_LOCAL{
         m_EventData->GetCATSChargeY(i));
   }
   ////////////////////////////////////////////////////////////////////////
-  double fCATS_Ped_X(const TCATSData* m_EventData, const int i){
+  double fCATS_Ped_X(const TCATSData* m_EventData, const int& i){
     static string name; 
     name =  "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetX(i) ) ;
@@ -895,7 +920,7 @@ namespace CATS_LOCAL{
     return CalibrationManager::getInstance()->GetPedestal(name);
   }
   ////////////////////////////////////////////////////////////////////////
-  double fCATS_Ped_Y(const TCATSData* m_EventData, const int i){
+  double fCATS_Ped_Y(const TCATSData* m_EventData, const int& i){
     static string name; 
     name = "CATS/D" ;
     name+= NPL::itoa( m_EventData->GetCATSDetY(i) ) ;
@@ -916,14 +941,14 @@ NPL::VDetector* TCATSPhysics::Construct(){
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C"{
-class proxy_cats{
-  public:
-    proxy_cats(){
-      NPL::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
-      NPL::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
-    }
-};
+  class proxy_cats{
+    public:
+      proxy_cats(){
+        NPL::DetectorFactory::getInstance()->AddToken("CATSDetector","CATS");
+        NPL::DetectorFactory::getInstance()->AddDetector("CATSDetector",TCATSPhysics::Construct);
+      }
+  };
 
-proxy_cats p;
+  proxy_cats p;
 }
 

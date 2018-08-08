@@ -30,6 +30,7 @@
 #include "G4LogicalVolume.hh"
 // STL
 #include<map>
+#include<set>
 using namespace std;
 
 class MaterialManager{
@@ -90,5 +91,10 @@ public:
   // Write the DEDx table for all material instantiate in the MaterialManager
   // for a given particle
   void WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4double Emax);
+
+  // Write the DEDx table for all material instantiate in the MaterialManager
+  // for a list of particle name
+  void WriteDEDXTable(std::set<string> Particle ,G4double Emin,G4double Emax);
+
 };
 #endif

@@ -24,8 +24,11 @@
 
 #include<string>
 namespace NPL{
+  std::string itoa(const int&); 
   void SendWarning(std::string Class, std::string Warning);
   void SendInformation(std::string Class, std::string Information);
   void SendErrorAndExit(std::string Class,std::string Error);
+  // For use to simulate electronic
+  unsigned int EnergyToADC(const double& E, const double& Emin, const double& Emax, const int& Pedestal, const int& ADCMax);
 }
 #endif

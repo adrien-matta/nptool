@@ -27,8 +27,7 @@
 #include "TMessage.h"
 #include "TList.h"
 #include "TH1.h"
-// NPTOOL
-#include "NPDeltaSpectra.h"
+#include "string"
 
 namespace NPL{
   class SpectraClient{
@@ -42,9 +41,9 @@ namespace NPL{
       bool Connect();
       // Get the full copy of Spectrum (erase local one first)
       bool Sync();
-      // Get the Delta since last update
-      bool Update();
-
+      // Update a single spectra
+      bool Update(std::string name);
+      void UpdateTH1(TH1* Old, TH1* New );
     private: // The sochet use for connection
       TSocket* m_Sock;
       std::string m_Address;
@@ -52,7 +51,6 @@ namespace NPL{
 
     private: // The spectrum list
       TList* m_Spectra; 
-      NPL::DeltaSpectra* m_Delta;
     public: // GUI Interface
       TList* GetSpectra();
  

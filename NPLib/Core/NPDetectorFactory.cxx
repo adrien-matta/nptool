@@ -57,19 +57,19 @@ void NPL::DetectorFactory::ReadClassList(std::string FileList){
     std::ifstream InFile(FileList.c_str());
 
     if(!InFile.is_open()){
-      string error = "Detector Class List file " +FileList +" Not found";
+      std::string error = "Detector Class List file " +FileList +" Not found";
       NPL::SendErrorAndExit("NPL::NPL::DetectorFactory",error);
       exit(1);
     }
 
-    string Token, LibName;
+    std::string Token, LibName;
     while(InFile >> Token >> LibName)
       m_TokenLib[Token] = LibName; 
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::DetectorFactory::CreateClassList(std::string FileList){
-  ofstream outFile(FileList.c_str());
-  std::map<string,string>::iterator it;
+  std::ofstream outFile(FileList.c_str());
+  std::map<std::string,std::string>::iterator it;
 
   for(it = m_TokenLib.begin();it!=m_TokenLib.end();it++){
     outFile << it->first << " " << it->second << std::endl;

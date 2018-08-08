@@ -55,9 +55,8 @@ EventGeneratorBeam::~EventGeneratorBeam(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void   EventGeneratorBeam::SetTarget(Target* Target){
-  if(Target!=0){
+  if(Target!=0)
     m_Target = Target;
-  }
   
   // Set the target parameter for the internal event generator of m_Beam
   m_Beam->SetTargetSize(m_Target->GetTargetRadius());
@@ -75,12 +74,12 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
 
   if( anEvent->GetEventID()==0){
     // Define the particle to be shoot
-    if(m_Beam->GetZ()==0 &&  m_Beam->GetA()==1){
+    if(m_Beam->GetZ()==0 &&  m_Beam->GetA()==1)
       m_particle = G4ParticleTable::GetParticleTable()->FindParticle("neutron");
-    }
    
     else
-      m_particle = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
+      m_particle = 
+        G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(m_Beam->GetZ(), m_Beam->GetA() ,m_Beam->GetExcitationEnergy());
 
   }
   
@@ -89,28 +88,23 @@ void EventGeneratorBeam::GenerateEvent(G4Event* anEvent){
   ///// of interaction in target and Energy Loss of the beam within /////
   ///// the target.                                                 /////
   ///////////////////////////////////////////////////////////////////////
-  G4ThreeVector InterCoord;
+  //G4ThreeVector InterCoord;
   
-  G4double Beam_theta, Beam_phi, FinalBeamEnergy, InitialBeamEnergy, x0, y0, z0, Beam_thetaX, Beam_phiY;
+  double InitialBeamEnergy, x0, y0, z0, Beam_thetaX, Beam_phiY;
 
   m_Beam->GenerateRandomEvent(InitialBeamEnergy, x0, y0, z0, Beam_thetaX, Beam_phiY);
   //Set the direction cosines: alpha=90-Beam_thetaX, beta=90-Beam_phiY
-  G4double Xdir = sin(Beam_thetaX); // cos(90-x) = sin(x)
-  G4double Ydir = sin(Beam_phiY); 
-  G4double Zdir = sqrt(1-Xdir*Xdir-Ydir*Ydir); // alpha^2 + beta^2 + gamma^2 = 1
+  double Xdir = sin(Beam_thetaX); // cos(90-x) = sin(x)
+  double Ydir = sin(Beam_phiY); 
+  double Zdir = sqrt(1-Xdir*Xdir-Ydir*Ydir); // alpha^2 + beta^2 + gamma^2 = 1
   G4ThreeVector BeamDir(Xdir,Ydir,Zdir);
   G4ThreeVector BeamPos(x0,y0,z0);
-  Beam_theta = BeamDir.theta()    ;
-  Beam_phi   = BeamDir.phi()      ; Beam_phi *= 1;
-  FinalBeamEnergy = m_Target->SlowDownBeam(m_particle, InitialBeamEnergy,z0-m_Beam->GetTargetZ(),Beam_theta);
-  if(FinalBeamEnergy<0 || FinalBeamEnergy!=FinalBeamEnergy)
-    FinalBeamEnergy=0;
   ///////////////////////////////////////////////////////
   ///// Add the Beam particle to the particle Stack /////
   ///////////////////////////////////////////////////////
   Particle BeamParticle( m_particle,
                         InitialBeamEnergy,
-                        FinalBeamEnergy,
+                        InitialBeamEnergy,
                         BeamDir.unit(),
                         BeamPos,
                         1);

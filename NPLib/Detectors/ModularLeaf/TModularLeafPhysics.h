@@ -90,7 +90,11 @@ class TModularLeafPhysics : public TObject, public NPL::VDetector{
       //TModularLeafData*         EventData ;//!
       TModularLeafPhysics*      EventPhysics ;//!
 
-      public: // Static constructor to be passed to the Detector Factory
+
+   public:
+      inline short GetRawValue(std::string label){return m_RawData[label];};
+      inline double GetCalibratedValue(std::string label){return m_CalibratedData[label];};
+   public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();
      ClassDef(TModularLeafPhysics,1)  // ModularLeafPhysics structure
 };

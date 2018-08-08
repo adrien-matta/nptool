@@ -24,7 +24,8 @@
 #include"NPVAnalysis.h"
 #include "TMust2Physics.h"
 #include "TCATSPhysics.h"
- #include "TInitialConditions.h"
+#include "TModularLeafPhysics.h"
+#include "TInitialConditions.h"
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "TRandom3.h"
@@ -70,13 +71,21 @@ class Analysis: public NPL::VAnalysis{
     double TargetThickness;
     double OriginalThetaLab;
     double OriginalELab;
+    double BeamEnergy;
+    int run_major;
+    int run_minor;
     NPL::EnergyLoss He3CD2  ;
     NPL::EnergyLoss He3Al   ;
     NPL::EnergyLoss He3Si   ;
-    NPL::EnergyLoss Li11CD2 ;
+    NPL::EnergyLoss BeamCD2 ;
+    NPL::EnergyLoss BeamMylar ;
+    NPL::EnergyLoss BeamIsobutane ;
+
+
 
     TMust2Physics* M2;
    TCATSPhysics* CATS;
+   TModularLeafPhysics* ModularLeaf;
    TInitialConditions* Initial;
     //other variables 
    Short_t         vADC_CHIO_V15;

@@ -146,11 +146,11 @@ void TMust2Spectra::InitPreTreatedSpectra()
 
     // STRX_T_CAL
     name = "MM"+NPL::itoa(i+1)+"_STRX_T_CAL";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 500, "MUST2/CAL/STRXT");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 1000, "MUST2/CAL/STRXT");
 
     // STRY_T_CAL
     name = "MM"+NPL::itoa(i+1)+"_STRY_T_CAL";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 500, 0, 500, "MUST2/CAL/STRYT");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 1000, "MUST2/CAL/STRYT");
 
     // SILI_E_CAL
     name = "MM"+NPL::itoa(i+1)+"_SILI_E_CAL";

@@ -48,8 +48,7 @@
 using namespace std;
 
 
-void GeometricalEfficiency(const char * fname = "46Ar_pd_gs"){
-    gROOT->SetStyle("pierre_style");
+void GeometricalEfficiency(const char * fname = "myResult"){
     // Open output ROOT file from NPTool simulation run
     TString path = gSystem->Getenv("NPTOOL");
     path += "/Outputs/Simulation/";
@@ -78,6 +77,7 @@ void GeometricalEfficiency(const char * fname = "46Ar_pd_gs"){
     int nentries = tree->GetEntries();
     for (int i = 0; i < nentries; i++) {
         tree->GetEntry(i);
+
         // Fill histos
         hEmittTheta->Fill(initCond->GetThetaLab_WorldFrame(0));
         hEmittThetaCM->Fill(initCond->GetThetaCM(0));
@@ -113,13 +113,13 @@ void GeometricalEfficiency(const char * fname = "46Ar_pd_gs"){
     c4->SetRightMargin(0.03);
     TH1F* SolidACM = new TH1F(*hDetecThetaCM);
     SolidACM->Sumw2();
-    TF1* C = new TF1("C",Form("1./(2*%f*sin(x*%f/180.)*1*%f/180)",M_PI,M_PI,M_PI),0,90);
+    TF1* C = new TF1("C",Form("1./(2*%f*sin(x*%f/180.)*1*%f/180)",M_PI,M_PI,M_PI),0,180);
     SolidACM->Divide(hEmittThetaCM);
     SolidACM->Divide(C,1);
     SolidACM->Draw();
     SolidACM->GetXaxis()->SetTitle("#theta_{CM} (deg)");
     SolidACM->GetYaxis()->SetTitle("d#Omega (sr) ");
-    TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,90);
+    TF1* f = new TF1("f",Form("2 * %f * sin(x*%f/180.) *1*%f/180.",M_PI,M_PI,M_PI),0,180);
     f->Draw("SAME");
     c4->Update();
     

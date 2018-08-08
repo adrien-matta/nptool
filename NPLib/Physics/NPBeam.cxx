@@ -66,6 +66,8 @@ Beam::Beam(){
   fEffectiveTargetThickness = 0 ;
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
+  fZEmission=-1*NPUNITS::m;
+  fZProfile=0;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
 
   // case of user given distribution
@@ -98,6 +100,8 @@ Beam::Beam(string isotope){
   fEffectiveTargetThickness = 0 ;
   fTargetAngle = 0 ;
   fTargetZ = 0 ;
+  fZEmission=-1*NPUNITS::m;
+  fZProfile=0;
   fVerboseLevel = NPOptionManager::getInstance()->GetVerboseLevel();
 
   // case of user given distribution
@@ -141,6 +145,12 @@ void Beam::ReadConfigurationFile(NPL::InputParser parser){
       if(blocks[i]->HasToken("ExcitationEnergy"))
         fExcitationEnergy = blocks[i]->GetDouble("ExcitationEnergy","MeV");
 
+      if(blocks[i]->HasToken("ZEmission"))
+        fZEmission = blocks[i]->GetDouble("ZEmission","mm");
+
+      if(blocks[i]->HasToken("ZProfile"))
+        fZProfile = blocks[i]->GetDouble("ZProfile","mm");
+
       // Energy analytic
       if(blocks[i]->HasTokenList(energyA)){
         fEnergy = blocks[i]->GetDouble("Energy","MeV");
@@ -175,7 +185,7 @@ void Beam::ReadConfigurationFile(NPL::InputParser parser){
         SetXThetaXHist( Read2DProfile(XThetaX[0], XThetaX[1]));
         vector<string> YPhiY= blocks[i]->GetVectorString("YPhiYProfilePath");
         SetYPhiYHist( Read2DProfile(YPhiY[0], YPhiY[1]));
-
+        
       }
 
       else{
@@ -195,28 +205,46 @@ void Beam::ReadConfigurationFile(NPL::InputParser parser){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Beam::GenerateRandomEvent(double& E, double& X, double& Y, double& Z, double& ThetaX, double& PhiY ){
-  X = Y = 1000000*cm;
+  double X0,Y0;
+  X0 = Y0 = 1*km;
 
-  if(fSigmaEnergy!=-1)
-    E = gRandom->Gaus(fEnergy,fSigmaEnergy);
+  // ENERGY //
+  // Gaussian energy distribution 
+  if(fSigmaEnergy!=-1){
+    E=-1;
+    while(E<0)
+      E = gRandom->Gaus(fEnergy,fSigmaEnergy);
+  }
+  // User Profile
   else
     E = fEnergyHist->GetRandom();
-
+  
+  // POSITION/DIRECTION AT Z PROFILE//
+  // Gaussian Distribution
   if(fSigmaX!=-1){
-    // Shoot within the target unless target size is null (no limit)
-    while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
-      NPL::RandomGaussian2D(fMeanX, fMeanThetaX, fSigmaX, fSigmaThetaX, X, ThetaX);
-      NPL::RandomGaussian2D(fMeanY, fMeanPhiY, fSigmaY, fSigmaPhiY, Y, PhiY);
-    }
+      NPL::RandomGaussian2D(fMeanX, fMeanThetaX, fSigmaX, fSigmaThetaX, X0, ThetaX);
+      NPL::RandomGaussian2D(fMeanY, fMeanPhiY, fSigmaY, fSigmaPhiY, Y0, PhiY);
   }
 
+  // Profile
   else{
-    while(sqrt(X*X+Y*Y)>fEffectiveTargetSize || fEffectiveTargetSize == 0){
       fXThetaXHist->GetRandom2(X,ThetaX);
       fYPhiYHist->GetRandom2(Y,PhiY);
-    }
   }
-  Z = fTargetZ + fEffectiveTargetThickness*(gRandom->Uniform()-0.5);
+  // Direction
+  double Xdir = sin(ThetaX); // cos(90-x) = sin(x)
+  double Ydir = sin(PhiY); 
+  double Zdir = sqrt(1-Xdir*Xdir-Ydir*Ydir); // alpha^2 + beta^2 + gamma^2 = 1
+  // Stretch factor to extend unitary vector from ZEmission to ZProfile
+  double S = fZProfile-fZEmission ;
+  TVector3 BeamDir(Xdir*S/Zdir,Ydir*S/Zdir,S);
+ 
+  Xdir = BeamDir.X();
+  Ydir = BeamDir.Y();
+  // POSITION/DIRECTION AT Z EMISSION// 
+  X = X0 - Xdir;
+  Y = Y0 - Ydir;
+  Z = fZEmission;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

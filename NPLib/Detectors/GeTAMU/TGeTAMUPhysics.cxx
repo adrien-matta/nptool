@@ -56,6 +56,13 @@ ClassImp(TGeTAMUPhysics)
     //Calibrated Threshold
     m_Cry_E_Raw_Threshold = 100 ;
     m_Seg_E_Raw_Threshold = 100 ;
+    //Gain Crossover
+    m_Cry_E_Gain_Crossover = 5000 ;
+    m_Seg_E_Gain_Crossover = 5000 ; 
+    //ADC Overflow
+    m_Cry_E_Raw_ADC_Overflow = 4096 ;
+    m_Cry_E_Raw_ADC_Overflow = 4096 ;
+
     //Add Back mode
     m_AddBackMode = 1;
 
@@ -203,6 +210,28 @@ void TGeTAMUPhysics::ReadAnalysisConfig(){
         cout << whatToDo << " " << m_Seg_E_Threshold << endl;
       }
 
+      else if (whatToDo== "CRY_E_GAIN_CROSSOVER") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Cry_E_Gain_Crossover = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Gain_Crossover << endl;
+      }
+      else if (whatToDo== "SEG_E_GAIN_CROSSOVER") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Seg_E_Gain_Crossover = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Gain_Crossover << endl;
+      }
+
+      else if (whatToDo== "CRY_E_RAW_ADC_OVERFLOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Cry_E_Raw_ADC_Overflow = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Cry_E_Raw_ADC_Overflow << endl;
+      }
+      else if (whatToDo== "SEG_E_RAW_ADC_OVERFLOW") {
+        AnalysisConfigFile >> DataBuffer;
+        m_Seg_E_Raw_ADC_Overflow = atof(DataBuffer.c_str());
+        cout << whatToDo << " " << m_Seg_E_Raw_ADC_Overflow << endl;
+      }
+
       else if (whatToDo== "ADC_RANDOM_BIN") {
         AnalysisConfigFile >> DataBuffer;
         m_ADCRandomBinIsSet  = true ;
@@ -243,17 +272,19 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
   if(m_PreTreatedData->GetMultiplicityCoreE()==0) return;
 
   vector <int>    CryEN, SegEN;
-  vector <double> CryE, SegE;
+  vector <double> CryE, CryRaw, SegE;
   for (unsigned iClover=0; iClover<4; iClover++){
     int clover = iClover+1;
     CryEN.clear();
     SegEN.clear();
     CryE.clear();
+    CryRaw.clear();
     SegE.clear();
     //Energy
     if(Singles_CloverMap_CryEN.find(iClover+1) != Singles_CloverMap_CryEN.end()){
       CryEN  = Singles_CloverMap_CryEN[iClover+1];
       CryE   = Singles_CloverMap_CryE[iClover+1];
+      CryRaw = Singles_CloverMap_CryRaw[iClover+1];
     }
     else
       continue; // no need to go further if Cores energies are non existant
@@ -273,13 +304,14 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
 
     //sort the crystal energies;
     int swapEN;
-    double swapE;
+    double swapE, swapRaw;
     int size = (int) CryE.size();
     for (int i=0; i< (size -1); i++){    // element to be compared
       for(int j = (i+1); j < size; j++){   // rest of the elements
         if (CryE[i] < CryE[j]){          // descending order
           swapE= CryE[i];    CryE[i] = CryE[j];   CryE[j] = swapE;
           swapEN= CryEN[i];   CryEN[i] = CryEN[j];   CryEN[j] = swapEN;
+          swapRaw= CryRaw[i];   CryRaw[i] = CryRaw[j];   CryRaw[j] = swapRaw;
         }
       }
     }
@@ -324,11 +356,12 @@ void TGeTAMUPhysics::BuildPhysicalEvent(){
       else if (pixel[crystal-1][segmentA-1] < pixel[crystal-1][segmentB-1])
         segment = segmentB;
 
-      //cout << i <<" picked: crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << endl;
+      //cout << i <<" picked: crystal " << crystal << "   segment " << segment << "  Energy " << CryE[i] << " Raw " << CryRaw[i] << endl;
       Singles_Clover.push_back(clover);
       Singles_Crystal.push_back(CryEN[i]);
       Singles_Segment.push_back(segment);
       Singles_E.push_back(CryE[i]);
+        Singles_Raw.push_back(CryRaw[i]);
       TVector3 Pos = GetSegmentPosition(clover,CryEN[i],segment);
       Singles_X.push_back(Pos.X());
       Singles_Y.push_back(Pos.Y());
@@ -379,15 +412,14 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     crystal = m_EventData->GetCoreCrystalNbrE(i);
     Eraw = m_EventData->GetCoreEnergy(i);
 
-//by Shuya 170919. Use low-gain data if it is available (for high-energy gammas which might be above high-gain data's saturation level).
 //***************************************************************************************************
     if(m_LowGainCryIsOpt)
     {
 	LG_Opt = false;
 
-	int	m_Cry_E_Raw_Threshold_tmp = 2000;
-	//try low-gain data if high-gain data is above this threshold. If set 0 -> all low-gain, set above 5000 -> all high gain.
-        if(Eraw>=m_Cry_E_Raw_Threshold_tmp)
+
+
+        if(Eraw>=m_Cry_E_Gain_Crossover)
     	{
 		unsigned int mysizeE2;
 		double Eraw_tmp;
@@ -412,7 +444,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     }
 //***************************************************************************************************
   }
-  if(Eraw>=m_Cry_E_Raw_Threshold && IsValidChannel(0, clover, crystal)){
+  if(Eraw>=m_Cry_E_Raw_Threshold && Eraw<m_Cry_E_Raw_ADC_Overflow && IsValidChannel(0, clover, crystal)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_CRY"+ NPL::itoa(crystal);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
@@ -430,6 +462,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     if(Energy>=m_Cry_E_Threshold){
       Singles_CloverMap_CryEN[clover].push_back(crystal);
       Singles_CloverMap_CryE[clover].push_back(Energy);
+      Singles_CloverMap_CryRaw[clover].push_back(Eraw);
       m_PreTreatedData->SetCoreE(clover,crystal,Energy);
     }
   }
@@ -475,9 +508,8 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     {
 	LG_Opt = false;
 
-	int	m_Seg_E_Raw_Threshold_tmp = 2000;
-	//try low-gain data if high-gain data is above this threshold. If set 0 -> all low-gain, set above 5000 -> all high gain.
-        if(Eraw>=m_Seg_E_Raw_Threshold_tmp)
+
+        if(Eraw>=m_Seg_E_Gain_Crossover)
     	{
 		unsigned int mysizeE2;
 		double Eraw_tmp;
@@ -502,7 +534,7 @@ for(unsigned int i = 0 ; i < mysizeE ; i++){
     }
 //***************************************************************************************************
   }
-  if(Eraw>=m_Seg_E_Raw_Threshold && IsValidChannel(1, clover, segment)){
+  if(Eraw>=m_Seg_E_Raw_Threshold && Eraw<m_Seg_E_Raw_ADC_Overflow && IsValidChannel(1, clover, segment)){
     name = "GETAMU/D"+ NPL::itoa(clover)+"_SEG"+ NPL::itoa(segment);
     if(m_ADCRandomBinIsSet)
       Eraw += Random->Rndm();
@@ -871,12 +903,14 @@ void TGeTAMUPhysics::Clear() {
   Singles_CloverMap_CryEN.clear(); // cry number energy
   Singles_CloverMap_SegEN.clear(); // seg number
   Singles_CloverMap_CryE.clear(); // cry energy
+    Singles_CloverMap_CryRaw.clear(); //cry raw
   Singles_CloverMap_SegE.clear(); // seg energy
   Singles_CloverMap_CryTN.clear(); // cry number time
   Singles_CloverMap_SegTN.clear(); // seg number
   Singles_CloverMap_CryT.clear(); // cry energy
   Singles_CloverMap_SegT.clear(); // seg energy
   Singles_E.clear();
+    Singles_Raw.clear();
   Singles_DC.clear();
   Singles_Theta.clear();
   Singles_X.clear();

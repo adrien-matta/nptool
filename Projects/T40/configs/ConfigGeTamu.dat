@@ -6,12 +6,19 @@ ConfigGeTamu
 	%DISABLE_ALL     CLOVER04
 	%DISABLE_CHANNEL CLOVER01_SEG01
 	%%%%%%%% Thresh. in "channels" for Raw, in keV for Calibrated
-  %CRY_E_RAW_THRESHOLD 300
-  %SEG_E_RAW_THRESHOLD 300
   CRY_E_RAW_THRESHOLD 50
   SEG_E_RAW_THRESHOLD 50
   CRY_E_THRESHOLD 50
   SEG_E_THRESHOLD 50
+
+  %%%%%%%% Flag to remove ADC overflow channel
+  CRY_E_RAW_ADC_OVERFLOW 4096
+  SEG_E_RAW_ADC_OVERFLOW 4096
+
+  %%%%%%%% Crossover Point for low/high gain ADCs in "channels". 5000 = all high gain, 0 = all low gain
+  CRY_E_GAIN_CROSSOVER 5000
+  SEG_E_GAIN_CROSSOVER 5000
+
   %%%%%%%% ADD Back scheme for the analysis
   ADD_BACK_CLOVER
   %ADD_BACK_ARRAY

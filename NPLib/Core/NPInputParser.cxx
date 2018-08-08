@@ -143,7 +143,7 @@ double NPL::InputBlock::GetDouble(std::string Token,std::string default_unit){
   }
 
   if(verbose)
-    cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) << endl; 
+    std::cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) <<std::endl; 
 
   return val;        
 }
@@ -155,7 +155,7 @@ int NPL::InputBlock::GetInt(std::string Token){
   iss >> val ;
 
   if(verbose)
-    cout << " " << Token << ": " << val << endl;
+    std::cout << " " << Token << ": " << val <<std::endl;
 
 
   return val;        
@@ -164,7 +164,7 @@ int NPL::InputBlock::GetInt(std::string Token){
 std::string NPL::InputBlock::GetString(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   if(verbose)
-    cout << " " << Token << ": " << GetValue(Token) << endl; 
+    std::cout << " " << Token << ": " << GetValue(Token) << std::endl; 
 
   return GetValue(Token);
 }
@@ -190,10 +190,10 @@ TVector3 NPL::InputBlock::GetTVector3(std::string Token,std::string  default_uni
   }
 
   if(verbose)
-    cout << " " << Token << " (" <<default_unit << "): (" 
+    std::cout << " " << Token << " (" <<default_unit << "): (" 
       << x/ApplyUnit(1,default_unit) << " ; " 
       << y/ApplyUnit(1,default_unit) << " ; " 
-      << z/ApplyUnit(1,default_unit) << ")" << endl; 
+      << z/ApplyUnit(1,default_unit) << ")" << std::endl; 
 
 
   return TVector3(x,y,z);        
@@ -211,10 +211,10 @@ std::vector<std::string> NPL::InputBlock::GetVectorString(std::string Token){
 
 
   if(verbose){
-    cout << " " << Token << ": ";
+    std::cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      cout << val[i] << " " ;
-    cout << endl; 
+      std::cout << val[i] << " " ;
+    std::cout << std::endl; 
   }
   return val;        
 }
@@ -247,10 +247,10 @@ std::vector<double> NPL::InputBlock::GetVectorDouble(std::string Token,std::stri
   }
 
   if(verbose){
-    cout << " " << Token << " (" << default_unit << "): ";
+    std::cout << " " << Token << " (" << default_unit << "): ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      cout << val[i]/ApplyUnit(1,default_unit) << " " ;
-    cout << endl; 
+      std::cout << val[i]/ApplyUnit(1,default_unit) << " " ;
+    std::cout << std::endl; 
   }
 
   return val;        
@@ -267,10 +267,10 @@ std::vector<int> NPL::InputBlock::GetVectorInt(std::string Token){
     val.push_back(buffer);
 
   if(verbose){
-    cout << " " << Token << ": ";
+    std::cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      cout << val[i] << " " ;
-    cout << endl; 
+      std::cout << val[i] << " " ;
+    std::cout << std::endl; 
   }
 
 
@@ -332,6 +332,18 @@ std::vector<std::string> NPL::InputParser::GetAllBlocksToken(){
   return token;
 }
 ////////////////////////////////////////////////////////////////////////////////
+std::vector<std::string> NPL::InputParser::GetAllBlocksValues(std::string token){
+  std::vector<std::string> value;
+  std::vector<NPL::InputBlock*> blocks = GetAllBlocksWithToken(token);
+  unsigned int size = blocks.size();
+  for(unsigned int i = 0 ; i < size ; i++){
+    value.push_back(blocks[i]->GetMainValue());
+  }
+
+  return value;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void NPL::InputParser::TreatAliases(){
 
   // Call the alias block
@@ -351,7 +363,7 @@ void NPL::InputParser::TreatAliases(){
     int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
 
     if(verbose)
-      std::cout << "Using Alias : @" << alias[i]->GetMainValue() << endl;
+      std::cout << "Using Alias : @" << alias[i]->GetMainValue() << std::endl;
     
     std::string name="@";
     name += alias[i]->GetMainValue(); 
@@ -398,7 +410,7 @@ void NPL::InputParser::TreatAliases(){
               m_Block[b] = newBlock;
             }
             else{
-              vector<NPL::InputBlock*>::iterator it = m_Block.begin();
+              std::vector<NPL::InputBlock*>::iterator it = m_Block.begin();
               m_Block.insert(it+b+a,newBlock);
             }
           }

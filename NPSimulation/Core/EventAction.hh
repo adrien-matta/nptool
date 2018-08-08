@@ -32,7 +32,6 @@
 
 // STL
 #include<time.h>
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 class EventAction : public G4UserEventAction{
   public:

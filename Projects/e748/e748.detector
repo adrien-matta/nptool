@@ -100,17 +100,23 @@ M2Telescope
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CATSDetector
- X1_Y1= -35.86  -34.76  -1457 mm
- X28_Y1= 35.26  -34.76  -1457 mm
- X1_Y28= -35.86  36.36  -1457 mm
- X28_Y28= 35.26 36.36  -1457 mm
+ X1_Y1= -35.86  -35.26  -1457 mm
+ X28_Y1= 35.26  -35.26  -1457 mm
+ X1_Y28= -35.86  35.86  -1457 mm
+ X28_Y28= 35.26  35.86  -1457 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 CATSDetector
- X1_Y1= 34.86  -35.36   -949 mm
- X28_Y1= -36.26  -35.36  -949 mm
- X1_Y28= 34.66  35.76  -949 mm
- X28_Y28= -36.26 35.76  -949 mm
+ X1_Y1= 34.86    -35.86   -949 mm
+ X28_Y1= -36.26  -35.86   -949 mm
+ X1_Y28= 34.86    35.26   -949 mm
+ X28_Y28= -36.26  35.26   -949 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+ModularLeaf
+ DefaultValue= -1000
+ Leafs= QPlast QCaviar CHIO T_CATS1_CAV T_CATS1_2 T_MUVI_CATS1 T_PL_CATS2 EXL_HF T_PL_CHIO T_PL_CATS1
 
 Chio_dig 
  Pos=       -30.  -30.   600. mm
@@ -125,21 +131,18 @@ Chio_an
 
 %% warning all parameters need to be there for routine to exit
 %Plastic
-  THETA= 0 deg
-  PHI= 0 deg
-  R= 0 mm
-  Thickness= 20 mm
-  Shape= Square
-  Height= 30 mm
-  Width= 30 mm
-  Scintillator= BC400
-  LeadThickness= 0 mm
-
+%  THETA= 0 deg
+ % PHI= 0 deg
+ % R= 0 mm
+ % Thickness= 20 mm
+  %Shape= Square
+  %Height= 30 mm
+  %Width= 30 mm
+  %Scintillator= BC400
+  %LeadThickness= 0 mm
+  %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-EXL
-  POS= -20 30 -20 cm
+%EXL
+ % POS= -20 30 -20 cm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-ModularLeaf
- DefaultValue= -1000
- Leafs= T_CATS1_CAV T_CATS1_2 T_MUVI_CATS1 T_PL_CATS2 EXL_HF T_PL_CHIO T_PL_CATS1
 

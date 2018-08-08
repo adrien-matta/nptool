@@ -19,11 +19,11 @@
 #include "/home/muvi/e748/nptool/NPLib/Detectors/MUST2/TMust2Data.h"
 #include "/home/muvi/e748/nptool/NPLib/include/RootInput.h"
 
-#define NBTELESCOPE	8	
+#define NBTELESCOPE	4	
 #define	NBSTRIPS	128
 #define NBSILI     16
 
-void ExtractMust2Histos(const char* fname = "run_0019")
+void ExtractMust2Histos(const char* fname = "run_1031")
 {
 	
 	RootInput* Input = RootInput::getInstance("RunToTreat.txt");
