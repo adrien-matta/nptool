@@ -668,8 +668,8 @@ void Actar::ReadSensitive(const G4Event* event){
         ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
         ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
         
-        double Count = RandGauss::shoot(Info[0],Actar_NS::ResoCharge*Info[0]);
-        double Time =  Info[1];//RandGauss::shoot(Info[1],Actar_NS::ResoTime);
+        float Count = RandGauss::shoot(Info[0],Actar_NS::ResoCharge*Info[0]);
+        float Time =  Info[1];//RandGauss::shoot(Info[1],Actar_NS::ResoTime);
         //int iTime = ((int) Time*20/512)+1;
         int PadNbr = Info[7];
         int Pad_X = Info[8];//m_PadToXRow[PadNbr];
