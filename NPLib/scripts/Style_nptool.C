@@ -13,9 +13,9 @@ void Style_nptool(){
   style->SetFrameFillColor(kWhite);	
   style->SetFrameBorderMode(0);	
   style->SetFrameLineColor(kWhite);
-  style->SetStatColor(kBlack);	
+  style->SetStatColor(kWhite);	
   style->SetTitleFillColor(kWhite);  
-  style->SetTitleColor(kBlack,"pad");
+  style->SetTitleColor(kWhite,"pad");
   style->SetTitleBorderSize(0);
   style->SetTextColor(kBlack);
 

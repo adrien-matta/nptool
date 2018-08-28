@@ -139,6 +139,7 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
 ////////////////////////////////////////////////////////////////////////////////
 void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) {
     
+    // Clear Previous Event
     m_ReactionConditions->Clear();
     
     // Get the track info
