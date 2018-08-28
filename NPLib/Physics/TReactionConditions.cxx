@@ -37,7 +37,7 @@ TReactionConditions::~TReactionConditions(){
 ////////////////////////////////////////////////////////////////////////////////
 void TReactionConditions::Clear(){
     // Beam beam parameter
-    fRC_Beam_Particle_Name.clear();
+    fRC_Beam_Particle_Name="";
     fRC_Beam_Emittance_ThetaX = -1;
     fRC_Beam_Emittance_PhiY = -1;
     fRC_Beam_Emittance_Theta = -1;
