@@ -1,4 +1,4 @@
-#ifndef Analysis_h 
+#ifndef Analysis_h
 #define Analysis_h
 /*****************************************************************************
  * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
@@ -21,22 +21,58 @@
  *                                                                           *
  *****************************************************************************/
 
-#include"NPVAnalysis.h"
-#include"TActarPhysics.h"
+#include "NPVAnalysis.h"
+#include "TActarPhysics.h"
+#include "NPEnergyLoss.h"
+#include "NPReaction.h"
+#include "NPTrack.h"
+
+
+
 class Analysis: public NPL::VAnalysis{
-  public:
+public:
     Analysis();
     ~Analysis();
-
-  public: 
+    
+public:
     void Init();
     void TreatEvent();
     void End();
-
-   static NPL::VAnalysis* Construct();
-
-  private:
-   TActarPhysics* Actar;
-
+    void InitOutputBranch();
+    void ReInitValue();
+    
+    
+    static NPL::VAnalysis* Construct();
+    
+public:
+    double DriftVelocity;
+    double PadSizeX;
+    double PadSizeY;
+    int NumberOfPadsX;
+    int NumberOfPadsY;
+    
+    
+private:
+    TActarPhysics* Actar;
+    
+    vector<NPL::Track> vTrack;
+    
+    double BeamAngle;
+    vector<double> vScalar;
+    vector<double> ThetaLab;
+    vector<double> ELab;
+    vector<double> ESi;
+    vector<double> DE;
+    vector<double> Ex;
+    vector<double> ThetaCM;
+    vector<double> XVertex;
+    vector<double> YVertex;
+    vector<double> ZVertex;
+    
+    NPL::EnergyLoss EnergyLoss_3He;
+    NPL::EnergyLoss EnergyLoss_17C;
+    NPL::Reaction* TheReaction;
+    
+    
 };
 #endif

@@ -430,7 +430,7 @@ void Target::SetReactionRegion(){
   if(!m_ReactionRegion){
     m_ReactionRegion= new G4Region("NPSimulationProcess");
     m_ReactionRegion->AddRootLogicalVolume(m_TargetLogic);
-    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.)); 
+    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.));
   }
 
   G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();
@@ -447,7 +447,7 @@ void Target::SetReactionRegion(){
   fsm = new NPS::Decay("Decay",m_ReactionRegion);
   m_ReactionModel.push_back(fsm); 
 
-} 
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.

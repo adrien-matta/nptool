@@ -112,21 +112,21 @@ void TActarSpectra::FillRawSpectra(TActarData* RawData) {
   static string family;
 
   // Charge
-  unsigned int sizeE = RawData->GetMultCharge();
+  unsigned int sizeE = RawData->GetPadMult();
   for (unsigned int i = 0; i < sizeE; i++) {
-    name = "Actar"+NPL::itoa(RawData->Get_PadNumber(i))+"_CHARGE_RAW";
+    name = "Actar"+NPL::itoa(RawData->GetPadNumber(i))+"_CHARGE_RAW";
     family = "Actar/RAW";
 
-    //GetHisto(family,name) -> Fill(RawData->Get_Charge(i));
+    //GetHisto(family,name) -> Fill(RawData->GetPadCharge(i));
   }
 
   // Time
-  unsigned int sizeT = RawData->GetMultCharge();
+  unsigned int sizeT = RawData->GetPadMult();
   for (unsigned int i = 0; i < sizeT; i++) {
-    name = "Actar"+NPL::itoa(RawData->Get_PadNumber(i))+"_TIME_RAW";
+    name = "Actar"+NPL::itoa(RawData->GetPadNumber(i))+"_TIME_RAW";
     family = "Actar/RAW";
 
-    //GetHisto(family,name) -> Fill(RawData->Get_Time(i));
+    //GetHisto(family,name) -> Fill(RawData->GetPadZ(i));
   }
 }
 
@@ -138,21 +138,21 @@ void TActarSpectra::FillPreTreatedSpectra(TActarData* PreTreatedData) {
   static string family;
 
   // Energy
-  unsigned int sizeE = PreTreatedData->GetMultCharge();
+  unsigned int sizeE = PreTreatedData->GetPadMult();
   for (unsigned int i = 0; i < sizeE; i++) {
-    name = "Actar"+NPL::itoa(PreTreatedData->Get_PadNumber(i))+"_ENERGY_CAL";
+    name = "Actar"+NPL::itoa(PreTreatedData->GetPadNumber(i))+"_ENERGY_CAL";
     family = "Actar/CAL";
 
-    //GetHisto(family,name) -> Fill(PreTreatedData->Get_Charge(i));
+    //GetHisto(family,name) -> Fill(PreTreatedData->GetPadCharge(i));
   }
 
   // Time
-  unsigned int sizeT = PreTreatedData->GetMultCharge();
+  unsigned int sizeT = PreTreatedData->GetPadMult();
   for (unsigned int i = 0; i < sizeT; i++) {
-    name = "Actar"+NPL::itoa(PreTreatedData->Get_PadNumber(i))+"_TIME_CAL";
+    name = "Actar"+NPL::itoa(PreTreatedData->GetPadNumber(i))+"_TIME_CAL";
     family = "Actar/CAL";
 
-    //GetHisto(family,name) -> Fill(PreTreatedData->Get_Time(i));
+    //GetHisto(family,name) -> Fill(PreTreatedData->GetPadZ(i));
   }
 }
 

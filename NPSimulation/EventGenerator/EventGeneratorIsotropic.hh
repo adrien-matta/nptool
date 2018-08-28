@@ -46,6 +46,7 @@ public:     // Inherit from VEventGenerator Class
     void InitializeRootOutput()                  ;
 	
 private:    // Source parameter from input file
+    G4int event_ID;
 	struct SourceParameters {
 		SourceParameters()                          ;
     G4double                 m_EnergyLow        ;  // Lower limit of energy range

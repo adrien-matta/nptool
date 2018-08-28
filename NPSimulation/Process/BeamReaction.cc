@@ -101,7 +101,7 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
     fastTrack.GetPrimaryTrack()->GetVolume()->GetLogicalVolume()->GetSolid();
   double in = solid->DistanceToOut(P,V);
   double out = solid->DistanceToOut(P,-V);
-  double ratio  = in / (out+in) ; 
+  double ratio  = in / (out+in) ;
   
   if(out == 0){// first step of current event
       rand = G4RandFlat::shoot();
@@ -119,7 +119,7 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
     //  shoot = false;
     if(m_Reaction.IsAllowed(PrimaryTrack->GetKineticEnergy())){
       return true;
-      
+
       }
     else{
       return false;
