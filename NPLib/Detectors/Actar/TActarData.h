@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouace@ganil.fr                        *
  *                                                                           *
  * Creation Date  : September 2017                                           *
  * Last update    :                                                          *
@@ -37,13 +37,10 @@ class TActarData : public TObject {
   private:
     // Charge
     vector<int>  fActar_PadNumber;
-    vector<int>  fActar_PadTime;
-    vector<int>  fActar_PadRow;
-    vector<int>  fActar_PadColumn;
+    vector<int>  fActar_PadX;
+    vector<int>  fActar_PadY;
+    vector<int>  fActar_PadZ;
     vector<double>  fActar_PadCharge;
-
-    vector<double> fActar_dig_Time;
-    vector<double> fActar_dig_Charge;
 
     vector<double> fSilicon_Energy;
     vector<int> fSilicon_DetectorNumber;
@@ -83,24 +80,18 @@ class TActarData : public TObject {
     inline void SetPadNumber(const UShort_t& PadNbr){
         fActar_PadNumber.push_back(PadNbr);
     };//!
-    // Row
-    inline void SetRowNumber(const UShort_t& RowNbr){
-        fActar_PadRow.push_back(RowNbr);
+    // Row Y
+    inline void SetPadY(const UShort_t& RowNbr){
+        fActar_PadY.push_back(RowNbr);
     }
-    // Column
-    inline void SetColumnNumber(const UShort_t& ColumnNbr){
-        fActar_PadColumn.push_back(ColumnNbr);
+    // Column X
+    inline void SetPadX(const UShort_t& ColumnNbr){
+        fActar_PadX.push_back(ColumnNbr);
     }
-    // Time
-    inline void SetTime(const Double_t& Time)	{
-      fActar_PadTime.push_back(Time);
+    // Time Z
+    inline void SetPadZ(const Double_t& Time)	{
+      fActar_PadZ.push_back(Time);
     };//!
-
-    // Digitizer
-    void AddEnergyPoint(double& E,double& T){
-        fActar_dig_Charge.push_back(E);
-        fActar_dig_Time.push_back(T);
-    }
 
     //Silicon
     inline void SetSiliconEnergy(const Double_t& Energy){
@@ -124,23 +115,20 @@ class TActarData : public TObject {
 
     //////////////////////    GETTERS    ////////////////////////
     // Charge
-    inline UShort_t GetMultCharge() const
-      {return fActar_PadNumber.size();}
-    inline UShort_t Get_PadNumber(const unsigned int &i) const
+    inline UShort_t GetPadMult() const
+      {return fActar_PadX.size();}
+    inline UShort_t GetPadNumber(const unsigned int &i) const
       {return fActar_PadNumber[i];}//!
-    inline UShort_t Get_PadRow(const unsigned int &i) const
-      {return fActar_PadRow[i];}//!
-    inline UShort_t Get_PadColumn(const unsigned int &i) const
-      {return fActar_PadColumn[i];}//!
-    inline Double_t Get_Charge(const unsigned int &i) const
+    inline UShort_t GetPadX(const unsigned int &i) const
+      {return fActar_PadX[i];}//!
+    inline UShort_t GetPadY(const unsigned int &i) const
+    {return fActar_PadY[i];}//!
+    inline Double_t GetPadZ(const unsigned int &i) const
+    {return fActar_PadZ[i];}//!
+    inline Double_t GetPadCharge(const unsigned int &i) const
       {return fActar_PadCharge[i];}//!
+   
 
-    // Time
-    inline Double_t Get_Time(const unsigned int &i) const
-      {return fActar_PadTime[i];}//!
-
-    inline vector<double> Get_dig_Charge()   {return fActar_dig_Charge;}
-    TGraph* GetChargeAsGraph();
 
     // Silicon
     inline Double_t Get_SiliconEnergy(const unsigned int &i) const

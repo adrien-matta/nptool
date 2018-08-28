@@ -32,11 +32,23 @@ using namespace std;
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 #include "G4MultiFunctionalDetector.hh"
+#include "G4UserLimits.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4FastSimulationManager.hh"
 
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TActarData.h"
+#include "MEventReduced.h"
 #include "NPInputParser.h"
+#include "Decay.hh"
+#include "BeamReaction.hh"
+
+#define NumberOfCobo 16
+#define NumberOfASAD 4
+#define NumberOfAGET 4
+#define NumberOfChannel 68
+
 
 class Actar : public NPS::VDetector{
     ////////////////////////////////////////////////////
@@ -60,10 +72,15 @@ public:
 
 private:
     G4LogicalVolume* m_SquareDetector;
+    G4LogicalVolume* m_logicGas;
     bool m_build_Silicon;
+    bool m_build_Vamos_Silicon;
     bool m_build_CsI;
+    bool m_build_BeamDump;
     G4LogicalVolume* m_LogicSilicon;
+    G4LogicalVolume* m_LogicVamosSilicon;
     G4LogicalVolume* m_LogicCsICrystal;
+    G4LogicalVolume* m_LogicBeamDump;
 
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
@@ -94,11 +111,13 @@ public:   // Scorer
     G4MultiFunctionalDetector* m_ActarScorer ;
     G4MultiFunctionalDetector* m_CsIScorer ;
     G4MultiFunctionalDetector* m_SiliconScorer ;
+    //G4MultiFunctionalDetector* m_VamosSiliconScorer ;
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
 private:
     TActarData* m_Event ;
+    MEventReduced* m_EventReduced;
 
     ////////////////////////////////////////////////////
     ///////////////Private intern Data//////////////////
@@ -110,12 +129,16 @@ private: // Geometry
     vector<double>  m_Phi;
 
     //   Shape type
-    vector<string> m_Shape ;
+    vector<string> m_Shape;
 
     // map
     map<int, int> m_PadToXRow;
     map<int, int> m_PadToZColumn;
-
+    int m_PadToCobo[128][128]; //!
+    int m_PadToAsad[128][128]; //!
+    int m_PadToAGET[128][128]; //!
+    int m_PadToChannel[128][128]; //!
+    
     // token
     vector<string> m_GasMaterial;
     vector<int> m_GasFraction;
@@ -125,11 +148,21 @@ private: // Geometry
     // Visualisation Attribute
     G4VisAttributes* m_VisChamber;
     G4VisAttributes* m_VisWindows;
+    G4VisAttributes* m_VisMicromegas;
     G4VisAttributes* m_VisGas;
     G4VisAttributes* m_VisPads;
     G4VisAttributes* m_SiliconVisAtt;
     G4VisAttributes* m_CsIVisAtt;
+    G4VisAttributes* m_BeamDumpVisAtt;
+    
     // Needed for dynamic loading of the library
+    
+private:
+    // Region were reaction can occure:
+    G4Region* m_ReactionRegion;
+    vector<G4VFastSimulationModel*> m_ReactionModel;
+
+    
 public:
     static NPS::VDetector* Construct();
 };
