@@ -76,6 +76,7 @@ G4bool PS_TPCCathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         G4double* dummy = *(it->second);
         Infos[0]+=dummy[0];
         Infos[1]=dummy[1];
+        delete dummy;
     }
     
     EvtMap->set(m_Index, Infos);

@@ -654,7 +654,7 @@ void Actar::ReadSensitive(const G4Event* event){
     NPS::HitsMap<G4double*>* PadHitMap;
     std::map<G4int, G4double**>::iterator Pad_itr;
     
-    G4int PadCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ActarScorer/Actar_dig");
+    G4int PadCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_ActarCollectionID);
     PadHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PadCollectionID));
     // Loop on the Pad map
     //TH1D* h = new TH1D("h","h",25000,0,25000);
@@ -686,25 +686,7 @@ void Actar::ReadSensitive(const G4Event* event){
             DataReduced.peaktime.push_back(Time);
         }
         m_EventReduced->CoboAsad.push_back(DataReduced);
-        /*if(Count){
-         h->Fill(Info[1],Info[0]);
-         }*/
     }
-    
-    /*vector<double> Q, T;
-     for(int i=0; i<h->GetNbinsX(); i++){
-     double count = h->GetBinContent(i);
-     double time = h->GetBinCenter(i);
-     if(count){
-     Q.push_back(count);
-     T.push_back(time+500);
-     
-     }
-     }
-     // clear map for next event
-     SimulateDigitizer(Q,T,1.40*microsecond,0,8750,25,5);
-     delete h;*/
-    
     PadHitMap->clear();
     
     // Silicon //
@@ -714,7 +696,7 @@ void Actar::ReadSensitive(const G4Event* event){
         NPS::HitsMap<G4double*>* SiHitMap;
         std::map<G4int, G4double**>::iterator Si_itr;
         
-        G4int SiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiliconScorer/SiliconScorer");
+        G4int SiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_SiliconCollectionID);
         SiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiCollectionID));
         
         // Loop on the ThinSi map
@@ -734,7 +716,6 @@ void Actar::ReadSensitive(const G4Event* event){
             }
             m_EventReduced->CoboAsad.push_back(DataReduced);
         }
-        
         // Clear Map for next event
         SiHitMap->clear();
     }
@@ -744,7 +725,7 @@ void Actar::ReadSensitive(const G4Event* event){
         NPS::HitsMap<G4double*>* CsIHitMap;
         std::map<G4int, G4double**>::iterator CsI_itr;
         
-        G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsI");
+        G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_CsICollectionID);
         CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
         
         // Loop on the CsI map
@@ -761,7 +742,7 @@ void Actar::ReadSensitive(const G4Event* event){
         // Clear Map for next event
         CsIHitMap->clear();
     }
-    
+
     
 }
 

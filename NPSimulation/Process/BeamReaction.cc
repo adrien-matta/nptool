@@ -38,7 +38,6 @@ G4VFastSimulationModel(modelName, envelope) {
     ReadConfiguration();
     m_PreviousEnergy=0 ;
     m_PreviousLength=0 ;
-    m_active = true;
     m_ReactionConditions = new TReactionConditions();
     AttachReactionConditions();
     if(!RootOutput::getInstance()->GetTree()->FindBranch("ReactionConditions"))

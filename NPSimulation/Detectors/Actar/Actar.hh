@@ -81,6 +81,10 @@ private:
     G4LogicalVolume* m_LogicVamosSilicon;
     G4LogicalVolume* m_LogicCsICrystal;
     G4LogicalVolume* m_LogicBeamDump;
+    
+    string m_ActarCollectionID = "ActarScorer/Actar_dig";
+    string m_SiliconCollectionID = "SiliconScorer/SiliconScorer";
+    string m_CsICollectionID = "CsIScorer/CsI";
 
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////

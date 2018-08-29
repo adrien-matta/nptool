@@ -18,15 +18,15 @@ Beam
  %YPhiYProfilePath=
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-TwoBodyReaction
- Beam= 10Be
- Target= 2H
- Light= 3H
- Heavy= 9Be
- ExcitationEnergyLight= 0.0 MeV
- ExcitationEnergyHeavy= 0.0 MeV
- CrossSectionPath= 11Li(d,3He)10He.txt CS2
- ShootLight= 1
- ShootHeavy= 1
-  
+%TwoBodyReaction
+% Beam= 10Be
+% Target= 2H
+% Light= 3H
+% Heavy= 9Be
+% ExcitationEnergyLight= 0.0 MeV
+% ExcitationEnergyHeavy= 0.0 MeV
+% CrossSectionPath= 11Li(d,3He)10He.txt CS2
+% ShootLight= 1
+% ShootHeavy= 1
+%  
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
