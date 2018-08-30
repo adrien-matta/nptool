@@ -273,7 +273,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         //MPT->AddConstProperty("DE_AMPLIFICATION",2);
         MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
         MPT->AddConstProperty("DE_DRIFTSPEED",0.8*cm/microsecond);
-        MPT->AddConstProperty("DE_TRANSVERSALSPREAD",1e-5*mm2/ns);
+        MPT->AddConstProperty("DE_TRANSVERSALSPREAD",2e-5*mm2/ns);
         MPT->AddConstProperty("DE_LONGITUDINALSPREAD",7e-5*mm2/ns);
         
         DriftGasMaterial->SetMaterialPropertiesTable(MPT);
@@ -282,7 +282,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         MPT2->AddConstProperty("DE_AMPLIFICATION",1000);
         MPT2->AddConstProperty("DE_ABSLENGTH",1*pc);
         
-        //Al->SetMaterialPropertiesTable(MPT2);
+        Al->SetMaterialPropertiesTable(MPT2);
         
         m_SquareDetector    = new G4LogicalVolume(sChamber,GasMaterial,"logic_Actar_Box",0,0,0);
         m_logicGas          = new G4LogicalVolume(sCage,DriftGasMaterial,"logic_Gas",0,0,0);

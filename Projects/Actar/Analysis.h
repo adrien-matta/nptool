@@ -40,6 +40,8 @@ public:
     void End();
     void InitOutputBranch();
     void ReInitValue();
+    void GetMayaSiHitPosition(double xm, double xh, double ym, double yh, double zm, double zh);
+
     
     
     static NPL::VAnalysis* Construct();
@@ -53,6 +55,8 @@ public:
     
     
 private:
+    double fSiDistanceX=128+47;
+    
     TActarPhysics* Actar;
     
     vector<NPL::Track> vTrack;
@@ -61,6 +65,7 @@ private:
     vector<double> vScalar;
     vector<double> ThetaLab;
     vector<double> ELab;
+    vector<int> SiNumber;
     vector<double> ESi;
     vector<double> DE;
     vector<double> Ex;
@@ -68,6 +73,8 @@ private:
     vector<double> XVertex;
     vector<double> YVertex;
     vector<double> ZVertex;
+    vector<double> SiPosY;
+    vector<double> SiPosZ;
     
     NPL::EnergyLoss EnergyLoss_3He;
     NPL::EnergyLoss EnergyLoss_17C;

@@ -17,7 +17,19 @@ void hclient()
     // Open connection to server
     m_Sock = new TSocket("localhost", m_Port);
     
-    hXYZ = new TH3F("hXYZ","hXYZ",128,0,128,128,0,128,512,0,512);
+    //hXYZ = new TH3F("hXYZ","hXYZ",128,0,128,128,0,128,512,0,512);
+    hXYZ = new TH3F("hXYZ","hXYZ",128,0,128,128,0,128,128,0,128);
+    hXYZ->GetXaxis()->SetTitle("Pad X");
+    hXYZ->GetYaxis()->SetTitle("Pad Y");
+    hXYZ->GetZaxis()->SetTitle("Time (a.u.)");
+    hXYZ->GetXaxis()->CenterTitle();
+    hXYZ->GetYaxis()->CenterTitle();
+    hXYZ->GetZaxis()->CenterTitle();
+    
+    hXYZ->GetXaxis()->SetTitleOffset(1.3);
+    hXYZ->GetYaxis()->SetTitleOffset(1.6);
+    hXYZ->GetZaxis()->SetTitleOffset(1.3);
+    
     //h3D = new TH3F("h3D","h3D",128,0,128,128,0,128,512,0,512);
     c1 = new TCanvas("c1","c1",600,600);
     
@@ -78,7 +90,9 @@ void Sync()
             }
             
             for(int i=0; i<vg3.size(); i++){
-                h3D = new TH3F("h3D","h3D",128,0,128,128,0,128,512,0,512);
+                //h3D = new TH3F("h3D","h3D",128,0,128,128,0,128,512,0,512);
+                h3D = new TH3F("h3D","h3D",128,0,128,128,0,128,128,0,128);
+                
                 double *X = vg3[i]->GetX();
                 double *Y = vg3[i]->GetY();
                 double *Z = vg3[i]->GetZ();

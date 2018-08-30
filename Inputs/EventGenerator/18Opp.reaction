@@ -22,7 +22,7 @@ TwoBodyReaction
  Heavy= 18O
  ExcitationEnergyLight= 0.0
  ExcitationEnergyHeavy= 0.0
- CrossSectionPath= flat.txt CS
+ CrossSectionPath= flat_18O.txt CS
  ShootLight= 1
  ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

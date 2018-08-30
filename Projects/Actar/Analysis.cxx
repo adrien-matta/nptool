@@ -118,15 +118,19 @@ void Analysis::TreatEvent(){
                 double x2 = vTrack[i].GetXh()*PadSizeX;
                 double y1 = vTrack[i].GetYm()*PadSizeY-0.5*NumberOfPadsY*PadSizeY;
                 double y2 = vTrack[i].GetYh()*PadSizeY-0.5*NumberOfPadsY*PadSizeY;
-                double z1 = -(vTrack[i].GetZm()-256)*DriftVelocity;
-                double z2 = -(vTrack[i].GetZh()-256)*DriftVelocity;
-                //if(vScalar[i]<0.999)GetMayaSiHitPosition(x1,x2,y1,y2,z1,z2);
+                //double z1 = -(vTrack[i].GetZm()-256)*DriftVelocity;
+                //double z2 = -(vTrack[i].GetZh()-256)*DriftVelocity;
+                double z1 = vTrack[i].GetZm()*DriftVelocity;
+                double z2 = vTrack[i].GetZh()*DriftVelocity;
+                
+                GetMayaSiHitPosition(x1,x2,y1,y2,z1,z2);
                 
                 if(XVertex[i]>0 && XVertex[i]<256){
                     double SiDistanceToPadPlane = 47*mm;
                     double LengthInGas = 256-XVertex[i] + SiDistanceToPadPlane;
                     for(unsigned int k=0; k<Actar->Si_E.size(); k++){
                         ESi.push_back(Actar->Si_E[k]);
+                        SiNumber.push_back(Actar->Si_Number[k]);
                         DE.push_back(vTrack[i].GetTotalCharge());
                         double E3 = EnergyLoss_3He.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
                         double BeamEnergy = EnergyLoss_17C.Slow(510*MeV,(XVertex[i]+60)*mm, BeamAngle*TMath::Pi()/180);
@@ -148,12 +152,31 @@ void Analysis::TreatEvent(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+void Analysis::GetMayaSiHitPosition(double xm, double xh, double ym, double yh, double zm, double zh)
+{
+    double l = xm-xh;
+    double L = fSiDistanceX-xm;
+    
+    double t = (l+L)/l;
+    //double t = L/l;
+    
+    double zf = zh + (zm-zh)*t;
+    double yf = yh + (ym-yh)*t;
+    
+    //cout << zf << " " << yf << endl;
+    
+    SiPosY.push_back(yf);
+    SiPosZ.push_back(zf);
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void Analysis::End(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("DE",&DE);
+    RootOutput::getInstance()->GetTree()->Branch("SiNumber",&SiNumber);
     RootOutput::getInstance()->GetTree()->Branch("ESi",&ESi);
     RootOutput::getInstance()->GetTree()->Branch("ELab",&ELab);
     RootOutput::getInstance()->GetTree()->Branch("ThetaLab",&ThetaLab);
@@ -164,12 +187,15 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("YVertex",&YVertex);
     RootOutput::getInstance()->GetTree()->Branch("ZVertex",&ZVertex);
     RootOutput::getInstance()->GetTree()->Branch("BeamAngle",&BeamAngle,"BeamAngle/D");
+    RootOutput::getInstance()->GetTree()->Branch("SiPosY",&SiPosY);
+    RootOutput::getInstance()->GetTree()->Branch("SiPosZ",&SiPosZ);
 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::ReInitValue(){
     DE.clear();
+    SiNumber.clear();
     ESi.clear();
     ELab.clear();
     ThetaLab.clear();
@@ -179,6 +205,8 @@ void Analysis::ReInitValue(){
     XVertex.clear();
     YVertex.clear();
     ZVertex.clear();
+    SiPosY.clear();
+    SiPosZ.clear();
     BeamAngle=-1000;
 
 }
