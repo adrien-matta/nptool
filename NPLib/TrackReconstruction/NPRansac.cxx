@@ -54,6 +54,9 @@ Ransac::Ransac(int NumberOfPadsX, int NumberOfPadsY, bool Visu)
     fVisu = Visu;
     //fNumberOfTracksMax = 10;
     
+    Rand=new TRandom3();
+    myTrack = NPL::Track();
+    
     if(fVisu==1){
         m_ServerSocket = new TServerSocket(9092,true,100);
         //pl		= new TGraph2D();
@@ -205,7 +208,7 @@ vector<NPL::Track> Ransac::SimpleRansac()
         m_Histo->Clear();
     }
     
-    TRandom* Rand=new TRandom();
+    //TRandom3* Rand=new TRandom3();
     double RemainingCharge = fTotalCharge;
     /*cout << "/// Original total charge= " << fTotalCharge << endl;
      cout << "/// Charge Threshold= " << fTotalCharge*fRANSACChargeThreshold << endl;
@@ -228,7 +231,7 @@ vector<NPL::Track> Ransac::SimpleRansac()
         std::vector<int> inliners;
         inliners.clear();
         
-        fRANSACMaxIteration = 2.0*vX.size();
+        fRANSACMaxIteration = 1.0*vX.size();
         for(int i=0;i<fRANSACMaxIteration;i++){
             int vXsize = vX.size();
             int p1=(int)(Rand->Uniform(0,vXsize));
@@ -272,7 +275,8 @@ vector<NPL::Track> Ransac::SimpleRansac()
         TVector3 Vdir = TVector3(V2.x()-V1.x(),V2.y()-V1.y(),V2.z()-V1.z());
         Vdir = Vdir.Unit();
         
-        NPL::Track myTrack = NPL::Track();
+        //NPL::Track myTrack = NPL::Track();
+        myTrack.Clear();
         
         myTrack.Xm=V1.x();
         myTrack.Ym=V1.y();
@@ -284,8 +288,8 @@ vector<NPL::Track> Ransac::SimpleRansac()
         
         
         
-        int TrackNumber = vTrack.size();
-        TString TrackName = Form("Track%d",TrackNumber);
+        //int TrackNumber = vTrack.size();
+        //TString TrackName = Form("Track%d",TrackNumber);
         
         int inliner_size = inliners.size();
         for(int p=0; p<inliner_size; p++){

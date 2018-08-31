@@ -131,7 +131,7 @@ void Analysis::TreatEvent(){
                     for(unsigned int k=0; k<Actar->Si_E.size(); k++){
                         ESi.push_back(Actar->Si_E[k]);
                         SiNumber.push_back(Actar->Si_Number[k]);
-                        DE.push_back(vTrack[i].GetTotalCharge());
+                        DE.push_back(vTrack[i].GetPartialCharge(108,128)/(20./cos(angle*TMath::Pi()/180)));
                         double E3 = EnergyLoss_3He.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
                         double BeamEnergy = EnergyLoss_17C.Slow(510*MeV,(XVertex[i]+60)*mm, BeamAngle*TMath::Pi()/180);
                         TheReaction->SetBeamEnergy(BeamEnergy);

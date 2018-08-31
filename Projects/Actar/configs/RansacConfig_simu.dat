@@ -1,6 +1,6 @@
 ConfigRansac
 RANSACMaxIteration= 1200
-RANSACDistance= 4 
+RANSACDistance= 5 
 RANSACThreshold= 10
 RANSACChargeThreshold= 0.01
 RANSACPointThreshold= 0.1

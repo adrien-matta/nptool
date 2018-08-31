@@ -144,6 +144,19 @@ TVector3 Track::GetPointBarycenter()
 }
 
 //////////////////////////////////////////////////////
+double Track::GetTrackLengthX()
+{
+    double length;
+    
+    double Xmax = *max_element(vX.begin(), vX.end());
+    double Xmin = *min_element(vX.begin(), vX.end());
+    
+    length = sqrt(pow(Xmax-Xmin,2));
+    
+    return length;
+
+}
+//////////////////////////////////////////////////////
 double Track::GetTrackLength(double PadSizeX, double PadSizeY, double DriftVelocity)
 {
     double length;
@@ -162,6 +175,18 @@ double Track::GetTrackLength(double PadSizeX, double PadSizeY, double DriftVeloc
     return length;
 }
 
+//////////////////////////////////////////////////////
+double Track::GetPartialCharge(double PadXmin, double PadXmax)
+{
+    double Q=0;
+    unsigned int size = vQ.size();
+    for(unsigned int i=0; i<size; i++){
+        if(vX[i]>=PadXmin && vX[i]<=PadXmax){
+            Q += vQ[i];
+        }
+    }
+    return Q;
+}
 //////////////////////////////////////////////////////
 double Track::GetTotalCharge()
 {

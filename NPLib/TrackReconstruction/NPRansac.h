@@ -42,6 +42,7 @@ using namespace NPL;
 #include <TCanvas.h>
 #include <TVector3.h>
 #include <TRandom.h>
+#include <TRandom3.h>
 #include <TServerSocket.h>
 #include <TSocket.h>
 #include <TMonitor.h>
@@ -86,6 +87,8 @@ namespace NPL{
         TGraph2D* pl;
         vector<NPL::Track> vTrack;
         vector<double> vTrackCharge;
+        TRandom3* Rand;
+        NPL::Track myTrack;
         
     private:
         float fRANSACThreshold;
