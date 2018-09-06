@@ -1,0 +1,37 @@
+-----------------------------------------------------------------------
+Notes concerning total cross sections in this directory
+Written by: Brian Roeder, TAMU, email: broeder@comp.tamu.edu
+Updated: 14 May 2008 for menate_R.cc, v1.4
+-----------------------------------------------------------------------
+Total Cross Sections in this directory are from the following sources:
+
+1.n+p elastic (Hydrogen1_el.dat)-> From MCNPx or ENDF.VII sources
+
+2.n+12C elastic (Carbon12_el.dat)-> From ENDF.VII (elastic)+DEMONS (to 1 GeV)
+
+3.n+12C->n'gamma(4.4)+12C (Carbon12_nng4_4.dat)
+
+4.n+12C->a+9Be  (Carbon12_na9Be.dat)
+
+5.n+12C->n'+3a  (Carbon12_nn3a.dat) -> Contains updated data set with total
+cross sections from B. Antolkovic et al., Nucl. Phys. A394 (1983), 87. Added
+data points to data file plus added point at 90 MeV reported by Del Guerra.
+Points after 100 MeV taken from DEMONS (to 1 GeV).
+ 
+6.n+12C->p+12B  (Carbon12_np12B.dat)
+
+7.n+12C->np+11B (Carbon12_nnp11B.dat)
+
+8.n+12C->2n+11C (Carbon12_2n11C.dat)
+
+----9. and 10. added by zwk----
+
+9.n+56Fe elastic (Iron56_el.dat)->From ENDF.VII
+
+10.n+56Fe nonelastic (Iron56_nonel.dat)->From ENDF.VII taken as the diffrence between the total and elastic cross sections.  
+
+----11. and 12. added by zwk----
+
+9.n+27Al elastic (Al27_el.dat)->From ENDF.VII
+
+10.n+27Al nonelastic (Al27_nonel.dat)->From ENDF.VII taken as the diffrence between the total and elastic cross sections.  
