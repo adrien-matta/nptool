@@ -38,6 +38,7 @@
 #include "G4ProcessManager.hh"
 #include "G4FastSimulationManagerProcess.hh"
 #include "G4StepLimiter.hh"
+#include "menate_R.hh"
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VUserPhysicsList(){
     m_EmList = "Option4";
@@ -152,6 +153,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
     m_HadronPhysicsQGSP_BIC_HP = 0;
     m_HadronPhysicsINCLXX = 0;
     m_Decay = 0;
+		m_Menate_R = 0;
     
     std::ifstream file(filename.c_str());
     if(!file.is_open()){
@@ -190,6 +192,8 @@ void PhysicsList::ReadConfiguration(std::string filename){
             m_HadronPhysicsINCLXX= value;
         else if (name == "Decay")
             m_Decay = value;
+				else if (name == "Menate_R")
+   					m_Menate_R = value;
         else
             std::cout <<"WARNING: Physics List Token '" << name << "' unknown. Token is ignored." << std::endl;
     }
@@ -309,6 +313,15 @@ void PhysicsList::AddParametrisation(){
       // Add a Step limiter to the beam particle. 
       // This will be used to limit the step of the beam in the target
       pmanager->AddProcess(new G4StepLimiter,-1,-1,5);
+
+			if(m_Menate_R > 0 && name == "neutron") {
+				menate_R* theMenate = new menate_R("menateR_neutron");
+				theMenate->SetMeanFreePathCalcMethod("ORIGINAL");
+				pmanager->AddDiscreteProcess(theMenate);
+				std::cout <<"||--------------------------------------------------||" << std::endl;
+				std::cout <<"         MENATE_R Added to Process Manager            " << std::endl;
+				std::cout <<"||--------------------------------------------------||" << std::endl;
+		}
   }
 }
 
