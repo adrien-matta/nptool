@@ -18,7 +18,7 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *                                                                           *  
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
@@ -31,9 +31,9 @@
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
 #include "NPInputParser.h"
-// ROOT
-#include "TVector2.h"
-#include "TVector3.h"
+// ROOT 
+#include "TVector2.h" 
+#include "TVector3.h" 
 #include "TObject.h"
 #include "TH1.h"
 
@@ -46,8 +46,8 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     TTiaraBarrelPhysics();
     ~TTiaraBarrelPhysics() {};
 
-  public:
-    void Clear();
+  public: 
+    void Clear();   
     void Clear(const Option_t*) {};
 
   public:
@@ -63,8 +63,8 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     vector<double> Strip_T;
     vector<int>    Strip_N;
     vector<double> Strip_Pos;
-
-    // Control stuff
+   
+    // Control stuff 
     vector<double> DownStream_E;
     vector<double> DownStream_T;
     vector<double> UpStream_E;
@@ -79,17 +79,17 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     vector<double> Outer_Back_E;
     vector<double> Outer_Back_T;
 
-    // Coordinates
     double BarrelXCoord;
     double BarrelYCoord;
     double BarrelZCoord;
+
 
   public:      //   Innherited from VDetector Class
     //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
     void ReadConfiguration(NPL::InputParser) ;
 
     //   Add Parameter to the CalibrationManger
-    void AddParameterToCalibrationManager() ;
+    void AddParameterToCalibrationManager() ;      
 
     //   Activated associated Branches and link it to the private member DetectorData address
     //   In this method mother Branches (Detector) AND daughter leaf (fDetector_parameter) have to be activated
@@ -102,7 +102,7 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     //   Create associated branches and associated private member DetectorPhysics address
     void InitializeRootOutput() ;
 
-    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter.
+    //   This method is called at each event read from the Input Tree. Aime is to build treat Raw dat in order to extract physical parameter. 
     void BuildPhysicalEvent() ;
 
     //   Same as above, but only the simplest event and/or simple method are used (low multiplicity, faster algorythm but less efficient ...).
@@ -114,16 +114,16 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
     //   Those two method all to clear the Event Physics or Data
-    void ClearEventPhysics() {Clear();}
-    void ClearEventData()    {m_EventData->Clear();}
+    void ClearEventPhysics() {Clear();}      
+    void ClearEventData()    {m_EventData->Clear();}   
 
-    // Method related to the TSpectra classes, aimed at providing a framework
+    // Method related to the TSpectra classes, aimed at providing a framework 
     // for online applications
     // Instantiate the Spectra class and the histogramm throught it
     void InitSpectra();
     // Fill the spectra hold by the spectra class
     void FillSpectra();
-    // Used for Online mainly, perform check on the histo and for example change
+    // Used for Online mainly, perform check on the histo and for example change 
     // their color if issues are found
     void CheckSpectra();
     // Used for Online only, clear all the spectra hold by the Spectra class
@@ -150,7 +150,7 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
 
     //   Add a Detector
     void AddDetector( double X,double Y,double Z);
-
+ 
     // Give and external TMustData object to TTiaraBarrelPhysics. Needed for online analysis for example.
     void SetRawDataPointer(TTiaraBarrelData* rawDataPointer) {m_EventData = rawDataPointer;}
     // Retrieve raw and pre-treated data
@@ -159,15 +159,15 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
 
     double GetNumberOfDetector() const { return m_NumberOfDetector; };
 
-    // To be called after a build Physical Event
+    // To be called after a build Physical Event 
     int GetEventMultiplicity() const { return EventMultiplicity; };
 
     double GetBarrelXCoord() const { return BarrelXCoord; };
     double GetBarrelYCoord() const { return BarrelYCoord; };
     double GetBarrelZCoord() const { return BarrelZCoord; };
 
-    TVector3 GetPositionOfInteraction(const int i) const;
-    TVector3 GetRandomisedPositionOfInteraction(const int i) const;
+    TVector3 GetPositionOfInteraction(const int i) const;   
+    TVector3 GetRandomisedPositionOfInteraction(const int i) const;  
     TVector3 GetDetectorNormal(const int i) const;
 
   private:   //   Parameter used in the analysis
@@ -186,12 +186,12 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     TTiaraBarrelData*         m_PreTreatedMSData;//! stores the intermediate Matchsticks calibrated Data
     TTiaraBarrelPhysics*      m_EventPhysics;//!
     map<int, vector <double> > m_mapU;//! the maps sorts out the data before storing in m_PreTreatedData
-    map<int, vector <double> > m_mapD;//!
-    map<int, vector <double> > m_mapB;//!
-    map<int, vector <double> > m_mapO;//!
-    map<int, vector <double> > m_mapMSU;//!
-    map<int, vector <double> > m_mapMSD;//!
-
+    map<int, vector <double> > m_mapD;//! 
+    map<int, vector <double> > m_mapB;//! 
+    map<int, vector <double> > m_mapO;//! 
+    map<int, vector <double> > m_mapMSU;//! 
+    map<int, vector <double> > m_mapMSD;//! 
+    
   private:   //   Map of activated channel
     map< int, vector<bool> > m_InnerBarrelStripUpstreamChannelStatus;//!
     map< int, vector<bool> > m_InnerBarrelStripDownstreamChannelStatus;//!
@@ -209,15 +209,13 @@ class TTiaraBarrelPhysics : public TObject, public NPL::VDetector{
     TTiaraBarrelSpectra*      m_Spectra;//!
 
   public:
-    map< string,TH1* > GetSpectra();
+    map< string,TH1* > GetSpectra(); 
 
   private: // Usefull method
    // Calibrate data
   double Cal_Strip_Upstream_E(const int i);
   double Cal_Strip_Downstream_E(const int i);
   double Cal_Back_E(const int i);
-//by Shuya 171208
-  double Cal_OuterBarrel_E(const int i);
   double Match_Strip_Upstream_E(const int i);
   double Match_Strip_Downstream_E(const int i);
 

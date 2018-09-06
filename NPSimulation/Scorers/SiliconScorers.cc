@@ -23,7 +23,8 @@
 #include "G4UnitsTable.hh"
 using namespace SILICONSCORERS ;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PS_Silicon_Images::PS_Silicon_Images(G4String name, string imageFront,string imageBack,double scalingFront, double scalingBack, double centerOffsetX,double centerOffsetY,unsigned int ignoreValue, G4int depth)  :G4VPrimitiveScorer(name, depth),HCID(-1){
+PS_Silicon_Images::PS_Silicon_Images(G4String name, string imageFront,string imageBack,double scalingFront, double scalingBack, double centerOffsetX,double centerOffsetY,unsigned int ignoreValue, G4int depth)  :G4VPrimitiveScorer(name, depth){
+    HCID=-1;
     m_ImageFront = new NPL::Image(imageFront,scalingFront,scalingFront);
     m_ImageBack  = new NPL::Image(imageBack,scalingBack,scalingBack);
     m_ScalingFront = scalingFront;
@@ -61,7 +62,7 @@ G4bool PS_Silicon_Images::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if(t_PixelFront == m_IgnoreValue && t_PixelBack == m_IgnoreValue)
     return FALSE;
 
-  t_Index =  aStep->GetTrack()->GetTrackID() + t_DetectorNbr * 1e3 ;
+  t_Index = t_DetectorNbr * 1e3 + t_PixelFront * 1e6 + t_PixelBack * 1e9 ;
   // Check if the particle has interact before, if yes, add up the energies.
   map<unsigned int, double>::iterator it;
   it= m_Energy.find(t_Index);
@@ -237,7 +238,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     Infos[8] = m_StripLengthNumber;
     Infos[9] = m_StripWidthNumber;
 
-    m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
+    m_Index = m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
 
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
@@ -245,6 +246,7 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     if(it!=EvtMap->GetMap()->end()){
         G4double* dummy = *(it->second);
         Infos[0]+=dummy[0];
+        delete dummy;
     }
 
     EvtMap->set(m_Index, Infos);
@@ -357,7 +359,7 @@ G4bool PS_Silicon_Annular::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     Infos[9] = m_StripSectorNumber;
     Infos[10] = m_StripQuadrantNumber;
 
-    m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripRingNumber * 1e6 + m_NumberOfStripSector * 1e9;
+    m_Index = m_DetectorNumber * 1e3 + m_StripRingNumber * 1e6 + m_NumberOfStripSector * 1e9;
 
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;
@@ -462,7 +464,7 @@ G4bool PS_Silicon_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     //Rare case where particle is close to edge of silicon plan
     if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
 
-    m_Index =  aStep->GetTrack()->GetTrackID() + m_DetectorNumber * 1e3 + m_StripWidthNumber * 1e6;
+    m_Index = m_DetectorNumber * 1e3 + m_StripWidthNumber * 1e6;
 
     // Check if the particle has interact before, if yes, add up the energies.
     map<G4int, G4double**>::iterator it;

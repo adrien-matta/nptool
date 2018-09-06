@@ -4,7 +4,7 @@
 %%Beam energy given in MeV ; Excitation in MeV
 Beam
   Particle= 18O
-  Energy= 137.88
+  Energy= 59.4
   SigmaEnergy= 0
   SigmaThetaX= 0
   SigmaPhiY= 0
@@ -22,7 +22,7 @@ TwoBodyReaction
  Heavy= 18O
  ExcitationEnergyLight= 0.0
  ExcitationEnergyHeavy= 0.0
- CrossSectionPath= flat.txt CS
+ CrossSectionPath= flat_18O.txt CS
  ShootLight= 1
  ShootHeavy= 1
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

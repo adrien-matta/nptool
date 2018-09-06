@@ -6,7 +6,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouace@ganil.fr                        *
  *                                                                           *
  * Creation Date  : September 2017                                           *
  * Last update    :                                                          *
@@ -46,12 +46,10 @@ TActarData::~TActarData() {
 void TActarData::Clear() {
   // Charge
     fActar_PadNumber.clear();
-    fActar_PadRow.clear();
-    fActar_PadColumn.clear();
+    fActar_PadX.clear();
+    fActar_PadY.clear();
+    fActar_PadZ.clear();
     fActar_PadCharge.clear();
-    fActar_PadTime.clear();
-    fActar_dig_Charge.clear();
-    fActar_dig_Time.clear();
 
     fSilicon_Energy.clear();
     fSilicon_Time.clear();
@@ -61,13 +59,6 @@ void TActarData::Clear() {
     fCsI_CrystalNumber.clear();
 }
 
-////////////////////////////////////////////////////////////////////////////////
-TGraph* TActarData::GetChargeAsGraph(){
-    TGraph* res = new TGraph (fActar_dig_Charge.size(),&fActar_dig_Time[0],&fActar_dig_Charge[0]);
-    res->Sort();
-    return res;
-
-}
 
 
 //////////////////////////////////////////////////////////////////////
@@ -81,8 +72,10 @@ void TActarData::Dump() const {
 
   for (size_t i = 0 ; i < mysize ; i++){
     cout << "Pad Number: " << fActar_PadNumber[i]
-         << " Charge: " << fActar_PadCharge[i]
-        << " Time: " << fActar_PadTime[i];
+         << "Charge: " << fActar_PadCharge[i]
+      << " X: " << fActar_PadX[i]
+      << " Y: " << fActar_PadY[i]
+        << " Z: " << fActar_PadZ[i];
   }
 
 }

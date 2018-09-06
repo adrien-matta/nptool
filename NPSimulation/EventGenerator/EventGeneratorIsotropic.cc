@@ -41,6 +41,7 @@ using namespace CLHEP;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorIsotropic::EventGeneratorIsotropic(){
   m_ParticleStack = ParticleStack::getInstance();
+    event_ID=0;
 }
 
 
@@ -59,7 +60,7 @@ EventGeneratorIsotropic::SourceParameters::SourceParameters(){
   m_z0           =  0  ;
   m_SigmaX       =  0  ;
   m_SigmaY       =  0  ;
-	m_particle     = NULL;
+  m_particle     = NULL;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -144,6 +145,10 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
         G4double theta           = acos(cos_theta)                                                   ;
         G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
         G4double particle_energy = par.m_EnergyLow + RandFlat::shoot() * (par.m_EnergyHigh - par.m_EnergyLow)    ;
+          
+          cout << "Event ID= " << event_ID << " / theta= " << theta*180/3.1415 << " / energy= " << particle_energy << endl;
+          event_ID++;
+          
 
         // Direction of particle, energy and laboratory angle
         G4double momentum_x = sin(theta) * cos(phi)  ;

@@ -910,18 +910,18 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
 
         if(Name == "H2"){
             density	= (2*1.00794/Vm)*mg/cm3;
-            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
-            material->AddElement(GetElementFromLibrary("H"), 1);
-            material->AddElement(GetElementFromLibrary("H"), 1);
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("H"), 2);
+            //material->AddElement(GetElementFromLibrary("H"), 1);
             m_Material[Name]=material;
             return material;
         }
         
         if(Name == "D2"){
             density	= (2*2.0140/Vm)*mg/cm3;
-            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
-            material->AddElement(GetElementFromLibrary("D"), 1);
-            material->AddElement(GetElementFromLibrary("D"), 1);
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("D"), 2);
+            //material->AddElement(GetElementFromLibrary("D"), 1);
             m_Material[Name]=material;
             return material;
         }
@@ -939,7 +939,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
 void MaterialManager::WriteDEDXTable(G4ParticleDefinition* Particle ,G4double Emin,G4double Emax){
     map<string,G4Material*>::iterator it;
     if(Particle->GetPDGCharge()==0)
-      return;
+        return;
     for(it = m_Material.begin() ; it != m_Material.end() ; it++){
         //   Opening hte output file
         G4String GlobalPath = getenv("NPTOOL");
@@ -983,7 +983,7 @@ void MaterialManager::WriteDEDXTable(std::set<string> Particle ,G4double Emin,G4
   std::set<string>::iterator it;
   for(it=Particle.begin(); it!=Particle.end() ; it++){
      G4ParticleDefinition* p = G4ParticleTable::GetParticleTable()->FindParticle((*it));
-     WriteDEDXTable(p,Emin,Emax);
+      WriteDEDXTable(p,Emin,Emax);
     }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

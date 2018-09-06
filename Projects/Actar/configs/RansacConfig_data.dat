@@ -1,0 +1,10 @@
+ConfigRansac
+RANSACMaxIteration= 1200
+RANSACDistance= 18 
+RANSACThreshold= 30
+RANSACChargeThreshold= 0.05
+RANSACPointThreshold= 0.1
+MAXBarycenterDistance= 6
+AngleMaxToMerge= 1
+MergeWithBarycenter= 1
+MergeWithScalarProduct= 1 

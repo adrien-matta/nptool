@@ -53,13 +53,13 @@ fi
 # Version 5 : generate the dictionnary then the libmap
 if [ $version_major -eq 5 ]
   then
-    rootcint -f $2 -c -I../Core -I../Physics -I../../Core -I../../Physics $1 $5
+    rootcint -f $2 -c -I../Core -I../Physics -I../../Core -I../../Physics -I../TrackReconstruction -I../../TrackReconstruction $1 $5
 fi
 
 # Version 6 or more : generate both at once
 if [ $version_major -gt 5 ]
   then
-   rootcint -f $2 -rmf $3 -rml $lib_name -I../Core -I../Physics -I../../Core -I../../Physics $1 $5
+   rootcint -f $2 -rmf $3 -rml $lib_name -I../Core -I../Physics -I../../Core -I../../Physics -I../TrackReconstruction -I../../TrackReconstruction $1 $5
 fi
 
 

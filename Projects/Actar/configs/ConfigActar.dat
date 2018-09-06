@@ -1,0 +1,16 @@
+ConfigActar
+RecoRansac= 1
+RecoVisu= 0
+HIT_THRESHOLD= 2
+Q_THRESHOLD= 0
+T_THRESHOLD= 0
+NumberOfPadsX= 128
+NumberOfPadsY= 128
+PadSizeX= 2
+PadSizeY= 2
+%Gas= iC4H10
+Gas= D2
+%Pressure in mbar
+Pressure= 1000 
+%mm/time bucket
+DriftVelocity= 2.66
