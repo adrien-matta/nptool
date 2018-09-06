@@ -86,8 +86,10 @@ namespace NPL{
         
         TVector3 GetPointBarycenter();
         
+        double GetTrackLengthX();
         double GetTrackLength(double PadSizeX, double PadSizeY, double DriftVelocity);
         double GetTotalCharge();
+        double GetPartialCharge(double PadXmin, double PadXmax);
         
         //void ResetLines();
         void Clear();

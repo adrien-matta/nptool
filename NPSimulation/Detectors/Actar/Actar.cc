@@ -273,7 +273,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         //MPT->AddConstProperty("DE_AMPLIFICATION",2);
         MPT->AddConstProperty("DE_ABSLENGTH",1*pc);
         MPT->AddConstProperty("DE_DRIFTSPEED",0.8*cm/microsecond);
-        MPT->AddConstProperty("DE_TRANSVERSALSPREAD",1e-5*mm2/ns);
+        MPT->AddConstProperty("DE_TRANSVERSALSPREAD",2e-5*mm2/ns);
         MPT->AddConstProperty("DE_LONGITUDINALSPREAD",7e-5*mm2/ns);
         
         DriftGasMaterial->SetMaterialPropertiesTable(MPT);
@@ -282,7 +282,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         MPT2->AddConstProperty("DE_AMPLIFICATION",1000);
         MPT2->AddConstProperty("DE_ABSLENGTH",1*pc);
         
-        //Al->SetMaterialPropertiesTable(MPT2);
+        Al->SetMaterialPropertiesTable(MPT2);
         
         m_SquareDetector    = new G4LogicalVolume(sChamber,GasMaterial,"logic_Actar_Box",0,0,0);
         m_logicGas          = new G4LogicalVolume(sCage,DriftGasMaterial,"logic_Gas",0,0,0);
@@ -676,9 +676,6 @@ void Actar::ReadSensitive(const G4Event* event){
             DataReduced.peaktime.push_back(Time);
         }
         m_EventReduced->CoboAsad.push_back(DataReduced);
-        /*if(Count){
-         h->Fill(Info[1],Info[0]);
-         }*/
     }
     
     /*vector<double> Q, T;
@@ -702,7 +699,7 @@ void Actar::ReadSensitive(const G4Event* event){
         NPS::HitsMap<G4double*>* SiHitMap;
         std::map<G4int, G4double**>::iterator Si_itr;
         
-        G4int SiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("SiliconScorer/SiliconScorer");
+        G4int SiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_SiliconCollectionID);
         SiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiCollectionID));
         
         // Loop on the ThinSi map
@@ -722,7 +719,6 @@ void Actar::ReadSensitive(const G4Event* event){
             }
             m_EventReduced->CoboAsad.push_back(DataReduced);
         }
-        
         // Clear Map for next event
         SiHitMap->clear();
     }
@@ -732,7 +728,7 @@ void Actar::ReadSensitive(const G4Event* event){
         NPS::HitsMap<G4double*>* CsIHitMap;
         std::map<G4int, G4double**>::iterator CsI_itr;
         
-        G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsI");
+        G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_CsICollectionID);
         CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
         
         // Loop on the CsI map
@@ -749,7 +745,7 @@ void Actar::ReadSensitive(const G4Event* event){
         // Clear Map for next event
         CsIHitMap->clear();
     }
-    
+
     
 }
 

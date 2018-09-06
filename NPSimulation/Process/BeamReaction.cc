@@ -34,17 +34,17 @@
 #include "G4SystemOfUnits.hh"
 ////////////////////////////////////////////////////////////////////////////////
 NPS::BeamReaction::BeamReaction(G4String modelName,G4Region* envelope) :
-  G4VFastSimulationModel(modelName, envelope) {
+G4VFastSimulationModel(modelName, envelope) {
     ReadConfiguration();
     m_PreviousEnergy=0 ;
     m_PreviousLength=0 ;
-  }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////
 NPS::BeamReaction::BeamReaction(G4String modelName) :
-  G4VFastSimulationModel(modelName) {
-  }
+G4VFastSimulationModel(modelName) {
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 NPS::BeamReaction::~BeamReaction() {
@@ -80,25 +80,25 @@ void NPS::BeamReaction::ReadConfiguration(){
 
 ////////////////////////////////////////////////////////////////////////////////
 G4bool NPS::BeamReaction::IsApplicable( const G4ParticleDefinition& particleType) {
-  if(!m_active)
+    if(!m_active)
+        return false;
+    
+    static std::string particleName;
+    particleName = particleType.GetParticleName();
+    if (particleName.find(m_BeamName)!=std::string::npos) {
+        return true;
+    }
     return false;
-
-  static std::string particleName;
-  particleName = particleType.GetParticleName();
-  if (particleName.find(m_BeamName)!=std::string::npos) {
-    return true;
-  }
-  return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
-  //static bool shoot = false;
-  static double rand = 0;
-  const G4Track* PrimaryTrack = fastTrack.GetPrimaryTrack();   
-  G4ThreeVector V = PrimaryTrack->GetMomentum().unit();
-  G4ThreeVector P = fastTrack.GetPrimaryTrackLocalPosition();
-  G4VSolid* solid = 
+    static bool shoot = false;
+    static double rand = 0;
+    const G4Track* PrimaryTrack = fastTrack.GetPrimaryTrack();
+    G4ThreeVector V = PrimaryTrack->GetMomentum().unit();
+    G4ThreeVector P = fastTrack.GetPrimaryTrackLocalPosition();
+    G4VSolid* solid =
     fastTrack.GetPrimaryTrack()->GetVolume()->GetLogicalVolume()->GetSolid();
   double in = solid->DistanceToOut(P,V);
   double out = solid->DistanceToOut(P,-V);
@@ -110,33 +110,35 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
       m_PreviousEnergy = PrimaryTrack->GetKineticEnergy() ;
       // Clear Previous Event
       m_ReactionConditions->Clear();
+      shoot = true;
     }
-
-  else if(in==0){// last step
-    return true;
+    
+    else if(in==0){// last step
+        return true;
     }
-
-  // If the condition is met, the event is generated 
-  if(ratio<rand){ 
-    // Reset the static for next event
-    //  shoot = false;
-    if(m_Reaction.IsAllowed(PrimaryTrack->GetKineticEnergy())){
-      return true;
-
-      }
-    else{
-      return false;
-      }
-  }
-
-  // Record the situation of the current step
-  // so it can be used in the next one
-  if(!PrimaryTrack->GetStep()->IsLastStepInVolume()){
-    m_PreviousLength = PrimaryTrack->GetStep()->GetStepLength(); 
-    m_PreviousEnergy = PrimaryTrack->GetKineticEnergy();
-  }
-
-  return false;
+    
+    // If the condition is met, the event is generated
+    if(ratio<rand){
+        // Reset the static for next event
+        //  shoot = false;
+        if(shoot && m_Reaction.IsAllowed(PrimaryTrack->GetKineticEnergy())){
+            shoot = false;
+            return true;
+            
+        }
+        else{
+            return false;
+        }
+    }
+    
+    // Record the situation of the current step
+    // so it can be used in the next one
+    if(!PrimaryTrack->GetStep()->IsLastStepInVolume()){
+        m_PreviousLength = PrimaryTrack->GetStep()->GetStepLength();
+        m_PreviousEnergy = PrimaryTrack->GetKineticEnergy();
+    }
+    
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +173,7 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     fastStep.KillPrimaryTrack();
     fastStep.SetPrimaryTrackPathLength(0.0);
     
-    //////////////////////////////////////////////////
+    /////////////////////////////////////////////////
     //////Define the kind of particle to shoot////////
     //////////////////////////////////////////////////
     
@@ -212,7 +214,7 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     ///// Beam Parameters /////
     ///////////////////////////
     m_ReactionConditions->SetBeamParticleName(PrimaryTrack->GetParticleDefinition()->GetParticleName());
-
+    
     m_ReactionConditions->SetBeamReactionEnergy(energy);
     m_ReactionConditions->SetVertexPositionX(localPosition.x());
     m_ReactionConditions->SetVertexPositionY(localPosition.y());
