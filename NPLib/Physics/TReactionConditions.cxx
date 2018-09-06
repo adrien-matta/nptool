@@ -57,14 +57,13 @@ void TReactionConditions::Clear(){
     fRC_Momentum_Direction_X.clear();
     fRC_Momentum_Direction_Y.clear();
     fRC_Momentum_Direction_Z.clear();
-    
 }
 ////////////////////////////////////////////////////////////////////////////////
 void TReactionConditions::Dump() const{
     cout << "--------- Initial Condition Dump ---------" << endl ;
     
     // Beam beam parameter
-    cout << "\t ---- Beam Beam ---- " << endl;
+    cout << "\t ---- Beam ---- " << endl;
     cout << "\t Particle Name:  " << fRC_Beam_Particle_Name << endl;
     cout << "\t Reaction Energy: " << fRC_Beam_Reaction_Energy << endl;
     cout << "\t Theta_X: " << fRC_Beam_Emittance_ThetaX << endl;
@@ -86,15 +85,14 @@ void TReactionConditions::Dump() const{
     unsigned int size = fRC_Particle_Name.size();
     for(unsigned int i = 0 ; i < size; i ++){
         cout << "\t ---- Particle " << i << " ---- " << endl;
-        cout << "\t Particle Name" <<   fRC_Particle_Name[i] << endl;
-        cout << "\t Energy" <<   fRC_Kinetic_Energy[i] << endl;
+        cout << "\t Particle Name: " <<   fRC_Particle_Name[i] << endl;
+        cout << "\t Kinetic Energy: " <<   fRC_Kinetic_Energy[i] << endl;
         cout << "\t Momentum Direction: ( "
         << fRC_Momentum_Direction_X[i] << " ; "
         << fRC_Momentum_Direction_Y[i] << " ; "
         << fRC_Momentum_Direction_Z[i] << ")" << endl;
     }
 
-    
    
 }
 ////////////////////////////////////////////////////////////////////////////////

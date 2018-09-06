@@ -136,7 +136,7 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
 
   // Electron follow the field direction
   // The field direction is taken from the field manager
-  G4double* fieldArr = new G4double[6];
+  static G4double* fieldArr = new G4double[6];
   G4double  Point[4]={x0.x(),x0.y(),x0.z(),t0};
   G4FieldManager* fMng = pPreStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->
     GetFieldManager();

@@ -20,7 +20,7 @@ class ReducedData: public TObject
 	
 	std::vector<float> peakheight;
 	std::vector<float> peaktime;
-
+  void clear(){peakheight.clear();peaktime.clear();}//!
 	ClassDef(ReducedData,1);	
 };
 

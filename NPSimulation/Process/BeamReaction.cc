@@ -38,11 +38,6 @@ NPS::BeamReaction::BeamReaction(G4String modelName,G4Region* envelope) :
     ReadConfiguration();
     m_PreviousEnergy=0 ;
     m_PreviousLength=0 ;
-    m_active = true;
-    m_ReactionConditions = new TReactionConditions();
-    AttachReactionConditions();
-    if(!RootOutput::getInstance()->GetTree()->FindBranch("ReactionConditions"))
-      RootOutput::getInstance()->GetTree()->Branch("ReactionConditions","TReactionConditions",&m_ReactionConditions);
   }
 
 
@@ -68,8 +63,14 @@ void NPS::BeamReaction::ReadConfiguration(){
   NPL::InputParser input(NPOptionManager::getInstance()->GetReactionFile());
   m_Reaction.ReadConfigurationFile(input);
   m_BeamName=NPL::ChangeNameToG4Standard(m_Reaction.GetNucleus1().GetName());
-  if(m_Reaction.GetNucleus3().GetName()!=""){
+
+ if(m_Reaction.GetNucleus3().GetName()!=""){
     m_active = true;
+    m_ReactionConditions = new TReactionConditions();
+    AttachReactionConditions();
+    if(!RootOutput::getInstance()->GetTree()->FindBranch("ReactionConditions"))
+      RootOutput::getInstance()->GetTree()->Branch("ReactionConditions","TReactionConditions",&m_ReactionConditions);
+
   }
   else{
     m_active = false;
@@ -107,6 +108,8 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
       rand = G4RandFlat::shoot();
       m_PreviousLength = m_StepSize ;
       m_PreviousEnergy = PrimaryTrack->GetKineticEnergy() ;
+      // Clear Previous Event
+      m_ReactionConditions->Clear();
     }
 
   else if(in==0){// last step
@@ -139,9 +142,7 @@ G4bool NPS::BeamReaction::ModelTrigger(const G4FastTrack& fastTrack) {
 ////////////////////////////////////////////////////////////////////////////////
 void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) {
     
-    // Clear Previous Event
-    m_ReactionConditions->Clear();
-    
+   
     // Get the track info
     const G4Track* PrimaryTrack = fastTrack.GetPrimaryTrack();
     G4ThreeVector pdirection = PrimaryTrack->GetMomentum().unit();
@@ -178,20 +179,29 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     int LightZ = m_Reaction.GetNucleus3().GetZ() ;
     int LightA = m_Reaction.GetNucleus3().GetA() ;
     static G4IonTable* IonTable = G4ParticleTable::GetParticleTable()->GetIonTable();
-    
-    G4ParticleDefinition* LightName
-    = IonTable->GetIon(LightZ, LightA, m_Reaction.GetExcitation3()*MeV);
-    
+   
+    G4ParticleDefinition* LightName;
+
+    if(m_Reaction.GetUseExInGeant4())
+     LightName = IonTable->GetIon(LightZ, LightA, m_Reaction.GetExcitation3()*MeV);
+    else 
+     LightName = IonTable->GetIon(LightZ, LightA);
+
     // Nucleus 4
     G4int HeavyZ = m_Reaction.GetNucleus4().GetZ() ;
     G4int HeavyA = m_Reaction.GetNucleus4().GetA() ;
     
     // Generate the excitation energy if a distribution is given
     m_Reaction.ShootRandomExcitationEnergy();
-    
+      
     // Use to clean up the IonTable in case of the Ex changing at every event
-    G4ParticleDefinition* HeavyName
-    = IonTable->GetIon(HeavyZ, HeavyA, m_Reaction.GetExcitation4()*MeV);
+    G4ParticleDefinition* HeavyName;
+
+    if(m_Reaction.GetUseExInGeant4())
+      HeavyName = IonTable->GetIon(HeavyZ, HeavyA, m_Reaction.GetExcitation4()*MeV);
+    else
+      HeavyName = IonTable->GetIon(HeavyZ, HeavyA);
+
     // Set the Energy of the reaction
     m_Reaction.SetBeamEnergy(energy);
     
@@ -215,7 +225,6 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     m_ReactionConditions->SetBeamEmittancePhi(PrimaryTrack->GetMomentumDirection().phi()/deg);
     m_ReactionConditions->SetBeamEmittanceThetaX(PrimaryTrack->GetMomentumDirection().angle(U)/deg);
     m_ReactionConditions->SetBeamEmittancePhiY(PrimaryTrack->GetMomentumDirection().angle(V)/deg);
-    
     //////////////////////////////////////////////////////////
     ///// Build rotation matrix to go from the incident //////
     ///// beam frame to the "world" frame               //////
@@ -267,12 +276,16 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     
     
     // Emitt secondary
-    G4DynamicParticle particle3(LightName,momentum_kine3_world,Energy3);
-    fastStep.CreateSecondaryTrack(particle3, localPosition, time);
-    
-    G4DynamicParticle particle4(HeavyName,momentum_kine4_world,Energy4);
-    fastStep.CreateSecondaryTrack(particle4, localPosition, time);
-    
+    if(m_Reaction.GetShoot3()){
+      G4DynamicParticle particle3(LightName,momentum_kine3_world,Energy3);
+      fastStep.CreateSecondaryTrack(particle3, localPosition, time);
+    }
+
+    if(m_Reaction.GetShoot4()){
+      G4DynamicParticle particle4(HeavyName,momentum_kine4_world,Energy4);
+      fastStep.CreateSecondaryTrack(particle4, localPosition, time);
+    }
+
     // Reinit for next event
     m_PreviousEnergy=0 ;
     m_PreviousLength=0 ;
@@ -289,8 +302,10 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     // Energy 3 and 4 //
     m_ReactionConditions->SetKineticEnergy(Energy3);
     m_ReactionConditions->SetKineticEnergy(Energy4);
-    // ThetaCM //
+    // ThetaCM and Ex//
     m_ReactionConditions->SetThetaCM(m_Reaction.GetThetaCM()/deg);
+    m_ReactionConditions->SetExcitationEnergy3(m_Reaction.GetExcitation3());
+    m_ReactionConditions->SetExcitationEnergy4(m_Reaction.GetExcitation4());
     // Momuntum X 3 and 4 //
     m_ReactionConditions->SetMomentumDirectionX(momentum_kine3_world.x());
     m_ReactionConditions->SetMomentumDirectionX(momentum_kine4_world.x());
@@ -300,4 +315,5 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     // Momuntum Z 3 and 4 //
     m_ReactionConditions->SetMomentumDirectionZ(momentum_kine3_world.z());
     m_ReactionConditions->SetMomentumDirectionZ(momentum_kine4_world.z());
+
 }

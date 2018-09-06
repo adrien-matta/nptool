@@ -151,7 +151,7 @@ Actar::Actar(){
     m_build_CsI=1;
     
     // Lookup table //
-    bool ReadingLookupTable = false;
+   // bool ReadingLookupTable = false;
     string LT_FileName = "./Detectors/Actar/LT.dat";
     ifstream LTConfigFile;
     LTConfigFile.open(LT_FileName.c_str());
@@ -172,7 +172,7 @@ Actar::Actar(){
                 m_PadToChannel[pX][pY] = ch;
             }
         }
-        ReadingLookupTable = true;
+        //ReadingLookupTable = true;
     }
     LTConfigFile.close();
     
@@ -290,7 +290,7 @@ G4LogicalVolume* Actar::BuildDetector(){
         G4LogicalVolume* logicMicromegas = new G4LogicalVolume(sMicromegas,Al,"logic_Micromegas",0,0,0);
         
         G4LogicalVolume* logicNose = new G4LogicalVolume(sNose,Cu,"logic_Nose",0,0,0);
-        G4LogicalVolume* logicCathode = new G4LogicalVolume(sCathode,Cu,"logic_Cathode",0,0,0);
+        /*G4LogicalVolume* logicCathode = */ new G4LogicalVolume(sCathode,Cu,"logic_Cathode",0,0,0);
         G4LogicalVolume* logicWindows = new G4LogicalVolume(sWindows,Mylar,"logic_Windows",0,0,0);
         
         G4RotationMatrix* Rot = new G4RotationMatrix();
@@ -647,33 +647,23 @@ void Actar::InitializeRootOutput(){
 // Called at in the EventAction::EndOfEventAvtion
 void Actar::ReadSensitive(const G4Event* event){
     m_EventReduced->CoboAsad.clear();
-    
+    static ReducedData DataReduced;
+
     
     //////////////
     // Pad scorer
-    NPS::HitsMap<G4double*>* PadHitMap;
-    std::map<G4int, G4double**>::iterator Pad_itr;
-    
-    G4int PadCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ActarScorer/Actar_dig");
-    PadHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PadCollectionID));
+    TPCScorers::PS_TPCCathode* PadScorer= (TPCScorers::PS_TPCCathode*) m_ActarScorer->GetPrimitive(0);
+    unsigned int size = PadScorer->GetMult();
     // Loop on the Pad map
     //TH1D* h = new TH1D("h","h",25000,0,25000);
-    for (Pad_itr = PadHitMap->GetMap()->begin() ; Pad_itr != PadHitMap->GetMap()->end() ; Pad_itr++){
-        ReducedData DataReduced;
-        G4double* Info = *(Pad_itr->second);
-        // Interraction Coordinates
-        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
-        
-        double Count = RandGauss::shoot(Info[0],Actar_NS::ResoCharge*Info[0]);
-        double Time =  Info[1];//RandGauss::shoot(Info[1],Actar_NS::ResoTime);
+    for (unsigned int i = 0 ; i < size ; i++){
+        DataReduced.clear();      
+        double Count = RandGauss::shoot(PadScorer->GetCharge(i),Actar_NS::ResoCharge*PadScorer->GetCharge(i));
+        double Time =  PadScorer->GetTime(i);//RandGauss::shoot(Info[1],Actar_NS::ResoTime);
         //int iTime = ((int) Time*20/512)+1;
-        int PadNbr = Info[7];
-        int Pad_X = Info[8];//m_PadToXRow[PadNbr];
-        int Pad_Y = Info[9];//m_PadToZColumn[PadNbr];
+        //int PadNbr = Info[7];
+        int Pad_X = PadScorer->GetPadX(i);//m_PadToXRow[PadNbr];
+        int Pad_Y = PadScorer->GetPadY(i);//m_PadToZColumn[PadNbr];
         
         int co = m_PadToCobo[Pad_X][Pad_Y];
         int as = m_PadToAsad[Pad_X][Pad_Y];
@@ -704,8 +694,6 @@ void Actar::ReadSensitive(const G4Event* event){
      // clear map for next event
      SimulateDigitizer(Q,T,1.40*microsecond,0,8750,25,5);
      delete h;*/
-    
-    PadHitMap->clear();
     
     // Silicon //
     if(m_build_Silicon){
@@ -822,7 +810,7 @@ void Actar::InitializeScorers() {
     m_CsIScorer->RegisterPrimitive(CsIScorer);
     
     vector<int> level; level.push_back(0);
-    G4VPrimitiveScorer* Actar_dig= new TPCSCORERS::PS_TPCCathode("Actar_dig",0) ;
+    G4VPrimitiveScorer* Actar_dig= new TPCScorers::PS_TPCCathode("Actar_dig",0) ;
     m_ActarScorer->RegisterPrimitive(Actar_dig);
     
     G4SDManager::GetSDMpointer()->AddNewDetector(m_ActarScorer);

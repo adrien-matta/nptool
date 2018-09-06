@@ -72,6 +72,7 @@ namespace NPL{
     private: // use for Monte Carlo simulation
       bool fshoot3;
       bool fshoot4;
+      bool fUseExInGeant4; 
       bool fLabCrossSection;
 
     private: // use to display the kinematical line
@@ -97,17 +98,17 @@ namespace NPL{
       TH1F*    fExcitationEnergyHist;    // Distribution of Excitation energy
     public:
       // Getters and Setters
-      void     SetBeamEnergy(double eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
-      void     SetEcm(double Ecm)		{fEcm= Ecm; s=pow(Ecm+m1+m2,2); fBeamEnergy=(s-m1*m1-m2*m2)/(2*m2)-m1; initializePrecomputeVariable();}
-      void     SetThetaCM(double angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
-      void     SetExcitation1(double exci)      {fExcitation1 = exci; initializePrecomputeVariable();}
-      void     SetExcitation3(double exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
-      void     SetExcitation4(double exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
+      void     SetBeamEnergy(const double& eBeam)      {fBeamEnergy = eBeam;     initializePrecomputeVariable();}
+      void     SetEcm(const double& Ecm)		{fEcm= Ecm; s=pow(Ecm+m1+m2,2); fBeamEnergy=(s-m1*m1-m2*m2)/(2*m2)-m1; initializePrecomputeVariable();}
+      void     SetThetaCM(const double& angle)         {fThetaCM = angle;        initializePrecomputeVariable();}
+      void     SetExcitation1(const double& exci)      {fExcitation1 = exci; initializePrecomputeVariable();}
+      void     SetExcitation3(const double& exci)      {fExcitation3 = exci; initializePrecomputeVariable();}
+      void     SetExcitation4(const double& exci)      {fExcitation4 = exci; initializePrecomputeVariable();}
       // For retro compatibility
-      void     SetExcitationBeam(double exci)   {fExcitation1 = exci; initializePrecomputeVariable();}
-      void     SetExcitationLight(double exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
-      void     SetExcitationHeavy(double exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
-      void     SetVerboseLevel(int verbose)     {fVerboseLevel = verbose;}
+      void     SetExcitationBeam(const double& exci)   {fExcitation1 = exci; initializePrecomputeVariable();}
+      void     SetExcitationLight(const double& exci)  {fExcitation3 = exci; initializePrecomputeVariable();}
+      void     SetExcitationHeavy(const double& exci)  {fExcitation4 = exci; initializePrecomputeVariable();}
+      void     SetVerboseLevel(const int& verbose)     {fVerboseLevel = verbose;}
       void     SetCrossSectionHist  (TH1F*  CrossSectionHist)
         {delete fCrossSectionHist; fCrossSectionHist   = CrossSectionHist;}
 
@@ -128,6 +129,7 @@ namespace NPL{
       int      GetVerboseLevel()         const  {return fVerboseLevel;}
       bool     GetShoot3()         const        {return fshoot3;}
       bool     GetShoot4()         const        {return fshoot4;}
+      bool     GetUseExInGeant4()         const {return fUseExInGeant4;}
 
 
     public:

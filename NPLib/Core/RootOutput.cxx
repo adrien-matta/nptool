@@ -119,6 +119,7 @@ RootOutput::RootOutput(std::string fileNameBase, std::string treeNameBase){
   }
 
   pRootTree = new TTree(treeNameBase.c_str(), "Data created / analysed with the NPTool package");
+  pRootFile->SetCompressionLevel(1);
   pRootList = new TList();
 
   // Init TAsciiFile objects

@@ -72,7 +72,7 @@ public:
     virtual ~TInitialConditions();
     
     void  Clear();
-    void  Clear(const Option_t*) {};
+    void  Clear(const Option_t*) {Clear();};
     void  Dump() const;
     
     /////////////////////           GetTERS           ////////////////////////

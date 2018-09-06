@@ -85,7 +85,9 @@ ClassImp(Reaction)
 
     fshoot3=true;
     fshoot4=true;
+    fUseExInGeant4=true;
     RandGen=new TRandom3();
+    fUseExInGeant4=true;
 
     fLabCrossSection=false; // flag if the provided cross-section is in the lab or not
 
@@ -237,7 +239,7 @@ double Reaction::ShootRandomThetaCM(){
 void Reaction::ShootRandomExcitationEnergy(){
   if(fExcitationEnergyHist){
     SetExcitation4(fExcitationEnergyHist->GetRandom());
-  }
+ }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -502,6 +504,14 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     if(blocks[i]->HasToken("ShootLight")){
       fshoot3 = blocks[i]->GetInt("ShootLight");
     }
+    if(blocks[i]->HasToken("UseExInGeant4")){
+      // This option will not change the Ex of the produced ion in G4 Tracking
+      // This is to be set to true when using a Ex distribution without decay
+      // Otherwise the Ion Table size grew four ech event slowing down the 
+      // simulation
+      fUseExInGeant4 = blocks[i]->GetInt("UseExInGeant4");
+    }
+
   }
   SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
   initializePrecomputeVariable();
@@ -540,8 +550,8 @@ void Reaction::initializePrecomputeVariable(){
   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
   fImpulsionLab_2 = TVector3(0,0,0);
 
-  fEnergyImpulsionLab_1 = TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
-  fEnergyImpulsionLab_2 = TLorentzVector(fImpulsionLab_2,m2);
+  fEnergyImpulsionLab_1= TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
+  fEnergyImpulsionLab_2= TLorentzVector(fImpulsionLab_2,m2);
 
   fTotalEnergyImpulsionLab = fEnergyImpulsionLab_1 + fEnergyImpulsionLab_2;
 

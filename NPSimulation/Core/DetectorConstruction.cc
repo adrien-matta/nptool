@@ -199,14 +199,6 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::ReadAllSensitive(const G4Event* event){
-  // Before looping on each sub-detector, clear the static variable
-  // ms_InterCoord
-  // This is done on the first element of the m_Modules vector.
-  // This should be done here since this variable (of type TIneractionCoordinates)
-  // deals with multiplicity of events > 1.
-  if(m_Detectors.size()>0)
-    m_Detectors[0]->GetInterCoordPointer()->Clear();
-
   unsigned int mysize =  m_Detectors.size();
   for (unsigned short i = 0 ; i < mysize ; i++) {
     (m_Detectors[i]->*m_ReadSensitivePtr)(event);    

@@ -118,7 +118,6 @@ int main(int argc, char** argv){
         UImanager->ApplyCommand("/control/execute " +Path_Macro+"verbose.mac");
 
 #ifdef G4VIS_USE
-         
         UImanager->ApplyCommand("/control/execute " +Path_Macro+"aliases.mac");
         visManager = new G4VisExecutive("Quiet");
         visManager->Initialize();
@@ -136,6 +135,9 @@ int main(int argc, char** argv){
         
 #endif
     }
+    else{// if batch mode do not accumulate any track
+       UImanager->ApplyCommand("/vis/scene/endOfEventAction accumulate 0");
+      }
     // Execute user macro
     if(!OptionManager->IsDefault("G4MacroPath")){
         UImanager->ApplyCommand("/control/execute "+ OptionManager->GetG4MacroPath());
