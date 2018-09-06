@@ -404,7 +404,96 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
-        
+        	// para-Terphenyl
+	else if(Name == "para-Terphenyl"){ 
+	    if(!density)
+		density = 1.23*g/cm3;
+	    G4Material* material = new G4Material("NPS_"+Name,density,2);
+            material->AddElement(GetElementFromLibrary("H"),14);
+            material->AddElement(GetElementFromLibrary("C"),18);
+            m_Material[Name]=material;
+            return material;
+        }
+
+
+	else  if(Name == "para-Terphenyl_Scintillator"){
+            if(!density)
+                density =  1.23*g/cm3;					  // good
+            G4Material* material = new G4Material("NPS_"+Name,density,2); // check
+            material->AddElement(GetElementFromLibrary("H"),14);	  // good
+            material->AddElement(GetElementFromLibrary("C"),18);	  // good
+            // Adding Scintillation property:
+            int NumberOfPoints = 10; // check
+            double wlmin = 0.25*um; //check
+            double wlmax = 67*um; //check
+            double step = (wlmax-wlmin)/NumberOfPoints;
+            double* energy_r = new double[NumberOfPoints];
+            double* rindex = new double[NumberOfPoints];
+            double* absorption= new double[NumberOfPoints];
+
+            double* energy_e = new double[5];
+            double* fast = new double[5];
+            double* slow = new double[5];
+            double* scint = new double[5];
+
+	    //check block below
+            energy_e[0] = h_Planck*c_light / (450*nm);
+            energy_e[1] = h_Planck*c_light / (500*nm);
+            energy_e[2] = h_Planck*c_light / (550*nm);
+            energy_e[3] = h_Planck*c_light / (600*nm);
+            energy_e[4] = h_Planck*c_light / (650*nm);
+
+            for(int i=0; i<5; i++){
+                //fast[0] = 1 ; fast[1]=1;
+                //slow[0] = 1 ; slow[1]=1;
+                fast[i] = 2.1; // good
+                slow[i] = 22.6; // check
+            }
+	    // check below block
+	    scint[0] = 0.25;
+            scint[1] = 0.75;
+            scint[2] = 1.0;
+            scint[3] = 0.7;
+            scint[4] = 0.4;
+
+            double wl;
+
+	    // check below block
+            for(int i = 0 ; i < NumberOfPoints ;i++){
+                wl= wlmin+i*step;
+                // Formula from www.refractiveindex.info
+                rindex[i]=sqrt(1+0.27587+0.68689/(1-pow(0.130/wl,2))
+                               +0.26090/(1-pow(0.147/wl,2))
+                               +0.06256/(1-pow(0.163/wl,2))
+                               +0.06527/(1-pow(0.177/wl,2))
+                               +0.14991/(1-pow(0.185/wl,2))
+                               +0.51818/(1-pow(0.206/wl,2))
+                               +0.01918/(1-pow(0.218/wl,2))
+                               +3.38229/(1-pow(161.29/wl,2))) ;
+	    // check below block
+                energy_r[i] = h_Planck*c_light / wl;
+                // To be defined properly
+                absorption[i] =  344.8*cm;
+            }
+
+            G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();
+
+            // From St Gobain
+            MPT -> AddConstProperty("SCINTILLATIONYIELD",27000000/keV); // good
+            MPT -> AddProperty("SCINTILLATION",energy_e,scint,5) ; // check
+            MPT -> AddProperty("RINDEX",energy_r,rindex,NumberOfPoints) ; // check 
+            MPT -> AddProperty("ABSLENGTH",energy_r,absorption,NumberOfPoints); // check
+            MPT->AddProperty("FASTCOMPONENT", energy_e, fast, 2.1); // good
+            MPT->AddProperty("SLOWCOMPONENT", energy_e, slow, 22.6); // good 
+            MPT->AddConstProperty("RESOLUTIONSCALE",1.0); // check
+            MPT->AddConstProperty("FASTTIMECONSTANT",1000*ns); // check
+            MPT->AddConstProperty("SLOWTIMECONSTANT",1000*ns); //check
+            MPT->AddConstProperty("YIELDRATIO",1.0); // check
+            material -> SetMaterialPropertiesTable(MPT); // good
+            m_Material[Name]=material; // good
+            return material;
+        }
+
         else  if(Name == "NaI"){
             if(!density)
                 density = 3.67*g/cm3;
