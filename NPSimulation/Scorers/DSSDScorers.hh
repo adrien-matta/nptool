@@ -291,21 +291,7 @@ namespace DSSDScorers {
 
   };
 
-
   //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-  struct ResistiveOutput {
-    G4double upstreamEnergy;
-    G4double downstreamEnergy;
-    G4double globalTime;
-    G4double detectorNumber;
-    G4double stripWidthNumber;
-    G4double x;
-    G4double y;
-    G4double z;
-    G4double theta;
-    G4double phi;
-  };
-
   class PS_Resistive : public G4VPrimitiveScorer{
 
     public: // with description
@@ -326,22 +312,45 @@ namespace DSSDScorers {
       void PrintAll();
 
     private: // Geometry of the detector
-      G4double m_StripPlaneLength;
-      G4double m_StripPlaneWidth;
-      G4int    m_NumberOfStripWidth;
-      G4double m_StripPitchWidth;
+      double m_StripPlaneLength;
+      double m_StripPlaneWidth;
+      unsigned int    m_NumberOfStripWidth;
+      double m_StripPitchWidth;
       // Level at which to find the copy number linked to the detector number
       G4int    m_Level;
 
-    private: // inherited from G4VPrimitiveScorer
-      G4int HCID;
-      NPS::HitsMap<G4double*>* EvtMap;
-
+    private: 
+      // Up and Down are each extremities of the resistive strip
+      DSSDDataVector m_HitUp;
+      DSSDDataVector m_HitDown;
+      DSSDDataVector m_HitBack;
+    
     private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
-      G4ThreeVector m_Position  ;
-      G4int m_DetectorNumber    ;
-      G4int m_StripWidthNumber  ;
-      G4long m_Index             ;
+      G4ThreeVector t_Position;
+      double t_Energy;
+      double t_EnergyUp;
+      double t_EnergyDown;
+      double t_Time;
+      unsigned int t_DetectorNumber;
+      unsigned int t_StripWidthNumber;
+      unsigned int t_Index;
+    public:
+      unsigned int GetUpMult() {return m_HitUp.size();};
+      unsigned int GetStripUp(const unsigned int& i){return m_HitUp[i]->GetStrip();}; 
+      unsigned int GetDetectorUp(const unsigned int& i){return m_HitUp[i]->GetDetector();};
+      double GetEnergyUp(const unsigned int& i){return m_HitUp[i]->GetEnergy();};
+      double GetTimeUp(const unsigned int& i){return m_HitUp[i]->GetTime();};
+      unsigned int GetDownMult() {return m_HitDown.size();};
+      unsigned int GetStripDown(const unsigned int& i){return m_HitDown[i]->GetStrip();}; 
+      unsigned int GetDetectorDown(const unsigned int& i){return m_HitDown[i]->GetDetector();};
+      double GetEnergyDown(const unsigned int& i){return m_HitDown[i]->GetEnergy();};
+      double GetTimeDown(const unsigned int& i){return m_HitDown[i]->GetTime();};
+      unsigned int GetBackMult() {return m_HitBack.size();};
+      unsigned int GetStripBack(const unsigned int& i){return m_HitBack[i]->GetStrip();}; 
+      unsigned int GetDetectorBack(const unsigned int& i){return m_HitBack[i]->GetDetector();};
+      double GetEnergyBack(const unsigned int& i){return m_HitBack[i]->GetEnergy();};
+      double GetTimeBack(const unsigned int& i){return m_HitBack[i]->GetTime();};
+
 
   };
 

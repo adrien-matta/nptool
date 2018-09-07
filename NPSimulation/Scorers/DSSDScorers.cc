@@ -327,17 +327,16 @@ void PS_Annular::PrintAll(){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Resistive::PS_Resistive(G4String name,G4int Level, G4double StripPlaneLength, G4double StripPlaneWidth, G4int NumberOfStripWidth,G4int depth)
-  :G4VPrimitiveScorer(name, depth),HCID(-1){
+  :G4VPrimitiveScorer(name, depth){
     m_StripPlaneLength = StripPlaneLength;
     m_StripPlaneWidth = StripPlaneWidth;
     m_NumberOfStripWidth = NumberOfStripWidth;
     m_StripPitchWidth = m_StripPlaneWidth / m_NumberOfStripWidth;
     m_Level = Level;
 
-    m_Position = G4ThreeVector(-1000,-1000,-1000);
-    m_DetectorNumber = -1;
-    m_StripWidthNumber = -1;
-    m_Index = -1 ;
+    t_Position = G4ThreeVector(-1000,-1000,-1000);
+    t_DetectorNumber = -1;
+    t_StripWidthNumber = -1;
   }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -348,61 +347,58 @@ PS_Resistive::~PS_Resistive(){
 G4bool PS_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
   // contain Energy Total, E1, E2, Time, DetNbr,  and StripWidth
-  G4double* EnergyAndTime = new G4double[10];
+  t_Energy = aStep->GetTotalEnergyDeposit(); 
+  t_Time = aStep->GetPreStepPoint()->GetGlobalTime();
+  
+  t_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
+  t_Position = aStep->GetPreStepPoint()->GetPosition();
+  t_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(t_Position);
 
-  EnergyAndTime[2] = aStep->GetPreStepPoint()->GetGlobalTime();
-
-  m_DetectorNumber = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_Level);
-  m_Position  = aStep->GetPreStepPoint()->GetPosition();
-
-  // Interaction coordinates (used to fill the InteractionCoordinates branch)
-  EnergyAndTime[5] = m_Position.x();
-  EnergyAndTime[6] = m_Position.y();
-  EnergyAndTime[7] = m_Position.z();
-  EnergyAndTime[8] = m_Position.theta();
-  EnergyAndTime[9] = m_Position.phi();
-
-  m_Position = aStep->GetPreStepPoint()->GetTouchableHandle()->GetHistory()->GetTopTransform().TransformPoint(m_Position);
-
-  m_StripWidthNumber = (int)((m_Position.x() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
-  // m_StripWidthNumber = m_NumberOfStripWidth - m_StripWidthNumber + 1 ;
+  t_StripWidthNumber = (int)((t_Position.x() + m_StripPlaneWidth / 2.) / m_StripPitchWidth ) + 1  ;
 
   // The energy is divided in two depending on the position
   // position along the resistive strip
-  double P = (m_Position.z())/(0.5*m_StripPlaneLength);
-  // Downstream Energy
-  EnergyAndTime[0] = aStep->GetTotalEnergyDeposit()*(1+P)*0.5; // downsteam collects MORE energy when P is positive
-
-  // Upstream Energy
-  EnergyAndTime[1] = aStep->GetTotalEnergyDeposit()-EnergyAndTime[0];
-
-  EnergyAndTime[3] = m_DetectorNumber;
-  EnergyAndTime[4] = m_StripWidthNumber;
+  double P = (t_Position.z())/(0.5*m_StripPlaneLength);
+  // Energy
+  t_EnergyUp = aStep->GetTotalEnergyDeposit()*(1+P)*0.5; 
+  t_EnergyDown = t_Energy-t_EnergyUp; 
 
   //Rare case where particle is close to edge of silicon plan
-  if (m_StripWidthNumber > m_NumberOfStripWidth) m_StripWidthNumber = m_NumberOfStripWidth;
+  if (t_StripWidthNumber > m_NumberOfStripWidth) t_StripWidthNumber = m_NumberOfStripWidth;
 
-  m_Index = m_DetectorNumber * 1e3 + m_StripWidthNumber * 1e6;
 
-  // Check if the particle has interact before, if yes, add up the energies.
-  map<G4int, G4double**>::iterator it;
-  it= EvtMap->GetMap()->find(m_Index);
-  if(it!=EvtMap->GetMap()->end()){
-    G4double* dummy = *(it->second);
-    EnergyAndTime[0]+=dummy[0];
-    EnergyAndTime[1]+=dummy[1];
-  }
-  EvtMap->set(m_Index, EnergyAndTime);
+  // Up
+  vector<DSSDData>::iterator it;
+  it = m_HitUp.find(DSSDData::CalculateIndex(t_DetectorNumber,t_StripWidthNumber));
+  if(it!=m_HitUp.end())
+    it->Add(t_EnergyUp);
+  else
+    m_HitUp.Set(t_EnergyUp,t_Time,t_DetectorNumber,t_StripWidthNumber);
+    
+  // Down
+  it = m_HitDown.find(DSSDData::CalculateIndex(t_DetectorNumber,t_StripWidthNumber));
+  if(it!=m_HitDown.end())
+    it->Add(t_EnergyDown);
+  else
+    m_HitDown.Set(t_EnergyDown,t_Time,t_DetectorNumber,t_StripWidthNumber);
+  
+   // Back
+  it = m_HitBack.find(DSSDData::CalculateIndex(t_DetectorNumber,t_StripWidthNumber));
+  if(it!=m_HitBack.end())
+    it->Add(t_Energy);
+  else
+    m_HitBack.Set(t_Energy,t_Time,t_DetectorNumber,1);
+  
+  
+  
   return TRUE;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Resistive::Initialize(G4HCofThisEvent* HCE){
-  EvtMap = new NPS::HitsMap<G4double*>(GetMultiFunctionalDetector()->GetName(), GetName());
-  if (HCID < 0) {
-    HCID = GetCollectionID(0);
-  }
-  HCE->AddHitsCollection(HCID, (G4VHitsCollection*)EvtMap);
+  m_HitUp.clear();
+  m_HitDown.clear();
+  m_HitBack.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -411,12 +407,9 @@ void PS_Resistive::EndOfEvent(G4HCofThisEvent*){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Resistive::clear(){
-  std::map<G4int, G4double**>::iterator    MapIterator;
-  for (MapIterator = EvtMap->GetMap()->begin() ; MapIterator != EvtMap->GetMap()->end() ; MapIterator++){
-    delete *(MapIterator->second);
-  }
-
-  EvtMap->clear();
+  m_HitUp.clear();
+  m_HitDown.clear();
+  m_HitBack.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -426,7 +419,4 @@ void PS_Resistive::DrawAll(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Resistive::PrintAll(){
-  G4cout << " MultiFunctionalDet  " << detector->GetName() << G4endl ;
-  G4cout << " PrimitiveScorer " << GetName() << G4endl               ;
-  G4cout << " Number of entries " << EvtMap->entries() << G4endl     ;
 }

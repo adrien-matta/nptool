@@ -44,7 +44,8 @@
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "AnnularS1.hh"
-#include "SiliconScorers.hh"
+#include "DSSDScorers.hh"
+#include "InteractionScorers.hh"
 #include "TS1Data.h"
 #include "RootOutput.h"
 #include "NPOptionManager.h"
@@ -299,28 +300,32 @@ void AnnularS1::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void AnnularS1::ReadSensitive(const G4Event* event){
+void AnnularS1::ReadSensitive(const G4Event*){
   // Clear ROOT objects
   m_Event->Clear();
 
-  NPS::HitsMap<G4double*>* SiliconHitMap;
-  std::map<G4int, G4double**>::iterator Silicon_itr;
-
-  G4int SiliconCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AnnularS1_Scorer/AnnularS1_Scorer");
-  SiliconHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiliconCollectionID));
-
-  // Loop on the Silicon map
-  for (Silicon_itr = SiliconHitMap->GetMap()->begin() ; Silicon_itr != SiliconHitMap->GetMap()->end() ; Silicon_itr++){
-    G4double* Info = *(Silicon_itr->second);
-
-    double Energy = Info[0];
+  DSSDScorers::PS_Annular* Scorer= (DSSDScorers::PS_Annular*) m_Scorer->GetPrimitive(0);
+ 
+  // Loop on Silicon Ring Hit
+  unsigned int sizeRing = Scorer->GetRingMult();
+  for(unsigned int i = 0 ; i < sizeRing ; i++){
+    double Energy = Scorer->GetEnergyRing(i);
 
     if(Energy>EnergyThreshold){
-      double Time       = Info[1];
-      int DetNbr        = (int) Info[7];
-      int StripTheta    = (int) Info[8];
-      int StripPhi      = (int) Info[9];
-      int StripQuadrant = (int) Info[10] - 1; 
+      double Time       = Scorer->GetTimeRing(i);
+      unsigned int DetNbr        = Scorer->GetDetectorRing(i);;
+      unsigned int StripTheta    = Scorer->GetStripRing(i);
+       
+       
+      // Check for associated Quadrant strip
+      int StripQuadrant = 0;
+      unsigned int sizeQ = Scorer->GetQuadrantMult();
+      for(unsigned int q = 0 ; q < sizeQ ; q++){
+        if(Scorer->GetDetectorQuadrant(q)==DetNbr){
+          StripQuadrant = Scorer->GetStripQuadrant(q)-1;
+          break;
+          }
+      }
 
       m_Event->SetS1ThetaEDetectorNbr(DetNbr);
       m_Event->SetS1ThetaEStripNbr(StripTheta+StripQuadrant*NbrRingStrips);
@@ -330,6 +335,20 @@ void AnnularS1::ReadSensitive(const G4Event* event){
       m_Event->SetS1ThetaTStripNbr(StripTheta+StripQuadrant*NbrRingStrips);
       m_Event->SetS1ThetaTTime(RandGauss::shoot(Time, ResoTime));
 
+     }
+
+  }
+ 
+ // Loop on Silicon Sector Hit
+ unsigned int sizeSector = Scorer->GetSectorMult();
+ for(unsigned int i = 0 ; i < sizeSector ; i++){ 
+    double Energy = Scorer->GetEnergyRing(i);
+
+    if(Energy>EnergyThreshold){
+      double Time       = Scorer->GetTimeRing(i);
+      unsigned int DetNbr        = Scorer->GetDetectorRing(i);;
+      unsigned int StripPhi      = Scorer->GetStripSector(i);
+     
       m_Event->SetS1PhiEDetectorNbr(DetNbr);
       m_Event->SetS1PhiEStripNbr(StripPhi); 
       m_Event->SetS1PhiEEnergy(RandGauss::shoot(Energy, ResoEnergy));
@@ -337,18 +356,8 @@ void AnnularS1::ReadSensitive(const G4Event* event){
       m_Event->SetS1PhiTDetectorNbr(DetNbr);
       m_Event->SetS1PhiTStripNbr(StripPhi);
       m_Event->SetS1PhiTTime(RandGauss::shoot(Time, ResoTime));
-
-      // Interraction Coordinates
-      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
-
     }
   }
-  // clear map for next event
-  SiliconHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -360,7 +369,7 @@ void AnnularS1::InitializeScorers(){
   if(already_exist) return;
 
   G4VPrimitiveScorer* AnnularScorer =
-    new  SILICONSCORERS::PS_Silicon_Annular("AnnularS1_Scorer",
+    new  DSSDScorers::PS_Annular("AnnularS1_Scorer",
         2,
         ActiveWaferInnerRadius,
         ActiveWaferOutterRadius,
@@ -371,7 +380,8 @@ void AnnularS1::InitializeScorers(){
         NbQuadrant);
 
   m_Scorer->RegisterPrimitive(AnnularScorer);
-
+  G4VPrimitiveScorer* InteractionScorer = new InteractionScorers::PS_Interactions("InteractionS1",ms_InterCoord,2);
+  m_Scorer->RegisterPrimitive(InteractionScorer);
   //  Add All Scorer to the Global Scorer Manager
   G4SDManager::GetSDMpointer()->AddNewDetector(m_Scorer);
 }

@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu *
  *                                                                           *
  * Creation Date  : September 2017                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Actar simulation                             *
+ *  This class describe  Actar simulation                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -52,7 +52,7 @@
 
 // NPTool header
 #include "Actar.hh"
-#include "SiliconScorers.hh"
+#include "DSSDScorers.hh"
 #include "TPCScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
@@ -694,23 +694,17 @@ void Actar::ReadSensitive(const G4Event* event){
     
     // Silicon //
     if(m_build_Silicon){
-        ReducedData DataReduced;
-        
-        NPS::HitsMap<G4double*>* SiHitMap;
-        std::map<G4int, G4double**>::iterator Si_itr;
-        
-        G4int SiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_SiliconCollectionID);
-        SiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiCollectionID));
-        
-        // Loop on the ThinSi map
-        for (Si_itr = SiHitMap->GetMap()->begin() ; Si_itr != SiHitMap->GetMap()->end() ; Si_itr++){
-            G4double* Info = *(Si_itr->second);
-            double E_Si = RandGauss::shoot(Info[0],Actar_NS::ResoSilicon);
+      DSSDScorers::PS_Rectangle* SiScorer= (DSSDScorers::PS_Rectangle*) m_SiliconScorer->GetPrimitive(0);
+      unsigned int sizeSi = SiScorer->GetLengthMult();
+      // Loop on the ThinSi map
+      for(unsigned int i = 0 ; i < sizeSi ; i++){
+            DataReduced.clear();
+            double E_Si = RandGauss::shoot(SiScorer->GetEnergyLength(i),Actar_NS::ResoSilicon);
             
-            int co=31;
-            int as=0;
-            int ag=0;
-            int ch=Info[7];
+            int co = 31;
+            int as = 0;
+            int ag = 0;
+            int ch = SiScorer->GetStripLength(i);
             
             if(E_Si>Actar_NS::EnergyThreshold){
                 DataReduced.globalchannelid = ch+(ag<<7)+(as<<9)+(co<<11);
@@ -720,7 +714,7 @@ void Actar::ReadSensitive(const G4Event* event){
             m_EventReduced->CoboAsad.push_back(DataReduced);
         }
         // Clear Map for next event
-        SiHitMap->clear();
+        SiScorer->clear();
     }
     
     // CsI //
@@ -733,8 +727,8 @@ void Actar::ReadSensitive(const G4Event* event){
         
         // Loop on the CsI map
         for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr !=CsIHitMap->GetMap()->end() ; CsI_itr++){
-            G4double* Info = *(CsI_itr->second);
-            double E_CsI = RandGauss::shoot(Info[0],Actar_NS::ResoCsI);
+            //G4double* Info = *(CsI_itr->second);
+            //double E_CsI = RandGauss::shoot(Info[0],Actar_NS::ResoCsI);
             
             /*if(E_CsI>Actar_NS::EnergyThreshold){
              m_Event->SetCsIEnergy(E_CsI);
@@ -796,7 +790,7 @@ void Actar::InitializeScorers() {
     
     if(already_exist) return;
     
-    G4VPrimitiveScorer* SiScorer = new SILICONSCORERS::PS_Silicon_Rectangle("SiliconScorer",0,Actar_NS::SiliconHeight,Actar_NS::SiliconWidth,1,1);
+    G4VPrimitiveScorer* SiScorer = new DSSDScorers::PS_Rectangle("SiliconScorer",0,Actar_NS::SiliconHeight,Actar_NS::SiliconWidth,1,1);
     m_SiliconScorer->RegisterPrimitive(SiScorer);
     
     /*G4VPrimitiveScorer* VamosSiScorer = new SILICONSCORERS::PS_Silicon_Rectangle("VamosSiliconScorer",0,Actar_NS::VamosSiliconHeight,Actar_NS::VamosSiliconWidth,1,1);
