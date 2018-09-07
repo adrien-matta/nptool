@@ -109,7 +109,8 @@ class PhysicsList: public G4VUserPhysicsList{
     double m_DriftElectronPhysics;
     double m_HadronPhysicsQGSP_BIC_HP;
     double m_HadronPhysicsINCLXX;
-    double m_Decay; 
+    double m_Decay;
+  	double m_Menate_R;
 };
 
 

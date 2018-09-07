@@ -29,6 +29,8 @@
 #include <limits>
 #include <cmath>
 #include <sstream>
+//   ROOT
+#include <TSystem.h>
 
 //////////////////////////////////////////////////////////////////
 CalibrationManager* CalibrationManager::instance = 0;
@@ -50,7 +52,7 @@ CalibrationManager::CalibrationManager(std::string configFileName){
 
   // Open file
   std::ifstream inputConfigFile;
-  inputConfigFile.open(configFileName.c_str());
+  inputConfigFile.open(gSystem->ExpandPathName(configFileName.c_str()));
 
   if(!NPOptionManager::getInstance()->IsDefault("Calibration")){
     std::cout << std::endl;
@@ -80,6 +82,7 @@ CalibrationManager::CalibrationManager(std::string configFileName){
           }
 
           else if (!inputConfigFile.eof()) {
+						dataBuffer = gSystem->ExpandPathName(dataBuffer.c_str());
             AddFile(dataBuffer);
             std::cout << "Adding file " << dataBuffer << " to Calibration" << std::endl;
           }
