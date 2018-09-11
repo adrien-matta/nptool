@@ -23,6 +23,7 @@
 
 // NPTOOL headers
 #include "NPNucleus.h"
+#include "NPCore.h"
 using namespace NPL;
 
 
@@ -376,6 +377,40 @@ double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, dou
     
     return ThetaCM;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<string>& v){
+  // Define the mass as the sum of the mass of the particle named in v
+  unsigned int size = v.size();
+  vector<NPL::Nucleus> N;
+  for(unsigned int i = 0 ; i < size ; i++)
+    N.push_back(NPL::Nucleus(v[i]));
+
+  DefineMassByThreshold(N);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<NPL::Nucleus>& N){
+  // Define the mass as the sum of the mass of the particle defined in N
+  unsigned int size = N.size();
+  double Mass = 0;
+  unsigned int A = 0;
+  unsigned int Z = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Mass+= N[i].Mass();
+    A+= N[i].GetA();
+    Z+= N[i].GetZ(); 
+  }
+  // Check the threshold make any sense (same A, same Z):
+  if(A!=GetA()|| Z!=GetZ()){
+    NPL::SendWarning("NPL::Nucleus","Mass and charge is not conserved in DefineMassByThreshold! Doing no change to nucleus");
+    return;
+  } 
+
+  SetExcitationEnergy(0);
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 double Nucleus::GetSXn(unsigned int X) const {

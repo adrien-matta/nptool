@@ -138,6 +138,11 @@ namespace NPL {
       double GetBindingEnergy() const {return (fCharge*proton_mass_c2 + (fAtomicWeight-fCharge)*neutron_mass_c2 + fCharge*electron_mass_c2 - fAtomicWeight*amu_c2 - fMassExcess/1000);}
     void        Print() const   ;
 
+
+  public:
+    void DefineMassByThreshold(const vector<string>& v); // Define the mass as the sum of the mass of the particle named in v
+    void DefineMassByThreshold(const vector<NPL::Nucleus>& N); // Define the mass as the sum of the mass of the particle defined in N
+
   public:
     double GetSn() const;
     double GetSp() const;
