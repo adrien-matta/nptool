@@ -137,6 +137,19 @@ namespace NPL {
     double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2+fExcitationEnergy);}
       double GetBindingEnergy() const {return (fCharge*proton_mass_c2 + (fAtomicWeight-fCharge)*neutron_mass_c2 + fCharge*electron_mass_c2 - fAtomicWeight*amu_c2 - fMassExcess/1000);}
     void        Print() const   ;
+
+  public:
+    double GetSn() const;
+    double GetSp() const;
+    double GetS2n() const;
+    double GetS2p() const;
+    double GetSt() const;
+    double GetS3He() const;
+    double GetSa() const;
+    double GetSXn(unsigned int X) const;
+    double GetSXp(unsigned int X) const;
+    void   PrintThreshold() const;
+
   };
 }
 #endif

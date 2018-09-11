@@ -377,6 +377,63 @@ double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, dou
     return ThetaCM;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXn(unsigned int X) const {
+ Nucleus N(GetZ(),GetA()-X);
+  return N.Mass()+X*neutron_mass_c2-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXp(unsigned int X) const {
+ Nucleus N(GetZ()-X,GetA()-X);
+  return N.Mass()+X*proton_mass_c2-Mass();
+  }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSn() const {
+  return GetSXn(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSp() const {
+  return GetSXp(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2n() const {
+  return GetSXn(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2p() const {
+  return GetSXp(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSt() const {
+ Nucleus N(GetZ()-1,GetA()-3);
+ Nucleus A(1,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS3He() const {
+ Nucleus N(GetZ()-2,GetA()-3);
+ Nucleus A(2,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSa() const {
+ Nucleus N(GetZ()-2,GetA()-4);
+ Nucleus A(2,4);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::PrintThreshold() const {
+   cout << GetName() << " thresholds : " << endl;
+   cout << "  Sn   : "  << GetSn()    << " MeV" << endl;
+   cout << "  Sp   : "  << GetSp()    << " MeV" << endl;
+   cout << "  S2n  : "  << GetS2n()   << " MeV" << endl;
+   cout << "  S2p  : "  << GetS2p()   << " MeV" << endl;
+   cout << "  St   : "  << GetSt()    << " MeV" << endl;
+   cout << "  S3He : "  << GetS3He()  << " MeV" << endl;
+   cout << "  Sa   : "  << GetSa()    << " MeV" << endl;
+  }
+
 
 
 
