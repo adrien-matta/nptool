@@ -40,12 +40,9 @@
 #include "ParticleStack.hh"
 
 // Event Generator Class
-#include "EventGeneratorTwoBodyReaction.hh"
 #include "EventGeneratorIsotropic.hh"
 #include "EventGeneratorMultipleParticle.hh"
 #include "EventGeneratorBeam.hh"
-#include "EventGeneratorGammaDecay.hh"
-#include "EventGeneratorParticleDecay.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
@@ -112,34 +109,6 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
         if(m_detector->GetTarget()!=NULL)myEventGenerator->SetTarget(m_detector->GetTarget());
         m_EventGenerator.push_back(myEventGenerator);
     }
-    /*  blocks.clear();
-     blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
-     if (blocks.size()>0) {
-     NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
-     myEventGenerator->ReadConfiguration(parser);
-     myEventGenerator->InitializeRootOutput();
-     myEventGenerator->SetTarget(m_detector->GetTarget());
-     m_EventGenerator.push_back(myEventGenerator);
-     }
-     blocks.clear();
-     blocks = parser.GetAllBlocksWithToken("GammaCascade");
-     if (blocks.size()>0) {
-     NPS::VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
-     myEventGenerator->ReadConfiguration(parser);
-     myEventGenerator->InitializeRootOutput();
-     myEventGenerator->SetTarget(m_detector->GetTarget());
-     m_EventGenerator.push_back(myEventGenerator);
-     }
-     blocks.clear();
-     blocks = parser.GetAllBlocksWithToken("ParticleDecay");
-     if (blocks.size()>0) {
-     NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
-     myEventGenerator->ReadConfiguration(parser);
-     myEventGenerator->InitializeRootOutput();
-     myEventGenerator->SetTarget(m_detector->GetTarget());
-     m_EventGenerator.push_back(myEventGenerator);
-     }
-     */
     
     m_Target=m_detector->GetTarget();
     if(m_Target!=NULL){

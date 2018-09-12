@@ -1,5 +1,5 @@
-#include"NPReaction.h"
-
+#include "NPReaction.h"
+#include "NPNucleus.h"
 TCutG* ETOF=NULL;
 TCutG* EDE=NULL;
 TChain* chain=NULL ;
@@ -55,6 +55,9 @@ void ShowResults(){
     h->GetXaxis()->SetTitle("Theta Lab(deg)");
     
     NPL::Reaction r("11Li(d,3He)10He@553");
+    vector<string> v={"8He","n","n"};
+    r.GetNucleus4()->DefineMassByThreshold(v);
+
     r.SetExcitationHeavy(1.4);
     TGraph* Kine = r.GetKinematicLine3();
     Kine->SetLineWidth(2);

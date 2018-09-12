@@ -122,10 +122,10 @@ namespace NPL{
       double   GetExcitation4() const           {return fExcitation4;}
       double   GetQValue() const                {return fQValue;}
       double   GetEcm() const			{return fEcm;}
-      Nucleus  GetNucleus1() const              {return fNuclei1;}
-      Nucleus  GetNucleus2() const              {return fNuclei2;}
-      Nucleus  GetNucleus3() const              {return fNuclei3;}
-      Nucleus  GetNucleus4() const              {return fNuclei4;}
+      Nucleus*  GetNucleus1()               {return &fNuclei1;}
+      Nucleus*  GetNucleus2()               {return &fNuclei2;}
+      Nucleus*  GetNucleus3()               {return &fNuclei3;}
+      Nucleus*  GetNucleus4()               {return &fNuclei4;}
       TH1F*    GetCrossSectionHist() const      {return fCrossSectionHist;}
       int      GetVerboseLevel()         const  {return fVerboseLevel;}
       bool     GetShoot3()         const        {return fshoot3;}

@@ -62,9 +62,9 @@ void NPS::BeamReaction::AttachReactionConditions(){
 void NPS::BeamReaction::ReadConfiguration(){
   NPL::InputParser input(NPOptionManager::getInstance()->GetReactionFile());
   m_Reaction.ReadConfigurationFile(input);
-  m_BeamName=NPL::ChangeNameToG4Standard(m_Reaction.GetNucleus1().GetName());
+  m_BeamName=NPL::ChangeNameToG4Standard(m_Reaction.GetNucleus1()->GetName());
 
- if(m_Reaction.GetNucleus3().GetName()!=""){
+ if(m_Reaction.GetNucleus3()->GetName()!=""){
     m_active = true;
     m_ReactionConditions = new TReactionConditions();
     AttachReactionConditions();
@@ -178,8 +178,8 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     //////////////////////////////////////////////////
     
     // Nucleus 3
-    int LightZ = m_Reaction.GetNucleus3().GetZ() ;
-    int LightA = m_Reaction.GetNucleus3().GetA() ;
+    int LightZ = m_Reaction.GetNucleus3()->GetZ() ;
+    int LightA = m_Reaction.GetNucleus3()->GetA() ;
     static G4IonTable* IonTable = G4ParticleTable::GetParticleTable()->GetIonTable();
    
     G4ParticleDefinition* LightName;
@@ -190,8 +190,8 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
      LightName = IonTable->GetIon(LightZ, LightA);
 
     // Nucleus 4
-    G4int HeavyZ = m_Reaction.GetNucleus4().GetZ() ;
-    G4int HeavyA = m_Reaction.GetNucleus4().GetA() ;
+    G4int HeavyZ = m_Reaction.GetNucleus4()->GetZ() ;
+    G4int HeavyA = m_Reaction.GetNucleus4()->GetA() ;
     
     // Generate the excitation energy if a distribution is given
     m_Reaction.ShootRandomExcitationEnergy();
