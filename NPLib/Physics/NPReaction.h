@@ -60,6 +60,7 @@ namespace NPL{
       virtual ~Reaction();
 
     public:  // Various Method
+      Nucleus GetNucleus(string name, NPL::InputParser parser);
       void ReadConfigurationFile(string Path);
       void ReadConfigurationFile(NPL::InputParser);
 

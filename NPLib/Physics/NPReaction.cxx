@@ -43,6 +43,7 @@
 #include <vector>
 
 #include "NPReaction.h"
+#include "NPCore.h"
 #include "NPOptionManager.h"
 #include "NPFunction.h"
 
@@ -153,7 +154,7 @@ Reaction::Reaction(string reaction){
 
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fDoubleDifferentialCrossSectionHist = NULL ;
-  
+
   fshoot3=true;
   fshoot4=true;
   RandGen=new TRandom3();
@@ -230,16 +231,16 @@ double Reaction::ShootRandomThetaCM(){
       theta=fCrossSectionHist->GetRandom();
 
     SetThetaCM( theta*deg );
-    }
-   
-    
+  }
+
+
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Reaction::ShootRandomExcitationEnergy(){
   if(fExcitationEnergyHist){
     SetExcitation4(fExcitationEnergyHist->GetRandom());
- }
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -253,7 +254,7 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   if (m1 > m2) theta = M_PI - fThetaCM;
   fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
   fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
-  
+
   fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
   fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
   fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
@@ -271,7 +272,7 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // Kinetic Energy in the lab frame
   KineticEnergyLab3 = fEnergyImpulsionLab_3.E() - m3;
   KineticEnergyLab4 = fEnergyImpulsionLab_4.E() - m4;
-  
+
   // test for total energy conversion
   //if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
   //  cout << "Problem for energy conservation" << endl;
@@ -310,7 +311,7 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
 //Return EnergyLab
 double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //ThetaLab in rad
-  
+
   // NB
   // Tis member function is in progress 
   // Classic treatment need to be changed to relativistic!!
@@ -318,7 +319,7 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
 
   //Treat Exeptions
   if(fBeamEnergy==0) return m4*fQValue/(m3+m4);
-  
+
   //Solve the equation
   double m4e = m4 + fExcitation4;
   //Possible problem with this calculation, decide on m4e or m4 in the following formula
@@ -329,7 +330,7 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //
   //Solution: sqrt(T3) = r * (cos +/- sqrt(Delta)) ;
   //where Delta =cos*cos - s/(r*r)
-   
+
   //Select solutions according to delta values
   double Delta = cos(ThetaLab)*cos(ThetaLab)-s/(r*r);
   double EnergyLab=0;
@@ -337,18 +338,18 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   if(Delta<0) return 0;
   else 
     if(Delta==0) EnergyLab =r*cos(ThetaLab);
+    else {
+      double sol1 = r*(cos(ThetaLab) + sqrt(Delta));
+      double sol2 = r*(cos(ThetaLab) - sqrt(Delta));
+
+      if(sol1<0  && sol2<0) return 0;
+      else if(sol1>0  && sol2<0) EnergyLab =sol1*sol1;
+      else if(sol1<0  && sol2>0) EnergyLab = sol2*sol2;
       else {
-       double sol1 = r*(cos(ThetaLab) + sqrt(Delta));
-       double sol2 = r*(cos(ThetaLab) - sqrt(Delta));
-       
-       if(sol1<0  && sol2<0) return 0;
-       else if(sol1>0  && sol2<0) EnergyLab =sol1*sol1;
-       else if(sol1<0  && sol2>0) EnergyLab = sol2*sol2;
-       else {
         if(RandGen->Rndm()<0.5) EnergyLab = sol1*sol1; // choose either of the solutions
-          else EnergyLab = sol2*sol2;
-       }
+        else EnergyLab = sol2*sol2;
       }
+    }
 
   return(EnergyLab);
 }
@@ -369,7 +370,7 @@ void Reaction::Print() const{
   cout << "Qgg = " << fQValue << " MeV" << endl;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(string Path){
   ifstream ReactionFile;
   string GlobalPath = getenv("NPTOOL");
@@ -385,6 +386,39 @@ void Reaction::ReadConfigurationFile(string Path){
   NPL::InputParser parser(Path);
   ReadConfigurationFile(parser);
 }
+////////////////////////////////////////////////////////////////////////////////
+Nucleus Reaction::GetNucleus(string name, NPL::InputParser parser){
+
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("DefineNucleus",name);
+  unsigned int size = blocks.size();
+  if(size==0)
+    return NPL::Nucleus(name);
+  else if(size==1){
+    cout << " -- User defined nucleus " << name << " -- " << endl;
+    vector<string> token = {"SubPart","BindingEnergy"};
+    if(blocks[0]->HasTokenList(token)){
+      NPL::Nucleus N(name,blocks[0]->GetVectorString("SubPart"),blocks[0]->GetDouble("BindingEnergy","MeV")); 
+      if(blocks[0]->HasToken("ExcitationEnergy")) 
+        N.SetExcitationEnergy(blocks[0]->GetDouble("ExcitationEnergy","MeV"));
+      if(blocks[0]->HasToken("SpinParity")) 
+        N.SetSpinParity(blocks[0]->GetString("SpinParity").c_str());
+      if(blocks[0]->HasToken("Spin")) 
+        N.SetSpin(blocks[0]->GetDouble("Spin",""));
+      if(blocks[0]->HasToken("Parity")) 
+        N.SetParity(blocks[0]->GetString("Parity").c_str());
+      if(blocks[0]->HasToken("LifeTime")) 
+        N.SetLifeTime(blocks[0]->GetDouble("LifeTime","s"));
+
+    cout << " -- -- -- -- -- -- -- -- -- -- --" << endl;
+      return N;
+    }
+  }
+  else{
+    NPL::SendErrorAndExit("NPL::Reaction","Too many nuclei define with the same name");
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(NPL::InputParser parser){
 
@@ -404,19 +438,18 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       NPOptionManager::getInstance()->SetVerboseLevel(v);
 
       fBeamEnergy= fNuclei1.GetEnergy();
-
-      fNuclei2 = Nucleus(blocks[i]->GetString("Target"));
-      fNuclei3 = Nucleus(blocks[i]->GetString("Light"));
-      fNuclei4 = Nucleus(blocks[i]->GetString("Heavy"));
+      fNuclei2 = GetNucleus(blocks[i]->GetString("Target"),parser);
+      fNuclei3 = GetNucleus(blocks[i]->GetString("Light"),parser);
+      fNuclei4 = GetNucleus(blocks[i]->GetString("Heavy"),parser);
     }
     else if(blocks[i]->HasTokenList(token2)){
       fNuclei1.SetVerboseLevel(0);
       fNuclei1.ReadConfigurationFile(parser);
       fBeamEnergy= fNuclei1.GetEnergy();
 
-      fNuclei2 = Nucleus(blocks[i]->GetString("Target"));
-      fNuclei3 = Nucleus(blocks[i]->GetString("Nuclei3"));
-      fNuclei4 = Nucleus(blocks[i]->GetString("Nuclei4"));
+      fNuclei2 = GetNucleus(blocks[i]->GetString("Target"),parser);
+      fNuclei3 = GetNucleus(blocks[i]->GetString("Nuclei3"),parser);
+      fNuclei4 = GetNucleus(blocks[i]->GetString("Nuclei4"),parser);
     }
     else{
       cout << "ERROR: check your input file formatting \033[0m" << endl;
@@ -469,7 +502,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       SetCrossSectionHist(CStemp);
       delete fsin;
     }
-    
+
 
     if(blocks[i]->HasToken("DoubleDifferentialCrossSectionPath")){
       vector<string> file = blocks[i]->GetVectorString("DoubleDifferentialCrossSectionPath");
@@ -751,5 +784,5 @@ bool Reaction::IsAllowed(double Energy){
     return true;
   else
     return false; 
-  }
-      
+}
+

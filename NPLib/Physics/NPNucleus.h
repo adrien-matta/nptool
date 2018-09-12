@@ -49,6 +49,7 @@ namespace NPL {
     Nucleus();
     Nucleus(string isotope);
     Nucleus(int Z, int A);
+    Nucleus(string name, vector<string> subpart, double binding,double Ex=0, string SpinParity="", double Spin=0, string Parity="", double LifeTime=-1);
     ~Nucleus();
   
   public:
@@ -137,7 +138,6 @@ namespace NPL {
     double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2+fExcitationEnergy);}
       double GetBindingEnergy() const {return (fCharge*proton_mass_c2 + (fAtomicWeight-fCharge)*neutron_mass_c2 + fCharge*electron_mass_c2 - fAtomicWeight*amu_c2 - fMassExcess/1000);}
     void        Print() const   ;
-
 
   public:
     void DefineMassByThreshold(const vector<string>& v); // Define the mass as the sum of the mass of the particle named in v

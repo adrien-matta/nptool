@@ -58,6 +58,31 @@ Nucleus::Nucleus(string isotope){
   SetUp(isotope);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+Nucleus::Nucleus(string name, vector<string> subpart, double binding,double Ex, string SpinParity, double Spin, string Parity, double LifeTime){
+  fName= name;
+  fCharge= 0;
+  fAtomicWeight= 0;
+  unsigned int size = subpart.size();
+  double Mass = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Nucleus N = Nucleus(subpart[i]);
+    Mass+= N.Mass();
+    fAtomicWeight+= N.GetA();
+    fCharge+= N.GetZ(); 
+  }
+
+  Mass-=binding;
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+
+  fExcitationEnergy=Ex;
+  fSpinParity= SpinParity;
+  fSpin= Spin;
+  fParity= Parity;
+  fLifeTime = LifeTime;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::SetUp(string isotope){
   //----------- Constructor Using nubtab12.asc by name----------
   // open the file to read and check if it is open
