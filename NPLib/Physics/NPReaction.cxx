@@ -221,9 +221,9 @@ double Reaction::ShootRandomThetaCM(){
     SetThetaCM( theta );
   }
   else{
-    // When root perform a Spline interpolation to shoot random number out of 
+    // When root perform a Spline interpolation to shoot random number out of
     // the distribution, it can over shoot and output a number larger that 180
-    // this lead to an additional signal at 0-4 deg Lab, especially when using a 
+    // this lead to an additional signal at 0-4 deg Lab, especially when using a
     // flat distribution.
     // This fix it.
     theta=181;
@@ -313,7 +313,7 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //ThetaLab in rad
 
   // NB
-  // Tis member function is in progress 
+  // Tis member function is in progress
   // Classic treatment need to be changed to relativistic!!
   //
 
@@ -336,7 +336,7 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   double EnergyLab=0;
 
   if(Delta<0) return 0;
-  else 
+  else
     if(Delta==0) EnergyLab =r*cos(ThetaLab);
     else {
       double sol1 = r*(cos(ThetaLab) + sqrt(Delta));
@@ -398,16 +398,16 @@ Nucleus Reaction::GetNucleus(string name, NPL::InputParser parser){
     cout << " -- User defined nucleus " << name << " -- " << endl;
     vector<string> token = {"SubPart","BindingEnergy"};
     if(blocks[0]->HasTokenList(token)){
-      NPL::Nucleus N(name,blocks[0]->GetVectorString("SubPart"),blocks[0]->GetDouble("BindingEnergy","MeV")); 
-      if(blocks[0]->HasToken("ExcitationEnergy")) 
+      NPL::Nucleus N(name,blocks[0]->GetVectorString("SubPart"),blocks[0]->GetDouble("BindingEnergy","MeV"));
+      if(blocks[0]->HasToken("ExcitationEnergy"))
         N.SetExcitationEnergy(blocks[0]->GetDouble("ExcitationEnergy","MeV"));
-      if(blocks[0]->HasToken("SpinParity")) 
+      if(blocks[0]->HasToken("SpinParity"))
         N.SetSpinParity(blocks[0]->GetString("SpinParity").c_str());
-      if(blocks[0]->HasToken("Spin")) 
+      if(blocks[0]->HasToken("Spin"))
         N.SetSpin(blocks[0]->GetDouble("Spin",""));
-      if(blocks[0]->HasToken("Parity")) 
+      if(blocks[0]->HasToken("Parity"))
         N.SetParity(blocks[0]->GetString("Parity").c_str());
-      if(blocks[0]->HasToken("LifeTime")) 
+      if(blocks[0]->HasToken("LifeTime"))
         N.SetLifeTime(blocks[0]->GetDouble("LifeTime","s"));
 
     cout << " -- -- -- -- -- -- -- -- -- -- --" << endl;
@@ -460,7 +460,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       fExcitation1 = blocks[i]->GetDouble("ExcitationEnergyBeam","MeV");
     }
     else if(blocks[i]->HasToken("ExcitationEnergy1")){
-      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergy1","MeV"); 
+      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergy1","MeV");
     }
 
     if(blocks[i]->HasToken("ExcitationEnergyLight"))
@@ -540,13 +540,13 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     if(blocks[i]->HasToken("UseExInGeant4")){
       // This option will not change the Ex of the produced ion in G4 Tracking
       // This is to be set to true when using a Ex distribution without decay
-      // Otherwise the Ion Table size grew four ech event slowing down the 
+      // Otherwise the Ion Table size grew four ech event slowing down the
       // simulation
       fUseExInGeant4 = blocks[i]->GetInt("UseExInGeant4");
     }
 
   }
-  SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
+  SetCSAngle(CSHalfOpenAngleMin/deg,CSHalfOpenAngleMax/deg);
   initializePrecomputeVariable();
   cout << "\033[0m" ;
 }
@@ -560,7 +560,7 @@ void Reaction::initializePrecomputeVariable(){
   if(fExcitation1>=0) fNuclei1.SetExcitationEnergy(fExcitation1); // Write over the beam excitation energy
 
   //fNuclei1.GetExcitationEnergy() is a copy of fExcitation1
-  m1 = fNuclei1.Mass() + fNuclei1.GetExcitationEnergy();// in case of isomeric state, 
+  m1 = fNuclei1.Mass() + fNuclei1.GetExcitationEnergy();// in case of isomeric state,
   m2 = fNuclei2.Mass();
   m3 = fNuclei3.Mass() + fExcitation3;
   m4 = fNuclei4.Mass() + fExcitation4;
@@ -768,9 +768,11 @@ void Reaction::PrintKinematic(){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
   if(fCrossSectionHist){
-    for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++)
-      if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax && fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin)
+    for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++){
+      if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax || fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin){
         fCrossSectionHist->SetBinContent(i,0);
+      }
+    }
   }
 }
 
@@ -783,6 +785,5 @@ bool Reaction::IsAllowed(double Energy){
   if(AvailableEnergy>RequiredEnergy)
     return true;
   else
-    return false; 
+    return false;
 }
-
