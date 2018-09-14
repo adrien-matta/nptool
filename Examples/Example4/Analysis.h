@@ -55,6 +55,8 @@ public:
     int NumberOfPadsX;
     int NumberOfPadsY;
 
+    string LightName="";
+
 
 private:
     double fSiDistanceX=256+47;
@@ -67,6 +69,7 @@ private:
     double InitXVertex;
     double InitE3;
     double InitTheta3;
+    vector<double> BeamEnergy;
     vector<double> vScalar;
     vector<double> ThetaLab;
     vector<double> ELab;
@@ -81,8 +84,12 @@ private:
     vector<double> SiPosY;
     vector<double> SiPosZ;
 
+    NPL::EnergyLoss EnergyLoss_1H;
+    NPL::EnergyLoss EnergyLoss_2H;
+    NPL::EnergyLoss EnergyLoss_3H;
     NPL::EnergyLoss EnergyLoss_3He;
-    NPL::EnergyLoss EnergyLoss_17C;
+    NPL::EnergyLoss EnergyLoss_4He;
+    NPL::EnergyLoss EnergyLoss_18O;
     NPL::Reaction* TheReaction;
 
     TReactionConditions* ReactionConditions;

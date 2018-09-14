@@ -52,24 +52,25 @@ void Analysis::Init(){
     NumberOfPadsX = Actar->GetNumberOfPadsX();
     NumberOfPadsY = Actar->GetNumberOfPadsY();
 
-    EnergyLoss_3He = NPL::EnergyLoss("./EnergyLossTable/He3_D2_6.24151e+08_295.G4table","G4Table",100);
-    EnergyLoss_17C = NPL::EnergyLoss("./EnergyLossTable/C17_D2_6.24151e+08_295.G4table","G4Table",100);
-    TheReaction = new NPL::Reaction("17C(d,3He)16B@510");
+    EnergyLoss_1H = NPL::EnergyLoss("./EnergyLossTable/proton_iC4H10_6.24151e+07_295.G4table","G4Table",100);
+    EnergyLoss_18O = NPL::EnergyLoss("./EnergyLossTable/O18_iC4H10_6.24151e+07_295.G4table","G4Table",100);
+    TheReaction = new NPL::Reaction("18O(p,p)18O@59");
 
-    InitOutputBranch();
     InitInputBranch();
+    InitOutputBranch();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void Analysis::TreatEvent(){
     ReInitValue();
-    
+
+    LightName="";
     if(ReactionConditions->GetParticleMultiplicity()>0){
       InitXVertex = ReactionConditions->GetVertexPositionZ();
-      InitE3      = ReactionConditions->GetKineticEnergy(0);
-      InitTheta3  = ReactionConditions->GetTheta(0);
+      InitTheta3 = ReactionConditions->GetTheta(0);
+      InitE3 = ReactionConditions->GetKineticEnergy(0);
+      LightName = ReactionConditions->GetParticleName(0);
     }
-
     int TrackMult = Actar->GetTrackMult();
 
     TVector3 vX = TVector3(1,0,0);
@@ -111,13 +112,11 @@ void Analysis::TreatEvent(){
                 double Ydir = vTrack[i].GetDirectionVector().Y();
                 double Zdir = vTrack[i].GetDirectionVector().Z();
 
-                XVertex.push_back(vTrack[i].GetVertexPostion(vBeam,vBeamPos).X()*PadSizeX);
-                YVertex.push_back(vTrack[i].GetVertexPostion(vBeam,vBeamPos).Y()*PadSizeY);
-                ZVertex.push_back(vTrack[i].GetVertexPostion(vBeam,vBeamPos).Z()*DriftVelocity);
+                double vertex_x = vTrack[i].GetVertexPostion(vBeam,vBeamPos).X()*PadSizeX;
+                double vertex_y = vTrack[i].GetVertexPostion(vBeam,vBeamPos).Y()*PadSizeY;
+                double vertex_z = vTrack[i].GetVertexPostion(vBeam,vBeamPos).Z()*DriftVelocity;
 
                 aTrack = TVector3(Xdir*PadSizeX, Ydir*PadSizeY, Zdir*DriftVelocity);
-
-
                 double angle = vX.Angle(aTrack)*180/TMath::Pi();
                 //double angle = vB.Angle(aTrack)*180/TMath::Pi();
                 if(angle>90) angle = 180-angle;
@@ -131,18 +130,31 @@ void Analysis::TreatEvent(){
                 double z1 = vTrack[i].GetZm()*DriftVelocity;
                 double z2 = vTrack[i].GetZh()*DriftVelocity;
 
-                GetMayaSiHitPosition(x1,x2,y1,y2,z1,z2);
 
-                if(XVertex[i]>0 && XVertex[i]<256){
-                    double LengthInGas = fSiDistanceX - XVertex[i];
+
+                if(vertex_x>0 && vertex_x<256){
+                    double LengthInGas = fSiDistanceX - vertex_x;
                     for(unsigned int k=0; k<Actar->Si_E.size(); k++){
+                      XVertex.push_back(vertex_x);
+                      YVertex.push_back(vertex_y);
+                      ZVertex.push_back(vertex_z);
+                      
+                      GetMayaSiHitPosition(x1,x2,y1,y2,z1,z2);
                       ESi.push_back(Actar->Si_E[k]);
                       SiNumber.push_back(Actar->Si_Number[k]);
 
                       DE.push_back(vTrack[i].GetPartialCharge(108,128)/(20./cos(angle*TMath::Pi()/180)));
-                      double E3 = EnergyLoss_3He.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
-                      double BeamEnergy = EnergyLoss_17C.Slow(510*MeV,(XVertex[i]+60)*mm, BeamAngle*TMath::Pi()/180);
-                      TheReaction->SetBeamEnergy(BeamEnergy);
+                      double E3;
+
+                      if(LightName=="proton")E3 = EnergyLoss_1H.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
+                      if(LightName=="deuteron")E3 = EnergyLoss_2H.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
+                      if(LightName=="triton")E3 = EnergyLoss_3H.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
+                      if(LightName=="He3")E3 = EnergyLoss_3He.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
+                      if(LightName=="alpha")E3 = EnergyLoss_4He.EvaluateInitialEnergy(Actar->Si_E[k]*MeV,LengthInGas*mm,angle*TMath::Pi()/180);
+                      //double BeamEnergy = EnergyLoss_18O.Slow(59.4*MeV,(vertex_x[i]+60)*mm, BeamAngle*TMath::Pi()/180);
+                      double Energy_beam = EnergyLoss_18O.Slow(59.4*MeV,(vertex_x+60)*mm, 0);
+                      BeamEnergy.push_back(Energy_beam);
+                      TheReaction->SetBeamEnergy(Energy_beam);
                       ELab.push_back(E3);
                       ThetaLab.push_back(angle);
                       TheReaction->SetNuclei3(E3,angle*TMath::Pi()/180);
@@ -153,10 +165,6 @@ void Analysis::TreatEvent(){
             }
         }
     }
-
-    //for(unsigned int i=0; i<Actar->PadX.size(); i++){
-        //cout << "X= " << Actar->PadX[i] << endl;
-    //}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +239,7 @@ void Analysis::InitOutputBranch() {
     RootOutput::getInstance()->GetTree()->Branch("YVertex",&YVertex);
     RootOutput::getInstance()->GetTree()->Branch("ZVertex",&ZVertex);
     RootOutput::getInstance()->GetTree()->Branch("BeamAngle",&BeamAngle,"BeamAngle/D");
+    RootOutput::getInstance()->GetTree()->Branch("BeamEnergy",&BeamEnergy);
     RootOutput::getInstance()->GetTree()->Branch("SiPosY",&SiPosY);
     RootOutput::getInstance()->GetTree()->Branch("SiPosZ",&SiPosZ);
     RootOutput::getInstance()->GetTree()->Branch("InitXVertex",&InitXVertex,"InitXVertex/D");
@@ -254,11 +263,12 @@ void Analysis::ReInitValue(){
     ZVertex.clear();
     SiPosY.clear();
     SiPosZ.clear();
+    BeamEnergy.clear();
+
     BeamAngle=-1000;
-    InitXVertex=-1000;
     InitE3=-1000;
     InitTheta3=-1000;
-
+    InitXVertex=-1000;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
