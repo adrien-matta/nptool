@@ -210,7 +210,7 @@ void Sync()
             
             
             c1->cd(3);
-            h2Dxy->Draw();
+            h2Dxz->Draw();
             for(int i=0; i<vhxz.size(); i++){
                 vhxz[i]->Draw("colsame");
             }
