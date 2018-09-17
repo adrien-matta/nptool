@@ -9,7 +9,7 @@ TCutG* cut_p=NULL;
 ///////////////////////////////////////////////
 void LoadCut()
 {
-  TFile* File_cutp = new TFile("../cut/cut_p.root","READ");
+  TFile* File_cutp = new TFile("cut/cut_p.root","READ");
   cut_p = (TCutG*) File_cutp->FindObjectAny("cut_p");
 }
 
@@ -17,7 +17,7 @@ void LoadCut()
 void LoadChain()
 {
   chain = new TChain("PhysicsTree");
-  chain->Add("../../../Outputs/Analysis/Example4.root");
+  chain->Add("../../Outputs/Analysis/Example4.root");
 }
 
 ////////////////////////////////////////////////
