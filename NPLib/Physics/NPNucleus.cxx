@@ -23,6 +23,7 @@
 
 // NPTOOL headers
 #include "NPNucleus.h"
+#include "NPCore.h"
 using namespace NPL;
 
 
@@ -57,6 +58,31 @@ Nucleus::Nucleus(string isotope){
   SetUp(isotope);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+Nucleus::Nucleus(string name, vector<string> subpart, double binding,double Ex, string SpinParity, double Spin, string Parity, double LifeTime){
+  fName= name;
+  fCharge= 0;
+  fAtomicWeight= 0;
+  unsigned int size = subpart.size();
+  double Mass = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Nucleus N = Nucleus(subpart[i]);
+    Mass+= N.Mass();
+    fAtomicWeight+= N.GetA();
+    fCharge+= N.GetZ(); 
+  }
+
+  Mass-=binding;
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+
+  fExcitationEnergy=Ex;
+  fSpinParity= SpinParity;
+  fSpin= Spin;
+  fParity= Parity;
+  fLifeTime = LifeTime;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::SetUp(string isotope){
   //----------- Constructor Using nubtab12.asc by name----------
   // open the file to read and check if it is open
@@ -376,6 +402,97 @@ double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, dou
     
     return ThetaCM;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<string>& v){
+  // Define the mass as the sum of the mass of the particle named in v
+  unsigned int size = v.size();
+  vector<NPL::Nucleus> N;
+  for(unsigned int i = 0 ; i < size ; i++)
+    N.push_back(NPL::Nucleus(v[i]));
+
+  DefineMassByThreshold(N);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<NPL::Nucleus>& N){
+  // Define the mass as the sum of the mass of the particle defined in N
+  unsigned int size = N.size();
+  double Mass = 0;
+  unsigned int A = 0;
+  unsigned int Z = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Mass+= N[i].Mass();
+    A+= N[i].GetA();
+    Z+= N[i].GetZ(); 
+  }
+  // Check the threshold make any sense (same A, same Z):
+  if(A!=GetA()|| Z!=GetZ()){
+    NPL::SendWarning("NPL::Nucleus","Mass and charge is not conserved in DefineMassByThreshold! Doing no change to nucleus");
+    return;
+  } 
+
+  SetExcitationEnergy(0);
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXn(unsigned int X) const {
+ Nucleus N(GetZ(),GetA()-X);
+  return N.Mass()+X*neutron_mass_c2-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXp(unsigned int X) const {
+ Nucleus N(GetZ()-X,GetA()-X);
+  return N.Mass()+X*proton_mass_c2-Mass();
+  }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSn() const {
+  return GetSXn(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSp() const {
+  return GetSXp(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2n() const {
+  return GetSXn(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2p() const {
+  return GetSXp(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSt() const {
+ Nucleus N(GetZ()-1,GetA()-3);
+ Nucleus A(1,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS3He() const {
+ Nucleus N(GetZ()-2,GetA()-3);
+ Nucleus A(2,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSa() const {
+ Nucleus N(GetZ()-2,GetA()-4);
+ Nucleus A(2,4);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::PrintThreshold() const {
+   cout << GetName() << " thresholds : " << endl;
+   cout << "  Sn   : "  << GetSn()    << " MeV" << endl;
+   cout << "  Sp   : "  << GetSp()    << " MeV" << endl;
+   cout << "  S2n  : "  << GetS2n()   << " MeV" << endl;
+   cout << "  S2p  : "  << GetS2p()   << " MeV" << endl;
+   cout << "  St   : "  << GetSt()    << " MeV" << endl;
+   cout << "  S3He : "  << GetS3He()  << " MeV" << endl;
+   cout << "  Sa   : "  << GetSa()    << " MeV" << endl;
+  }
 
 
 

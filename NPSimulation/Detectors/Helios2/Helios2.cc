@@ -47,7 +47,8 @@
 
 // NPTool header
 #include "Helios2.hh"
-#include "SiliconScorers.hh"
+#include "DSSDScorers.hh"
+#include "InteractionScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -117,9 +118,9 @@ G4LogicalVolume* Helios2::BuildSquareTube(){
         Helios2_NS::SquareTubeSide*0.5,0.5*(Helios2_NS::SquareTubeExcess+Helios2_NS::WaferLength));
 
     G4Tubs* tubs = new G4Tubs("Helios2_Box",0,Helios2_NS::SquareTubeRadius,
-                  (Helios2_NS::SquareTubeExcess+Helios2_NS::WaferLength),0,360*deg);
- 
- 
+        (Helios2_NS::SquareTubeExcess+Helios2_NS::WaferLength),0,360*deg);
+
+
     G4RotationMatrix* R = new G4RotationMatrix();
     G4ThreeVector P(0,0,0);  
     G4SubtractionSolid* sub = new G4SubtractionSolid("Helios2_Sub",box,tubs,R,P);
@@ -149,15 +150,15 @@ G4LogicalVolume* Helios2::BuildSiliconWafer(){
     G4ThreeVector AWPos(0,0,0);
     G4RotationMatrix* AWRot = new G4RotationMatrix();
     new G4PVPlacement(G4Transform3D(*AWRot,AWPos),m_ActiveWafer,
-                      "Helios2_ActiveWafer",m_SiliconWafer, true, 0);
+        "Helios2_ActiveWafer",m_SiliconWafer, true, 0);
     m_ActiveWafer->SetSensitiveDetector(m_Helios2Scorer);
 
     m_SiliconWafer->SetVisAttributes(m_VisPassiveSilicon);
     m_ActiveWafer->SetVisAttributes(m_VisSilicon);
- 
-    }
 
-  
+  }
+
+
   return m_SiliconWafer;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -165,20 +166,20 @@ G4LogicalVolume* Helios2::BuildMagnet(){
   if(!m_Magnet){
     G4Tubs* tubs1 = new G4Tubs("Helios2_MainFull",0,
         Helios2_NS::MagnetOutterRadius,Helios2_NS::MagnetLength*0.5,0,360*deg);
-  
+
     // Inner part of the Soleinoid minus the Target it self (placed in the world)
     G4SubtractionSolid* tubs = new G4SubtractionSolid("Helios_Main",
-                                tubs1, Target::GetTarget()->GetTargetSolid(), new G4RotationMatrix() ,Target::GetTarget()->GetTargetPosition());
+        tubs1, Target::GetTarget()->GetTargetSolid(), new G4RotationMatrix() ,Target::GetTarget()->GetTargetPosition());
 
     G4Tubs* tubs2 = new G4Tubs("Helios2_Mag",Helios2_NS::MagnetInnerRadius,
         Helios2_NS::MagnetOutterRadius,Helios2_NS::MagnetLength*0.5,0,360*deg);
 
     G4Material* Fe= MaterialManager::getInstance()->GetMaterialFromLibrary("Fe");
     G4Material* Vc= MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
-  
+
     m_Magnet= new G4LogicalVolume(tubs,Vc,"logic_Helios2_Main",0,0,0);
     G4LogicalVolume* Mag = new G4LogicalVolume(tubs2,Fe,"logic_Helios2_Magnet",0,0,0);
-    
+
     Mag->SetVisAttributes(m_VisMagnet);
     m_Magnet->SetVisAttributes(G4VisAttributes::Invisible);
     // Place the Solenoid
@@ -188,7 +189,7 @@ G4LogicalVolume* Helios2::BuildMagnet(){
     new G4PVPlacement(G4Transform3D(*MagRot,MagPos),
         Mag,
         "Helios2_Magnet",m_Magnet,false,0);
-  
+
   }
   return m_Magnet;
 }
@@ -252,7 +253,7 @@ void Helios2::ConstructDetector(G4LogicalVolume* world){
   fieldMgr->SetMinimumEpsilonStep( 1*mm);
   fieldMgr->SetMaximumEpsilonStep( 10*m );
   fieldMgr->SetDeltaOneStep( 1 * mm ); 
-  
+
   // Place detectors and support inside it
   for (unsigned short i = 0 ; i < m_Z.size() ; i++) {
     G4ThreeVector DetPos;
@@ -316,50 +317,44 @@ void Helios2::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Helios2::ReadSensitive(const G4Event* event){
-    m_Event->Clear();
+void Helios2::ReadSensitive(const G4Event* ){
+  m_Event->Clear();
 
   ///////////
   // Resistiverimeter scorer
-  NPS::HitsMap<G4double*>* ResistiveHitMap;
-  std::map<G4int, G4double**>::iterator Resistive_itr;
-
-  G4int ResistiveCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Helios2Scorer/Resistive");
-  ResistiveHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(ResistiveCollectionID));
-
-  // Loop on the Resistive map
-  for (Resistive_itr = ResistiveHitMap->GetMap()->begin() ; Resistive_itr != ResistiveHitMap->GetMap()->end() ; Resistive_itr++){
-  G4double* Info = *(Resistive_itr->second);
-  double EBack = RandGauss::shoot(Info[0]+Info[1],Helios2_NS::ResoEnergyBack);
-  double TBack = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
-  double EUp = RandGauss::shoot(Info[1],Helios2_NS::ResoEnergyFront);
-  double TUp = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
-  double EDw = RandGauss::shoot(Info[0],Helios2_NS::ResoEnergyFront);
-  double TDw = RandGauss::shoot(Info[2],Helios2_NS::ResoTime);
-
-  if(EBack>Helios2_NS::EnergyThreshold){
-    m_Event->SetEBack(Info[3],EBack);
-    m_Event->SetTBack(Info[3],TBack);  
+  DSSDScorers::PS_Resistive* Scorer= (DSSDScorers::PS_Resistive*) m_Helios2Scorer->GetPrimitive(0);
+  
+  // Loop on the Back
+  unsigned int sizeBack = Scorer->GetBackMult();
+  for(unsigned int i = 0 ; i < sizeBack ; i++){
+    double EBack = RandGauss::shoot(Scorer->GetEnergyBack(i),Helios2_NS::ResoEnergyBack);
+    double TBack = RandGauss::shoot(Scorer->GetTimeBack(i),Helios2_NS::ResoTime);
+    if(EBack>Helios2_NS::EnergyThreshold){
+      m_Event->SetEBack(Scorer->GetDetectorBack(i),EBack);
+      m_Event->SetTBack(Scorer->GetDetectorBack(i),TBack);  
+    }
   }
-
-  if(EUp>Helios2_NS::EnergyThreshold){
-    m_Event->SetEUp(Info[3],EUp);
-    m_Event->SetTUp(Info[3],TUp);  
+  // Loop on the Up 
+  unsigned int sizeUp = Scorer->GetUpMult();
+  for(unsigned int i = 0 ; i < sizeUp ; i++){
+    double EUp = RandGauss::shoot(Scorer->GetEnergyUp(i),Helios2_NS::ResoEnergyFront);
+    double TUp = RandGauss::shoot(Scorer->GetTimeUp(i),Helios2_NS::ResoTime);
+    if(EUp>Helios2_NS::EnergyThreshold){
+      m_Event->SetEUp(Scorer->GetDetectorUp(i),EUp);
+      m_Event->SetTUp(Scorer->GetDetectorUp(i),TUp);  
+    }
   }
-
-  if(EUp>Helios2_NS::EnergyThreshold){
-    m_Event->SetEUp(Info[3],EUp);
-    m_Event->SetTUp(Info[3],TUp);  
+  
+  // Loop on the Down 
+  unsigned int sizeDown = Scorer->GetDownMult();
+  for(unsigned int i = 0 ; i < sizeDown ; i++){
+    double EDw = RandGauss::shoot(Scorer->GetEnergyDown(i),Helios2_NS::ResoEnergyFront);
+    double TDw = RandGauss::shoot(Scorer->GetTimeDown(i),Helios2_NS::ResoTime);
+    if(EDw>Helios2_NS::EnergyThreshold){
+      m_Event->SetEDw(Scorer->GetDetectorDown(i),EDw);
+      m_Event->SetTDw(Scorer->GetDetectorDown(i),TDw);  
+    }
   }
-
-  if(EDw>Helios2_NS::EnergyThreshold){
-    m_Event->SetEDw(Info[3],EDw);
-    m_Event->SetTDw(Info[3],TDw);  
-  }
-
-  }
-  // clear map for next event
-  ResistiveHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -373,9 +368,12 @@ void Helios2::InitializeScorers() {
     return ;
 
   // Otherwise the scorer is initialised
-  G4VPrimitiveScorer* Resistive= new SILICONSCORERS::PS_Silicon_Resistive("Resistive",1,Helios2_NS::WaferLength,Helios2_NS::WaferWidth,1) ;
+  G4VPrimitiveScorer* Resistive= new DSSDScorers::PS_Resistive("Resistive",1,Helios2_NS::WaferLength,Helios2_NS::WaferWidth,1) ;
   //and register it to the multifunctionnal detector
   m_Helios2Scorer->RegisterPrimitive(Resistive);
+  G4VPrimitiveScorer* Inter = new InteractionScorers::PS_Interactions("Resistive",ms_InterCoord,1) ; 
+  m_Helios2Scorer->RegisterPrimitive(Inter);
+
   G4SDManager::GetSDMpointer()->AddNewDetector(m_Helios2Scorer) ;
 }
 

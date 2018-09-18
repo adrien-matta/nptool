@@ -3025,39 +3025,24 @@ void Microball::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Microball::ReadSensitive(const G4Event* event){
+void Microball::ReadSensitive(const G4Event*){
     m_Event->Clear();
     
     ///////////
     // Calorimeter scorer
-    NPS::HitsMap<G4double*>* CaloHitMap;
-    std::map<G4int, G4double**>::iterator Calo_itr;
-    
-    G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MicroballScorer/Calorimeter");
-    CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-    
-    // Loop on the Calo map
-    for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
+    CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_MicroballScorer->GetPrimitive(0);
+
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
         
-        G4double* Info = *(Calo_itr->second);
-        //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-        // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-        double Energy = RandGauss::shoot(Info[0],Microball_NS::ResoEnergy);
+        double Energy = RandGauss::shoot(Scorer->GetEnergy(i),Microball_NS::ResoEnergy);
         if(Energy>Microball_NS::EnergyThreshold){
-            double Time = RandGauss::shoot(Info[1],Microball_NS::ResoTime);
-            int DetectorNbr = (int) Info[7];
+            double Time = RandGauss::shoot(Scorer->GetTime(i),Microball_NS::ResoTime);
+            int DetectorNbr = Scorer->GetLevel(i)[0];
             m_Event->SetEnergy(DetectorNbr,Energy);
             m_Event->SetTime(DetectorNbr,Time); 
-            
-            ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
         }
     }
-    // clear map for next event
-    CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -3072,7 +3057,7 @@ void Microball::InitializeScorers() {
     
     // Otherwise the scorer is initialised
     vector<int> level; level.push_back(0);
-    G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level, 0) ;
+    G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
     //and register it to the multifunctionnal detector
     m_MicroballScorer->RegisterPrimitive(Calorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_MicroballScorer) ;

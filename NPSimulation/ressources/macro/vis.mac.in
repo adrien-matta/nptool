@@ -49,7 +49,7 @@
 /vis/modeling/trajectories/select DrawByParentID
 
 # To superimpose all of the events from a given run:
-/vis/scene/endOfEventAction accumulate
+/vis/scene/endOfEventAction accumulate 10
 
 # Re-establish auto refreshing and verbosity:
 /vis/viewer/set/autoRefresh true

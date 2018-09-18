@@ -1,0 +1,74 @@
+========================================================================
+NPTool - Nuclear Physics Tool for low energy nuclear physics experiments
+========================================================================
+
+                     --- Example 4 - ACTAR TPC --- 
+
+Example to simulate and analyse experiment using the ACTAR TPC detector
+
+1. SIMULATION
+The simulation is using the special physics list in order to transport
+the drift electron in the drift cage volume of ACTAR.
+The PhysicsListOption.txt file option should be set as follows:
+
+		EmPhysicsList Option4
+		DefaultCutOff 1
+		DriftElectronPhysics 1
+
+
+Other options should be set to 0.
+
+To run the simualtion, do es follow in the NPSimulation folder:
+> npsimulation -D Example4.detector -E Example4.reaction -O Example4
+
+A gui will launch and type
+/run/beamOn 10000 (for example) 
+The simulation is slow due to the transport of the drift electrons and is
+about 3 to 4 evt/sec
+
+One can use the Run.mac file in batch mode in order to speed up the Simulation
+> npsimulation -D Example4.detector -E Example4.reaction -O Example4 -B Run.mac
+
+
+Example4.detector is loacted in Inputs/DetectorConfiguration and enable to 
+choose the gas composition and the pressure for example. In this example 
+we run with iC4H10 gas at 100 mbar.
+It also allows us to add ancilary detector such as silicon detector at 
+forward angle. This is the case is this example.
+
+Example4.reaction is located in Inputs/Event generator and specify the 
+event we want to simulate. In this example we simulate the elastic scattering
+of a 18O entering in ACTAR a 59.4 MeV on a proton target.
+
+The output root file is called Example4.root and will be located in Outputs/Simualtion
+
+2. ANALYSIS
+To analyse the simulated root tree compile the Example4 folder byt running
+> cmake ./
+then
+>make
+
+To run the analysis type in the Example4 folder:
+> npanalysis -R RunToTreat.txt -O Example4
+Or:
+> npanalysis --last-sim -O Example4   
+
+And output root file will be generated and located in Outputs/Analysis.
+If one wants to see the fitted tracks will runnign the analysis, please make sure 
+that the token in configs/ConfigActar.dat called RecoVisu is set to 1:
+RecoVisu= 1
+If this is the case run the hclient.C macro in another terminal's window.
+A canvas should appear with the found tracks and their 3D fit.
+
+3. MACRO
+Sevaral root macro are located in Example4/macro to check the result of the analysis
+and the obtained vertex, angular and energy resolution.
+
+
+
+
+
+
+
+
+

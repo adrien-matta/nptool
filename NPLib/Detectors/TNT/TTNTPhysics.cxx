@@ -16,7 +16,7 @@
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *   
+ *                                                                           *
  *                                                                           *
  *****************************************************************************/
 
@@ -60,12 +60,12 @@ TTNTPhysics::TTNTPhysics()
 void TTNTPhysics::AddDetector(TVector3 , string){
   //cout << "check1" << endl;
   // In That simple case nothing is done
-  // Typically for more complex detector one would calculate the relevant 
+  // Typically for more complex detector one would calculate the relevant
   // positions (stripped silicon) or angles (gamma array)
   m_NumberOfDetectors++;
   //cout << "m_NumberofDetectors is: " << m_NumberOfDetectors << endl;
   //cout <<"test1" << endl;
-} 
+}
 
 ///////////////////////////////////////////////////////////////////////////
 void TTNTPhysics::AddDetector(double R, double Theta, double Phi, string shape){
@@ -74,8 +74,8 @@ void TTNTPhysics::AddDetector(double R, double Theta, double Phi, string shape){
   TVector3 Pos(R*sin(Theta)*cos(Phi),R*sin(Theta)*sin(Phi),R*cos(Theta));
   // Call the cartesian method
   AddDetector(Pos,shape);
-} 
-  
+}
+
 ///////////////////////////////////////////////////////////////////////////
 void TTNTPhysics::BuildSimplePhysicalEvent() {
   BuildPhysicalEvent();
@@ -110,15 +110,15 @@ void TTNTPhysics::BuildPhysicalEvent() {
 	    << " in position map!\n";
 	    exit(1);
 	  }
-	assert(info->second.size() == 3); // error check that the position vector is correct size
+	//assert(info->second.size() == 3); // error check that the position vector is correct size
 	double xpos = info->second[0];
         double ypos = info->second[1];
         double zpos = info->second[2];
-                               
+
         Xpos.push_back(info->second[0]);
 	Ypos.push_back(info->second[1]);
 	Zpos.push_back(info->second[2]);
-        
+
         Theta.push_back(atan(info->second[0]/info->second[2])*180/PI);
         Phi.push_back(atan(info->second[1]/info->second[2])*180/PI);
         Theta_Lab.push_back(atan((pow(pow(info->second[0],2)+pow(info->second[1],2),0.5))/info->second[2])*180/PI);
@@ -149,7 +149,7 @@ void TTNTPhysics::PreTreat() {
     }
   }
 
-  // Time 
+  // Time
   mysize = m_EventData->GetMultTime();
   for (ULong_t i = 0; i < mysize; ++i) {
     Double_t Time= m_EventData->Get_Time(i); //Cal->ApplyCalibration("TNT/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
@@ -194,7 +194,7 @@ void TTNTPhysics::ReadAnalysisConfig() {
     cout << "check5" << endl;
     string name = "ConfigTNT";
     cout << "Test5" << endl;
-    if (LineBuffer.compare(0, name.length(), name) == 0) 
+    if (LineBuffer.compare(0, name.length(), name) == 0)
       ReadingStatus = true;
 
     // loop on tokens and data
@@ -247,7 +247,7 @@ void TTNTPhysics::Clear() {
 void TTNTPhysics::ReadConfiguration(NPL::InputParser parser) {
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TNT");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " detectors found " << endl;
   cout << "check6" << endl;
   vector<string> cart = {"POS","VOXNUM","VOXSIZE","Shape"};
   vector<string> sphe = {"R","Theta","Phi","Shape"};
@@ -256,7 +256,7 @@ void TTNTPhysics::ReadConfiguration(NPL::InputParser parser) {
     if(blocks[i]->HasTokenList(cart)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  TNT " << i+1 <<  endl;
-    
+
       TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
       vector<int> vnumber = blocks[i]->GetVectorInt("VOXNUM");
       if((vnumber.size() != 3) || (vnumber[0]+vnumber[1]+vnumber[2] < 3)) {
@@ -275,7 +275,7 @@ void TTNTPhysics::ReadConfiguration(NPL::InputParser parser) {
       double Widthx = VoxWidth[0]; // x-width of individual cell
       double Widthy = VoxWidth[1]; // y-width
       double Widthz = VoxWidth[2]; // z-width
-      
+
       int VoxNumx = VoxNum[0];     // number of voxels placed in x-dim
       int VoxNumy = VoxNum[1];     // y-dim
       int VoxNumz = VoxNum[2];     // z-dim
@@ -289,7 +289,7 @@ void TTNTPhysics::ReadConfiguration(NPL::InputParser parser) {
       int dummyy = Pos[1];
       int dummyz = Pos[2];
       int detnumber = 0;
-      
+
       // Add WLS spacing
       if(WLSToggle == false) {
         wlsSize = 0;
@@ -378,7 +378,7 @@ void TTNTPhysics::ClearSpectra() {
 map< string , TH1*> TTNTPhysics::GetSpectra() {
   if(m_Spectra)
     return m_Spectra->GetMapHisto();
-  else{ 
+  else{
     cout << "check9" << endl;
     map< string , TH1*> empty;
     cout << "test9" << endl;
@@ -453,4 +453,3 @@ class proxy_TNT{
 
 proxy_TNT p_TNT;
 }
-

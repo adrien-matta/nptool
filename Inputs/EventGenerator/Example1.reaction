@@ -18,6 +18,10 @@ Beam
  %YPhiYProfilePath=
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DefineNucleus 10He
+ SubPart= 8He n n
+ BindingEnergy= 0 MeV
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
  Beam= 11Li
  Target= 2H

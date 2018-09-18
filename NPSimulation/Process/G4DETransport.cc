@@ -123,23 +123,23 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     
     G4MaterialPropertiesTable* aMaterialPropertiesTable =
     aMaterial->GetMaterialPropertiesTable();
-    if (!aMaterialPropertiesTable)
-        return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
-    
-    
-    if(!aMaterialPropertiesTable->ConstPropertyExists("DE_PAIRENERGY") ||
-       !aMaterialPropertiesTable->ConstPropertyExists("DE_TRANSVERSALSPREAD") ||
-       !aMaterialPropertiesTable->ConstPropertyExists("DE_LONGITUDINALSPREAD") ||
-       !aMaterialPropertiesTable->ConstPropertyExists("DE_DRIFTSPEED") )
-        return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
-    
-    
-    // Electron follow the field direction
-    // The field direction is taken from the field manager
-    static G4double* fieldArr = new G4double[6];
-    G4double  Point[4]={x0.x(),x0.y(),x0.z(),t0};
-    G4FieldManager* fMng = pPreStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->
-    GetFieldManager();
+  
+  if (!aMaterialPropertiesTable)
+    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
+  
+
+  if(!aMaterialPropertiesTable->ConstPropertyExists("DE_PAIRENERGY") ||
+     !aMaterialPropertiesTable->ConstPropertyExists("DE_TRANSVERSALSPREAD") ||
+     !aMaterialPropertiesTable->ConstPropertyExists("DE_LONGITUDINALSPREAD") ||
+     !aMaterialPropertiesTable->ConstPropertyExists("DE_DRIFTSPEED") )
+    return G4VDiscreteProcess::PostStepDoIt(aTrack, aStep);
+ 
+
+  // Electron follow the field direction
+  // The field direction is taken from the field manager
+  static G4double* fieldArr = new G4double[6];
+  G4double  Point[4]={x0.x(),x0.y(),x0.z(),t0};
+  G4FieldManager* fMng = pPreStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume()->GetFieldManager();
     
     G4ElectroMagneticField* field = (G4ElectroMagneticField*)fMng->GetDetectorField();
     field->GetFieldValue(Point,fieldArr) ;

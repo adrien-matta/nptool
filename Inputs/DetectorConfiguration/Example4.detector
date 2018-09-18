@@ -1,0 +1,12 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Actar
+ POS= 0 0 0 mm
+ Shape= Square
+ Si= 1
+ VamosSi= 0
+ CsI= 0
+ BeamDump= 0
+ GasMaterial= iC4H10
+ GasFraction= 100
+ Temperature= 295 kelvin
+ Pressure= 0.1 bar

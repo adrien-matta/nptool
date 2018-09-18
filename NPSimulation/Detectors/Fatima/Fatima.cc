@@ -167,7 +167,7 @@ void Fatima::ConstructDetector(G4LogicalVolume* world){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Fatima::ConstructDetector(){
   if(!m_LogicalDetector){
-    
+
     G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
     G4Material* Alu = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
     G4Material* Lead = MaterialManager::getInstance()->GetMaterialFromLibrary("Pb");
@@ -304,41 +304,32 @@ void Fatima::InitializeRootOutput(){
   if(!pTree->FindBranch("Fatima")){
     pTree->Branch("Fatima", "TFatimaData", &m_Event) ;
   } 
- pTree->SetBranchAddress("Fatima", &m_Event) ;
+  pTree->SetBranchAddress("Fatima", &m_Event) ;
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Fatima::ReadSensitive(const G4Event* event){
+void Fatima::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // LaBr3
-  NPS::HitsMap<G4double*>* LaBr3HitMap;
-  std::map<G4int, G4double**>::iterator LaBr3_itr;
-
-  G4int LaBr3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Fatima_LaBr3Scorer/FatimaLaBr3");
-  LaBr3HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(LaBr3CollectionID));
-
-  // Loop on the LaBr3 map
-  for (LaBr3_itr = LaBr3HitMap->GetMap()->begin() ; LaBr3_itr != LaBr3HitMap->GetMap()->end() ; LaBr3_itr++){
-
-    G4double* Info = *(LaBr3_itr->second);
-
-    double Energy = RandGauss::shoot(Info[0], EnergyResolution);
+  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_LaBr3Scorer->GetPrimitive(0);
+  unsigned int size = Scorer->GetMult(); 
+  for(unsigned int i = 0 ; i < size ; i++){
+    vector<unsigned int> level = Scorer->GetLevel(i); 
+    double Energy = RandGauss::shoot(Scorer->GetEnergy(i), EnergyResolution);
 
     if(Energy>EnergyThreshold){
-      double Time = Info[1];
-      int DetectorNbr = (int) Info[2];
+      double Time = Scorer->GetTime(i);
+      int DetectorNbr = level[0];
 
       m_Event->SetFatimaLaBr3E(DetectorNbr,Energy);
       m_Event->SetFatimaLaBr3T(DetectorNbr,Time);
     }
   }
-  // clear map for next event
-  LaBr3HitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -354,7 +345,7 @@ void Fatima::InitializeScorers(){
   if(already_exist) return;
 
   G4VPrimitiveScorer* LaBr3Scorer =
-    new  CALORIMETERSCORERS::PS_Calorimeter("FatimaLaBr3",NestingLevel);
+    new  CalorimeterScorers::PS_Calorimeter("FatimaLaBr3",NestingLevel);
   //and register it to the multifunctionnal detector
   m_LaBr3Scorer->RegisterPrimitive(LaBr3Scorer);
 
@@ -362,24 +353,24 @@ void Fatima::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_LaBr3Scorer) ;
 }
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* Fatima::Construct(){
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* Fatima::Construct(){
   return  (NPS::VDetector*) new Fatima();
- }
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy_nps_fatima{
-   public:
-    proxy_nps_fatima(){
-      NPS::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
-      NPS::DetectorFactory::getInstance()->AddDetector("Fatima",Fatima::Construct);
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_fatima{
+    public:
+      proxy_nps_fatima(){
+        NPS::DetectorFactory::getInstance()->AddToken("Fatima","Fatima");
+        NPS::DetectorFactory::getInstance()->AddDetector("Fatima",Fatima::Construct);
+      }
+  };
 
- proxy_nps_fatima p_nps_fatima;
- }
+  proxy_nps_fatima p_nps_fatima;
+}

@@ -6,14 +6,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@ipno.in2p3.fr       *
+ * Original Author: Pierre Morfouace  contact address: morfouac@ipno.in2p3.fr*
  *                                                                           *
- * Creation Date  : Avril 2015                                           *
+ * Creation Date  : Avril 2015                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe a Modular cylindrical CsI Scintillator           *
- *   Few Material are instantiate and user can choose position and dimension    *
+ *  This class describe a Modular cylindrical CsI Scintillator               *
+ *   Few Material are instantiate and user can choose position and dimension *
  *  but also the adding of a lead plate on the rear side of the detector     *
  *                                                                           *
  *---------------------------------------------------------------------------*
@@ -47,7 +47,7 @@
 #include "ObsoleteGeneralScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
-#include "SiliconScorers.hh"
+#include "InteractionScorers.hh"
 #include "PhotoDiodeScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPSDetectorFactory.hh"
@@ -453,29 +453,15 @@ void CsI::ReadSensitive(const G4Event* event){
     m_Event->Clear();
     
     // CsI //
-    NPS::HitsMap<G4double*>* CsIHitMap;
-    std::map<G4int, G4double**>::iterator CsI_itr;
-    G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("CsIScorer/CsI");
-    CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
-    
-    // Loop on the CsI map
-    for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){
-        G4double* Info = *(CsI_itr->second);
-        double E_CsI = RandGauss::shoot(Info[0],Info[0]*ResoCsI/100);
-        //cout << "Energy CsI " << endl;
-        //cout << E_CsI << endl;
+    CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_CsIScorer->GetPrimitive(0);
+
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
+        vector<unsigned int> level = Scorer->GetLevel(i); 
+        double E_CsI = RandGauss::shoot(Scorer->GetEnergy(i),Scorer->GetEnergy(i)*ResoCsI/100);
         m_Event->SetCsIEEnergy(E_CsI);
-        m_Event->SetENumber(Info[7]);
-        
-        
-        ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-        ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-        ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-        ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-        ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+        m_Event->SetENumber(level[i]);
     }
-    // Clear Map for next event
-    CsIHitMap->clear();
     
     // PhotoDiode //
     NPS::HitsMap<G4double*>* PhotoDiodeHitMap;
@@ -517,9 +503,14 @@ void CsI::InitializeScorers() {
     
     if(already_exist) return ;
     
-    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("CsI",NestingLevel);
+    G4VPrimitiveScorer* CsIScorer= new CalorimeterScorers::PS_Calorimeter("CsI",NestingLevel);
     m_CsIScorer->RegisterPrimitive(CsIScorer);
     
+    
+    G4VPrimitiveScorer* Interaction= new InteractionScorers::PS_Interactions("InteractionCsI",ms_InterCoord,1);
+    m_CsIScorer->RegisterPrimitive(Interaction);
+    
+
     G4VPrimitiveScorer* PDScorer = new PHOTODIODESCORERS::PS_PhotoDiode_Rectangle("PhotoDiode",0,
                                                                                   PhotoDiodeFace,
                                                                                   PhotoDiodeFace,
@@ -529,19 +520,6 @@ void CsI::InitializeScorers() {
     
     G4SDManager::GetSDMpointer()->AddNewDetector(m_PDScorer) ;
     G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer) ;
-    
-    
-    /*G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("CsINumber","CsI", 0) ;
-     G4VPrimitiveScorer* Energy = new PSEnergy("Energy","CsI", 0)                   ;
-     G4VPrimitiveScorer* Time   = new PSTOF("Time","CsI", 0)                         ;
-     G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","CsI", 0);
-     //and register it to the multifunctionnal detector
-     m_CsIScorer->RegisterPrimitive(DetNbr)                         ;
-     m_CsIScorer->RegisterPrimitive(Energy)                         ;
-     m_CsIScorer->RegisterPrimitive(Time)                            ;
-     m_CsIScorer->RegisterPrimitive(InteractionCoordinatesZ);
-     G4SDManager::GetSDMpointer()->AddNewDetector(m_CsIScorer) ;
-     G4SDManager::GetSDMpointer()->AddNewDetector(m_PDScorer) ;*/
     
 }
 ////////////////////////////////////////////////////////////////

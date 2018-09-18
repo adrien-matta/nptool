@@ -26,6 +26,7 @@
 #include "NPEnergyLoss.h"
 #include "NPReaction.h"
 #include "NPTrack.h"
+#include "TReactionConditions.h"
 
 
 
@@ -33,35 +34,39 @@ class Analysis: public NPL::VAnalysis{
 public:
     Analysis();
     ~Analysis();
-    
+
 public:
     void Init();
     void TreatEvent();
     void End();
     void InitOutputBranch();
+    void InitInputBranch();
     void ReInitValue();
     void GetMayaSiHitPosition(double xm, double xh, double ym, double yh, double zm, double zh);
 
-    
-    
+
+
     static NPL::VAnalysis* Construct();
-    
+
 public:
     double DriftVelocity;
     double PadSizeX;
     double PadSizeY;
     int NumberOfPadsX;
     int NumberOfPadsY;
-    
-    
+
+
 private:
-    double fSiDistanceX=128+47;
-    
+    double fSiDistanceX=256+47;
+
     TActarPhysics* Actar;
-    
+
     vector<NPL::Track> vTrack;
-    
+
     double BeamAngle;
+    double InitXVertex;
+    double InitE3;
+    double InitTheta3;
     vector<double> vScalar;
     vector<double> ThetaLab;
     vector<double> ELab;
@@ -75,11 +80,13 @@ private:
     vector<double> ZVertex;
     vector<double> SiPosY;
     vector<double> SiPosZ;
-    
+
     NPL::EnergyLoss EnergyLoss_3He;
     NPL::EnergyLoss EnergyLoss_17C;
     NPL::Reaction* TheReaction;
-    
-    
+
+    TReactionConditions* ReactionConditions;
+
+
 };
 #endif

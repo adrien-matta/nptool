@@ -41,7 +41,8 @@
 // NPS
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
-#include "SiliconScorers.hh"
+#include "InteractionScorers.hh"
+#include "DSSDScorers.hh"
 #include "CalorimeterScorers.hh"
 #include "NPOptionManager.h"
 // NPL
@@ -717,7 +718,7 @@ void MUST2Array::InitializeRootOutput(){
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void MUST2Array::ReadSensitive(const G4Event* event){
+void MUST2Array::ReadSensitive(const G4Event*){
   G4String DetectorNumber;
   m_Event->Clear();
 
@@ -727,33 +728,25 @@ void MUST2Array::ReadSensitive(const G4Event* event){
 
   /////////////////////
   // Read the Scorer associate to the Silicon Strip
-  SILICONSCORERS::PS_Silicon_Images* SiScorer = (SILICONSCORERS::PS_Silicon_Images*) m_StripScorer->GetPrimitive(0);
-        
+  DSSDScorers::PS_Images* SiScorer = (DSSDScorers::PS_Images*) m_StripScorer->GetPrimitive(0);
+
   bool SiScoredHit; // flag true if first stage scores a hit above threshold 
   set<int> trig; // list of telescope that got a Si trigger
-  vector<unsigned int> indexes = SiScorer->GetIndexes();
-  unsigned int size = indexes.size();
-  
-  for(unsigned int i = 0 ;i<size;i++){
-    SiScoredHit= false;
-    unsigned int index = indexes[i];
-    double energy = SiScorer->GetEnergy(index);
+  unsigned int sizeFront = SiScorer->GetFrontMult();
+  unsigned int sizeBack  = SiScorer->GetBackMult();
+
+  for(unsigned int i = 0 ; i < sizeFront ; i++){
+    double energy  = SiScorer->GetEnergyFront(i);
     double energyX = RandGauss::shoot(energy, ResoStrip);
-    double energyY= RandGauss::shoot(energy, ResoStrip);
-    int detectorNbr = SiScorer->GetDetectorNbr(index); 
-    double time = SiScorer->GetTime(index);
-    double InterPos_X = SiScorer->GetX(index) ;
-    double InterPos_Y = SiScorer->GetY(index) ;
-    double InterPos_Z = SiScorer->GetZ(index) ;
-    double InterPos_Theta = SiScorer->GetTheta(index) ;
-    double InterPos_Phi = SiScorer->GetPhi(index) ;
+    int detectorNbr = SiScorer->GetDetectorFront(i); 
+    double time = SiScorer->GetTimeFront(i);
     // X
     if(energyX>0.1*keV){ // above threshold
       SiScoredHit=true;
       // Pixel value at interaction point
       unsigned int a,r,g,b;
       //  pixel
-      SiScorer->GetARGBFront(indexes[i],a,r,g,b);
+      SiScorer->GetARGBFront(i,a,r,g,b);
       b=b+2;
       g=g+2;
       if(r==0){
@@ -786,18 +779,26 @@ void MUST2Array::ReadSensitive(const G4Event* event){
             m_Event->SetStripXE(detectorNbr,g+1,NPL::EnergyToADC(energyX,0,63,8192,16384)) ;  
             // Time 
             double timeX = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
-            m_Event->SetStripXT(detectorNbr,b+1,NPL::EnergyToADC(timeX,0,1000,8192,16384));
-           }
+            m_Event->SetStripXT(detectorNbr,g+1,NPL::EnergyToADC(timeX,0,1000,8192,16384));
+          }
         }
       }
     }
+  };
+
+  for(unsigned int i = 0 ; i < sizeBack ; i++){
+    double energy  = SiScorer->GetEnergyBack(i);
+    double energyY = RandGauss::shoot(energy, ResoStrip);
+    int detectorNbr = SiScorer->GetDetectorBack(i); 
+    double time = SiScorer->GetTimeBack(i);
+
     // Y
     if(energyY>0.1*keV){ // above threshold
       SiScoredHit=true;
       // Pixel value at interaction point
       unsigned int a,r,g,b;
       //  pixel
-      SiScorer->GetARGBBack(indexes[i],a,r,g,b);
+      SiScorer->GetARGBBack(i,a,r,g,b);
       b=b+2;
       g=g+2;
       if(r==0){
@@ -807,7 +808,7 @@ void MUST2Array::ReadSensitive(const G4Event* event){
         // Time 
         double timeY = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
         m_Event->SetStripYT(detectorNbr,b+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
-       }      
+      }      
       else{ // Interstrip Y, keep both strip with shared energy
         double rand = G4UniformRand();
         double energyY1 = rand*energyY;
@@ -829,70 +830,39 @@ void MUST2Array::ReadSensitive(const G4Event* event){
           m_Event->SetStripYE(detectorNbr,g+1,NPL::EnergyToADC(energyY2,0,63,8192,0));  
           // Time 
           double timeY = TimeOffset - RandGauss::shoot(time, ResoTimeMust);
-          m_Event->SetStripYT(detectorNbr,b+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
+          m_Event->SetStripYT(detectorNbr,g+1,NPL::EnergyToADC(timeY,0,1000,8192,16384));
         } 
       }
     }
- 
-    // If event passes through first stage fill the Interaction Coordinates   
-    if (SiScoredHit){
-      //Always calculated with respect to (0,0,0)
-      ms_InterCoord->SetDetectedPositionX(InterPos_X) ;
-      ms_InterCoord->SetDetectedPositionY(InterPos_Y) ;
-      ms_InterCoord->SetDetectedPositionZ(InterPos_Z) ;
-      ms_InterCoord->SetDetectedAngleTheta(InterPos_Theta/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(InterPos_Phi/deg) ;
-    }
-    
   }
 
-  // Si(Li)
-  NPS::HitsMap<G4double*>* SiLiHitMap;
-  std::map<G4int, G4double**>::iterator SiLi_itr;
+  // Look for 2nd and 3rd stage only if 1st stage is hit
+  if(SiScoredHit){
+    // SiLi //
+    CalorimeterScorers::PS_Calorimeter* SiLiScorer= (CalorimeterScorers::PS_Calorimeter*) m_SiLiScorer->GetPrimitive(0);
 
-  G4int SiLiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiScorer");
-  SiLiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiLiCollectionID));
+    unsigned int sizeSiLi = SiLiScorer->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeSiLi ; i++){
+     double ESiLi = RandGauss::shoot(SiLiScorer->GetEnergy(i),ResoSiLi);
+     vector<unsigned int> level = SiLiScorer->GetLevel(i);
+     m_Event->SetSiLiE(level[0],level[1],NPL::EnergyToADC(ESiLi,0,250,8192,16384));
+     double timeSiLi = RandGauss::shoot(SiLiScorer->GetTime(i),ResoTimeMust);
+     m_Event->SetSiLiT(level[0],level[1],NPL::EnergyToADC(timeSiLi,0,1000,16384,8192));
 
-  // CsI
-  NPS::HitsMap<G4double*>* CsIHitMap;
-  std::map<G4int, G4double**>::iterator CsI_itr;
+    } 
+   
+    // CsI //
+    CalorimeterScorers::PS_Calorimeter* CsIScorer= (CalorimeterScorers::PS_Calorimeter*) m_CsIScorer->GetPrimitive(0);
 
-  G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsIScorer");
-  CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
-
-
-  // Look for SiLi data in Trigg Telescope
-  std::set<int>::iterator itr;
-  for(itr=trig.begin();itr!=trig.end();itr++){
-    for(SiLi_itr = SiLiHitMap->GetMap()->begin(); SiLi_itr!=SiLiHitMap->GetMap()->end() ; SiLi_itr++){
-      G4double* Info = *(SiLi_itr->second);
-      if(Info[7]==*itr){//matching telescope number
-        double ESiLi = RandGauss::shoot(Info[0],ResoSiLi);
-        m_Event->SetSiLiE(Info[7],Info[8],NPL::EnergyToADC(ESiLi,0,250,8192,16384));
-        double timeSiLi = RandGauss::shoot(Info[1],ResoTimeMust);
-        m_Event->SetSiLiT(Info[7],Info[8],NPL::EnergyToADC(timeSiLi,0,1000,16384,8192));
-      }
-    }
+    unsigned int sizeCsI = CsIScorer->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeCsI ; i++){
+     double ECsI = RandGauss::shoot(CsIScorer->GetEnergy(i),ResoCsI);
+     vector<unsigned int> level = CsIScorer->GetLevel(i);
+     m_Event->SetCsIE(level[0],level[1],NPL::EnergyToADC(ECsI,0,250,8192,16384));
+     double timeCsI = RandGauss::shoot(CsIScorer->GetTime(i),ResoTimeMust);
+     m_Event->SetCsIT(level[0],level[1],NPL::EnergyToADC(timeCsI,0,1000,16384,8192));
+    } 
   }
-
-  // Look for CsI data in Trigg Telescope
-  for(itr=trig.begin();itr!=trig.end();itr++){
-    for(CsI_itr = CsIHitMap->GetMap()->begin(); CsI_itr!=CsIHitMap->GetMap()->end() ; CsI_itr++){
-      G4double* Info = *(CsI_itr->second);
-      
-      if(Info[7]==*itr){//matching telescope number
-        double ECsI = RandGauss::shoot(Info[0],ResoCsI);
-        m_Event->SetCsIE(Info[7],Info[8],NPL::EnergyToADC(ECsI,0,250,8192,16384));
-        double timeCsI = RandGauss::shoot(Info[1],ResoTimeMust);
-        m_Event->SetCsIT(Info[7],Info[8],NPL::EnergyToADC(timeCsI,0,1000,16384,8192));
-      }
-    }
-  }
-
-  SiScorer->clear();
-  // clear map for next event
-  SiLiHitMap->clear() ;
-  CsIHitMap->clear() ;
 }
 
 
@@ -909,20 +879,27 @@ void MUST2Array::InitializeScorers() {
   if(already_exist) return; 
 
   string nptool = getenv("NPTOOL");
-  G4VPrimitiveScorer* SiScorer = new SILICONSCORERS::PS_Silicon_Images("SiScorer",nptool+"/NPLib/Detectors/MUST2/ressources/maskFront.png",nptool+"/NPLib/Detectors/MUST2/ressources/maskBack.png",0.01,0.01,0,0,0xffff0000,0);
+  G4VPrimitiveScorer* SiScorer = 
+    new DSSDScorers::PS_Images("SiScorer",nptool+"/NPLib/Detectors/MUST2/ressources/maskFront.png",nptool+"/NPLib/Detectors/MUST2/ressources/maskBack.png",0.01,0.01,0,0,0xffff0000,0);
+
+  G4VPrimitiveScorer* InterScorer = new InteractionScorers::PS_Interactions("SiScorer",ms_InterCoord,0);
+
 
   //and register it to the multifunctionnal detector
   m_StripScorer->RegisterPrimitive(SiScorer);
+  m_StripScorer->RegisterPrimitive(InterScorer);
+
+
   //	SiLi Associate Scorer
   vector<int> SiLi_nesting={3,0};
   G4VPrimitiveScorer* SiLiScorer= 
-    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("SiLiScorer",SiLi_nesting) ;
+    new CalorimeterScorers::PS_Calorimeter("SiLiScorer",SiLi_nesting) ;
   m_SiLiScorer->RegisterPrimitive(SiLiScorer);
 
   //	CsI Associate Scorer 
   vector<int> CsI_nesting = {2,0};
   G4VPrimitiveScorer* CsIScorer= 
-    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("CsIScorer",CsI_nesting, 0) 	;
+    new CalorimeterScorers::PS_Calorimeter("CsIScorer",CsI_nesting, 0) 	;
   m_CsIScorer->RegisterPrimitive(CsIScorer) ;
 
   //	Add All Scorer to the Global Scorer Manager

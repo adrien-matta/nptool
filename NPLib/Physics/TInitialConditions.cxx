@@ -38,7 +38,7 @@ TInitialConditions::~TInitialConditions(){
 ////////////////////////////////////////////////////////////////////////////////
 void TInitialConditions::Clear(){
   // Incident beam parameter
-  fIC_Incident_Particle_Name.clear();
+  fIC_Incident_Particle_Name="";
   fIC_Incident_Emittance_ThetaX = -1;
   fIC_Incident_Emittance_PhiY = -1;
   fIC_Incident_Emittance_Theta = -1;

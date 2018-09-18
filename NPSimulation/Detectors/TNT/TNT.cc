@@ -357,8 +357,6 @@ void TNT::ReadSensitive(const G4Event* event){
       // cout << DetectorNbr << " " << Energy << " " << Time << " " << endl;
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
