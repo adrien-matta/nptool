@@ -44,7 +44,7 @@
 
 // NPTool header
 #include "TNT.hh"
-#include "CalorimeterScorers.hh"
+#include "NeutronDetectorScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -296,24 +296,62 @@ void TNT::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void TNT::ReadSensitive(const G4Event* event){
+
+	auto ConvertToLight = [](double edep, int A, int Z){
+		double light = edep;
+		if(A == 0 && abs(Z) == 1) { // electron or positron
+			light = edep;
+		}
+		else if(A >= 1 && Z == 1) { // p,d,t (NOTE - only correct for p!)
+			light = 0.83*edep-2.82*(1-exp(-0.25*pow(edep,0.93)));
+		}
+		else if(A >= 3 && Z == 2) {  // 3He, alpha
+			light = 0.41*edep-5.9*(1-exp(-0.065*pow(edep,1.01)));
+		}
+		else if(Z == 3)  { // Li
+			light = 0.1795*( edep );   // Obtained from EXP fit of measured leading coeffs
+		}
+		else if(Z == 4) { // Be
+			light = 0.0821*( edep );   // Obtained from EXP fit of measured leading coeffs
+		}
+		else if(Z == 5) { // B
+			light = 0.0375*( edep );  // Obtained from EXP fit of measured leading coeffs
+		}
+		else if(Z == 6) { // Carbon
+			light = 0.017*( edep );
+		}
+
+		return light > 0 ? light : 0;
+	};
+	
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  NPS::HitsMap<NEUTRONDETECTORSCORERS::StepInfo>* CaloHitMap;
+  std::map<G4int, NEUTRONDETECTORSCORERS::StepInfo*>::iterator Calo_itr;
 
   G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TNTScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
+  CaloHitMap = (NPS::HitsMap<NEUTRONDETECTORSCORERS::StepInfo>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
 
   // Loop on the Calo map
   for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
 
-    G4double* Info = *(Calo_itr->second);
+    vector<double> Info = Calo_itr->second->Infos;
     double Energy = Info[0]; //RandGauss::shoot(Info[0],TNT_NS::ResoEnergy);
+
+		if(Calo_itr->second->ProcessName == "menateR_neutron") {
+			//
+			// Convert Energy -> Light (Quenching)
+			double light = ConvertToLight(Energy, Calo_itr->second->Particle_A,
+																		 Calo_itr->second->Particle_Z);
+
+			Energy = RandGauss::shoot(light, light*sqrt(light*27000)/27000);
+		}
+		
     if(Energy>TNT_NS::EnergyThreshold){
       double Time = Info[1];  //RandGauss::shoot(Info[1],TNT_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      int DetectorNbr = (int) Info[7];
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time); 
       // cout << DetectorNbr << " " << Energy << " " << Time << " " << endl;
@@ -335,7 +373,7 @@ void TNT::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new NEUTRONDETECTORSCORERS::PS_NeutronDetector("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
   m_TNTScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_TNTScorer) ;
