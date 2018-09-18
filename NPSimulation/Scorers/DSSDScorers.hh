@@ -87,12 +87,12 @@ namespace DSSDScorers {
 
     public:
       vector<DSSDData>::iterator find(const unsigned int& index) ;
-      void clear(){m_Data.clear();} ;
-      vector<DSSDData>::iterator end() {return m_Data.end();};
-      vector<DSSDData>::iterator begin() {return m_Data.begin();};
-      unsigned int size() {return m_Data.size();};
-      void Add(const unsigned int& index,const double& Energy) {find(index)->Add(Energy);};
-      void Set(const double& Energy, const double& Time, const unsigned int& Strip, const unsigned int& Detector) {m_Data.push_back(DSSDData(Energy,Time,Strip,Detector));};
+      inline void clear(){m_Data.clear();} ;
+      inline vector<DSSDData>::iterator end() {return m_Data.end();};
+      inline vector<DSSDData>::iterator begin() {return m_Data.begin();};
+      inline unsigned int size() {return m_Data.size();};
+      inline void Add(const unsigned int& index,const double& Energy) {find(index)->Add(Energy);};
+      inline void Set(const double& Energy, const double& Time, const unsigned int& Strip, const unsigned int& Detector) {m_Data.push_back(DSSDData(Energy,Time,Strip,Detector));};
       DSSDData* operator[](const unsigned int& i){return &m_Data[i];};
   };
 
@@ -139,16 +139,16 @@ namespace DSSDScorers {
       unsigned int t_PixelBack;
 
     public: // information accessor
-      unsigned int GetFrontMult() {return m_HitFront.size();};
-      unsigned int GetStripFront(const unsigned int& i){return m_HitFront[i]->GetStrip();}; 
-      unsigned int GetDetectorFront(const unsigned int& i){return m_HitFront[i]->GetDetector();};
-      double GetEnergyFront(const unsigned int& i){return m_HitFront[i]->GetEnergy();};
-      double GetTimeFront(const unsigned int& i){return m_HitFront[i]->GetTime();};
-      unsigned int GetBackMult() {return m_HitBack.size();};
-      unsigned int GetStripBack(const unsigned int& i){return m_HitBack[i]->GetStrip();}; 
-      unsigned int GetDetectorBack(const unsigned int& i){return m_HitBack[i]->GetDetector();};
-      double GetEnergyBack(const unsigned int& i){return m_HitBack[i]->GetEnergy();};
-      double GetTimeBack(const unsigned int& i){return m_HitBack[i]->GetTime();};
+      inline unsigned int GetFrontMult() {return m_HitFront.size();};
+      inline unsigned int GetStripFront(const unsigned int& i){return m_HitFront[i]->GetStrip();}; 
+      inline unsigned int GetDetectorFront(const unsigned int& i){return m_HitFront[i]->GetDetector();};
+      inline double GetEnergyFront(const unsigned int& i){return m_HitFront[i]->GetEnergy();};
+      inline double GetTimeFront(const unsigned int& i){return m_HitFront[i]->GetTime();};
+      inline unsigned int GetBackMult() {return m_HitBack.size();};
+      inline unsigned int GetStripBack(const unsigned int& i){return m_HitBack[i]->GetStrip();}; 
+      inline unsigned int GetDetectorBack(const unsigned int& i){return m_HitBack[i]->GetDetector();};
+      inline double GetEnergyBack(const unsigned int& i){return m_HitBack[i]->GetEnergy();};
+      inline double GetTimeBack(const unsigned int& i){return m_HitBack[i]->GetTime();};
 
       void GetARGBFront(unsigned int& i,unsigned int& a,unsigned int& r,unsigned int& g,unsigned int& b); 
       void GetARGBBack(unsigned int& i,unsigned int& a,unsigned int& r,unsigned int& g,unsigned int& b);
@@ -198,16 +198,16 @@ namespace DSSDScorers {
       unsigned int t_StripWidthNumber;
 
     public:
-      unsigned int GetLengthMult() {return m_HitLength.size();};
-      unsigned int GetStripLength(const unsigned int& i){return m_HitLength[i]->GetStrip();};
-      unsigned int GetDetectorLength(const unsigned int& i){return m_HitLength[i]->GetDetector();};
-      double GetEnergyLength(const unsigned int& i){return m_HitLength[i]->GetEnergy();};
-      double GetTimeLength(const unsigned int& i){return m_HitLength[i]->GetTime();};
-      unsigned int GetWidthMult() {return m_HitWidth.size();};
-      unsigned int GetStripWidth(const unsigned int& i){return m_HitWidth[i]->GetStrip();};
-      unsigned int GetDetectorWidth(const unsigned int& i){return m_HitWidth[i]->GetDetector();};
-      double GetEnergyWidth(const unsigned int& i){return m_HitWidth[i]->GetEnergy();};
-      double GetTimeWidth(const unsigned int& i){return m_HitWidth[i]->GetTime();};
+      inline unsigned int GetLengthMult() {return m_HitLength.size();};
+      inline unsigned int GetStripLength(const unsigned int& i){return m_HitLength[i]->GetStrip();};
+      inline unsigned int GetDetectorLength(const unsigned int& i){return m_HitLength[i]->GetDetector();};
+      inline double GetEnergyLength(const unsigned int& i){return m_HitLength[i]->GetEnergy();};
+      inline double GetTimeLength(const unsigned int& i){return m_HitLength[i]->GetTime();};
+      inline unsigned int GetWidthMult() {return m_HitWidth.size();};
+      inline unsigned int GetStripWidth(const unsigned int& i){return m_HitWidth[i]->GetStrip();};
+      inline unsigned int GetDetectorWidth(const unsigned int& i){return m_HitWidth[i]->GetDetector();};
+      inline double GetEnergyWidth(const unsigned int& i){return m_HitWidth[i]->GetEnergy();};
+      inline double GetTimeWidth(const unsigned int& i){return m_HitWidth[i]->GetTime();};
 
 
     public:
@@ -266,21 +266,21 @@ namespace DSSDScorers {
       unsigned int t_StripQuadrantNumber;
 
     public:
-      unsigned int GetRingMult() {return m_HitRing.size();};
-      unsigned int GetStripRing(const unsigned int& i){return m_HitRing[i]->GetStrip();}; 
-      unsigned int GetDetectorRing(const unsigned int& i){return m_HitRing[i]->GetDetector();};
-      double GetEnergyRing(const unsigned int& i){return m_HitRing[i]->GetEnergy();};
-      double GetTimeRing(const unsigned int& i){return m_HitRing[i]->GetTime();};
-      unsigned int GetSectorMult() {return m_HitSector.size();};
-      unsigned int GetStripSector(const unsigned int& i){return m_HitSector[i]->GetStrip();}; 
-      unsigned int GetDetectorSector(const unsigned int& i){return m_HitSector[i]->GetDetector();};
-      double GetEnergySector(const unsigned int& i){return m_HitSector[i]->GetEnergy();};
-      double GetTimeSector(const unsigned int& i){return m_HitSector[i]->GetTime();};
-      unsigned int GetQuadrantMult() {return m_HitQuadrant.size();};
-      unsigned int GetStripQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetStrip();}; 
-      unsigned int GetDetectorQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetDetector();};
-      double GetEnergyQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetEnergy();};
-      double GetTimeQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetTime();};
+      inline unsigned int GetRingMult() {return m_HitRing.size();};
+      inline unsigned int GetStripRing(const unsigned int& i){return m_HitRing[i]->GetStrip();}; 
+      inline unsigned int GetDetectorRing(const unsigned int& i){return m_HitRing[i]->GetDetector();};
+      inline double GetEnergyRing(const unsigned int& i){return m_HitRing[i]->GetEnergy();};
+      inline double GetTimeRing(const unsigned int& i){return m_HitRing[i]->GetTime();};
+      inline unsigned int GetSectorMult() {return m_HitSector.size();};
+      inline unsigned int GetStripSector(const unsigned int& i){return m_HitSector[i]->GetStrip();}; 
+      inline unsigned int GetDetectorSector(const unsigned int& i){return m_HitSector[i]->GetDetector();};
+      inline double GetEnergySector(const unsigned int& i){return m_HitSector[i]->GetEnergy();};
+      inline double GetTimeSector(const unsigned int& i){return m_HitSector[i]->GetTime();};
+      inline unsigned int GetQuadrantMult() {return m_HitQuadrant.size();};
+      inline unsigned int GetStripQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetStrip();}; 
+      inline unsigned int GetDetectorQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetDetector();};
+      inline double GetEnergyQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetEnergy();};
+      inline double GetTimeQuadrant(const unsigned int& i){return m_HitQuadrant[i]->GetTime();};
 
     private: // Needed for intermediate calculation (avoid multiple instantiation in Processing Hit)
       G4ThreeVector m_uz ;
@@ -335,21 +335,21 @@ namespace DSSDScorers {
       unsigned int t_StripWidthNumber;
       unsigned int t_Index;
     public:
-      unsigned int GetUpMult() {return m_HitUp.size();};
-      unsigned int GetStripUp(const unsigned int& i){return m_HitUp[i]->GetStrip();}; 
-      unsigned int GetDetectorUp(const unsigned int& i){return m_HitUp[i]->GetDetector();};
-      double GetEnergyUp(const unsigned int& i){return m_HitUp[i]->GetEnergy();};
-      double GetTimeUp(const unsigned int& i){return m_HitUp[i]->GetTime();};
-      unsigned int GetDownMult() {return m_HitDown.size();};
-      unsigned int GetStripDown(const unsigned int& i){return m_HitDown[i]->GetStrip();}; 
-      unsigned int GetDetectorDown(const unsigned int& i){return m_HitDown[i]->GetDetector();};
-      double GetEnergyDown(const unsigned int& i){return m_HitDown[i]->GetEnergy();};
-      double GetTimeDown(const unsigned int& i){return m_HitDown[i]->GetTime();};
-      unsigned int GetBackMult() {return m_HitBack.size();};
-      unsigned int GetStripBack(const unsigned int& i){return m_HitBack[i]->GetStrip();}; 
-      unsigned int GetDetectorBack(const unsigned int& i){return m_HitBack[i]->GetDetector();};
-      double GetEnergyBack(const unsigned int& i){return m_HitBack[i]->GetEnergy();};
-      double GetTimeBack(const unsigned int& i){return m_HitBack[i]->GetTime();};
+      inline unsigned int GetUpMult() {return m_HitUp.size();};
+      inline unsigned int GetStripUp(const unsigned int& i){return m_HitUp[i]->GetStrip();}; 
+      inline unsigned int GetDetectorUp(const unsigned int& i){return m_HitUp[i]->GetDetector();};
+      inline double GetEnergyUp(const unsigned int& i){return m_HitUp[i]->GetEnergy();};
+      inline double GetTimeUp(const unsigned int& i){return m_HitUp[i]->GetTime();};
+      inline unsigned int GetDownMult() {return m_HitDown.size();};
+      inline unsigned int GetStripDown(const unsigned int& i){return m_HitDown[i]->GetStrip();}; 
+      inline unsigned int GetDetectorDown(const unsigned int& i){return m_HitDown[i]->GetDetector();};
+      inline double GetEnergyDown(const unsigned int& i){return m_HitDown[i]->GetEnergy();};
+      inline double GetTimeDown(const unsigned int& i){return m_HitDown[i]->GetTime();};
+      inline unsigned int GetBackMult() {return m_HitBack.size();};
+      inline unsigned int GetStripBack(const unsigned int& i){return m_HitBack[i]->GetStrip();}; 
+      inline unsigned int GetDetectorBack(const unsigned int& i){return m_HitBack[i]->GetDetector();};
+      inline double GetEnergyBack(const unsigned int& i){return m_HitBack[i]->GetEnergy();};
+      inline double GetTimeBack(const unsigned int& i){return m_HitBack[i]->GetTime();};
 
 
   };

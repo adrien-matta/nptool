@@ -14,7 +14,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  AnnularTelescope simulation                               *
+ *  This class describe  AnnularTelescope simulation                         *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -84,7 +84,7 @@ public:
 		G4int detector; G4double energy; G4double time;
 		G4double x; G4double y; G4double z;
 	};
-	void ReadScorer(const G4Event* event, const char* scorerName,
+	void ReadScorer(const G4Event* event, const string& scorerName,
 									std::vector<HitInfo_t>& hits);
 	
 	// Fill NPL CsI Data

@@ -194,40 +194,22 @@ void AnnularTelescope::InitializeRootOutput(){
 // Read scorer
 // Helper for ReadSensitive()
 void AnnularTelescope::ReadScorer(
-	const G4Event* event, const char* scorerName,
+	const G4Event* , const string& scorerName,
 	std::vector<HitInfo_t>& hits) {
-	
-	NPS::HitsMap<G4double*>* CaloHitMap;
-	std::map<G4int, G4double**>::iterator Calo_itr;
+  CalorimeterScorers::PS_Calorimeter* Scorer=0;
+   if(scorerName =="AnnularTelescopeScorer_CsI/Calorimeter_CsI" )
+    Scorer= (CalorimeterScorers::PS_Calorimeter*) m_AnnularTelescopeScorer_CsI->GetPrimitive(0);
+   else if (scorerName == "AnnularTelescopeScorer_Si/Calorimeter_Si")
+    Scorer= (CalorimeterScorers::PS_Calorimeter*) m_AnnularTelescopeScorer_Si->GetPrimitive(0);
 
-	G4int CaloCollectionID = 
-		G4SDManager::GetSDMpointer()->GetCollectionID(scorerName);
-	CaloHitMap = (NPS::HitsMap<G4double*>*)(
-		event->GetHCofThisEvent()->GetHC(CaloCollectionID) );
-
-	// Loop on the Calo map
-	for(const auto& hit : *(CaloHitMap->GetMap()) ) {
-		// Read Hit Information
-		//   Infos[0] = aStep->GetTotalEnergyDeposit();
-		//   Infos[1] = aStep->GetPreStepPoint()->GetGlobalTime();
-		//   Infos[2] = m_Position.x();
-		//   Infos[3] = m_Position.y();
-		//   Infos[4] = m_Position.z();
-		//   Infos[5] = m_Position.theta();
-		//   Infos[6] = m_Position.phi();
-		//   Infos[7] = Detector Number
+   unsigned int size = Scorer->GetMult(); 
+   for(unsigned int i = 0 ; i < size ; i++){
+        vector<unsigned int> level = Scorer->GetLevel(i); 
 		hits.push_back(HitInfo_t());
-		G4double* Infos = *(hit.second);
-
-		hits.back().detector = int(Infos[7]);
-		hits.back().energy = Infos[0];
-		hits.back().time = Infos[1];
-		hits.back().x = Infos[2];
-		hits.back().y = Infos[3];
-		hits.back().z = Infos[4];
+		hits.back().detector = level[0];
+		hits.back().energy = Scorer->GetEnergy(i);
+		hits.back().time = Scorer->GetTime(i);
 	}
-	// clear map for next event
-	CaloHitMap->clear();	
 }
 
 
@@ -402,7 +384,7 @@ void AnnularTelescope::InitializeScorers() {
 		// Otherwise the scorer is initialised
 		vector<int> level; level.push_back(0);
 		G4VPrimitiveScorer* Calorimeter_CsI =
-			new CALORIMETERSCORERS::PS_CalorimeterWithInteraction(
+			new CalorimeterScorers::PS_Calorimeter(
 				"Calorimeter_CsI",level, 0) ;
 		//and register it to the multifunctionnal detector
 		m_AnnularTelescopeScorer_CsI->RegisterPrimitive(Calorimeter_CsI);
@@ -419,7 +401,7 @@ void AnnularTelescope::InitializeScorers() {
 		// Otherwise the scorer is initialised
 		vector<int> level; level.push_back(0);
 		G4VPrimitiveScorer* Calorimeter_Si =
-			new CALORIMETERSCORERS::PS_CalorimeterWithInteraction(
+			new CalorimeterScorers::PS_Calorimeter(
 				"Calorimeter_Si",level, 0) ;
 		//and register it to the multifunctionnal detector
 		m_AnnularTelescopeScorer_Si->RegisterPrimitive(Calorimeter_Si);

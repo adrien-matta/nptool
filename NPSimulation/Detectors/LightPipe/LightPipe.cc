@@ -1,18 +1,18 @@
 /*****************************************************************************
- * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2018   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Greg Christian  contact address: gchristian@tamu.edu                        *
+ * Original Author: Greg Christian  contact address: gchristian@tamu.edu     *
  *                                                                           *
- * Creation Date  : July 2018                                           *
+ * Creation Date  : July 2018                                                *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  LightPipe simulation                             *
+ *  This class describe  LightPipe simulation                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -224,31 +224,23 @@ void LightPipe::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void LightPipe::ReadSensitive(const G4Event* event){
+void LightPipe::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_LightPipeScorer->GetPrimitive(0);
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("LightPipeScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    G4double* Info = *(Calo_itr->second);
-    double Energy = RandGauss::shoot(Info[0],LightPipe_NS::ResoEnergy);
+  unsigned int size = Scorer->GetMult(); 
+  for(unsigned int i = 0 ; i < size ; i++){
+    double Energy = RandGauss::shoot(Scorer->GetEnergy(i),LightPipe_NS::ResoEnergy);
     if(Energy>LightPipe_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],LightPipe_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      double Time = RandGauss::shoot(Scorer->GetTime(i),LightPipe_NS::ResoTime);
+      int DetectorNbr = Scorer->GetLevel(i)[0];
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,7 +255,7 @@ void LightPipe::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
   m_LightPipeScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_LightPipeScorer) ;

@@ -181,25 +181,18 @@ void Lassa::ReadSensitive(const G4Event* event){
     // Clear Map for next event
     ThickSiHitMap->clear();
     
-    // CsI //
-    NPS::HitsMap<G4double*>* CsIHitMap;
-    std::map<G4int, G4double**>::iterator CsI_itr;
-    G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Lassa_CsIScorer/CsI");
-    CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
-    
-    // Loop on the CsI map
-    for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr != CsIHitMap->GetMap()->end() ; CsI_itr++){
-        G4double* Info = *(CsI_itr->second);
-        double E_CsI = RandGauss::shoot(Info[0],ResoCsI);
-        if(E_CsI>EnergyThreshold){
-            m_EventLassa->SetLassaCsIEEnergy(E_CsI);
-            m_EventLassa->SetLassaCsIEDetectorNbr((int)Info[3]-1);
-            m_EventLassa->SetLassaCsIECristalNbr((int)Info[2]-1);
+   CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_CsIScorer->GetPrimitive(0);
+
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
+     vector<unsigned int> level = Scorer->GetLevel(i); 
+     double E_CsI = RandGauss::shoot(Scorer->GetEnergy(i),ResoCsI);
+     if(E_CsI>EnergyThreshold){
+        m_EventLassa->SetLassaCsIEEnergy(E_CsI);
+        m_EventLassa->SetLassaCsIEDetectorNbr(level[0]-1);
+        m_EventLassa->SetLassaCsIECristalNbr(level[1]-1);
         }
     }
-    // Clear Map for next event
-    CsIHitMap->clear();
-    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -224,7 +217,7 @@ void Lassa::InitializeScorers(){
     
     m_ThickSiStripScorer->RegisterPrimitive(ThickSiScorer);
     
-    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_Calorimeter("CsI",NestingLevel);
+    G4VPrimitiveScorer* CsIScorer= new CalorimeterScorers::PS_Calorimeter("CsI",NestingLevel);
     
     m_CsIScorer->RegisterPrimitive(CsIScorer);
     
