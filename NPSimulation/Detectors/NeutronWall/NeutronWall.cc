@@ -379,90 +379,50 @@ void NeutronWall::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAction
-void NeutronWall::ReadSensitive(const G4Event* event){
+void NeutronWall::ReadSensitive(const G4Event* ){
     m_Event->Clear();
     
     ///////////
     // Calorimeter scorer
-    NPS::HitsMap<G4double*>* CaloHitMap;
-    std::map<G4int, G4double**>::iterator Calo_itr;
-    
-    G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("NeutronWallScorer/Calorimeter");
-    CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-    
-    // Loop on the Calo map
-    for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-        
-        G4double* Info = *(Calo_itr->second);
-        //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
-        double Energy = Info[0];
+    CalorimeterScorers::PS_Calorimeter* ScorerWall= (CalorimeterScorers::PS_Calorimeter*) m_NeutronWallScorer->GetPrimitive(0);
+
+    unsigned int sizeWall = ScorerWall->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeWall ; i++){
+        vector<unsigned int> level = ScorerWall->GetLevel(i); 
+        double Energy = ScorerWall->GetEnergy(i);
         if(Energy>NeutronWall_NS::EnergyThreshold){
-            //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-            double Time = Info[1];
-            int DetectorNbr = (int) Info[8];
-            int PadNbr = (int) Info[7];
-            //cout << Info[2] << " " << Info[3] << endl;
+            double Time = ScorerWall->GetTime(i);
+            int DetectorNbr = level[1];
+            int PadNbr = level[0];
             m_Event->SetEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetTime(DetectorNbr,PadNbr,Time);
-            
-            // Interraction Coordinates
-            //Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::ResoPosition) ;
-            //Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::Py_Youter/10.0) ;
-            /*ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;*/
-            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
-            
-            m_Event->Set_NeutronWall_PosX(Info[2]);
-            m_Event->Set_NeutronWall_PosY(Info[3]);
-            m_Event->Set_NeutronWall_PosZ(Info[4]);
-            
+            //m_Event->Set_NeutronWall_PosX(Info[2]);
+            //m_Event->Set_NeutronWall_PosY(Info[3]);
+            //m_Event->Set_NeutronWall_PosZ(Info[4]);
         }
     }
-    // clear map for next event
-    CaloHitMap->clear();
     
     ///////////
     // Veto wall scorer
-    NPS::HitsMap<G4double*>* VetoHitMap;
-    std::map<G4int, G4double**>::iterator Veto_itr;
-    
-    G4int VetoCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("VetoWallScorer/VetoCalorimeter");
-    VetoHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(VetoCollectionID));
-    
-    
-    // Loop on the Calo map
-    for (Veto_itr = VetoHitMap->GetMap()->begin() ; Veto_itr != VetoHitMap->GetMap()->end() ; Veto_itr++){
-        
-        G4double* Info = *(Veto_itr->second);
-        //double Energy = RandGauss::shoot(Info[0],NeutronWall_NS::ResoEnergy);
-        double Energy = Info[0];
+    CalorimeterScorers::PS_Calorimeter* ScorerVeto= (CalorimeterScorers::PS_Calorimeter*) m_VetoWallScorer->GetPrimitive(0);
+
+    unsigned int sizeVeto = ScorerVeto->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeVeto ; i++){
+        vector<unsigned int> level = ScorerVeto->GetLevel(i); 
+        double Energy = ScorerVeto->GetEnergy(i);
         if(Energy>NeutronWall_NS::EnergyThreshold){
             //double Time = RandGauss::shoot(Info[1],NeutronWall_NS::ResoTime);
-            double Time = Info[1];
-            int DetectorNbr = (int) Info[8];
-            int PadNbr = (int) Info[7];
+            double Time = ScorerVeto->GetTime(i);
+            int DetectorNbr = level[1];
+            int PadNbr = level[0];
             
             m_Event->SetVetoEnergy(DetectorNbr,PadNbr,Energy);
             m_Event->SetVetoTime(DetectorNbr,PadNbr,Time);
-            
-            // Interraction Coordinates
-            //Info[2]=RandGauss::shoot(Info[2],NeutronWall_NS::PlasticBar_X/10.0) ;
-            //Info[3]=RandGauss::shoot(Info[3],NeutronWall_NS::ResoPosition) ;
-            /*ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;*/
-            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
-            
-            m_Event->Set_VetoWall_PosX(Info[2]);
-            m_Event->Set_VetoWall_PosY(Info[3]);
-            m_Event->Set_VetoWall_PosZ(Info[4]);
+            //m_Event->Set_VetoWall_PosX(Info[2]);
+            //m_Event->Set_VetoWall_PosY(Info[3]);
+            //m_Event->Set_VetoWall_PosZ(Info[4]);
         }
     }
-    // clear map for next event
-    VetoHitMap->clear();
     
 }
 
@@ -482,7 +442,7 @@ void NeutronWall::InitializeScorers() {
         return ;
     
     // Neutron Wall Scorer
-    G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level,1) ;
+    G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level,1) ;
     //and register it to the multifunctional detector
     m_NeutronWallScorer->RegisterPrimitive(Calorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_NeutronWallScorer) ;
@@ -494,7 +454,7 @@ void NeutronWall::InitializeScorers() {
     if(already_exist)
         return;
     
-    G4VPrimitiveScorer* VetoCalorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("VetoCalorimeter",level,1) ;
+    G4VPrimitiveScorer* VetoCalorimeter= new CalorimeterScorers::PS_Calorimeter("VetoCalorimeter",level,1) ;
     //and register it to the multifunctional detector
     m_VetoWallScorer->RegisterPrimitive(VetoCalorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_VetoWallScorer) ;

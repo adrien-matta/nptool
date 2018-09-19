@@ -295,32 +295,25 @@ void TNT::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void TNT::ReadSensitive(const G4Event* event){
+void TNT::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+    CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_TNTScorer->GetPrimitive(0);
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("TNTScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    G4double* Info = *(Calo_itr->second);
-    double Energy = Info[0]; //RandGauss::shoot(Info[0],TNT_NS::ResoEnergy);
+  unsigned int size = Scorer->GetMult(); 
+  for(unsigned int i = 0 ; i < size ; i++){
+    vector<unsigned int> level = Scorer->GetLevel(i); 
+    double Energy = Scorer->GetEnergy(i); //RandGauss::shoot(Info[0],TNT_NS::ResoEnergy);
     if(Energy>TNT_NS::EnergyThreshold){
-      double Time = Info[1];  //RandGauss::shoot(Info[1],TNT_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      double Time = Scorer->GetTime(i);  //RandGauss::shoot(Info[1],TNT_NS::ResoTime);
+      int DetectorNbr = level[0];
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time); 
       // cout << DetectorNbr << " " << Energy << " " << Time << " " << endl;
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -335,7 +328,7 @@ void TNT::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
   m_TNTScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_TNTScorer) ;

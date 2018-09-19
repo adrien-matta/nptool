@@ -395,63 +395,46 @@ void Paris::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Paris::ReadSensitive(const G4Event* event){
+void Paris::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // LaBr3
-  NPS::HitsMap<G4double*>* LaBr3HitMap;
-  std::map<G4int, G4double**>::iterator LaBr3_itr;
+  CalorimeterScorers::PS_Calorimeter* ScorerLaBr= (CalorimeterScorers::PS_Calorimeter*) m_LaBr3Scorer->GetPrimitive(0);
 
-  G4int LaBr3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Paris_LaBr3Scorer/ParisLaBr3");
-  LaBr3HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(LaBr3CollectionID));
-
-  // Loop on the LaBr3 map
-  for (LaBr3_itr = LaBr3HitMap->GetMap()->begin() ; LaBr3_itr != LaBr3HitMap->GetMap()->end() ; LaBr3_itr++){
-
-    G4double* Info = *(LaBr3_itr->second);
-
-    double Energy = RandGauss::shoot(Info[0],ResoFirstStage);
+  unsigned int sizeLaBr = ScorerLaBr->GetMult(); 
+  for(unsigned int i = 0 ; i < sizeLaBr ; i++){
+    vector<unsigned int> level = ScorerLaBr->GetLevel(i); 
+    double Energy = RandGauss::shoot(ScorerLaBr->GetEnergy(i),ResoFirstStage);
 
     if(Energy>EnergyThreshold){
-      double Time = Info[1];
-      int PhoswichNbr = (int) Info[2];
-      int ClusterNbr = (int) Info[3];
-      
+      double Time = ScorerLaBr->GetTime(i);
+      int PhoswichNbr = level[0];
+      int ClusterNbr = level[1];
+
       m_Event->SetParisLaBr3E(ClusterNbr,PhoswichNbr,Energy);
       m_Event->SetParisLaBr3T(ClusterNbr,PhoswichNbr,Time);
     }
   }
-  // clear map for next event
-  LaBr3HitMap->clear();
 
   ///////////
   // NaI
-  NPS::HitsMap<G4double*>* NaIHitMap;
-  std::map<G4int, G4double**>::iterator NaI_itr;
+  CalorimeterScorers::PS_Calorimeter* ScorerNaI= (CalorimeterScorers::PS_Calorimeter*) m_NaIScorer->GetPrimitive(0);
 
-  G4int NaICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Paris_NaIScorer/ParisNaI");
-  NaIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(NaICollectionID));
-
-  // Loop on the NaI map
-  for (NaI_itr = NaIHitMap->GetMap()->begin() ; NaI_itr != NaIHitMap->GetMap()->end() ; NaI_itr++){
-
-    G4double* Info = *(NaI_itr->second);
-
-    double Energy = RandGauss::shoot(Info[0],ResoSecondStage);
+  unsigned int sizeNaI = ScorerNaI->GetMult(); 
+  for(unsigned int i = 0 ; i < sizeNaI ; i++){
+    vector<unsigned int> level = ScorerNaI->GetLevel(i); 
+    double Energy = RandGauss::shoot(ScorerNaI->GetEnergy(i),ResoSecondStage);
 
     if(Energy>EnergyThreshold){
-      double Time = Info[1];
-      int PhoswichNbr = (int) Info[2];
-      int ClusterNbr = (int) Info[3];
-     
-       m_Event->SetParisNaIE(ClusterNbr,PhoswichNbr,Energy);
+      double Time = ScorerNaI->GetTime(i);
+      int PhoswichNbr = level[0];
+      int ClusterNbr = level[1];
+
+      m_Event->SetParisNaIE(ClusterNbr,PhoswichNbr,Energy);
       m_Event->SetParisNaIT(ClusterNbr,PhoswichNbr,Time);
     }
   }
-
-  // clear map for next event
-  NaIHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -468,7 +451,7 @@ void Paris::InitializeScorers(){
   if(already_exist) return;
 
   G4VPrimitiveScorer* LaBr3Scorer =
-    new  CALORIMETERSCORERS::PS_Calorimeter("ParisLaBr3",NestingLevel);
+    new  CalorimeterScorers::PS_Calorimeter("ParisLaBr3",NestingLevel);
   //and register it to the multifunctionnal detector
   m_LaBr3Scorer->RegisterPrimitive(LaBr3Scorer);
 
@@ -484,7 +467,7 @@ void Paris::InitializeScorers(){
   if(already_exist) return;
 
   G4VPrimitiveScorer* NaIScorer =
-    new  CALORIMETERSCORERS::PS_Calorimeter("ParisNaI",NestingLevel);
+    new  CalorimeterScorers::PS_Calorimeter("ParisNaI",NestingLevel);
   //and register it to the multifunctionnal detector
   m_NaIScorer->RegisterPrimitive(NaIScorer);
 
@@ -492,24 +475,24 @@ void Paris::InitializeScorers(){
   G4SDManager::GetSDMpointer()->AddNewDetector(m_NaIScorer) ;
 
 }
- ////////////////////////////////////////////////////////////////////////////////
- //            Construct Method to be pass to the DetectorFactory              //
- ////////////////////////////////////////////////////////////////////////////////
- NPS::VDetector* Paris::Construct(){
+////////////////////////////////////////////////////////////////////////////////
+//            Construct Method to be pass to the DetectorFactory              //
+////////////////////////////////////////////////////////////////////////////////
+NPS::VDetector* Paris::Construct(){
   return  (NPS::VDetector*) new Paris();
- }
+}
 
- ////////////////////////////////////////////////////////////////////////////////
- //            Registering the construct method to the factory                 //
- ////////////////////////////////////////////////////////////////////////////////
- extern"C" {
- class proxy_nps_paris{
-   public:
-    proxy_nps_paris(){
-      NPS::DetectorFactory::getInstance()->AddToken("Paris","Paris");
-      NPS::DetectorFactory::getInstance()->AddDetector("Paris",Paris::Construct);
-    }
-};
+////////////////////////////////////////////////////////////////////////////////
+//            Registering the construct method to the factory                 //
+////////////////////////////////////////////////////////////////////////////////
+extern"C" {
+  class proxy_nps_paris{
+    public:
+      proxy_nps_paris(){
+        NPS::DetectorFactory::getInstance()->AddToken("Paris","Paris");
+        NPS::DetectorFactory::getInstance()->AddDetector("Paris",Paris::Construct);
+      }
+  };
 
- proxy_nps_paris p_nps_proxy;
- }
+  proxy_nps_paris p_nps_proxy;
+}

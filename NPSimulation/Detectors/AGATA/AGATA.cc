@@ -209,35 +209,23 @@ void AGATA::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void AGATA::ReadSensitive(const G4Event* event){
+void AGATA::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+    CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_AGATAScorer->GetPrimitive(0);
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("AGATAScorer/Crystal");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    G4double* Info = *(Calo_itr->second);
-    //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-    // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-    double Energy = RandGauss::shoot(Info[0],AGATA_NS::ResoEnergy);
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
+    double Energy = RandGauss::shoot(Scorer->GetEnergy(i),AGATA_NS::ResoEnergy);
     if(Energy>AGATA_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],AGATA_NS::ResoTime);
-      int DetectorNbr = (int) Info[7];
-      double Angle = RandGauss::shoot(Info[5]/deg,AGATA_NS::ResoAngle);
+      double Time = RandGauss::shoot(Scorer->GetTime(i),AGATA_NS::ResoTime);
+      int DetectorNbr = Scorer->GetLevel(i)[0];
       m_Event->SetEnergy(DetectorNbr,Energy);
-      m_Event->SetAngle(DetectorNbr,Angle);
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -252,7 +240,7 @@ void AGATA::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(1);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Crystal",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Crystal",level, 0) ;
   //and register it to the multifunctionnal detector
   m_AGATAScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_AGATAScorer) ;

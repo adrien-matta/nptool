@@ -269,31 +269,22 @@ void Foil::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Foil::ReadSensitive(const G4Event* event){
+void Foil::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<double*>* CaloHitMap;
-  std::map<G4int, double**>::iterator Calo_itr;
-
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("FoilScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    double* Info = *(Calo_itr->second);
-    double Energy = RandGauss::shoot(Info[0],Foil_NS::ResoEnergy);
+  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_FoilScorer->GetPrimitive(0);
+  unsigned int size = Scorer->GetMult(); 
+  for(unsigned int i = 0 ; i < size ; i++){
+    double Energy = RandGauss::shoot(Scorer->GetEnergy(i),Foil_NS::ResoEnergy);
     if(Energy>Foil_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],Foil_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      double Time = RandGauss::shoot(Scorer->GetTime(i),Foil_NS::ResoTime);
+      int DetectorNbr = Scorer->GetLevel(i)[0];
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -308,7 +299,7 @@ void Foil::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
   //and register it to the multifunctionnal detector
   m_FoilScorer->RegisterPrimitive(Calorimeter);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_FoilScorer) ;

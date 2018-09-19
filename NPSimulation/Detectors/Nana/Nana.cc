@@ -468,33 +468,22 @@ void Nana::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Nana::ReadSensitive(const G4Event* event){
+void Nana::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
-  // LaBr3
-  NPS::HitsMap<G4double*>* LaBr3HitMap;
-  std::map<G4int, G4double**>::iterator LaBr3_itr;
+ CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_LaBr3Scorer->GetPrimitive(0);
 
-  G4int LaBr3CollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Nana_LaBr3Scorer/NanaLaBr3");
-  LaBr3HitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(LaBr3CollectionID));
-
-  // Loop on the LaBr3 map
-  for (LaBr3_itr = LaBr3HitMap->GetMap()->begin() ; LaBr3_itr != LaBr3HitMap->GetMap()->end() ; LaBr3_itr++){
-
-    G4double* Info = *(LaBr3_itr->second);
-    //(Info[0]/2.35)*((Info[0]*1.02)*pow((Info[0]*1.8),.5))
-    // double Energy = RandGauss::shoot(Info[0],((Info[0]*1000*1.02/2.35)*pow((Info[0]*1000*1.8),.5)) );
-    double Energy = RandGauss::shoot(Info[0],(Info[0]*0.0325637)/(2.35*pow(Info[0]-0.00975335,0.475759)));
-    if(Energy>EnergyThreshold){
-      double Time = Info[1];
-      int DetectorNbr = (int) Info[2];
-
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
+      double E = Scorer->GetEnergy(i);
+      double Energy = RandGauss::shoot(E,(E*0.0325637)/(2.35*pow(E-0.00975335,0.475759)));
+      if(Energy>EnergyThreshold){
+        double Time = Scorer->GetTime(i);
+        int DetectorNbr = Scorer->GetLevel(i)[0];
       m_Event->SetNanaLaBr3(DetectorNbr,Energy,Energy,(unsigned short) Time,0,0);
     }
   }
-  // clear map for next event
-  LaBr3HitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -510,7 +499,7 @@ void Nana::InitializeScorers(){
   if(already_exist) return;
 
   G4VPrimitiveScorer* LaBr3Scorer =
-    new  CALORIMETERSCORERS::PS_Calorimeter("NanaLaBr3",NestingLevel);
+    new  CalorimeterScorers::PS_Calorimeter("NanaLaBr3",NestingLevel);
   //and register it to the multifunctionnal detector
   m_LaBr3Scorer->RegisterPrimitive(LaBr3Scorer);
 

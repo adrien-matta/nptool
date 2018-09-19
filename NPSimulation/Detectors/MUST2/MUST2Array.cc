@@ -718,7 +718,7 @@ void MUST2Array::InitializeRootOutput(){
 
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void MUST2Array::ReadSensitive(const G4Event* event){
+void MUST2Array::ReadSensitive(const G4Event*){
   G4String DetectorNumber;
   m_Event->Clear();
 
@@ -836,53 +836,33 @@ void MUST2Array::ReadSensitive(const G4Event* event){
     }
   }
 
-  // Si(Li)
-  NPS::HitsMap<G4double*>* SiLiHitMap;
-  std::map<G4int, G4double**>::iterator SiLi_itr;
+  // Look for 2nd and 3rd stage only if 1st stage is hit
+  if(SiScoredHit){
+    // SiLi //
+    CalorimeterScorers::PS_Calorimeter* SiLiScorer= (CalorimeterScorers::PS_Calorimeter*) m_SiLiScorer->GetPrimitive(0);
 
-  G4int SiLiCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_SiLiScorer/SiLiScorer");
-  SiLiHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(SiLiCollectionID));
+    unsigned int sizeSiLi = SiLiScorer->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeSiLi ; i++){
+     double ESiLi = RandGauss::shoot(SiLiScorer->GetEnergy(i),ResoSiLi);
+     vector<unsigned int> level = SiLiScorer->GetLevel(i);
+     m_Event->SetSiLiE(level[0],level[1],NPL::EnergyToADC(ESiLi,0,250,8192,16384));
+     double timeSiLi = RandGauss::shoot(SiLiScorer->GetTime(i),ResoTimeMust);
+     m_Event->SetSiLiT(level[0],level[1],NPL::EnergyToADC(timeSiLi,0,1000,16384,8192));
 
-  // CsI
-  NPS::HitsMap<G4double*>* CsIHitMap;
-  std::map<G4int, G4double**>::iterator CsI_itr;
+    } 
+   
+    // CsI //
+    CalorimeterScorers::PS_Calorimeter* CsIScorer= (CalorimeterScorers::PS_Calorimeter*) m_CsIScorer->GetPrimitive(0);
 
-  G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("MUST2_CsIScorer/CsIScorer");
-  CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
-
-
-  // Look for SiLi data in Trigg Telescope
-  std::set<int>::iterator itr;
-  for(itr=trig.begin();itr!=trig.end();itr++){
-    for(SiLi_itr = SiLiHitMap->GetMap()->begin(); SiLi_itr!=SiLiHitMap->GetMap()->end() ; SiLi_itr++){
-      G4double* Info = *(SiLi_itr->second);
-      if(Info[7]==*itr){//matching telescope number
-        double ESiLi = RandGauss::shoot(Info[0],ResoSiLi);
-        m_Event->SetSiLiE(Info[7],Info[8],NPL::EnergyToADC(ESiLi,0,250,8192,16384));
-        double timeSiLi = RandGauss::shoot(Info[1],ResoTimeMust);
-        m_Event->SetSiLiT(Info[7],Info[8],NPL::EnergyToADC(timeSiLi,0,1000,16384,8192));
-      }
-    }
+    unsigned int sizeCsI = CsIScorer->GetMult(); 
+    for(unsigned int i = 0 ; i < sizeCsI ; i++){
+     double ECsI = RandGauss::shoot(CsIScorer->GetEnergy(i),ResoCsI);
+     vector<unsigned int> level = CsIScorer->GetLevel(i);
+     m_Event->SetCsIE(level[0],level[1],NPL::EnergyToADC(ECsI,0,250,8192,16384));
+     double timeCsI = RandGauss::shoot(CsIScorer->GetTime(i),ResoTimeMust);
+     m_Event->SetCsIT(level[0],level[1],NPL::EnergyToADC(timeCsI,0,1000,16384,8192));
+    } 
   }
-
-  // Look for CsI data in Trigg Telescope
-  for(itr=trig.begin();itr!=trig.end();itr++){
-    for(CsI_itr = CsIHitMap->GetMap()->begin(); CsI_itr!=CsIHitMap->GetMap()->end() ; CsI_itr++){
-      G4double* Info = *(CsI_itr->second);
-
-      if(Info[7]==*itr){//matching telescope number
-        double ECsI = RandGauss::shoot(Info[0],ResoCsI);
-        m_Event->SetCsIE(Info[7],Info[8],NPL::EnergyToADC(ECsI,0,250,8192,16384));
-        double timeCsI = RandGauss::shoot(Info[1],ResoTimeMust);
-        m_Event->SetCsIT(Info[7],Info[8],NPL::EnergyToADC(timeCsI,0,1000,16384,8192));
-      }
-    }
-  }
-
-  SiScorer->clear();
-  // clear map for next event
-  SiLiHitMap->clear() ;
-  CsIHitMap->clear() ;
 }
 
 
@@ -913,13 +893,13 @@ void MUST2Array::InitializeScorers() {
   //	SiLi Associate Scorer
   vector<int> SiLi_nesting={3,0};
   G4VPrimitiveScorer* SiLiScorer= 
-    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("SiLiScorer",SiLi_nesting) ;
+    new CalorimeterScorers::PS_Calorimeter("SiLiScorer",SiLi_nesting) ;
   m_SiLiScorer->RegisterPrimitive(SiLiScorer);
 
   //	CsI Associate Scorer 
   vector<int> CsI_nesting = {2,0};
   G4VPrimitiveScorer* CsIScorer= 
-    new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("CsIScorer",CsI_nesting, 0) 	;
+    new CalorimeterScorers::PS_Calorimeter("CsIScorer",CsI_nesting, 0) 	;
   m_CsIScorer->RegisterPrimitive(CsIScorer) ;
 
   //	Add All Scorer to the Global Scorer Manager

@@ -645,7 +645,7 @@ void Actar::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Actar::ReadSensitive(const G4Event* event){
+void Actar::ReadSensitive(const G4Event*){
     m_EventReduced->CoboAsad.clear();
     static ReducedData DataReduced;
 
@@ -719,25 +719,20 @@ void Actar::ReadSensitive(const G4Event* event){
 
     // CsI //
     if(m_build_CsI){
-        NPS::HitsMap<G4double*>* CsIHitMap;
-        std::map<G4int, G4double**>::iterator CsI_itr;
-
-        G4int CsICollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(m_CsICollectionID);
-        CsIHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CsICollectionID));
-
-        // Loop on the CsI map
-        for (CsI_itr = CsIHitMap->GetMap()->begin() ; CsI_itr !=CsIHitMap->GetMap()->end() ; CsI_itr++){
-            //G4double* Info = *(CsI_itr->second);
-            //double E_CsI = RandGauss::shoot(Info[0],Actar_NS::ResoCsI);
+       CalorimeterScorers::PS_Calorimeter* CsIScorer= (CalorimeterScorers::PS_Calorimeter*) m_CsIScorer->GetPrimitive(0);
+      unsigned int sizeCsI = CsIScorer->GetMult();
+      // Loop on the ThinSi map
+      for(unsigned int i = 0 ; i < sizeCsI ; i++){
+            DataReduced.clear();
+            vector<unsigned int> level = CsIScorer->GetLevel(i);
+            //double E_CsI = RandGauss::shoot(CsIScorer->GetEnergy(i),Actar_NS::ResoCsI);
 
             /*if(E_CsI>Actar_NS::EnergyThreshold){
              m_Event->SetCsIEnergy(E_CsI);
-             m_Event->SetCsICrystalNumber(Info[2]);
+             m_Event->SetCsICrystalNumber(level[0]);
              }
              m_EventReduced->CoboAsad.push_back(DataReduced);*/
         }
-        // Clear Map for next event
-        CsIHitMap->clear();
     }
 
 
@@ -796,7 +791,7 @@ void Actar::InitializeScorers() {
     /*G4VPrimitiveScorer* VamosSiScorer = new SILICONSCORERS::PS_Silicon_Rectangle("VamosSiliconScorer",0,Actar_NS::VamosSiliconHeight,Actar_NS::VamosSiliconWidth,1,1);
     m_VamosSiliconScorer->RegisterPrimitive(VamosSiScorer);*/
 
-    G4VPrimitiveScorer* CsIScorer= new CALORIMETERSCORERS::PS_Calorimeter("CsI",NestingLevel);
+    G4VPrimitiveScorer* CsIScorer= new CalorimeterScorers::PS_Calorimeter("CsI",NestingLevel);
     m_CsIScorer->RegisterPrimitive(CsIScorer);
 
     vector<int> level; level.push_back(0);
