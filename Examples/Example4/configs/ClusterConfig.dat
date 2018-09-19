@@ -1,0 +1,4 @@
+ConfigCluster
+NumberOfTracksMax= 20
+ClusterDistance= 5
+ClusterThreshold= 15

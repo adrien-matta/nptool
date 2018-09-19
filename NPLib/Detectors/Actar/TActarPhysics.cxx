@@ -54,10 +54,15 @@ m_EventPhysics(this),
 
 m_Spectra(0),
 fRecoRansac(1),
+fRecoCluster(0),
 fRecoVisu(0),
 fHitThreshold(20),
 fQ_Threshold(0),
 fT_Threshold(0),
+fXBeamMin(0),
+fXBeamMax(128),
+fYBeamMin(60),
+fYBeamMax(67),
 fNumberOfPadsX(128),
 fNumberOfPadsY(128),
 fPadSizeX(2),
@@ -111,6 +116,18 @@ void TActarPhysics::BuildPhysicalEvent() {
         m_Track = m_Ransac->SimpleRansac();
     }
     
+    else if(fRecoCluster && PadX.size()>fHitThreshold){
+        m_Cluster->Init(PadX, PadY, PadZ, PadCharge);
+        m_Cluster->FindTracks();
+        
+        m_Cluster->Init(BeamPadX, BeamPadY, BeamPadZ, BeamPadCharge);
+        m_Cluster->FindTracks();
+        
+        m_Track = m_Cluster->GetTracks();
+        
+        m_Cluster->Clear();
+    }
+
     TrackMult = m_Track.size();
 }
 
@@ -143,11 +160,27 @@ void TActarPhysics::PreTreat() {
                 if(m_EventReduced->CoboAsad[it].peakheight[hh]>fQ_Threshold && m_EventReduced->CoboAsad[it].peaktime[hh]>fT_Threshold){
                     if(GoodHit(TABLE[4][where],TABLE[5][where])){
                     //if(Hit[TABLE[4][where]][TABLE[5][where]]<2){
+                        if(fRecoCluster){
+                            if(IsBeamZone(TABLE[4][where],TABLE[5][where])){
+                                BeamPadCharge.push_back(m_EventReduced->CoboAsad[it].peakheight[hh]);
+                                BeamPadX.push_back(TABLE[4][where]);
+                                BeamPadY.push_back(TABLE[5][where]);
+                                BeamPadZ.push_back(m_EventReduced->CoboAsad[it].peaktime[hh]);
+                            }
+                            else{
+                                PadCharge.push_back(m_EventReduced->CoboAsad[it].peakheight[hh]);
+                                PadX.push_back(TABLE[4][where]);
+                                PadY.push_back(TABLE[5][where]);
+                                PadZ.push_back(m_EventReduced->CoboAsad[it].peaktime[hh]);
+                            }
+                            
+                        }
+                        else{
                             PadCharge.push_back(m_EventReduced->CoboAsad[it].peakheight[hh]);
                             PadX.push_back(TABLE[4][where]);
                             PadY.push_back(TABLE[5][where]);
                             PadZ.push_back(m_EventReduced->CoboAsad[it].peaktime[hh]);
-                        
+                        }
                         //}
                     }
                 }
@@ -169,6 +202,18 @@ void TActarPhysics::PreTreat() {
         }
     }
 }
+
+///////////////////////////////////////////////////////////////////////////
+bool TActarPhysics::IsBeamZone(int X, int Y)
+{
+    bool isBeam=false;
+    if(X>fXBeamMin && X<fXBeamMax)
+        if(Y>fYBeamMin && fYBeamMax)
+            isBeam=true;
+    
+    return isBeam;
+}
+
 ///////////////////////////////////////////////////////////////////////////
 bool TActarPhysics::GoodHit(int iX, int iY)
 {
@@ -303,6 +348,12 @@ void TActarPhysics::ReadAnalysisConfig() {
                 cout << "/// Reco using Ransac= " << " " << fRecoRansac << " ///" << endl;
             }
             
+            else if (whatToDo.compare(0,12,"RecoCluster=") == 0) {
+                AnalysisConfigFile >> DataBuffer;
+                fRecoCluster = atoi(DataBuffer.c_str());
+                cout << "/// Reco using Cluster= " << " " << fRecoCluster << " ///" << endl;
+            }
+            
             else if (whatToDo.compare(0,9,"RecoVisu=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fRecoVisu = atoi(DataBuffer.c_str());
@@ -354,6 +405,30 @@ void TActarPhysics::ReadAnalysisConfig() {
                 cout << "/// Pad Size Y= " << fPadSizeY << " ///" << endl;
             }
             
+            else if(whatToDo.compare(0,9,"XBeamMin=")==0){
+                AnalysisConfigFile >> DataBuffer;
+                fXBeamMin = atof(DataBuffer.c_str());
+                cout << "/// X Beam Min= " << fXBeamMin << " ///" << endl;
+            }
+            
+            else if(whatToDo.compare(0,9,"XBeamMax=")==0){
+                AnalysisConfigFile >> DataBuffer;
+                fXBeamMax = atof(DataBuffer.c_str());
+                cout << "/// X Beam Max= " << fXBeamMax << " ///" << endl;
+            }
+            
+            else if(whatToDo.compare(0,9,"YBeamMin=")==0){
+                AnalysisConfigFile >> DataBuffer;
+                fYBeamMin = atof(DataBuffer.c_str());
+                cout << "/// Y Beam Min= " << fYBeamMin << " ///" << endl;
+            }
+            
+            else if(whatToDo.compare(0,9,"YBeamMax=")==0){
+                AnalysisConfigFile >> DataBuffer;
+                fYBeamMax = atof(DataBuffer.c_str());
+                cout << "/// Y Beam Max= " << fYBeamMax << " ///" << endl;
+            }
+            
             else if(whatToDo.compare(0,9,"Pressure=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fPressure = atof(DataBuffer.c_str());
@@ -384,6 +459,9 @@ void TActarPhysics::ReadAnalysisConfig() {
     if(fRecoRansac){
         m_Ransac = new NPL::Ransac(fNumberOfPadsX,fNumberOfPadsY,fRecoVisu);
     }
+    else if(fRecoCluster){
+        m_Cluster = new NPL::Cluster(fNumberOfPadsX,fNumberOfPadsY,fRecoVisu);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -394,7 +472,19 @@ void TActarPhysics::SetRansacParameter(string filename){
 }
 
 ///////////////////////////////////////////////////////////////////////////
+void TActarPhysics::SetClusterParameter(string filename){
+    if(fRecoCluster){
+        m_Cluster->ReadParameterValue(filename);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////
 void TActarPhysics::Clear() {
+    BeamPadX.clear();
+    BeamPadY.clear();
+    BeamPadZ.clear();
+    BeamPadCharge.clear();
+    
     PadX.clear();
     PadY.clear();
     PadZ.clear();

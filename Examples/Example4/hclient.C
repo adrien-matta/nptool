@@ -148,7 +148,9 @@ void Sync()
                 vhxz.push_back(hXZ);
             }
             
-            
+            /////////////////
+            // Track in 3D //
+            /////////////////
             c1->cd(1);
             hXYZ->Draw();
             for(int i=0; i<vh3.size(); i++){
@@ -197,6 +199,10 @@ void Sync()
                 vfxz.push_back(f1xz);
             }
             
+            
+            ///////////////////////////
+            // Track in the XY plan //
+            //////////////////////////
             c1->cd(2);
             h2Dxy->Draw();
             for(int i=0; i<vhxy.size(); i++){
@@ -209,6 +215,9 @@ void Sync()
             
             
             
+            ///////////////////////////
+            // Track in the XZ plan //
+            //////////////////////////
             c1->cd(3);
             h2Dxz->Draw();
             for(int i=0; i<vhxz.size(); i++){

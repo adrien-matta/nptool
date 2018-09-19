@@ -27,19 +27,11 @@ using namespace std;
 //////////////////////////////////////////////////////
 Track::Track()
 {
-	/*L2DXY=new TLine();
-	L2DXZ=new TLine();
-	L2DYZ=new TLine();
-	L3D=new TLine();*/
 }
 
 //////////////////////////////////////////////////////
 Track::~Track()
 {
-	/*delete L2DXY;
-	delete L2DXZ;
-	delete L2DYZ;
-	delete L3D;*/
 }
 
 //////////////////////////////////////////////////////
@@ -47,6 +39,30 @@ TVector3 Track::GetDirectionVector()
 {
 	TVector3 vTrack = TVector3(Xh-Xm, Yh-Ym, Zh-Zm);
 	return vTrack;
+}
+
+//////////////////////////////////////////////////////
+void Track::SetSlopesAndOffsets()
+{
+    double p0, p1;
+    
+    // XY //
+    p1 = (Yh-Ym)/(Xh-Xm);
+    p0 = Ym - p1*Xm;
+    SetOffsetXY(p0);
+    SetSlopeXY(p1);
+    
+    // XZ //
+    p1 = (Zh-Zm)/(Xh-Xm);
+    p0 = Zm - p1*Xm;
+    SetOffsetXZ(p0);
+    SetSlopeXZ(p1);
+    
+    // YZ //
+    p1 = (Zh-Zm)/(Yh-Ym);
+    p0 = Zm - p1*Ym;
+    SetOffsetYZ(p0);
+    SetSlopeYZ(p1);
 }
 
 //////////////////////////////////////////////////////
@@ -210,26 +226,3 @@ void Track::Clear()
     vQ.clear();
 }
 
-//////////////////////////////////////////////////////
-/*void Track::ResetLines()
-{
-	L2DXY->SetX1(-1);
-	L2DXY->SetY1(-1);
-	L2DXY->SetX2(-1);
-	L2DXY->SetY2(-1);
-
-	L2DXZ->SetX1(-1);
-	L2DXZ->SetY1(-1);
-	L2DXZ->SetX2(-1);
-	L2DXZ->SetY2(-1);
-
-	L2DYZ->SetX1(-1);
-	L2DYZ->SetY1(-1);
-	L2DYZ->SetX2(-1);
-	L2DYZ->SetY2(-1);
-
-	L3D->SetX1(-1);
-	L3D->SetY1(-1);
-	L3D->SetX2(-1);
-	L3D->SetY2(-1);
-}*/
