@@ -49,3 +49,4 @@ Projects/T40/configs/*.dat
 Outputs
 Outputs/*
 Outputs/*/*.*
+NPLib/Utility/npspectra_test
