@@ -28,6 +28,8 @@
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <algorithm>
+#include <iterator>
 using namespace std;
 
 //   NPL
@@ -81,19 +83,13 @@ void TLightPipePhysics::BuildSimplePhysicalEvent() {
 void TLightPipePhysics::BuildPhysicalEvent() {
   // apply thresholds and calibration
   PreTreat();
-
-  // match energy and time together
-  unsigned int mysizeE = m_PreTreatedData->GetMultEnergy();
-  unsigned int mysizeT = m_PreTreatedData->GetMultTime();
-  for (UShort_t e = 0; e < mysizeE ; e++) {
-    for (UShort_t t = 0; t < mysizeT ; t++) {
-      if (m_PreTreatedData->GetE_DetectorNbr(e) == m_PreTreatedData->GetT_DetectorNbr(t)) {
-        DetectorNumber.push_back(m_PreTreatedData->GetE_DetectorNbr(e));
-        Energy.push_back(m_PreTreatedData->Get_Energy(e));
-        Time.push_back(m_PreTreatedData->Get_Time(t));
-      }
-    }
-  }
+#if 0
+  // copy calibrated data
+	copy(m_PreTreatedData->GetE_RowNbr().begin(), m_PreTreatedData->GetE_RowNbr().end(), back_inserter(RowNumber));
+	copy(m_PreTreatedData->GetE_ColumnNbr().begin(), m_PreTreatedData->GetE_ColumnNbr().end(), back_inserter(ColumnNumber));
+	copy(m_PreTreatedData->GetE_DetectorNbr().begin(), m_PreTreatedData->GetE_DetectorNbr().end(), back_inserter(DetectorNumber));
+	copy(m_PreTreatedData->Get_Energy().begin(), m_PreTreatedData->Get_Energy().end(), back_inserter(Energy));
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -107,23 +103,18 @@ void TLightPipePhysics::PreTreat() {
   // instantiate CalibrationManager
   static CalibrationManager* Cal = CalibrationManager::getInstance();
 
+#if 0
   // Energy
   unsigned int mysize = m_EventData->GetMultEnergy();
   for (UShort_t i = 0; i < mysize ; ++i) {
     if (m_EventData->Get_Energy(i) > m_E_RAW_Threshold) {
-      Double_t Energy = Cal->ApplyCalibration("LightPipe/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
+      Double_t Energy = m_EventData->Get_Energy(i); // ORIGINAL:: Cal->ApplyCalibration("LightPipe/ENERGY"+NPL::itoa(m_EventData->GetE_DetectorNbr(i)),m_EventData->Get_Energy(i));
       if (Energy > m_E_Threshold) {
-        m_PreTreatedData->SetEnergy(m_EventData->GetE_DetectorNbr(i), Energy);
+        m_PreTreatedData->SetEnergy(m_EventData->GetE_RowNbr(i), m_EventData->GetE_ColumnNbr(i), m_EventData->GetE_DetectorNbr(i), Energy);
       }
     }
   }
-
-  // Time 
-  mysize = m_EventData->GetMultTime();
-  for (UShort_t i = 0; i < mysize; ++i) {
-    Double_t Time= Cal->ApplyCalibration("LightPipe/TIME"+NPL::itoa(m_EventData->GetT_DetectorNbr(i)),m_EventData->Get_Time(i));
-    m_PreTreatedData->SetTime(m_EventData->GetT_DetectorNbr(i), Time);
-  }
+#endif
 }
 
 
@@ -194,9 +185,10 @@ void TLightPipePhysics::ReadAnalysisConfig() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TLightPipePhysics::Clear() {
+  RowNumber.clear();
+  ColumnNumber.clear();
   DetectorNumber.clear();
   Energy.clear();
-  Time.clear();
 }
 
 
