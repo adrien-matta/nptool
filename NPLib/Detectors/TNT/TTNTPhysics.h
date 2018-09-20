@@ -71,7 +71,7 @@ class TTNTPhysics : public TObject, public NPL::VDetector {
     vector<double>   Phi;
     vector<double>   Theta_Lab;
     // Template map<DetectorNumber, <Pos[0], Pos[1], Pos[2]>>
-    map<int, vector<double>> DetectorInfo;
+    map<int, vector<double>> DetectorInfo; //!
   
   /// A usefull method to bundle all operation to add a detector
   void AddDetector(TVector3 POS, string shape); 
