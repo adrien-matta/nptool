@@ -465,6 +465,7 @@ NPL::Track Ransac::MergeTracks(vector<NPL::Track> tracks)
             newTrackX.push_back(tracks[j].GetXPoints()[k]);
             newTrackY.push_back(tracks[j].GetYPoints()[k]);
             newTrackZ.push_back(tracks[j].GetZPoints()[k]);
+            newTrackQ.push_back(tracks[j].GetQPoints()[k]);
         }
         
     }
@@ -486,6 +487,7 @@ NPL::Track Ransac::MergeTracks(vector<NPL::Track> tracks)
     newTrack.SetXPoints(newTrackX);
     newTrack.SetYPoints(newTrackY);
     newTrack.SetZPoints(newTrackZ);
+    newTrack.SetQPoints(newTrackQ);
     
     return newTrack;
 }
