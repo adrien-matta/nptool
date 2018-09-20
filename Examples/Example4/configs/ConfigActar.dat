@@ -1,6 +1,6 @@
 ConfigActar
-RecoRansac= 1
-RecoCluster= 0
+RecoRansac= 0
+RecoCluster= 1
 RecoVisu= 0
 HIT_THRESHOLD= 2
 Q_THRESHOLD= 0
@@ -9,6 +9,10 @@ NumberOfPadsX= 128
 NumberOfPadsY= 128
 PadSizeX= 2
 PadSizeY= 2
+XBeamMin= 0
+XBeamMax= 100
+YBeamMin= 60
+YBeamMax= 67
 Gas= iC4H10
 %Gas= D2
 %Pressure in mbar

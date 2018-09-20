@@ -141,7 +141,7 @@ void Cluster::ReadParameterValue(string filename)
 void Cluster::FindTracks()
 {
     for(unsigned int i=0; i<fOriginalCloudSize; i++){
-        FillBigVoxels(vX[i],vY[i],vZ[i],vQ[i]);
+        FillBigVoxels(vX[i],vY[i],(int)vZ[i],(int)vQ[i]);
     }
     
     RegroupZone();
@@ -171,6 +171,7 @@ void Cluster::FillBigVoxels(int x, int y, int t, int q)
                     //(yB+y!=fNumberOfPadsY/4-1) corresponds to the differentiation between each side of the pad plane
                     // Case where neither the current box nor the neighbour studied are associated to any track zone yet
                     it++;
+                    
                     
                     NPL::Track BigTrack;
                     BigTrack.SetPointX(x/4);
@@ -210,10 +211,10 @@ void Cluster::FillBigVoxels(int x, int y, int t, int q)
                     unsigned int minid=TMath::Min(LocBigVoxels[x/4+y/4*fNumberOfPadsX/4+t/8*fNumberOfPadsX/4*fNumberOfPadsY/4],LocBigVoxels[xB+yB*fNumberOfPadsX/4+tB*fNumberOfPadsX/4*fNumberOfPadsY/4]);
                     
                     unsigned int mysize=TrackZone.at(maxid).GetXPoints().size();
+                    
                     int element = TrackZone.at(maxid).GetXPoints().at(0) + fNumberOfPadsX/4*TrackZone.at(maxid).GetYPoints().at(0) + fNumberOfPadsX/4*fNumberOfPadsY/4*TrackZone.at(maxid).GetZPoints().at(0);
                     int Loc=LocBigVoxels[element];
                     
-
                     for(unsigned int i=0;i<mysize;i++){
                         int element_max = TrackZone.at(maxid).GetXPoints().at(mysize-i-1) + fNumberOfPadsX/4*TrackZone.at(maxid).GetYPoints().at(mysize-i-1) + fNumberOfPadsX/4*fNumberOfPadsY/4*TrackZone.at(maxid).GetZPoints().at(mysize-i-1);
                         

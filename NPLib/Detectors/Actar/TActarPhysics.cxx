@@ -175,7 +175,7 @@ void TActarPhysics::PreTreat() {
                             }
                             
                         }
-                        else{
+                        else if(fRecoRansac){
                             PadCharge.push_back(m_EventReduced->CoboAsad[it].peakheight[hh]);
                             PadX.push_back(TABLE[4][where]);
                             PadY.push_back(TABLE[5][where]);
@@ -207,9 +207,9 @@ void TActarPhysics::PreTreat() {
 bool TActarPhysics::IsBeamZone(int X, int Y)
 {
     bool isBeam=false;
-    if(X>fXBeamMin && X<fXBeamMax)
-        if(Y>fYBeamMin && fYBeamMax)
-            isBeam=true;
+    if( (X>=fXBeamMin && X<=fXBeamMax) && (Y>=fYBeamMin && Y<=fYBeamMax) ){
+        isBeam=true;
+    }
     
     return isBeam;
 }

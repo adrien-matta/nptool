@@ -79,7 +79,7 @@ void Analysis::TreatEvent(){
     TVector3 vX = TVector3(1,0,0);
     TVector3 aTrack, vB;
     
-    if(TrackMult==2){
+    if(TrackMult>1){
         vTrack = Actar->GetTracks();
         double scalarproduct=0;
         int BeamTrack=0;
