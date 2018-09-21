@@ -1,5 +1,5 @@
-#ifndef __RANSAC__
-#define __RANSAC__
+#ifndef __CLUSTER__
+#define __CLUSTER__
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -11,8 +11,8 @@
  *                                                                           *
  * Original Author :  Pierre MORFOUACE contact address: morfouace@ganil.fr   *
  *                                                                           *
- * Creation Date   : April 2018                                              *
- * Last update     : April 2018                                              *
+ * Creation Date   : September 2018                                          *
+ * Last update     :                                                         *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
  *  This class deal with finding all the track event by event                *
@@ -50,62 +50,61 @@ using namespace NPL;
 #include <TList.h>
 #include <TVector.h>
 
+
 using namespace std;
 
+#define BigVoxelSize 128/4*128/4*512/8
+
 namespace NPL{
-    
-    class Ransac
-    {
-    public:
-        Ransac();
-        Ransac(int NumberOfPadsX, int NumberOfPadsY, bool Visu);
-        ~Ransac();
+    class Cluster{
         
     public:
-        void Reset();
+        Cluster();
+        Cluster(int NumberOfPadsX, int NumberOfPadsY, bool Visu);
+        ~Cluster();
+        
+    public:
         void ReadParameterValue(string filename);
+        void Reset();
+        void Clear();
         void Init(vector<int> v1, vector<int> v2, vector<double> v3, vector<double> v4);
-        vector<NPL::Track> SimpleRansac();
-        bool CompareTracksWithBarycenter(NPL::Track track1, NPL::Track track2);
-        bool CompareTracksWithScalarProduct(NPL::Track track1, NPL::Track track2);
-        NPL::Track MergeTracks(vector<NPL::Track> tracks);
-        void DoMerge(string method);
-        //void CheckTracks();
+        void FindTracks();
+        void FillBigVoxels(int x, int y, int t, int q);
+        void RegroupZone();
+        void RemoveTrack(vector<NPL::Track> &Ephem, int id);
+        void ExtractCoordinate(int ID, int& x, int &y, int& z);
+        void FitZone();
+        void ReorderTracks(vector<NPL::Track> &someTracks);
+        void RegroupTrack();
+        double Distance3D(NPL::Track aTrack, int ID);
+        void FitTrack();
+        double Fit3D(NPL::Track &aTrack);
+        vector<NPL::Track> GetTracks() {return vTrack;}
         
-        vector<double> GetChargeOfTracks();
-        vector<double> GetTrackLength(double PadSizeX, double PadSizeY, double DriftVelocity);
-        double Fit3D(vector<int> X, vector<int> Y, vector<double> Z, vector<double> Charge, vector<int> inliners, TVector3& V1, TVector3& V2);
         
     private:
-        TCanvas* c1;
-        vector<TLine*> vline;
         vector<int> vX, vY;
-        vector<int> trackX, trackY, trackZ, trackQ;
         vector<double> vZ, vQ;
-        TLine* L;
-        TGraph2D* h3D;
-        TGraph2D* pl;
-        vector<NPL::Track> vTrack;
-        vector<double> vTrackCharge;
-        TRandom3* Rand;
-        NPL::Track myTrack;
         
     private:
-        float fRANSACThreshold;
-        float fRANSACPointThreshold;
-        float fRANSACChargeThreshold;
-        float fRANSACDistance;
-        float fRANSACMaxIteration;
-        float fMAXBarycenterDistance;
-        float fAngleMax;
-        int fNumberOfTracksMax;
-        int fOriginalCloudSize;
-        double fTotalCharge;
+        bool fVisu;
         int fNumberOfPadsX;
         int fNumberOfPadsY;
-        int fVisu;
-        bool fMergeWithBarycenter;
-        bool fMergeWithScalarProduct;
+        int fNumberOfSample;
+        int fNumberOfTracksMax;
+        double fTotalCharge;
+        double fClusterDistance;
+        double fClusterThreshold;
+        unsigned int fOriginalCloudSize;
+        
+    public:
+        int it;
+        vector<int> BigVoxels[BigVoxelSize];
+        vector<int> IDBigVoxels[BigVoxelSize];
+        int* LocBigVoxels;
+        //NPL::Track BigTrack;
+        vector<NPL::Track> TrackZone;
+        vector<NPL::Track> vTrack;
         
     private:
         TServerSocket* m_ServerSocket;
@@ -114,7 +113,7 @@ namespace NPL{
         TList* m_Histo;
         TList* m_Sockets;
         
-        ClassDef(Ransac, 0)
+        ClassDef(Cluster, 0)
     };
 }
 #endif

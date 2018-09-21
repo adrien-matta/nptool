@@ -43,6 +43,7 @@ using namespace std;
 #include "NPInputParser.h"
 #include "NPTrack.h"
 #include "NPRansac.h"
+#include "NPCluster.h"
 
 #define NumberOfCobo 16
 #define NumberOfASAD 4
@@ -74,6 +75,10 @@ public:
     vector<int> PadY;
     vector<double> PadZ;
     vector<double> PadCharge;
+    vector<int> BeamPadX;
+    vector<int> BeamPadY;
+    vector<double> BeamPadZ;
+    vector<double> BeamPadCharge;
     vector<double> Si_E;
     vector<int> Si_Number;
     int TrackMult;
@@ -159,6 +164,8 @@ public:
     
     bool GoodHit(int iX, int iY);
     
+    bool IsBeamZone(int X, int Y);
+    
     // give and external TActarData object to TActarPhysics.
     // needed for online analysis for example
     void SetRawDataPointer(TActarData* rawDataPointer) {m_EventData = rawDataPointer;}
@@ -170,6 +177,7 @@ private:
     TActarData*         m_PreTreatedData;   //!
     TActarPhysics*      m_EventPhysics;     //!
     NPL::Ransac*        m_Ransac;           //!
+    NPL::Cluster*       m_Cluster;          //!
     vector<NPL::Track>  m_Track;            //!
     
     // getters for raw and pre-treated data object
@@ -193,12 +201,17 @@ private:
     int fT_Threshold;       //!
     int fNumberOfPadsX;     //!
     int fNumberOfPadsY;     //!
+    int fXBeamMax;          //!
+    int fXBeamMin;          //!
+    int fYBeamMax;          //!
+    int fYBeamMin;          //!
     double fPadSizeX;       //!
     double fPadSizeY;       //!
     double fDriftVelocity;  //!
     double fPressure;       //!
     string fGas;            //!
     bool fRecoRansac;       //!
+    bool fRecoCluster;      //!
     bool fRecoVisu;         //!
     map<int, int> Si_map;   //!
     
@@ -217,8 +230,11 @@ private:
     //spme getters and setters
 public:
     void SetRansacParameter(string filename);
+    void SetClusterParameter(string filename);
     NPL::Ransac* GetRansacObject() {return m_Ransac;}
     bool GetRansacStatus() {return fRecoRansac;}
+    NPL::Cluster* GetClusterObject() {return m_Cluster;}
+    bool GetClusterStatus() {return fRecoCluster;}
     
 
     // spectra getter

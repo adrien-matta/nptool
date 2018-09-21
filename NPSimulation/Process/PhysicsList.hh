@@ -117,6 +117,7 @@ class PhysicsList: public G4VUserPhysicsList{
     double m_IonGasModels;
     double m_pai;
     double m_pai_photon;
+  	double m_Menate_R;
 };
 
 
