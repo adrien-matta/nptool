@@ -346,6 +346,8 @@ void PhysicsList::ConstructParticle(){
         G4Electron::ElectronDefinition();
         G4Positron::PositronDefinition();
         G4NeutrinoE::NeutrinoEDefinition();
+        G4MuonPlus::MuonPlusDefinition();
+        G4MuonMinus::MuonMinusDefinition();
         G4AntiNeutrinoE::AntiNeutrinoEDefinition();
         G4Geantino::GeantinoDefinition();
         G4ChargedGeantino::ChargedGeantinoDefinition();

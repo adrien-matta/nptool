@@ -128,7 +128,7 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
         par.m_particle=NULL;
         if(par.m_particle==NULL){
 
-          if(par.m_particleName[p]=="gamma" || par.m_particleName[p]=="neutron" ||  par.m_particleName[p]=="opticalphoton"){
+          if(par.m_particleName[p]=="gamma" || par.m_particleName[p]=="neutron" ||  par.m_particleName[p]=="opticalphoton"  ||  par.m_particleName[p]=="mu+"){
             par.m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(par.m_particleName[p].c_str());
           }
           else{
@@ -145,8 +145,11 @@ void EventGeneratorIsotropic::GenerateEvent(G4Event*){
         G4double theta           = acos(cos_theta)                                                   ;
         G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
         G4double particle_energy = par.m_EnergyLow + RandFlat::shoot() * (par.m_EnergyHigh - par.m_EnergyLow)    ;
-          
-          cout << "Event ID= " << event_ID << " / theta= " << theta*180/3.1415 << " / energy= " << particle_energy << endl;
+
+        
+        //      cout << "Event ID= " << event_ID << " / theta= " << theta*180/3.1415 << " / energy= " << particle_energy << endl;
+
+
           event_ID++;
           
 
