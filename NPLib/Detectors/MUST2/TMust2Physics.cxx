@@ -153,7 +153,7 @@ ClassImp(TMust2Physics)
       m_CsI_MatchingY[7]=112;
       //
       m_CsI_MatchingX[8]=48;
-      m_CsI_MatchingY[8]=48;
+      m_CsI_MatchingY[8]=16;
 
       m_CsI_MatchingX[9]=48;
       m_CsI_MatchingY[9]=48;

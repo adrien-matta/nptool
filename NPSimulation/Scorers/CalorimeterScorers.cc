@@ -45,8 +45,6 @@ vector<CalorimeterData>::iterator CalorimeterDataVector::find(const unsigned int
   return m_Data.end();
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PS_Calorimeter::PS_Calorimeter(G4String name, vector<G4int> NestingLevel,G4int depth)
   :G4VPrimitiveScorer(name, depth){
@@ -68,7 +66,6 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     t_Level.push_back(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]));
   }
 
-
   // Check if the particle has interact before, if yes, add up the energies.
   vector<CalorimeterData>::iterator it;
   it = m_Data.find(CalorimeterData::CalculateIndex(t_Level)); 
@@ -83,8 +80,8 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PS_Calorimeter::Initialize(G4HCofThisEvent* HCE){
-  m_Data.clear();
+void PS_Calorimeter::Initialize(G4HCofThisEvent*){
+ clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -94,6 +91,7 @@ void PS_Calorimeter::EndOfEvent(G4HCofThisEvent*){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PS_Calorimeter::clear(){
   m_Data.clear();
+  t_Level.clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

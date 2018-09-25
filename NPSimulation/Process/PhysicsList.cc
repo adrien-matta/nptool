@@ -46,6 +46,7 @@
 
 #include "G4PAIModel.hh"
 #include "G4PAIPhotModel.hh"
+#include "menate_R.hh"
 
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VUserPhysicsList(){
@@ -196,6 +197,7 @@ void PhysicsList::ReadConfiguration(std::string filename){
     m_IonGasModels = 0;
     m_pai= 0;
     m_pai_photon= 0;
+		m_Menate_R = 0;
     
     std::ifstream file(filename.c_str());
     if(!file.is_open()){
@@ -240,6 +242,8 @@ void PhysicsList::ReadConfiguration(std::string filename){
             m_pai = value;
         else if (name == "pai_photon")
             m_pai_photon = value;
+				else if (name == "Menate_R")
+   					m_Menate_R = value;
         else
             std::cout <<"WARNING: Physics List Token '" << name << "' unknown. Token is ignored." << std::endl;
     }
@@ -422,6 +426,17 @@ void PhysicsList::AddParametrisation(){
         // Add a Step limiter to the beam particle.
         // This will be used to limit the step of the beam in the target
         pmanager->AddProcess(new G4StepLimiter,-1,-1,5);
+
+				// Add menate R to the process manager for neutrons
+				// (if selected as a option)
+				if(m_Menate_R > 0 && name == "neutron") {
+					menate_R* theMenate = new menate_R("menateR_neutron");
+					theMenate->SetMeanFreePathCalcMethod("ORIGINAL");
+					pmanager->AddDiscreteProcess(theMenate);
+					std::cout <<"||--------------------------------------------------||" << std::endl;
+					std::cout <<"         MENATE_R Added to Process Manager            " << std::endl;
+					std::cout <<"||--------------------------------------------------||" << std::endl;
+				}
     }
 }
 
