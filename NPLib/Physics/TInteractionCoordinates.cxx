@@ -57,14 +57,14 @@ void TInteractionCoordinates::Dump() const{
   for(unsigned int i = 0 ; i < size ; i++){
     cout << " Interaction " << i << " of " << size << endl; 
     cout << "Energy And Time : " << endl;
-    cout << "Energy : " << fDetected_Energy[0] << endl;
-    cout << "Time : " << fDetected_Time[0] << endl;
+    cout << "Energy : " << fDetected_Energy[i] << endl;
+    cout << "Time : " << fDetected_Time[i] << endl;
     cout << "Interaction position : " << endl;
-    cout << "\tX : " << fDetected_Position_X[0] << endl;  
-    cout << "\tY : " << fDetected_Position_Y[0] << endl;  
-    cout << "\tZ : " << fDetected_Position_Z[0] << endl;  
+    cout << "\tX : " << fDetected_Position_X[i] << endl;  
+    cout << "\tY : " << fDetected_Position_Y[i] << endl;  
+    cout << "\tZ : " << fDetected_Position_Z[i] << endl;  
     cout << "Incident particle angles : " << endl;
-    cout << "\tTheta : " << fDetected_Angle_Theta[0] << endl;
-    cout << "\tPhi   : " << fDetected_Angle_Phi[0] << endl;
+    cout << "\tTheta : " << fDetected_Angle_Theta[i] << endl;
+    cout << "\tPhi   : " << fDetected_Angle_Phi[i] << endl;
   }
 }

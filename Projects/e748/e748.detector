@@ -116,7 +116,7 @@ CATSDetector
 
 ModularLeaf
  DefaultValue= -1000
- Leafs= QPlast QCaviar CHIO T_CATS1_CAV T_CATS1_2 T_MUVI_CATS1 T_PL_CATS2 EXL_HF T_PL_CHIO T_PL_CATS1
+ Leafs= QPlast QCaviar CHIO T_CATS1_CAV T_CATS1_2 T_MUVI_CATS1 T_PL_CATS2 EXL_HF T_PL_CHIO T_PL_CATS E1D6
 
 Chio_dig 
  Pos=       -30.  -30.   600. mm
