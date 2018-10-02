@@ -77,7 +77,22 @@ PhysicsList::PhysicsList() : G4VUserPhysicsList(){
         emPhysicsList = new G4EmStandardPhysics_option4();
         cout << "//// Using G4EmStandardPhysics_option4 Physics List ////" << endl;
     }
-    
+    else if(m_EmList== "Option1"){
+        emPhysicsList = new G4EmStandardPhysics_option1();
+        cout << "//// Using G4EmStandardPhysics_option1 Physics List ////" << endl;
+    }
+    else if(m_EmList== "Option2"){
+        emPhysicsList = new G4EmStandardPhysics_option2();
+        cout << "//// Using G4EmStandardPhysics_option2 Physics List ////" << endl;
+    }
+    else if(m_EmList== "Option3"){
+        emPhysicsList = new G4EmStandardPhysics_option3();
+        cout << "//// Using G4EmStandardPhysics_option3 Physics List ////" << endl;
+    }
+    else if(m_EmList== "Standard"){
+        emPhysicsList = new G4EmStandardPhysics();
+        cout << "//// Using G4EmStandardPhysics default EM constructor Physics List ////" << endl;
+    }
     else if(m_EmList== "Livermore"){
         emPhysicsList = new G4EmLivermorePhysics();
         cout << "//// Using G4EmLivermorePhysics Physics List ////" << endl;
@@ -350,6 +365,8 @@ void PhysicsList::ConstructParticle(){
         G4Electron::ElectronDefinition();
         G4Positron::PositronDefinition();
         G4NeutrinoE::NeutrinoEDefinition();
+        G4MuonPlus::MuonPlusDefinition();
+        G4MuonMinus::MuonMinusDefinition();
         G4AntiNeutrinoE::AntiNeutrinoEDefinition();
         G4Geantino::GeantinoDefinition();
         G4ChargedGeantino::ChargedGeantinoDefinition();

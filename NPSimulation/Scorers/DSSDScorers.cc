@@ -395,10 +395,8 @@ G4bool PS_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PS_Resistive::Initialize(G4HCofThisEvent* HCE){
-  m_HitUp.clear();
-  m_HitDown.clear();
-  m_HitBack.clear();
+void PS_Resistive::Initialize(G4HCofThisEvent* ){
+  clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

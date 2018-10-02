@@ -719,7 +719,6 @@ void MUST2Array::InitializeRootOutput(){
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
 void MUST2Array::ReadSensitive(const G4Event*){
-  G4String DetectorNumber;
   m_Event->Clear();
 
   //////////////////////////////////////////////////////////////////////////////////////
@@ -873,7 +872,7 @@ void MUST2Array::InitializeScorers() {
   bool already_exist = false; 
   m_StripScorer = CheckScorer("MUST2_StripScorer",already_exist);
   m_SiLiScorer	= CheckScorer("MUST2_SiLiScorer",already_exist);
-  m_CsIScorer	= CheckScorer("MUST2_CsIScorer",already_exist);
+  m_CsIScorer	  = CheckScorer("MUST2_CsIScorer",already_exist);
 
   // if the scorer were created previously nothing else need to be made
   if(already_exist) return; 

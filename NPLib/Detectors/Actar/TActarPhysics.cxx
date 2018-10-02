@@ -70,6 +70,7 @@ fPadSizeY(2),
 fDriftVelocity(40),
 fPressure(100),
 fGas("iC4H10"),
+m_NumberOfPadSilicon(20),
 m_NumberOfDetectors(0) {
 }
 
@@ -99,33 +100,36 @@ void TActarPhysics::BuildSimplePhysicalEvent() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TActarPhysics::BuildPhysicalEvent() {
-    
+
     PreTreat();
-    
+
     //unsigned int mysize = m_PreTreatedData->GetPadMult();
-    
+
     /*for (unsigned int e = 0; e < mysize; e++) {
         PadX.push_back(m_PreTreatedData->GetPadX(e));
         PadY.push_back(m_PreTreatedData->GetPadY(e));
         PadZ.push_back(m_PreTreatedData->GetPadZ(e));
         PadCharge.push_back(m_PreTreatedData->GetPadCharge(e));
     }*/
-    
     if(fRecoRansac && PadX.size()>fHitThreshold){
         m_Ransac->Init(PadX, PadY, PadZ, PadCharge);
         m_Track = m_Ransac->SimpleRansac();
     }
-    
-    else if(fRecoCluster && PadX.size()>fHitThreshold){
+
+    else if(fRecoCluster){
+      if(PadX.size()>fHitThreshold){
         m_Cluster->Init(PadX, PadY, PadZ, PadCharge);
         m_Cluster->FindTracks();
-        
+      }
+
+      if(BeamPadX.size()>fHitThreshold){
         m_Cluster->Init(BeamPadX, BeamPadY, BeamPadZ, BeamPadCharge);
         m_Cluster->FindTracks();
-        
-        m_Track = m_Cluster->GetTracks();
-        
-        m_Cluster->Clear();
+      }
+
+      m_Track = m_Cluster->GetTracks();
+
+      m_Cluster->Clear();
     }
 
     TrackMult = m_Track.size();
@@ -135,25 +139,25 @@ void TActarPhysics::BuildPhysicalEvent() {
 void TActarPhysics::PreTreat() {
     // This method typically applies thresholds and calibrations
     // Might test for disabled channels for more complex detector
-    
+
     // clear pre-treated object
     ClearPreTreatedData();
-    
+
     CleanPads();
-    
+
     // instantiate CalibrationManager
     static CalibrationManager* Cal = CalibrationManager::getInstance();
-    
-    
+
+
     unsigned int mysize = m_EventReduced->CoboAsad.size();
-    
+
     for (unsigned int it = 0; it < mysize ; ++it) {
         int co=m_EventReduced->CoboAsad[it].globalchannelid>>11;
         int as=(m_EventReduced->CoboAsad[it].globalchannelid - (co<<11))>>9;
         int ag=(m_EventReduced->CoboAsad[it].globalchannelid - (co<<11)-(as<<9))>>7;
         int ch=m_EventReduced->CoboAsad[it].globalchannelid - (co<<11)-(as<<9)-(ag<<7);
         int where=co*NumberOfASAD*NumberOfAGET*NumberOfChannel + as*NumberOfAGET*NumberOfChannel + ag*NumberOfChannel + ch;
-        
+
         if(co!=31){
             unsigned int vector_size = m_EventReduced->CoboAsad[it].peakheight.size();
             for(unsigned int hh=0; hh<vector_size; hh++){
@@ -173,9 +177,9 @@ void TActarPhysics::PreTreat() {
                                 PadY.push_back(TABLE[5][where]);
                                 PadZ.push_back(m_EventReduced->CoboAsad[it].peaktime[hh]);
                             }
-                            
+
                         }
-                        else{
+                        else if(fRecoRansac){
                             PadCharge.push_back(m_EventReduced->CoboAsad[it].peakheight[hh]);
                             PadX.push_back(TABLE[4][where]);
                             PadY.push_back(TABLE[5][where]);
@@ -189,14 +193,25 @@ void TActarPhysics::PreTreat() {
         else if(co==31){
             unsigned int vector_size = m_EventReduced->CoboAsad[it].peakheight.size();
             for(unsigned int hit=0;hit<vector_size;hit++){
-                
-                Si_Number.push_back(m_EventReduced->CoboAsad[it].peaktime[hit]);
-                Si_E.push_back(m_EventReduced->CoboAsad[it].peakheight[hit]);
-                
-                int vxi_parameter = m_EventReduced->CoboAsad[it].peaktime[hit];
-                if(Si_map[vxi_parameter]<21 && Si_map[vxi_parameter]>0){
-                    m_PreTreatedData->SetSiliconEnergy(m_EventReduced->CoboAsad[it].peakheight[hit]);
-                    m_PreTreatedData->SetSiliconDetectorNumber(Si_map[vxi_parameter]);
+                if(fInputTreeName=="ACTAR_TTree"){
+                  int vxi_parameter = m_EventReduced->CoboAsad[it].peaktime[hit];
+
+                  if(Si_map[vxi_parameter]<21 && Si_map[vxi_parameter]>0){
+                    double RawEnergy = m_EventReduced->CoboAsad[it].peakheight[hit];
+
+                    static string name;
+                    name = "ActarSi/D" ;
+                    name+= NPL::itoa( Si_map[vxi_parameter] - 1) ;
+                    name+= "_E" ;
+                    double CalEnergy = CalibrationManager::getInstance()->ApplyCalibration( name, RawEnergy );
+
+                    Si_Number.push_back(Si_map[vxi_parameter]);
+                    Si_E.push_back(CalEnergy);
+                  }
+                }
+                else{
+                  Si_Number.push_back(m_EventReduced->CoboAsad[it].peaktime[hit]);
+                  Si_E.push_back(m_EventReduced->CoboAsad[it].peakheight[hit]);
                 }
             }
         }
@@ -207,10 +222,10 @@ void TActarPhysics::PreTreat() {
 bool TActarPhysics::IsBeamZone(int X, int Y)
 {
     bool isBeam=false;
-    if(X>fXBeamMin && X<fXBeamMax)
-        if(Y>fYBeamMin && fYBeamMax)
-            isBeam=true;
-    
+    if( (X>=fXBeamMin && X<=fXBeamMax) && (Y>=fYBeamMin && Y<=fYBeamMax) ){
+        isBeam=true;
+    }
+
     return isBeam;
 }
 
@@ -225,7 +240,7 @@ bool TActarPhysics::GoodHit(int iX, int iY)
             }
         }
     }
-    
+
     return bHit;
 }
 
@@ -241,8 +256,8 @@ void TActarPhysics::CleanPads()
         int ag=(m_EventReduced->CoboAsad[it].globalchannelid - (co<<11)-(as<<9))>>7;
         int ch=m_EventReduced->CoboAsad[it].globalchannelid - (co<<11)-(as<<9)-(ag<<7);
         int where=co*NumberOfASAD*NumberOfAGET*NumberOfChannel + as*NumberOfAGET*NumberOfChannel + ag*NumberOfChannel + ch;
-        
-        
+
+
         if(co!=31){
             unsigned int vector_size = m_EventReduced->CoboAsad[it].peakheight.size();
             for(unsigned int hh=0; hh < vector_size; hh++){
@@ -279,7 +294,7 @@ void TActarPhysics::ReadAnalysisConfig() {
         }
     }
     VXIConfigFile.close();
-    
+
     // Lookup table //
     bool ReadingLookupTable = false;
     string LT_FileName = "./configs/LT.dat";
@@ -297,23 +312,23 @@ void TActarPhysics::ReadAnalysisConfig() {
         ReadingLookupTable = true;
     }
     LTConfigFile.close();
-    
-    
+
+
     bool ReadingStatus = false;
-    
+
     // ACTAR config file //
     string FileName = "./configs/ConfigActar.dat";
-    
+
     // open analysis config file
     ifstream AnalysisConfigFile;
     AnalysisConfigFile.open(FileName.c_str());
-    
+
     if (!AnalysisConfigFile.is_open()) {
         cout << " No ConfigActar.dat found: Default parameter loaded for Analayis " << FileName << endl;
         return;
     }
     cout << "/// Loading user parameter for Analysis from ConfigActar.dat ///" << endl;
-    
+
     // Save it in a TAsciiFile
     TAsciiFile* asciiConfig = RootOutput::getInstance()->GetAsciiFileAnalysisConfig();
     asciiConfig->AppendLine("%%% ConfigActar.dat %%%");
@@ -324,54 +339,54 @@ void TActarPhysics::ReadAnalysisConfig() {
     while (!AnalysisConfigFile.eof()) {
         // Pick-up next line
         getline(AnalysisConfigFile, LineBuffer);
-        
+
         // search for "header"
         string name = "ConfigActar";
         if (LineBuffer.compare(0, name.length(), name) == 0){
             ReadingStatus = true;
             cout << "**** ConfigActar found" << endl;
         }
-        
+
         // loop on tokens and data
         while (ReadingStatus ) {
             whatToDo="";
             AnalysisConfigFile >> whatToDo;
-            
+
             // Search for comment symbol (%)
             if (whatToDo.compare(0, 1, "%") == 0) {
                 AnalysisConfigFile.ignore(numeric_limits<streamsize>::max(), '\n' );
             }
-            
+
             else if (whatToDo.compare(0,11,"RecoRansac=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fRecoRansac = atoi(DataBuffer.c_str());
                 cout << "/// Reco using Ransac= " << " " << fRecoRansac << " ///" << endl;
             }
-            
+
             else if (whatToDo.compare(0,12,"RecoCluster=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fRecoCluster = atoi(DataBuffer.c_str());
                 cout << "/// Reco using Cluster= " << " " << fRecoCluster << " ///" << endl;
             }
-            
+
             else if (whatToDo.compare(0,9,"RecoVisu=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fRecoVisu = atoi(DataBuffer.c_str());
                 cout << "/// Visualisation= " << " " << fRecoVisu << " ///" << endl;
             }
-            
+
             else if (whatToDo.compare(0,14,"HIT_THRESHOLD=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fHitThreshold = atoi(DataBuffer.c_str());
                 cout << "/// Hit Threshold= " << " " << fHitThreshold << " ///" << endl;
             }
-            
+
             else if (whatToDo.compare(0,12,"Q_THRESHOLD=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fQ_Threshold = atof(DataBuffer.c_str());
                 cout << "/// Q Threshold= " << " " << fQ_Threshold << " ///" << endl;
             }
-            
+
             else if (whatToDo.compare(0,12,"T_THRESHOLD=") == 0) {
                 AnalysisConfigFile >> DataBuffer;
                 fT_Threshold = atof(DataBuffer.c_str());
@@ -383,79 +398,86 @@ void TActarPhysics::ReadAnalysisConfig() {
                 //check_padsX=true;
                 cout << "/// Number Of Pads X= " << fNumberOfPadsX << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,14,"NumberOfPadsY=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fNumberOfPadsY = atoi(DataBuffer.c_str());
                 //check_padsY=true;
                 cout << "/// Number Of Pads Y= " << fNumberOfPadsY << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"PadSizeX=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fPadSizeX = atof(DataBuffer.c_str());
                 //check_sizeX=true;
                 cout << "/// Pad Size X= " << fPadSizeX << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"PadSizeY=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fPadSizeY = atof(DataBuffer.c_str());
                 //check_sizeY=true;
                 cout << "/// Pad Size Y= " << fPadSizeY << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"XBeamMin=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fXBeamMin = atof(DataBuffer.c_str());
                 cout << "/// X Beam Min= " << fXBeamMin << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"XBeamMax=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fXBeamMax = atof(DataBuffer.c_str());
                 cout << "/// X Beam Max= " << fXBeamMax << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"YBeamMin=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fYBeamMin = atof(DataBuffer.c_str());
                 cout << "/// Y Beam Min= " << fYBeamMin << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,9,"YBeamMax=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fYBeamMax = atof(DataBuffer.c_str());
                 cout << "/// Y Beam Max= " << fYBeamMax << " ///" << endl;
             }
-            
+
+            else if(whatToDo.compare(0,19,"NumberOfPadSilicon=")==0){
+                AnalysisConfigFile >> DataBuffer;
+                m_NumberOfPadSilicon = atof(DataBuffer.c_str());
+                //check_pressure=true;
+                cout << "/// Number of Silicons= " << m_NumberOfPadSilicon << " ///" << endl;
+            }
+
             else if(whatToDo.compare(0,9,"Pressure=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fPressure = atof(DataBuffer.c_str());
                 //check_pressure=true;
                 cout << "/// Pressure= " << fPressure << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,14,"DriftVelocity=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fDriftVelocity = atof(DataBuffer.c_str());
                 //check_driftvelocity=true;
                 cout << "/// Drift Velocity= " << fDriftVelocity << " ///" << endl;
             }
-            
+
             else if(whatToDo.compare(0,4,"Gas=")==0){
                 AnalysisConfigFile >> DataBuffer;
                 fGas = DataBuffer.c_str();
                 //check_gas=true;
                 cout << "/// Gas Type= " << fGas << " ///" << endl;
             }
-            
+
             else {
                 ReadingStatus = false;
             }
         }
     }
-    
+
     if(fRecoRansac){
         m_Ransac = new NPL::Ransac(fNumberOfPadsX,fNumberOfPadsY,fRecoVisu);
     }
@@ -484,7 +506,7 @@ void TActarPhysics::Clear() {
     BeamPadY.clear();
     BeamPadZ.clear();
     BeamPadCharge.clear();
-    
+
     PadX.clear();
     PadY.clear();
     PadZ.clear();
@@ -492,7 +514,7 @@ void TActarPhysics::Clear() {
     m_Track.clear();
     Si_Number.clear();
     Si_E.clear();
-    
+
     for(int i=0; i<fNumberOfPadsX; i++){
         for(int j=0; j<fNumberOfPadsY; j++){
             Hit[i][j] = 0;
@@ -507,15 +529,15 @@ void TActarPhysics::ReadConfiguration(NPL::InputParser parser) {
     vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Actar");
     if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << "//// " << blocks.size() << " detectors found " << endl;
-    
+
     vector<string> cart = {"POS","Shape"};
     vector<string> sphe = {"R","Theta","Phi","Shape"};
-    
+
     for(unsigned int i = 0 ; i < blocks.size() ; i++){
         if(blocks[i]->HasTokenList(cart)){
             if(NPOptionManager::getInstance()->GetVerboseLevel())
                 cout << endl << "////  Actar " << i+1 <<  endl;
-            
+
             TVector3 Pos = blocks[i]->GetTVector3("POS","mm");
             string Shape = blocks[i]->GetString("Shape");
             AddDetector(Pos,Shape);
@@ -604,6 +626,10 @@ void TActarPhysics::AddParameterToCalibrationManager() {
         Cal->AddParameter("Actar", "D"+ NPL::itoa(i+1)+"_CHARGE","Actar_D"+ NPL::itoa(i+1)+"_CHARGE");
         Cal->AddParameter("Actar", "D"+ NPL::itoa(i+1)+"_TIME","Actar_D"+ NPL::itoa(i+1)+"_TIME");
     }
+
+    for(int i=0; i<m_NumberOfPadSilicon; i++){
+      Cal->AddParameter("ActarSi","D"+NPL::itoa(i)+"_E","ActarSi_D"+NPL::itoa(i)+"_E");
+    }
 }
 
 
@@ -621,6 +647,8 @@ void TActarPhysics::InitializeRootInputRaw() {
     inputChain->SetBranchStatus("data",  true );
     inputChain->SetBranchStatus("ACTAR_TTree",  true );
     inputChain->SetBranchAddress("data", &m_EventReduced );
+
+    fInputTreeName = inputChain->GetTree()->GetName();
 }
 
 
@@ -661,6 +689,6 @@ extern "C"{
             NPL::DetectorFactory::getInstance()->AddDetector("Actar",TActarPhysics::Construct);
         }
     };
-    
+
     proxy_Actar p_Actar;
 }
