@@ -78,10 +78,12 @@ public:
 private:
 	G4Material* m_ScintillatorMaterial;
 	G4Material* m_PipeMaterial;
+	G4Material* m_WrappingMaterial;
 	G4OpticalSurface* m_ReflectiveSurface;
 
 	G4Material* CreateScintillatorMaterial() const;
 	G4Material* CreatePipeMaterial() const;
+	G4Material* CreateWrappingMaterial() const;
 	G4OpticalSurface* CreateReflectiveSurface() const;
 	
 public:   // Scorer

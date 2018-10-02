@@ -24,6 +24,7 @@
 #include <cmath>
 #include <limits>
 #include <fstream>
+#include <algorithm>
 //G4 Geometry object
 #include "G4Tubs.hh"
 #include "G4Box.hh"
@@ -74,7 +75,11 @@ LightPipe::LightPipe(){
 	m_VisPD     = new G4VisAttributes(G4Colour(0.1, 0.2, 0.3));
 	m_ScintillatorMaterial = CreateScintillatorMaterial();
 	m_PipeMaterial = CreatePipeMaterial();
+	//m_Wrapping = CreateWrappingMaterial();
 	m_ReflectiveSurface = CreateReflectiveSurface();
+
+	m_VisSquare->SetForceWireframe(true);
+	m_VisPipe->SetForceWireframe(true);
 }
 
 LightPipe::~LightPipe(){
@@ -164,6 +169,8 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 	};
 	
 	int i=0, j=0, k=0;
+
+	int iPipeX=1, iPipeY=1, iDet=1;
 	for(const auto& det : m_Detector) {
 		const G4int& nrow = get<0>(det);
 		const G4int& ncol = get<1>(det);
@@ -177,6 +184,63 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 		vector<vector<G4PVPlacement*> > physVol(nrow);
 		for(auto& v : physVol) { v.resize(ncol); }
 
+
+		auto buildRow = [&](G4int irow, G4double z){
+			G4double rowWidthX = nrow*width;
+			G4double pipe_length = width*ncol + 1*cm;
+			//
+			// Build light pipe above detectors
+			//
+			// Create geometric object
+			G4ThreeVector pipePos(
+				0, getCenter(irow, nrow, width) + width/2. + pipe_thickness/2., z);
+			auto pipe = BuildRectangle(
+				pipe_length, pipe_width, pipe_thickness, m_PipeMaterial);
+			pipe->SetVisAttributes(m_VisPipe);
+			// Rotate it
+			G4RotationMatrix* myRotation = new G4RotationMatrix();
+			myRotation->rotateX(90.*deg);
+			// Create PV Placement
+			G4PVPlacement* pv = new G4PVPlacement(
+				myRotation, pipePos, pipe, "LightPipe_PipeX", world, false, iPipeX++, warnOverlap);
+
+			std::vector<G4PVPlacement*> pvRow;
+			for(int icol=0; icol< ncol; ++icol){
+				//
+				// Build row of detectors
+				//
+				//
+				// Create geometric object
+				G4ThreeVector Det_pos
+					(getCenter(icol,ncol,width), getCenter(irow,nrow,width), z);
+				auto Scintillator = BuildRectangle(width, width, thickness, m_ScintillatorMaterial);
+//				Scintillator->SetSensitiveDetector(this->m_LightPipeScorer);
+				// Create PV placement
+				pvRow.push_back(
+					new G4PVPlacement(
+						0, Det_pos, Scintillator, "LightPipe_Detector", world, false, iDet++, warnOverlap) );
+			}
+			// Create reflective surfaces between detectors
+			for(int icol=0; icol< ncol; ++icol){
+				// to the left
+				if(icol != 0) {
+					new G4LogicalBorderSurface("CrystalSurface", pvRow.at(icol-1), pvRow.at(icol), m_ReflectiveSurface);
+				} else {
+					new G4LogicalBorderSurface("CrystalSurface", fExperimentalHall_phys, pvRow.at(icol), m_ReflectiveSurface);
+				}
+				// to the right
+				if(icol != ncol-1) {
+					new G4LogicalBorderSurface("CrystalSurface", pvRow.at(icol), pvRow.at(icol+1), m_ReflectiveSurface);
+				} else {
+				new G4LogicalBorderSurface("CrystalSurface", pvRow.at(icol), fExperimentalHall_phys,  m_ReflectiveSurface);
+				}
+			}
+			return pvRow;
+		};
+
+		buildRow(5,0);
+#if 0
+		
 		int pdNum = 1;
 		for(int ilayer = 0; ilayer< nlayer; ++ilayer){
 			G4double detZ = getCenter(ilayer,nlayer,thickness) + pipe_thickness*ilayer;
@@ -214,25 +278,30 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 				}
 			}
 			//
-			// Build Pipes
+			// Build Pipes		
 			auto buildPipe = [&](bool horizontal, G4double layer_center) {
 				G4PVPlacement* pvLast = 0;
 				G4double pipe_center_z = layer_center + thickness*0.5 + pipe_thickness*0.5;
-				int ircmax = horizontal ? ncol : nrow;
 
+				int ircmax = horizontal ? ncol : nrow;
 				for(int irc=0; irc< ircmax; ++irc){
 					G4double pipe_center_xy = getCenter(irc,ircmax,width);
 					G4ThreeVector LG_pos = horizontal ?
-						G4ThreeVector(0,pipe_center_xy,pipe_center_z) :
+						G4ThreeVector(0,pipe_center_xy-thickness/2.,pipe_center_z-thickness/2.) :
 						G4ThreeVector(pipe_center_xy,0,pipe_center_z);
 					G4Material* mat = m_PipeMaterial;
+
+					G4double pipe_length = horizontal ? width*nrow : width*ncol;
+					pipe_length += 1*cm;
 					auto pipe =  horizontal ?
-						BuildRectangle(width*nrow, pipe_width, pipe_thickness, mat) :
-						BuildRectangle(pipe_width, width*ncol, pipe_thickness, mat) ;
+						BuildRectangle(pipe_length, pipe_width, pipe_thickness, mat) :
+						BuildRectangle(pipe_width, pipe_length, pipe_thickness, mat) ;
 					pipe->SetVisAttributes(m_VisPipe);
 					G4PVPlacement* pv = 0;
 					if(horizontal){
-						pv = new G4PVPlacement(0, LG_pos, pipe, "LightPipe_PipeX",world,false, j+1, warnOverlap);
+						G4RotationMatrix* myRotation = new G4RotationMatrix();
+						myRotation->rotateX(90.*deg);
+						pv = new G4PVPlacement(myRotation, LG_pos, pipe, "LightPipe_PipeX",world,false, j+1, warnOverlap);
 						++j;
 					} else {
 						pv = new G4PVPlacement(0, LG_pos, pipe, "LightPipe_PipeY",world,false, k+1, warnOverlap);
@@ -251,6 +320,7 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 						new G4LogicalBorderSurface("CrystalSurface", pv, pvDet, m_ReflectiveSurface);
 					}
 #endif
+#if 0
 					//
 					// Photodiode
 					G4String NamePD = "PhotoDiode";
@@ -270,8 +340,8 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 					// RIGHT / TOP
 					G4int side = horizontal ? TLightPipeData::Right_t : TLightPipeData::Top_t;
 					G4ThreeVector PD_Pos = horizontal ?
-						G4ThreeVector(width*nrow*0.5 + 0.5*pd_thickness, pipe_center_xy, pipe_center_z) :
-						G4ThreeVector(pipe_center_xy, width*ncol*0.5 + 0.5*pd_thickness, pipe_center_z) ;
+						G4ThreeVector(pipe_length*0.5 + 0.5*pd_thickness, pipe_center_xy, pipe_center_z) :
+						G4ThreeVector(pipe_center_xy, pipe_length*0.5 + 0.5*pd_thickness, pipe_center_z) ;
 					new G4PVPlacement(myRotation, PD_Pos, logicPD, NamePD, world, false, pdNum, warnOverlap);
 					m_DetectorMap[pdNum++] = make_tuple(side, ilayer, irc);
 					//
@@ -281,22 +351,17 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 					else           { PD_Pos.set(+PD_Pos.x(),-PD_Pos.y(),PD_Pos.z()); }
 					new G4PVPlacement(myRotation, PD_Pos, logicPD, NamePD, world, false, pdNum, warnOverlap);
 					m_DetectorMap[pdNum++] = make_tuple(side, ilayer, irc);
+#endif
 				}
 			};
 			//
 			if(!(ilayer%2)) { // even
-				// even layers get horizontal light pipes downstream
-				buildPipe(true, detZ);
-				if(ilayer == 0) {
-					// layer 0 also needs a vertical pipe upstream
-					buildPipe(false, detZ - thickness - pipe_thickness);
-				}
-			}
-			else { // odd
-				// odd layers get vertical light pipes downstream
+				// even layers get vertical light pipes downstream
 				buildPipe(false, detZ);
 			}
+			buildPipe(true, detZ);
 		} // for(ilayer)
+#endif
 	}
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -316,7 +381,7 @@ void LightPipe::InitializeRootOutput(){
 // Called at in the EventAction::EndOfEventAvtion
 void LightPipe::ReadSensitive(const G4Event* event){
   m_Event->Clear();
-
+	return;
   ///////////
   // Calorimeter scorer
   NPS::HitsMap<G4double*>* CaloHitMap;
@@ -433,9 +498,9 @@ G4Material* LightPipe::CreateScintillatorMaterial() const {
 			energy.emplace_back( h_Planck*c_light / (wl*nm) ); // convert to energy
 			scint.emplace_back(pr);   // scintillation probability
 			rindx.emplace_back(1.65); // refractive index
-			fast.emplace_back(1*ns);  // FAST component ???
-			slow.emplace_back(3*ns);  // SLOW component ???
-			atten.emplace_back(4.73*mm);  // Attenuation length (from https://arxiv.org/pdf/1305.0442.pdf)
+			fast.emplace_back(3*ns);     // FAST component ???
+			slow.emplace_back(100*ns);   // SLOW component ???
+			atten.emplace_back(4.73*mm); // Attenuation length (from https://arxiv.org/pdf/1305.0442.pdf)
 		}
 	}
 
@@ -457,13 +522,14 @@ G4Material* LightPipe::CreateScintillatorMaterial() const {
 }
 
 G4Material* LightPipe::CreatePipeMaterial() const {
-	// Eljin EJ-282
-	// https://eljentechnology.com/products/wavelength-shifting-plastics/ej-280-ej-282-ej-284-ej-286
+	// Bicron BC-482A
+	// https://www.crystals.saint-gobain.com/sites/imdf.crystals.com/files/documents/bc482a-bc484-data-sheet.pdf
+	// https://www.crystals.saint-gobain.com/sites/imdf.crystals.com/files/documents/organics-plastic-scintillators.pdf
 	//
-	G4double density = 1.023*g/cm3;
+	G4double density = 1.03*g/cm3;
 	
-	G4Material* material = new G4Material("EJ282_WLS", density, 2);
-	material->AddElement(MaterialManager::getInstance()->GetElementFromLibrary("H"), 10); // Polyvinyltoluene
+	G4Material* material = new G4Material("BC482A_WLS", density, 2);
+	material->AddElement(MaterialManager::getInstance()->GetElementFromLibrary("H"), 10); // H:C ratio - 1.110
 	material->AddElement(MaterialManager::getInstance()->GetElementFromLibrary("C"), 9);
 	
 	// Adding WLS property
@@ -473,6 +539,10 @@ G4Material* LightPipe::CreatePipeMaterial() const {
 			std::cerr << "ERROR: no file: \"" << fname << "\"\n";
 			exit(1);
 		}
+		// skip header
+		std::string dummy;
+		std::getline(ifs, dummy);
+
 		double wl, pr_a, pr_e;
 		while(ifs >> wl >> pr_a >> pr_e) {
 			energy.emplace_back( h_Planck*c_light / (wl*nm) ); // convert to energy
@@ -491,17 +561,20 @@ G4Material* LightPipe::CreatePipeMaterial() const {
 	};
 	// Absorption & Emission
 	vector<double> energy, p_abs, p_emit;
-	readDatfile("$NPTOOL/NPSimulation/Detectors/LightPipe/WLS_properties.dat", energy, p_abs, p_emit);
+	readDatfile("$NPTOOL/NPSimulation/Detectors/LightPipe/BC482A_properties.dat", energy, p_abs, p_emit);
 	//
 	// Absorption is given as a probability, but GEANT4 needs a length
-	// Invert and set the minimum to 0.5 mm
+	// Invert and set the minimum to 0.4336 mm, which is the (measured)
+	// attenuation length for EJ-280 @peak absorption.
+	// This is not exact, but it's close.
+	// For absorption of 0, set attenuation length very long (5 m)
 	for(auto&& p : p_abs) {
-		p = p > 0 ? (0.5 / p)*mm : 400*cm;
+		p = p > 0 ? (0.4336*mm) / p : 5*m;
 	}
 
 	//
 	const size_t numPoints = energy.size();
-	vector<double> rindx(numPoints, 1.58);
+	vector<double> rindx(numPoints, 1.59);
 	vector<double> abslength(numPoints, 400*cm); // BULK attenuation length
 	
 	// Set Material Properties
@@ -510,12 +583,23 @@ G4Material* LightPipe::CreatePipeMaterial() const {
 	MPT->AddProperty("ABSLENGTH", &energy[0], &abslength[0], numPoints);
 	MPT->AddProperty("WLSABSLENGTH", &energy[0], &p_abs[0], numPoints);
 	MPT->AddProperty("WLSCOMPONENT", &energy[0], &p_emit[0], numPoints);
-	MPT->AddConstProperty("WLSTIMECONSTANT", 1.9*ns);
+	MPT->AddConstProperty("WLSTIMECONSTANT", 12.*ns);
+	MPT->AddConstProperty("WLSMEANNUMBEROFPHOTONS", 0.86);
 
 	material->SetMaterialPropertiesTable(MPT);
 	return material;
 }
 
+G4Material* LightPipe::CreateWrappingMaterial() const {
+	// Teflon (C2F4) -- for now
+	//
+	G4double density = 2.2*g/cm3;
+	
+	G4Material* material = new G4Material("TEFLON", density, 2);
+	material->AddElement(MaterialManager::getInstance()->GetElementFromLibrary("F"), 4); // H:C ratio - 1.110
+	material->AddElement(MaterialManager::getInstance()->GetElementFromLibrary("C"), 2);
+	return material;
+}
 
 G4OpticalSurface* LightPipe::CreateReflectiveSurface() const {
 	G4OpticalSurface* OpticalCrystalSurface = new G4OpticalSurface("CrystalSurface");
