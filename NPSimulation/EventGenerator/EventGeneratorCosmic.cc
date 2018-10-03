@@ -159,9 +159,9 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
         
 
         G4double angle = RandFlat::shoot()*2*pi;
-        G4double shift = (.5-RandFlat::shoot())*pi;
+        G4double angle2 = (.5-RandFlat::shoot())*pi;
         G4double momentum_y = RandFlat::shoot()    ;
-        G4double dis = acos(sqrt(momentum_y));
+        G4double CosmicAngle = acos(sqrt(momentum_y));
         G4double H = 600;
         G4double R = 300; 
         G4double x0 =0;
@@ -174,11 +174,11 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
         /* //Putting a cylinder
         if(randomize>0){          //top
-        momentum_x = cos(angle)*dis;
-        momentum_z = sin(angle)*dis;
+        momentum_x = cos(angle)*CosmicAngle;
+        momentum_z = sin(angle)*CosmicAngle;
           
-        x0 = cos(shift*2)*R*(randomize*2);
-        z0 = sin(shift*2)*R*(randomize*2);
+        x0 = cos(angle2*2)*R*(randomize*2);
+        z0 = sin(angle2*2)*R*(randomize*2);
         par.m_y0 = H/2;
         } else {                  //lateral surface
           
@@ -186,18 +186,20 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
           z0 = sin(angle)*R;
           par.m_y0 = (.5-RandFlat::shoot())*H;   ///!!!!!!!
 
-          momentum_x = -cos(angle+shift)*dis;
-          momentum_z = -sin(angle+shift)*dis;
+          momentum_x = -cos(angle+angle2)*CosmicAngle;
+          momentum_z = -sin(angle+angle2)*CosmicAngle;
         }
         */
 
-        // Constrain to pass in a circle with radius 2R
-        momentum_x = cos(angle)*dis;
-        momentum_z = sin(angle)*dis;
-        x0 = cos(shift*2)*R*2*(randomize*2)-momentum_x*( H/2 / momentum_y);
-        z0 = sin(shift*2)*R*2*(randomize*2)-momentum_z*( H/2 / momentum_y);
+        // Begin Constrain to pass in a circle with radius 3R
+        momentum_x = cos(angle)*CosmicAngle;
+        momentum_z = sin(angle)*CosmicAngle;
+        x0 = cos(angle2*2)*R*(0.5-randomize)*3-momentum_x*( H/2 / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
+        z0 = sin(angle2*2)*R*(0.5-randomize)*3-momentum_z*( H/2 / momentum_y);
         par.m_y0 = H/2;
-        
+        // End Constrain to pass in a circle with radius 3R
+
+
         
         momentum_y = -momentum_y;
 
