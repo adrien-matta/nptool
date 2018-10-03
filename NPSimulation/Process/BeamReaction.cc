@@ -184,10 +184,17 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
    
     G4ParticleDefinition* LightName;
 
-    if(m_Reaction.GetUseExInGeant4())
-     LightName = IonTable->GetIon(LightZ, LightA, m_Reaction.GetExcitation3()*MeV);
-    else 
-     LightName = IonTable->GetIon(LightZ, LightA);
+		if(LightZ == 0 && LightA == 1) // neutron is special case
+		{
+			LightName = G4Neutron::Definition();
+		}
+		else
+		{	
+			if(m_Reaction.GetUseExInGeant4())
+				LightName = IonTable->GetIon(LightZ, LightA, m_Reaction.GetExcitation3()*MeV);
+			else 
+				LightName = IonTable->GetIon(LightZ, LightA);
+		}
 
     // Nucleus 4
     G4int HeavyZ = m_Reaction.GetNucleus4()->GetZ() ;

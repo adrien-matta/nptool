@@ -108,67 +108,67 @@ void TLightPipeSpectra::InitPhysicsSpectra() {
 
 ////////////////////////////////////////////////////////////////////////////////
 void TLightPipeSpectra::FillRawSpectra(TLightPipeData* RawData) {
-  static string name;
-  static string family;
+  // static string name;
+  // static string family;
 
-  // Energy 
-  unsigned int sizeE = RawData->GetMultEnergy();
-  for (unsigned int i = 0; i < sizeE; i++) {
-    name = "LightPipe"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
-    family = "LightPipe/RAW";
+  // // Energy 
+  // unsigned int sizeE = RawData->GetMultEnergy();
+  // for (unsigned int i = 0; i < sizeE; i++) {
+  //   name = "LightPipe"+NPL::itoa(RawData->GetE_DetectorNbr(i))+"_ENERGY_RAW";
+  //   family = "LightPipe/RAW";
 
-    FillSpectra(family,name,RawData->Get_Energy(i));
-  }
+  //   FillSpectra(family,name,RawData->Get_Energy(i));
+  // }
 
-  // Time
-  unsigned int sizeT = RawData->GetMultTime();
-  for (unsigned int i = 0; i < sizeT; i++) {
-    name = "LightPipe"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
-    family = "LightPipe/RAW";
+  // // Time
+  // unsigned int sizeT = RawData->GetMultTime();
+  // for (unsigned int i = 0; i < sizeT; i++) {
+  //   name = "LightPipe"+NPL::itoa(RawData->GetT_DetectorNbr(i))+"_TIME_RAW";
+  //   family = "LightPipe/RAW";
 
-    FillSpectra(family,name,RawData->Get_Time(i));
-  }
+  //   FillSpectra(family,name,RawData->Get_Time(i));
+  // }
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void TLightPipeSpectra::FillPreTreatedSpectra(TLightPipeData* PreTreatedData) {
-  static string name;
-  static string family;
+  // static string name;
+  // static string family;
   
-  // Energy 
-  unsigned int sizeE = PreTreatedData->GetMultEnergy();
-  for (unsigned int i = 0; i < sizeE; i++) {
-    name = "LightPipe"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
-    family = "LightPipe/CAL";
+  // // Energy 
+  // unsigned int sizeE = PreTreatedData->GetMultEnergy();
+  // for (unsigned int i = 0; i < sizeE; i++) {
+  //   name = "LightPipe"+NPL::itoa(PreTreatedData->GetE_DetectorNbr(i))+"_ENERGY_CAL";
+  //   family = "LightPipe/CAL";
 
-    FillSpectra(family,name,PreTreatedData->Get_Energy(i));
-  }
+  //   FillSpectra(family,name,PreTreatedData->Get_Energy(i));
+  // }
 
-  // Time
-  unsigned int sizeT = PreTreatedData->GetMultTime();
-  for (unsigned int i = 0; i < sizeT; i++) {
-    name = "LightPipe"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
-    family = "LightPipe/CAL";
+  // // Time
+  // unsigned int sizeT = PreTreatedData->GetMultTime();
+  // for (unsigned int i = 0; i < sizeT; i++) {
+  //   name = "LightPipe"+NPL::itoa(PreTreatedData->GetT_DetectorNbr(i))+"_TIME_CAL";
+  //   family = "LightPipe/CAL";
 
-    FillSpectra(family,name,PreTreatedData->Get_Time(i));
-  }
+  //   FillSpectra(family,name,PreTreatedData->Get_Time(i));
+  // }
 }
 
 
 
 ////////////////////////////////////////////////////////////////////////////////
 void TLightPipeSpectra::FillPhysicsSpectra(TLightPipePhysics* Physics) {
-  static string name;
-  static string family;
-  family= "LightPipe/PHY";
+  // static string name;
+  // static string family;
+  // family= "LightPipe/PHY";
 
-  // Energy vs time
-  unsigned int sizeE = Physics->Energy.size();
-  for(unsigned int i = 0 ; i < sizeE ; i++){
-    name = "LightPipe_ENERGY_TIME";
-    FillSpectra(family,name,Physics->Energy[i],Physics->Time[i]);
-  }
+  // // Energy vs time
+  // unsigned int sizeE = Physics->Energy.size();
+  // for(unsigned int i = 0 ; i < sizeE ; i++){
+  //   name = "LightPipe_ENERGY_TIME";
+  //   FillSpectra(family,name,Physics->Energy[i],Physics->Time[i]);
+  // }
 }
 
