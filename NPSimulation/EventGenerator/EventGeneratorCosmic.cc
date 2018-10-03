@@ -172,15 +172,15 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
         G4double randomize = .5-RandFlat::shoot();
 
 
-        
-        if(randomize>0){          
+        /* //Putting a cylinder
+        if(randomize>0){          //top
         momentum_x = cos(angle)*dis;
         momentum_z = sin(angle)*dis;
           
         x0 = cos(shift*2)*R*(randomize*2);
         z0 = sin(shift*2)*R*(randomize*2);
         par.m_y0 = H/2;
-        } else {
+        } else {                  //lateral surface
           
           x0 = cos(angle)*R;
           z0 = sin(angle)*R;
@@ -189,7 +189,15 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
           momentum_x = -cos(angle+shift)*dis;
           momentum_z = -sin(angle+shift)*dis;
         }
+        */
 
+        // Constrain to pass in a circle with radius 2R
+        momentum_x = cos(angle)*dis;
+        momentum_z = sin(angle)*dis;
+        x0 = cos(shift*2)*R*2*(randomize*2)-momentum_x*( H/2 / momentum_y);
+        z0 = sin(shift*2)*R*2*(randomize*2)-momentum_z*( H/2 / momentum_y);
+        par.m_y0 = H/2;
+        
         
         momentum_y = -momentum_y;
 
