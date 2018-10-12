@@ -61,11 +61,10 @@ G4bool PS_Calorimeter::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   static unsigned int mysize = m_NestingLevel.size();
   t_Energy = aStep->GetTotalEnergyDeposit();
   t_Time = aStep->GetPreStepPoint()->GetGlobalTime();
-
+  t_Level.clear();
   for(unsigned int i = 0 ; i < mysize ; i++){
     t_Level.push_back(aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(m_NestingLevel[i]));
   }
-
   // Check if the particle has interact before, if yes, add up the energies.
   vector<CalorimeterData>::iterator it;
   it = m_Data.find(CalorimeterData::CalculateIndex(t_Level)); 
