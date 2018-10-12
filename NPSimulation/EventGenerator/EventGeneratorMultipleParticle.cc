@@ -118,6 +118,7 @@ void EventGeneratorMultipleParticle::ReadConfiguration(NPL::InputParser parser){
                     else if(sParticle=="3He" || sParticle=="He3"){vParticle.push_back("3He");}
                     else if(sParticle=="alpha"){vParticle.push_back("4He");}
                     else if(sParticle=="gamma") { vParticle.push_back("gamma") ;}
+                    else if(sParticle=="mu+") { vParticle.push_back("mu+") ;}
                     else if(sParticle=="neutron") {vParticle.push_back("neutron") ;}
                     else vParticle.push_back(sParticle);
                     
@@ -154,7 +155,7 @@ void EventGeneratorMultipleParticle::GenerateEvent(G4Event* evt){
     for(int i=0; i<m_Multiplicity[evtID]; i++){
         m_particle=NULL;
         if(m_particle==NULL){
-            if(m_particleName[evtID][i]=="gamma" || m_particleName[evtID][i]=="neutron" ||  m_particleName[evtID][i]=="opticalphoton"){
+            if(m_particleName[evtID][i]=="gamma" || m_particleName[evtID][i]=="neutron" ||  m_particleName[evtID][i]=="opticalphoton" ||  m_particleName[evtID][i]=="mu+"){
                 m_particle =  G4ParticleTable::GetParticleTable()->FindParticle(m_particleName[evtID][i].c_str());
             }
             else{

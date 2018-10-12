@@ -6,6 +6,8 @@
 #include "G4PhysListFactory.hh"
 // UI
 #include "G4UImanager.hh"
+#include "QBBC.hh"
+
 #include "G4UIterminal.hh"
 #include "G4UItcsh.hh"
 
@@ -72,7 +74,14 @@ int main(int argc, char** argv){
     runManager->SetUserInitialization(detector);
     
     PhysicsList* physicsList   = new PhysicsList();
+    //G4VModularPhysicsList* physicsList   = new QBBC;
+    physicsList->SetVerboseLevel(0);
     runManager->SetUserInitialization(physicsList);
+        
+
+    
+
+    
     PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
 
     // Initialize Geant4 kernel

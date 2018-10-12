@@ -174,8 +174,8 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
         /* //Putting a cylinder
         if(randomize>0){          //top
-        momentum_x = cos(angle)*CosmicAngle;
-        momentum_z = sin(angle)*CosmicAngle;
+        momentum_x = cos(angle)*sin(CosmicAngle);
+        momentum_z = sin(angle)*sin(CosmicAngle);
           
         x0 = cos(angle2*2)*R*(randomize*2);
         z0 = sin(angle2*2)*R*(randomize*2);
@@ -186,17 +186,19 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
           z0 = sin(angle)*R;
           par.m_y0 = (.5-RandFlat::shoot())*H;   ///!!!!!!!
 
-          momentum_x = -cos(angle+angle2)*CosmicAngle;
-          momentum_z = -sin(angle+angle2)*CosmicAngle;
+          momentum_x = -cos(angle+angle2)*sin(CosmicAngle);
+          momentum_z = -sin(angle+angle2)*sin(CosmicAngle);
         }
         */
 
         // Begin Constrain to pass in a circle with radius 3R
-        momentum_x = cos(angle)*CosmicAngle;
-        momentum_z = sin(angle)*CosmicAngle;
+
+        momentum_y = cos(CosmicAngle);
+        momentum_x = cos(angle)*sin(CosmicAngle);
+        momentum_z = sin(angle)*sin(CosmicAngle);
         x0 = cos(angle2*2)*R*(0.5-randomize)*3-momentum_x*( H/2 / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
         z0 = sin(angle2*2)*R*(0.5-randomize)*3-momentum_z*( H/2 / momentum_y);
-        par.m_y0 = H/2;
+        par.m_y0 = H/2; // momentum_y*( H/2 / momentum_y);
         // End Constrain to pass in a circle with radius 3R
 
 

@@ -368,7 +368,6 @@ void Dali::ReadSensitive(const G4Event* ){
 
   
   unsigned int size = Scorer->GetMult();
-  // cout << "size " << size << endl;
   for(unsigned int i = 0 ; i < size ; i++){
     vector<unsigned int> level = Scorer->GetLevel(i); 
     double Energy = RandGauss::shoot(Scorer->GetEnergy(i),Dali_NS::ResoEnergy);

@@ -43,6 +43,7 @@
 #include "G4IonFluctuations.hh"
 #include "G4IonParametrisedLossModel.hh"
 #include "G4UniversalFluctuation.hh"
+#include "G4UImanager.hh"
 
 #include "G4PAIModel.hh"
 #include "G4PAIPhotModel.hh"
@@ -50,6 +51,11 @@
 
 /////////////////////////////////////////////////////////////////////////////
 PhysicsList::PhysicsList() : G4VUserPhysicsList(){
+
+  // UI commands to activate one or more High Energy Processes
+  //  G4UImanager* UI = G4UImanager::GetUIpointer();
+  //  UI->ApplyCommand("/physics_list/em/MuonNuclear true");
+    
     m_EmList = "Option4";
     defaultCutValue = 1*mm;//0.2*mm;
     opticalPhysicsList = NULL;
