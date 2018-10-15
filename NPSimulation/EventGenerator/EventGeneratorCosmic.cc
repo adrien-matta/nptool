@@ -23,6 +23,12 @@
 #include<limits>
 #include <cstdlib>
 
+#include "TROOT.h"    // to use gROOT point
+#include "TMath.h"
+#include "TRandom.h"
+#include "TFormula.h"
+#include "TF1.h"
+
 // G4 headers
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
@@ -123,6 +129,21 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+  G4double CosmicAngle;
+  G4double H = 1500*mm;
+  G4double R = 500*mm; 
+  G4double x0 =0;
+  G4double m_y0 = 0;
+  G4double z0 = 0;
+  G4double momentum_x = 0;
+  G4double momentum_z = 0;
+  G4double randomize1=0, randomize2=0 ;
+  G4double momentum_y = 0;
+  G4double angle = 0;
+  TF1* cosSq= new TF1("cosSq2", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+
 void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
 	for(auto& par : m_Parameters) {
@@ -141,14 +162,7 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
           }
 
         }
-
-        
-        G4double cos_theta_min   = cos(par.m_HalfOpenAngleMin);
-        G4double cos_theta_max   = cos(par.m_HalfOpenAngleMax);
-        G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
-        G4double theta           = acos(cos_theta)                                                   ;
-        //G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
-        
+  
         
         G4double particle_energy = par.m_EnergyLow ;//+ RandFlat::shoot() * (par.m_EnergyHigh - par.m_EnergyLow)    ;
           event_ID++;
@@ -158,19 +172,10 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
         
 
-        G4double angle = RandFlat::shoot()*2*pi;
-        G4double angle2 = (.5-RandFlat::shoot())*pi;
-        G4double momentum_y = RandFlat::shoot()    ;
-        G4double CosmicAngle = acos(sqrt(momentum_y));
-        G4double H = 600;
-        G4double R = 300; 
-        G4double x0 =0;
-        G4double z0 = 0;
-        G4double momentum_x = 0;
-        G4double momentum_z = 0;
-
-        G4double randomize = .5-RandFlat::shoot();
-
+        angle = RandFlat::shoot()*2*pi;
+        CosmicAngle = cosSq2->GetRandom();
+        randomize1 = RandFlat::shoot()    ;
+        randomize2 = RandFlat::shoot()    ;
 
         /* //Putting a cylinder
         if(randomize>0){          //top
@@ -191,23 +196,26 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
         }
         */
 
-        // Begin Constrain to pass in a circle with radius 3R
+        // Begin Constrain to pass in a square with L = 3* R
 
+        x0 = R*(randomize1-0.5)*3;
+        z0 = R*(randomize2-0.5)*3;
+    
         momentum_y = cos(CosmicAngle);
         momentum_x = cos(angle)*sin(CosmicAngle);
         momentum_z = sin(angle)*sin(CosmicAngle);
-        x0 = cos(angle2*2)*R*(0.5-randomize)*3-momentum_x*( H/2 / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
-        z0 = sin(angle2*2)*R*(0.5-randomize)*3-momentum_z*( H/2 / momentum_y);
+
+        x0 = x0-momentum_x*( H/2 / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
+        z0 = z0-momentum_z*( H/2 / momentum_y);
         par.m_y0 = H/2; // momentum_y*( H/2 / momentum_y);
-        // End Constrain to pass in a circle with radius 3R
 
-
+        // End Constrain to pass in a square with L = 3* R
         
         momentum_y = -momentum_y;
 
 
 
-        Particle particle(par.m_particle, theta,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, par.m_y0, z0));
+        Particle particle(par.m_particle, 0,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, par.m_y0, z0));
 
 
         m_ParticleStack->AddParticleToStack(particle);
