@@ -142,7 +142,7 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
   G4double randomize1=0, randomize2=0 ;
   G4double momentum_y = 0;
   G4double angle = 0;
-  TF1* cosSq= new TF1("cosSq2", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+  TF1* cosSq2= new TF1("cosSq2", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
 
 void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
