@@ -659,6 +659,15 @@ G4Material* MaterialManager::GetMaterialFromLibrary(string Name,double density){
             m_Material[Name]=material;
             return material;
         }
+
+        else if(Name == "Ta" || Name == "Tantalum"){
+            if(!density) 
+                density = 16.601*g/cm3;
+            G4Material* material = new G4Material("NPS_"+Name,density,1);
+            material->AddElement(GetElementFromLibrary("Ta"),1);
+            m_Material[Name]=material;
+            return material;
+        }
         
         else  if(Name == "Ca"){
             if(!density)
