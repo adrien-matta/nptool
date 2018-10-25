@@ -238,17 +238,38 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     Infos[8] = m_StripLengthNumber;
     Infos[9] = m_StripWidthNumber;
 
-    m_Index = m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 + m_StripWidthNumber * 1e9;
+   
+    //Store the hit information for one side of the detector (positive index)
+    // and then the other side (negative index)
 
-    // Check if the particle has interact before, if yes, add up the energies.
+    //"deep" copy of the informations
+    G4double* InfosCopy= new G4double[10];
+    std::copy(Infos, Infos + 10, InfosCopy); 
     map<G4int, G4double**>::iterator it;
+    
+    //Side L
+    m_Index = m_DetectorNumber * 1e3 + m_StripLengthNumber * 1e6 ; //positive
+    // Check if the particle has interacted before in the same strip, if yes, add up the energies.
     it= EvtMap->GetMap()->find(m_Index);
     if(it!=EvtMap->GetMap()->end()){
         G4double* dummy = *(it->second);
-        Infos[0]+=dummy[0];
+        Infos[0]+=dummy[0]; 
     }
-
     EvtMap->set(m_Index, Infos);
+    
+    // In case of a detector with one side, skip the rest (typical case: SHARC PAD)
+    if(m_NumberOfStripWidth==0) 
+        return TRUE;        
+
+    //Side W (repeat)
+    m_Index = - (m_DetectorNumber * 1e3 + m_StripWidthNumber * 1e6) ; //negative
+    it= EvtMap->GetMap()->find(m_Index);
+    if(it!=EvtMap->GetMap()->end()){
+        G4double* dummy = *(it->second);
+        InfosCopy[0]+=dummy[0];
+    }
+    EvtMap->set(m_Index, InfosCopy); 
+
     return TRUE;
 }
 
