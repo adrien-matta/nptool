@@ -120,6 +120,8 @@ class TTigressPhysics :  public TObject, public NPL::VDetector{
     double GetDopplerCorrectedEnergy(double& energy , TVector3 position, TVector3& beta);
     // Add a detector and computes its coordinate
     void AddClover(unsigned int ID, double R, double Theta, double Phi);
+    // OR Add clover at the standard position of the array, take as argument the standard clover Id.
+    void AddCloverStandard(vector<int> CloverId);
     TVector3 GetCloverPosition(int& CloverNbr);
     TVector3 GetCorePosition(int& CloverNbr, int& CoreNbr);
     TVector3 GetSegmentPosition(int& CloverNbr, int& CoreNbr, int& SegmentNbr);
