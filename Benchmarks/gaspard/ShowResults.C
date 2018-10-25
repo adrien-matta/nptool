@@ -33,6 +33,7 @@ using namespace std;
 
 // ROOT headers
 #include "TROOT.h"
+#include "TStyle.h"
 #include "TCanvas.h"
 #include "TSystem.h"
 #include "TFile.h"
@@ -46,7 +47,7 @@ using namespace std;
 #include "TGraph.h"
 
 // nptool headers
-#include "TInitialConditions.h"
+#include "TReactionConditions.h"
 #include "TInteractionCoordinates.h"
 #include "NPReaction.h"
 using namespace NPL;
@@ -70,10 +71,11 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   TTree *tree   = (TTree*) inFile->Get("SimulatedTree");
 
   // Connect the branches of the TTree and activate then if necessary
-  // TInitialConditions branch
-  TInitialConditions *initCond = 0;
-  tree->SetBranchAddress("InitialConditions", &initCond);
-  tree->SetBranchStatus("InitialConditions", 1);
+  // TReactionConditions branch
+  TReactionConditions *reacCond = 0;
+  tree->SetBranchAddress("ReactionConditions", &reacCond);
+  tree->SetBranchStatus("ReactionConditions", 1);
+  
   // TInteractionCoordinates branch
   TInteractionCoordinates *interCoord = 0;
   tree->SetBranchAddress("InteractionCoordinates", &interCoord);
@@ -120,23 +122,23 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
 
     // Fill histos
     // incident beam
-    hEmittanceXY     -> Fill(initCond->GetIncidentPositionX(), initCond->GetIncidentPositionY());
-    hIncidentZ       -> Fill(initCond->GetIncidentPositionZ());
-    hEmittanceXTheta -> Fill(initCond->GetIncidentPositionX(), initCond->GetIncidentEmittanceThetaX()-90);
-    hEmittanceYPhi   -> Fill(initCond->GetIncidentPositionY(), initCond->GetIncidentEmittancePhiY()-90);
-    hIncidentTheta   -> Fill(initCond->GetIncidentEmittanceTheta());
-    hIncidentPhi     -> Fill(initCond->GetIncidentEmittancePhi());
+    hEmittanceXY     -> Fill(reacCond->GetVertexPositionX(), reacCond->GetVertexPositionY());
+    hIncidentZ       -> Fill(reacCond->GetVertexPositionZ());
+    hEmittanceXTheta -> Fill(reacCond->GetVertexPositionX(), reacCond->GetBeamEmittanceThetaX()-90);
+    hEmittanceYPhi   -> Fill(reacCond->GetVertexPositionY(), reacCond->GetBeamEmittancePhiY()-90);
+    hIncidentTheta   -> Fill(reacCond->GetBeamEmittanceTheta());
+    hIncidentPhi     -> Fill(reacCond->GetBeamEmittancePhi());
 
     // ejected particle
-    hEmittedThetaCM  -> Fill(initCond->GetThetaCM(0));
-    hEmittedThetaIF  -> Fill(initCond->GetThetaLab_IncidentFrame(0));
-    hEmittedThetaWF  -> Fill(initCond->GetThetaLab_WorldFrame(0));
-    hEmittedETheta   -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
+    hEmittedThetaCM  -> Fill(reacCond->GetThetaCM());
+    hEmittedThetaIF  -> Fill(reacCond->GetThetaLab_BeamFrame(0));
+    hEmittedThetaWF  -> Fill(reacCond->GetThetaLab_WorldFrame(0));
+    hEmittedETheta   -> Fill(reacCond->GetThetaLab_BeamFrame(0), reacCond->GetKineticEnergy(0));
 
     if (interCoord->GetDetectedMultiplicity() > 0) {
-      hEmittedETheta_detected  -> Fill(initCond->GetThetaLab_IncidentFrame(0), initCond->GetKineticEnergy(0));
-      hEmittedThetaIF_detected -> Fill(initCond->GetThetaLab_IncidentFrame(0));
-      hEmittedThetaCM_detected -> Fill(initCond->GetThetaCM(0));
+      hEmittedETheta_detected  -> Fill(reacCond->GetThetaLab_BeamFrame(0), reacCond->GetKineticEnergy(0));
+      hEmittedThetaIF_detected -> Fill(reacCond->GetThetaLab_BeamFrame(0));
+      hEmittedThetaCM_detected -> Fill(reacCond->GetThetaCM());
     }
   }
 
@@ -229,9 +231,12 @@ void ShowResults(const char * fname = "benchmark_gaspard"){
   hEfficiency->GetYaxis()->SetTitle("#epsilon (%)");
   hEfficiency->Draw();
 
+
   TFile* referenceFile = new TFile("reference.root");
   TCanvas* canvas1_ref = (TCanvas*) referenceFile->FindObjectAny("canvas1_ref");
+  canvas1_ref->SetTitle(  Form("FROM reference.root: %s",canvas1_ref->GetTitle()) );
   TCanvas* canvas2_ref = (TCanvas*) referenceFile->FindObjectAny("canvas2_ref");
+  canvas2_ref->SetTitle(  Form("FROM reference.root: %s",canvas2_ref->GetTitle()) );
   canvas1_ref->Draw();
   canvas2_ref->Draw();
 
