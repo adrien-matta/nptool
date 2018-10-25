@@ -60,33 +60,34 @@ void TSharcData::Clear(){
 
 /////////////////////////
 void TSharcData::Dump() const{
-  // Energy
-  cout << "Sharc_StripFront_Mult = " << fSharc_StripFront_DetectorNbr.size() << endl;
-  
+   
   // Front
+  cout << "Sharc Strip Front Mult = " << fSharc_StripFront_DetectorNbr.size() << endl;
   for (UShort_t i = 0; i < fSharc_StripFront_DetectorNbr.size(); i++){
-    cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
-         << " Strip: " << fSharc_StripFront_StripNbr[i]
-         << " Energy: " << fSharc_StripFront_Energy[i]
-         << " Time CFD: " << fSharc_StripFront_TimeCFD[i]
-         << " Time LED: " << fSharc_StripFront_TimeLED[i] << endl;
+    cout << "DetNbr (Front): " << fSharc_StripFront_DetectorNbr[i]
+         << "   Strip: " << fSharc_StripFront_StripNbr[i]
+         << "   Energy: " << fSharc_StripFront_Energy[i]
+         << "   Time CFD: " << fSharc_StripFront_TimeCFD[i]
+         << "   Time LED: " << fSharc_StripFront_TimeLED[i] << endl;
   }
-  
-  // Back
-  for (UShort_t i = 0; i < fSharc_StripFront_DetectorNbr.size(); i++){
-    cout << "DetNbr: " << fSharc_StripFront_DetectorNbr[i]
-    << " Strip: " << fSharc_StripFront_StripNbr[i]
-    << " Energy: " << fSharc_StripFront_Energy[i]
-    << " Time CFD: " << fSharc_StripBack_TimeCFD[i]
-    << " Time LED: " << fSharc_StripBack_TimeLED[i] << endl;
+
+  // Back  
+  cout << "Sharc Strip Back Mult  = " << fSharc_StripBack_DetectorNbr.size() << endl;
+  for (UShort_t i = 0; i < fSharc_StripBack_DetectorNbr.size(); i++){
+    cout << "DetNbr (Back): " << fSharc_StripBack_DetectorNbr[i]
+    << "   Strip: " << fSharc_StripBack_StripNbr[i]
+    << "   Energy: " << fSharc_StripBack_Energy[i]
+    << "   Time CFD: " << fSharc_StripBack_TimeCFD[i]
+    << "   Time LED: " << fSharc_StripBack_TimeLED[i] << endl;
   }
   
   // PAD
+  cout << "Sharc Strip PAD Mult  = " << fSharc_PAD_DetectorNbr.size() << endl;
   for (UShort_t i = 0; i < fSharc_PAD_DetectorNbr.size(); i++){
-    cout << "DetNbr: " << fSharc_PAD_DetectorNbr[i]
-    << " Energy: " << fSharc_PAD_Energy[i]
-    << " Time CFD: " << fSharc_PAD_TimeCFD[i]
-    << " Time LED: " << fSharc_PAD_TimeLED[i] << endl;
+    cout << "DetNbr (PAD): " << fSharc_PAD_DetectorNbr[i]
+    << "   Energy: " << fSharc_PAD_Energy[i]
+    << "   Time CFD: " << fSharc_PAD_TimeCFD[i]
+    << "   Time LED: " << fSharc_PAD_TimeLED[i] << endl;
 
   }
 }
