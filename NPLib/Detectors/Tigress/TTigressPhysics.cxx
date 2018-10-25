@@ -85,7 +85,7 @@ void TTigressPhysics::BuildPhysicalEvent(){
         Pos = GetSegmentPosition(clover,m_map_Core_Crystal[i],zero);
 
       if(Pos.Mag()!=0){
-        static TVector3 Beta = TVector3(0,0,0.10);
+        static TVector3 Beta = TVector3(0,0,0.125);
         double E = GetDopplerCorrectedEnergy(m_map_E[i],Pos,Beta);
         AddBack_DC.push_back(E);
         AddBack_E.push_back(m_map_E[i]);
@@ -157,6 +157,159 @@ double TTigressPhysics::GetDopplerCorrectedEnergy(double& energy , TVector3 posi
   return m_GammaLV.Energy();
 }
 
+/////////////////////////////////////////////////
+// Add clover at the standard position of the array
+// Take as argument the standard clover Id.
+void TTigressPhysics::AddCloverStandard(vector<int> CloverId){
+
+  for (unsigned int i = 0 ;  i < CloverId.size(); i++) {
+    if(CloverId[i] == 1 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(45*deg);
+      Pos.SetPhi(22.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 2 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(45*deg);
+      Pos.SetPhi(112.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 3 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(45*deg);
+      Pos.SetPhi(202.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 4 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(45*deg);
+      Pos.SetPhi(292.5*deg);
+      m_CloverPosition[ID] = Pos;    
+    }
+
+    else if(CloverId[i] == 5 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(22.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 6 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(67.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 7 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(112.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 8 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(157.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 9 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(202.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 10 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(247.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 11 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(292.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 12 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(90*deg);
+      Pos.SetPhi(337.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 13 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(135*deg);
+      Pos.SetPhi(22.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 14 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(135*deg);
+      Pos.SetPhi(112.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 15 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(135*deg);
+      Pos.SetPhi(202.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+
+    else if(CloverId[i] == 16 ){
+      TVector3 Pos(0,0,1);
+      int ID = (CloverId[i]);
+      Pos.SetMag(145*mm);
+      Pos.SetTheta(135*deg);
+      Pos.SetPhi(292.5*deg);
+      m_CloverPosition[ID] = Pos;
+    }
+  }
+
+  return;
+}
 /////////////////////////////////////////////////
 void TTigressPhysics::AddClover(unsigned int ID ,double R, double Theta, double Phi){
   TVector3 Pos(0,0,1);
@@ -240,20 +393,20 @@ TVector3 TTigressPhysics::GetSegmentPosition(int& CloverNbr,int& CoreNbr, int& S
 
 }
 
-
 /////////////////////////////////////////////////
 void TTigressPhysics::ReadConfiguration(NPL::InputParser parser)  {
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("TigressClover");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("Tigress","Clover");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " clovers found " << endl; 
+    cout << "//// " << blocks.size() << " free clovers found " << endl; 
 
-  vector<string> token = {"CloverID","R","Theta","Phi"};
-
+  vector<string> token = {"CloverID","R","Theta","Phi","Beta"}; //Beta not used, 
+                                                                //but introduced for consistency with tigress-simu
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
+      vector<double> beta = blocks[i]->GetVectorDouble("Beta","deg"); 
       int     id = blocks[i]->GetInt("CloverID");
       AddClover(id,R,Theta,Phi);
     }
@@ -262,7 +415,27 @@ void TTigressPhysics::ReadConfiguration(NPL::InputParser parser)  {
       cout << "Warning: check your input file formatting " << endl;
     }
   }
+
+  blocks.clear();
+  blocks = parser.GetAllBlocksWithTokenAndValue("Tigress","Standard");
+  token.clear();
+  token = {"CloverID"};
+
+  for(unsigned int i = 0 ; i < blocks.size() ; i++){
+    if(blocks[i]->HasTokenList(token)){
+     if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << "//// Standard clovers found " << endl; 
+      vector<int> id = blocks[i]->GetVectorInt("CloverID");
+   
+      AddCloverStandard(id);
+    }
+
+    else{
+      cout << "Warning: check your input file formatting " << endl;
+    }
+  }
 }
+
 ///////////////////////////////////////////////////////////////////////////
 void TTigressPhysics::InitializeRootInputRaw() {
   TChain* inputChain = RootInput::getInstance()->GetChain();
@@ -279,27 +452,31 @@ void TTigressPhysics::InitializeRootOutput()    {
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::Clear() {
+  
   Gamma_Energy.clear();
   Gamma_Time.clear();
   Crystal_Number.clear();
   Clover_Number.clear();
   Segment_Number.clear();
   BGO.clear();
+
   AddBack_E.clear();
   AddBack_DC.clear();
   AddBack_Theta.clear();
+  AddBack_Clover.clear();
+  AddBack_Crystal.clear();
+  AddBack_Segment.clear();
   AddBack_X.clear();
   AddBack_Y.clear();
   AddBack_Z.clear();
+
   m_map_E.clear();
   m_map_Core_Crystal.clear();
   m_map_Core_MaxE.clear(); 
   m_map_Segment_Crystal.clear(); 
   m_map_Segment.clear(); 
   m_map_Segment_MaxE.clear(); 
-  AddBack_Clover.clear();
-  AddBack_Crystal.clear();
-  AddBack_Segment.clear();
+
 }
 ///////////////////////////////////////////////////////////////////////////  
 void TTigressPhysics::ClearEventData() {
