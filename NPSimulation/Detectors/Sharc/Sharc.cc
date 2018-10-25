@@ -581,27 +581,29 @@ void Sharc::ReadSensitive(const G4Event* event){
   for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
 
     G4double* Info = *(BOX_itr->second);
+    G4long index = (BOX_itr->first);
 
-    double Energy = Info[0];
-
+    double Energy = RandGauss::shoot(Info[0], ResoEnergy);
     if(Energy>EnergyThreshold){
       double Time       = Info[1];
       int DetNbr        = (int) Info[7];
       int StripFront    = (int) Info[8];
       int StripBack     = (int) Info[9];
 
-      m_Event->SetFront_DetectorNbr(DetNbr);
-      m_Event->SetFront_StripNbr(StripFront);
-      m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
-      m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-      m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-
-      m_Event->SetBack_DetectorNbr(DetNbr);
-      m_Event->SetBack_StripNbr(BOX_Wafer_Back_NumberOfStrip-StripBack+1);
-
-      m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
-      m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-      m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+      if (index>0){
+        m_Event->SetFront_DetectorNbr(DetNbr);
+        m_Event->SetFront_StripNbr(StripFront);
+        m_Event->SetFront_Energy(Energy);
+        m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
+        m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+      }
+      else{
+        m_Event->SetBack_DetectorNbr(DetNbr);
+        m_Event->SetBack_StripNbr(BOX_Wafer_Back_NumberOfStrip-StripBack+1);
+        m_Event->SetBack_Energy(Energy);
+        m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
+        m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+      }
 
       // Interraction Coordinates
       ms_InterCoord->SetDetectedPositionX(Info[2]) ;
@@ -628,13 +630,13 @@ void Sharc::ReadSensitive(const G4Event* event){
 
     G4double* Info = *(PAD_itr->second);
 
-    double Energy =  Info[0];
+    double Energy =  RandGauss::shoot(Info[0], ResoEnergy);
     if(Energy>EnergyThreshold){
       double Time  = Info[1];
       int DetNbr =     (int) Info[7];
 
       m_Event->SetPAD_DetectorNbr(DetNbr);
-      m_Event->SetPAD_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetPAD_Energy(Energy);
       m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
     }
@@ -651,28 +653,27 @@ void Sharc::ReadSensitive(const G4Event* event){
   G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_QQQScorer/SharcQQQ");
   QQQHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
 
-  // Loop on the BOX map
+  // Loop on the QQQ map
   for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){
 
     G4double* Info = *(QQQ_itr->second);
 
-    double Energy =  Info[0];
+    double Energy = RandGauss::shoot(Info[0], ResoEnergy);
     if(Energy>EnergyThreshold){
       double Time  = Info[1];
       int DetNbr =     (int) Info[7];
       int StripFront = (int) Info[8];
       int StripBack =  (int) Info[9];
-
+      
       m_Event->SetFront_DetectorNbr(DetNbr);
       m_Event->SetFront_StripNbr(QQQ_Wafer_NumberOf_AnnularStrip-StripFront+1); // Order is reverse (1 is outtermost strip)
-
-      m_Event->SetFront_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetFront_Energy(Energy);
       m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
 
       m_Event->SetBack_DetectorNbr(DetNbr);
       m_Event->SetBack_StripNbr(StripBack);
-      m_Event->SetBack_Energy(RandGauss::shoot(Energy, ResoEnergy));
+      m_Event->SetBack_Energy(Energy);
       m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
       m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
 
@@ -714,7 +715,7 @@ void Sharc::InitializeScorers(){
         PAD_Wafer_Length,
         PAD_Wafer_Width,
         1 ,
-        1);
+        0);
 
   G4VPrimitiveScorer* QQQScorer =
     new  SILICONSCORERS::PS_Silicon_Annular("SharcQQQ",0,
