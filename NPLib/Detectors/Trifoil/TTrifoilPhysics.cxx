@@ -26,6 +26,8 @@
 #include <cmath>
 #include <stdlib.h>
 #include <limits>
+#include <algorithm>    // std::sort
+#include <vector>       
 
 //   NPL
 #include "RootInput.h"
@@ -37,6 +39,8 @@
 //   ROOT
 #include "TChain.h"
 #include "TSpectrum.h"
+#include "TPolyMarker.h"
+
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TTrifoilPhysics)
@@ -53,19 +57,45 @@ void TTrifoilPhysics::BuildSimplePhysicalEvent(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TTrifoilPhysics::BuildPhysicalEvent(){ 
+  
   unsigned int mysize = m_EventData->GetMultiplicity();
   double base,maxi,mytime; 
+  
   for (unsigned int i = 0 ; i < mysize ; i++){
     TH1F* h = m_EventData->GetWaveform(i);
     base =  h->GetBinContent(h->GetMinimumBin());  
     maxi = h->GetBinContent(h->GetMaximumBin());
+    double* pos=NULL;
+    int nPeaks=0;
+    int hwindow=2; // half-window
+    std::vector<double> vpos;
+
+    //take care of mult. >1
     if(maxi>2000 && base>-300){
-      mytime = (h->GetMaximumBin());
+      nPeaks = h->ShowPeaks(2,"nodraw",0.1); // sigma of 2 bins, don't draw, look for peaks of 10% of the highest peak
+      pos = ((TPolyMarker*) (h->GetListOfFunctions())->FindObject("TPolyMarker"))->GetX(); 
+    }
+
+    //select, store and sort positions
+    for (int i =0 ; i <nPeaks ; i++){
+      maxi = h->GetBinContent(h->GetXaxis()->FindBin(pos[i]));
+      if(maxi>2000) 
+        vpos.push_back(pos[i]);
+    }
+    std::sort (vpos.begin(), vpos.end());
+
+    //fill the data
+    for (unsigned i =0 ; i <vpos.size() ; i++){
+      h->GetXaxis()->SetRangeUser(vpos[i]-hwindow,vpos[i]+hwindow);
+      mytime = h->GetBinCenter(h->GetMaximumBin());
+      maxi = h->GetBinContent(h->GetMaximumBin());
       TimeStamp.push_back(m_EventData->GetTimeStamp(i)*10);
       Time.push_back(mytime);
       Energy.push_back(maxi);
     }
+
   }
+
 }
 
 ///////////////////////////////////////////////////////////////////////////
