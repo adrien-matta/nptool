@@ -36,10 +36,12 @@ class TDaliData : public TObject {
   private: 
     // Energy
     vector<UShort_t>   fDali_E_DetectorNbr;
+    vector<Double_t>   fDali_ADC;
     vector<Double_t>   fDali_Energy;
 
     // Time
     vector<UShort_t>   fDali_T_DetectorNbr;
+    vector<Double_t>   fDali_TDC;
     vector<Double_t>   fDali_Time;
 
 
@@ -65,22 +67,48 @@ class TDaliData : public TObject {
   // add //! to avoid ROOT creating dictionnary for the methods
   public:
     //////////////////////    SETTERS    ////////////////////////
+    // ADC
+    inline void SetADC(const UShort_t& DetNbr,const Double_t& Energy){
+      fDali_E_DetectorNbr.push_back(DetNbr);
+      fDali_ADC.push_back(Energy);
+    };//!
+    inline void SetADC_Only(const Double_t& Energy){
+      fDali_ADC.push_back(Energy);
+    };//!
+
+    
     // Energy
     inline void SetEnergy(const UShort_t& DetNbr,const Double_t& Energy){
       fDali_E_DetectorNbr.push_back(DetNbr);
       fDali_Energy.push_back(Energy);
     };//!
 
+    // TDC
+    inline void SetTDC(const UShort_t& DetNbr,const Double_t& Time)	{
+      fDali_T_DetectorNbr.push_back(DetNbr);     
+      fDali_TDC.push_back(Time);
+    };//!
     // Time
     inline void SetTime(const UShort_t& DetNbr,const Double_t& Time)	{
       fDali_T_DetectorNbr.push_back(DetNbr);     
       fDali_Time.push_back(Time);
+    };//!
+    
+    // (A&T DC)
+    inline void SetADCAndTDC(const UShort_t& DetNbr,const Double_t& Energy,const Double_t& Time){
+      fDali_ADC.push_back(Energy);
+      fDali_TDC.push_back(Time);
+      fDali_T_DetectorNbr.push_back(DetNbr);
+      fDali_E_DetectorNbr.push_back(DetNbr);
+
     };//!
     // (E&T)
     inline void SetEnergyAndTime(const UShort_t& DetNbr,const Double_t& Energy,const Double_t& Time){
       fDali_Energy.push_back(Energy);
       fDali_Time.push_back(Time);
       fDali_T_DetectorNbr.push_back(DetNbr);
+      fDali_E_DetectorNbr.push_back(DetNbr);
+
     };//!
     //
 
@@ -90,14 +118,18 @@ class TDaliData : public TObject {
       {return fDali_E_DetectorNbr.size();}
     inline UShort_t GetE_DetectorNbr(const unsigned int &i) const 
       {return fDali_E_DetectorNbr[i];}//!
+    inline Double_t Get_ADC(const unsigned int &i) const 
+      {return fDali_ADC[i];}//!
     inline Double_t Get_Energy(const unsigned int &i) const 
       {return fDali_Energy[i];}//!
-
+    
     // Time
     inline UShort_t GetMultTime() const
       {return fDali_T_DetectorNbr.size();}
     inline UShort_t GetT_DetectorNbr(const unsigned int &i) const 
       {return fDali_T_DetectorNbr[i];}//!
+    inline Double_t Get_TDC(const unsigned int &i) const 
+      {return fDali_TDC[i];}//!
     inline Double_t Get_Time(const unsigned int &i) const 
       {return fDali_Time[i];}//!
 
