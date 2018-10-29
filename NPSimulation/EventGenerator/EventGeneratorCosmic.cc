@@ -28,6 +28,10 @@
 #include "TRandom.h"
 #include "TFormula.h"
 #include "TF1.h"
+#include "TH1F.h"
+#include "TH2F.h"
+#include "TPad.h"
+#include "TCanvas.h"
 
 // G4 headers
 #include "G4ParticleTable.hh"
@@ -142,7 +146,12 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
   G4double randomize1=0, randomize2=0 ;
   G4double momentum_y = 0;
   G4double angle = 0;
-  TF1* cosSq= new TF1("cosSq2", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+
+  TF1* cosSq= new TF1("cosSq", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+//TH1F* DistribCosmicAngle= new TH1F("DistribCosmicAngle","DistribCosmicAngle",100, 0, (TMath::Pi())/2);
+//TH2F* DistribMomZMomX= new TH2F("DistribMomZMomX","Horizontals components of Cosmic rays Momentums",50, -1, 1, 50, -1, 1);
+//TCanvas* DisCanva = new TCanvas("DisCanva","Distribution");
+//DisCanva->Divide(1,2);
 
 void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
@@ -173,7 +182,7 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
         
 
         angle = RandFlat::shoot()*2*pi;
-        CosmicAngle = cosSq2->GetRandom();
+        CosmicAngle = cosSq->GetRandom();
         randomize1 = RandFlat::shoot()    ;
         randomize2 = RandFlat::shoot()    ;
 
@@ -213,6 +222,9 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
         
         momentum_y = -momentum_y;
 
+        //DistribMomZMomX->Fill(momentum_x,momentum_z);
+        //DistribCosmicAngle->Fill(CosmicAngle);
+
 
 
         Particle particle(par.m_particle, 0,particle_energy,G4ThreeVector(momentum_x, momentum_y, momentum_z),G4ThreeVector(x0, par.m_y0, z0));
@@ -222,6 +234,10 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
       }
     }
+
+    //DisCanva->cd(1); DistribCosmicAngle->Draw();
+    //DisCanva->cd(2); DistribMomZMomX->Draw("SURF3");
+    
   }
 	
 }
