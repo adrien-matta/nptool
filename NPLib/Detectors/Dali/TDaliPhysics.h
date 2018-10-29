@@ -63,7 +63,9 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
   // output ROOT file
   public:
     vector<int>      DetectorNumber;
+    vector<double>   ADC;
     vector<double>   Energy;
+    vector<double>   TDC;
     vector<double>   Time;
 
   /// A usefull method to bundle all operation to add a detector
