@@ -81,7 +81,6 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   vector<double> Si_TY;
   vector<int>    TelescopeNumber_X;
   vector<int>    TelescopeNumber_Y;
-  vector<int>    Flagged;
 
   //   Si(Li)
   vector<double> SiLi_E;
