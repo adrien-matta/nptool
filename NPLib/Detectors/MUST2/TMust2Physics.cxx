@@ -455,9 +455,9 @@ int TMust2Physics::CheckEvent() {
 
   // INterstrip management is not coded, so waste of time to make this test
   /*  else if(   m_PreTreatedData->GetMMStripXEMult() ==
-     m_PreTreatedData->GetMMStripYEMult()+1
+      m_PreTreatedData->GetMMStripYEMult()+1
       || m_PreTreatedData->GetMMStripXEMult() ==
-     m_PreTreatedData->GetMMStripYEMult()-1  )
+      m_PreTreatedData->GetMMStripYEMult()-1  )
       return 2 ; // Pseudo Event, potentially interstrip*/
 
   else
@@ -847,6 +847,8 @@ void TMust2Physics::Clear() {
   Si_TY.clear();
   TelescopeNumber_X.clear();
   TelescopeNumber_Y.clear();
+
+  Flagged.clear();
 }
 ///////////////////////////////////////////////////////////////////////////
 
@@ -1070,6 +1072,7 @@ void TMust2Physics::InitializeRootInputPhysics() {
   inputChain->SetBranchStatus("CsI_E", true);
   inputChain->SetBranchStatus("CsI_T", true);
   inputChain->SetBranchStatus("CsI_N", true);
+  inputChain->SetBranchStatus("Flagged", true);
   inputChain->SetBranchStatus("TotalEnergy", true);
   inputChain->SetBranchAddress("MUST2", &m_EventPhysics);
 }
