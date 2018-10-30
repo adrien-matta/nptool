@@ -1,25 +1,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Target
- THICKNESS= 10 micrometer
- RADIUS=	20 mm
- MATERIAL= CD2
- ANGLE= 0 deg
- X= 0 mm
- Y= 0 mm
- Z= 0 mm
+%Target
+% THICKNESS= 10 micrometer
+% RADIUS=	20 mm
+% MATERIAL= CD2
+% ANGLE= 0 deg
+% X= 0 mm
+% Y= 0 mm
+% Z= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Minos
+% POS = 35 35 35 cm
+% Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Minos
- POS= 0 0 350 mm
- Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Minos
- POS = 35 35 35 cm
- Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Minos
- R= 350 mm
- THETA= 90 deg
- PHI= 63 deg
- Shape= Cylindrical
+  R= 35 mm
+  THETA= 90 deg
+  POS = 100 100 100 cm
+  PHI= 63 deg
+  Shape= Cylindrical
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
