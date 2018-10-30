@@ -146,12 +146,16 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
   G4double randomize1=0, randomize2=0 ;
   G4double momentum_y = 0;
   G4double angle = 0;
+//<<<<<<< HEAD
 
   TF1* cosSq= new TF1("cosSq", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
 //TH1F* DistribCosmicAngle= new TH1F("DistribCosmicAngle","DistribCosmicAngle",100, 0, (TMath::Pi())/2);
 //TH2F* DistribMomZMomX= new TH2F("DistribMomZMomX","Horizontals components of Cosmic rays Momentums",50, -1, 1, 50, -1, 1);
 //TCanvas* DisCanva = new TCanvas("DisCanva","Distribution");
 //DisCanva->Divide(1,2);
+//=======
+//  TF1* cosSq2= new TF1("cosSq2", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+//>>>>>>> d95a3e0b20133cedfe52319767a19f987db3584a
 
 void EventGeneratorCosmic::GenerateEvent(G4Event*){
 

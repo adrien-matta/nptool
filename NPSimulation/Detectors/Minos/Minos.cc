@@ -119,13 +119,23 @@ G4LogicalVolume* Minos::BuildSquareDetector(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Minos::BuildCylindricalDetector(){
   if(!m_CylindricalDetector){
+    /*
     G4Tubs* tub = new G4Tubs("Minos_Cyl",0,Minos_NS::Radius,Minos_NS::Thickness*0.5,0,360*deg);
 
     G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(Minos_NS::Material);
     m_CylindricalDetector = new G4LogicalVolume(tub,DetectorMaterial,"logic_Minos_tub",0,0,0);
     m_CylindricalDetector->SetVisAttributes(m_VisSquare);
     m_CylindricalDetector->SetSensitiveDetector(m_MinosScorer);
+    */
 
+
+
+
+
+
+
+
+    
   }
   return m_CylindricalDetector;
 }

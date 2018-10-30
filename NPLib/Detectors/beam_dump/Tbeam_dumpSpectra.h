@@ -1,57 +1,62 @@
-#ifndef TEXLSPECTRA_H
-#define TEXLSPECTRA_H
+#ifndef Tbeam_dumpSPECTRA_H
+#define Tbeam_dumpSPECTRA_H
 /*****************************************************************************
- * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
+ * Copyright (C) 2009-2017   this file is part of the NPTool Project       *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: R. Wilkinson   contact address: r.wilkinson@surrey.ac.uk *
+ * Original Author: valerian  contact address: girardalcindor@ganil.fr                        *
  *                                                                           *
- * Creation Date  : June 2017                                                *
+ * Creation Date  : November 2017                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class holds all the online spectra needed for EXL                   *
+ *  This class hold beam_dump Spectra                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *                                                                           *   
  *                                                                           *
  *****************************************************************************/
 
 // NPLib headers
 #include "NPVSpectra.h"
-#include "TExlData.h"
-#include "TExlPhysics.h"
+#include "Tbeam_dumpData.h"
+#include "Tbeam_dumpPhysics.h"
 
-// ForwardDeclaration
-class TExlPhysics ;
+// Forward Declaration
+class Tbeam_dumpPhysics;
 
-class TExlSpectra:public VSpectra{
+
+class Tbeam_dumpSpectra : public VSpectra {
+  //////////////////////////////////////////////////////////////
+  // constructor and destructor
   public:
-    // constructor and destructor
-    TExlSpectra();
-    TExlSpectra(unsigned int NumberOfDetector);
-    ~TExlSpectra();
+    Tbeam_dumpSpectra();
+    Tbeam_dumpSpectra(unsigned int NumberOfDetectors);
+    ~Tbeam_dumpSpectra();
 
+  //////////////////////////////////////////////////////////////
+  // Initialization methods
   private:
-    // Initialization methods
     void InitRawSpectra();
     void InitPreTreatedSpectra();
     void InitPhysicsSpectra();
 
+  //////////////////////////////////////////////////////////////
+  // Filling methods
   public:
-    // Filling methods
-    void FillRawSpectra(TExlData*);
-    void FillPreTreatedSpectra(TExlData*);
-    void FillPhysicsSpectra(TExlPhysics*);
+    void FillRawSpectra(Tbeam_dumpData*);
+    void FillPreTreatedSpectra(Tbeam_dumpData*);
+    void FillPhysicsSpectra(Tbeam_dumpPhysics*);
 
-  private: // Information on EXL
-    unsigned int fNumberOfDetector;
-    unsigned int fNumberOfCrystal;
+  //////////////////////////////////////////////////////////////
+  // Detector parameters 
+  private:
+    unsigned int fNumberOfDetectors;
 };
 
 #endif
