@@ -1,5 +1,5 @@
-#ifndef TDaliPHYSICS_H
-#define TDaliPHYSICS_H
+#ifndef TMinosPHYSICS_H
+#define TMinosPHYSICS_H
 /*****************************************************************************
  * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
  *                                                                           *
@@ -8,13 +8,13 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Elidiano Tronchin  contact address: elidiano.tronchin@studenti.unipd.it                        *
+ * Original Author: Elidiano Tronchin  contact address: tronchin@lpccaen.in2p3.fr                        *
  *                                                                           *
- * Creation Date  : septembre 2018                                           *
+ * Creation Date  : October 2018                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Dali Treated data                                *
+ *  This class hold Minos Treated data                                *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -33,22 +33,22 @@ using namespace std;
 #include "TH1.h"
 #include "TVector3.h"
 // NPTool headers
-#include "TDaliData.h"
-#include "TDaliSpectra.h"
+#include "TMinosData.h"
+#include "TMinosSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
 #include "NPInputParser.h"
 // forward declaration
-class TDaliSpectra;
+class TMinosSpectra;
 
 
 
-class TDaliPhysics : public TObject, public NPL::VDetector {
+class TMinosPhysics : public TObject, public NPL::VDetector {
   //////////////////////////////////////////////////////////////
   // constructor and destructor
   public:
-    TDaliPhysics();
-    ~TDaliPhysics() {};
+    TMinosPhysics();
+    ~TMinosPhysics() {};
 
 
   //////////////////////////////////////////////////////////////
@@ -63,9 +63,7 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
   // output ROOT file
   public:
     vector<int>      DetectorNumber;
-    vector<double>   ADC;
     vector<double>   Energy;
-    vector<double>   TDC;
     vector<double>   Time;
 
   /// A usefull method to bundle all operation to add a detector
@@ -109,8 +107,8 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
     void ClearEventPhysics() {Clear();}      
     void ClearEventData()    {m_EventData->Clear();}   
 
-    // methods related to the TDaliSpectra class
-    // instantiate the TDaliSpectra class and 
+    // methods related to the TMinosSpectra class
+    // instantiate the TMinosSpectra class and 
     // declare list of histograms
     void InitSpectra();
 
@@ -129,7 +127,7 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
 
 
   //////////////////////////////////////////////////////////////
-  // specific methods to Dali array
+  // specific methods to Minos array
   public:
     // remove bad channels, calibrate the data and apply thresholds
     void PreTreat();
@@ -140,20 +138,20 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
     // read the user configuration file. If no file is found, load standard one
     void ReadAnalysisConfig();
 
-    // give and external TDaliData object to TDaliPhysics. 
+    // give and external TMinosData object to TMinosPhysics. 
     // needed for online analysis for example
-    void SetRawDataPointer(TDaliData* rawDataPointer) {m_EventData = rawDataPointer;}
+    void SetRawDataPointer(TMinosData* rawDataPointer) {m_EventData = rawDataPointer;}
     
   // objects are not written in the TTree
   private:
-    TDaliData*         m_EventData;        //!
-    TDaliData*         m_PreTreatedData;   //!
-    TDaliPhysics*      m_EventPhysics;     //!
+    TMinosData*         m_EventData;        //!
+    TMinosData*         m_PreTreatedData;   //!
+    TMinosPhysics*      m_EventPhysics;     //!
 
   // getters for raw and pre-treated data object
   public:
-    TDaliData* GetRawData()        const {return m_EventData;}
-    TDaliData* GetPreTreatedData() const {return m_PreTreatedData;}
+    TMinosData* GetRawData()        const {return m_EventData;}
+    TMinosData* GetPreTreatedData() const {return m_PreTreatedData;}
 
   // parameters used in the analysis
   private:
@@ -167,7 +165,7 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
 
   // spectra class
   private:
-    TDaliSpectra* m_Spectra; // !
+    TMinosSpectra* m_Spectra; // !
 
   // spectra getter
   public:
@@ -177,6 +175,6 @@ class TDaliPhysics : public TObject, public NPL::VDetector {
   public:
     static NPL::VDetector* Construct();
 
-    ClassDef(TDaliPhysics,1)  // DaliPhysics structure
+    ClassDef(TMinosPhysics,1)  // MinosPhysics structure
 };
 #endif

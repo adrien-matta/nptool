@@ -6,20 +6,20 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Elidiano Tronchin  contact address: elidiano.tronchin@studenti.unipd.it                        *
+ * Original Author: Elidiano Tronchin  contact address: tronchin@lpccaen.in2p3.fr                        *
  *                                                                           *
- * Creation Date  : septembre 2018                                           *
+ * Creation Date  : October 2018                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Dali Raw data                                    *
+ *  This class hold Minos Raw data                                    *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *   
  *                                                                           *
  *****************************************************************************/
-#include "TDaliData.h"
+#include "TMinosData.h"
 
 #include <iostream>
 #include <fstream>
@@ -27,57 +27,53 @@
 #include <string>
 using namespace std; 
 
-ClassImp(TDaliData)
+ClassImp(TMinosData)
 
 
 //////////////////////////////////////////////////////////////////////
-TDaliData::TDaliData() {
+TMinosData::TMinosData() {
 }
 
 
 
 //////////////////////////////////////////////////////////////////////
-TDaliData::~TDaliData() {
+TMinosData::~TMinosData() {
 }
 
 
 
 //////////////////////////////////////////////////////////////////////
-void TDaliData::Clear() {
+void TMinosData::Clear() {
   // Energy
-  fDali_E_DetectorNbr.clear();
-  fDali_ADC.clear();
-  fDali_Energy.clear();
+  fMinos_E_DetectorNbr.clear();
+  fMinos_Energy.clear();
   // Time
-  fDali_T_DetectorNbr.clear();
-  fDali_TDC.clear();
-  fDali_Time.clear();
+  fMinos_T_DetectorNbr.clear();
+  fMinos_Time.clear();
 }
 
 
 
 //////////////////////////////////////////////////////////////////////
-void TDaliData::Dump() const {
+void TMinosData::Dump() const {
   // This method is very useful for debuging and worth the dev.
-  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TDaliData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [TMinosData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
 
   // Energy
-  size_t mysize = fDali_E_DetectorNbr.size();
-  cout << "Dali_E_Mult: " << mysize << endl;
+  size_t mysize = fMinos_E_DetectorNbr.size();
+  cout << "Minos_E_Mult: " << mysize << endl;
  
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fDali_E_DetectorNbr[i]
-         << " ADC: " << fDali_ADC[i]
-         << " Energy: " << fDali_Energy[i];
+    cout << "DetNbr: " << fMinos_E_DetectorNbr[i]
+         << " Energy: " << fMinos_Energy[i];
   }
   
   // Time
-  mysize = fDali_T_DetectorNbr.size();
-  cout << "Dali_T_Mult: " << mysize << endl;
+  mysize = fMinos_T_DetectorNbr.size();
+  cout << "Minos_T_Mult: " << mysize << endl;
  
   for (size_t i = 0 ; i < mysize ; i++){
-    cout << "DetNbr: " << fDali_T_DetectorNbr[i]
-         << " TDC: " << fDali_TDC[i]
-         << " Time: " << fDali_Time[i];
+    cout << "DetNbr: " << fMinos_T_DetectorNbr[i]
+         << " Time: " << fMinos_Time[i];
   }
 }
