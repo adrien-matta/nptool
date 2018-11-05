@@ -168,25 +168,25 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 		return (i - (imax/2.))*width + width/2.;
 	};
 	
-	int i=0, j=0, k=0;
+	//int i=0, j=0, k=0;
 
-	int iPipeX=1, iPipeY=1, iDet=1;
+	int iPipeX=1,/* iPipeY=1,*/ iDet=1;
 	for(const auto& det : m_Detector) {
 		const G4int& nrow = get<0>(det);
 		const G4int& ncol = get<1>(det);
-		const G4int& nlayer = get<2>(det);
+		//const G4int& nlayer = get<2>(det);
 		const G4double& width = get<3>(det);
 		const G4double& thickness = get<4>(det);
 		const G4double& pipe_width = get<5>(det);
 		const G4double& pipe_thickness = get<6>(det);
-		const G4double  pd_thickness = 1*mm;
+		//const G4double  pd_thickness = 1*mm;
 
 		vector<vector<G4PVPlacement*> > physVol(nrow);
 		for(auto& v : physVol) { v.resize(ncol); }
 
 
 		auto buildRow = [&](G4int irow, G4double z){
-			G4double rowWidthX = nrow*width;
+			//G4double rowWidthX = nrow*width;
 			G4double pipe_length = width*ncol + 1*cm;
 			//
 			// Build light pipe above detectors
@@ -201,7 +201,7 @@ void LightPipe::ConstructDetector(G4LogicalVolume* world){
 			G4RotationMatrix* myRotation = new G4RotationMatrix();
 			myRotation->rotateX(90.*deg);
 			// Create PV Placement
-			G4PVPlacement* pv = new G4PVPlacement(
+		  new G4PVPlacement(
 				myRotation, pipePos, pipe, "LightPipe_PipeX", world, false, iPipeX++, warnOverlap);
 
 			std::vector<G4PVPlacement*> pvRow;
