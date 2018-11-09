@@ -171,7 +171,6 @@ Reaction::~Reaction(){
 bool Reaction::CheckKinematic(){
   double theta = fThetaCM;
   if (m1 > m2) theta = M_PI - fThetaCM;
-
   fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
   fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
 
