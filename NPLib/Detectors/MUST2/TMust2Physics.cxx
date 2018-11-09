@@ -455,9 +455,9 @@ int TMust2Physics::CheckEvent() {
 
   // INterstrip management is not coded, so waste of time to make this test
   /*  else if(   m_PreTreatedData->GetMMStripXEMult() ==
-     m_PreTreatedData->GetMMStripYEMult()+1
+      m_PreTreatedData->GetMMStripYEMult()+1
       || m_PreTreatedData->GetMMStripXEMult() ==
-     m_PreTreatedData->GetMMStripYEMult()-1  )
+      m_PreTreatedData->GetMMStripYEMult()-1  )
       return 2 ; // Pseudo Event, potentially interstrip*/
 
   else

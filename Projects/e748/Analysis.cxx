@@ -104,8 +104,17 @@ void Analysis::TreatEvent(){
     int TelescopeNumber = M2->TelescopeNumber[countMust2]; 
     Si_X_M2 = X ;
     Si_Y_M2 = Y ;
-
-    if(TelescopeNumber<9){
+    // Beam Energy from Cav Time of Flight //
+    double BeamSpeed = 138.898 - 14765.1/ ModularLeaf->GetCalibratedValue("T_CATS1_CAV") ; // mm/ns
+    // Beam Energy before CATS1
+    static double c2 = 299.792458*299.792458;// mm/ns 
+    double gamma = 1./sqrt(1-BeamSpeed*BeamSpeed/c2);
+    BeamEnergy= 11200.962140*(gamma-1);
+    double BeamAngle= BeamDirection.Angle(TVector3(0,0,1));
+    double gammaCav = (BeamEnergy+11200.962140) / 11200.962140 ;
+    double BeamSpeedCav = sqrt(c2*(1-1/(gammaCav*gammaCav)));
+//cout << ModularLeaf->GetCalibratedValue("T_CATS1_CAV")  << " " << BeamSpeed << " " << BeamEnergy << " " << BeamEnergy/12. << endl; 
+    if(BeamEnergy>0 &&  TelescopeNumber<5){
       DetectorNumber = TelescopeNumber ;
 
       /* // Part 1 : Impact Angle */
@@ -122,26 +131,8 @@ void Analysis::TreatEvent(){
         Y_M2 = M2 -> GetPositionOfInteraction(countMust2).Y() ;
         Z_M2 = M2 -> GetPositionOfInteraction(countMust2).Z() ;
 
-        // Beam Energy from Cav Time of Flight //
 
-        // Beam speed from Beam Energy
-
-        //   double BeamSpeed =  10.8727 + ModularLeaf->GetCalibratedValue("T_CATS1_CAV")*0.276825; // mm/ns
-        //double BeamSpeed =  5.17952 + ModularLeaf->GetCalibratedValue("T_CATS1_CAV")*0.305315; // mm/ns
-        //double BeamSpeed =  11.0476 + ModularLeaf->GetCalibratedValue("T_CATS1_CAV")*0.278917; // mm/ns
-        //double BeamSpeed =  7.20255 + ModularLeaf->GetCalibratedValue("T_CATS1_CAV")*0.293392; // mm/ns
-
-        double BeamSpeed =  20.0747+ ModularLeaf->GetCalibratedValue("T_CATS1_CAV")*0.237811; // mm/ns
-
-        // Beam Energy before CATS1
-        static double c2 = 299.792458*299.792458;// mm/ns 
-        double gamma = 1./sqrt(1-BeamSpeed*BeamSpeed/c2);
-        BeamEnergy= 11200.962140*(gamma-1);
-        double BeamAngle= BeamDirection.Angle(TVector3(0,0,1));
-        double gammaCav = (BeamEnergy+11200.962140) / 11200.962140 ;
-        double BeamSpeedCav = sqrt(c2*(1-1/(gammaCav*gammaCav)));
-  
-        // Beam Energy and speed after CATS1
+          // Beam Energy and speed after CATS1
         double BeamEnergyC1 = BeamMylar.Slow(BeamEnergy,1.2*micrometer,BeamAngle); 
         BeamEnergyC1 = BeamIsobutane.Slow(BeamEnergyC1,cm/3.,BeamAngle);
         BeamEnergyC1 = BeamMylar.Slow(BeamEnergyC1,0.9*micrometer,BeamAngle); 

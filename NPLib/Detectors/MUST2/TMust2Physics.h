@@ -81,6 +81,7 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   vector<double> Si_TY;
   vector<int>    TelescopeNumber_X;
   vector<int>    TelescopeNumber_Y;
+
   //   Si(Li)
   vector<double> SiLi_E;
   vector<double> SiLi_T;
@@ -287,8 +288,8 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   vector<vector<vector<double>>> m_StripPositionZ; //!
 
   private:
-  map<int, int> m_HitStripX;
-  map<int, int> m_HitStripY;
+  map<int, int>    m_HitStripX; //!
+  map<int, int>    m_HitStripY; //!
 
   private: // Spectra Class
   TMust2Spectra* m_Spectra; //!

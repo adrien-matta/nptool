@@ -238,7 +238,7 @@ void Miniball::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Miniball::ReadSensitive(const G4Event* event){
+void Miniball::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////

@@ -2157,7 +2157,9 @@ void Chamber::ConstructDetector(G4LogicalVolume* world)
     case 0 :
       break;
     case 1 : yPos -=  (7.0*mm + connectorW);
+      break;
     case 2 : yPos -= (15.0*mm + connectorW); 
+      break;
     case 3 : yPos -=  (7.0*mm + connectorW);
       break;
     }

@@ -137,7 +137,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-    G4Element* H       = new G4Element("Hydrogen","H" , 1., 1.01*g/mole);
+    //G4Element* H       = new G4Element("Hydrogen","H" , 1., 1.01*g/mole);
     
     G4Isotope* Mg24 = new G4Isotope ("Mg24", 12, 24, 23.985041*g/mole);
     G4Isotope* Mg25 = new G4Isotope ("Mg25", 12, 25, 24.985836*g/mole);
@@ -196,7 +196,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     G4ThreeVector positionnull = G4ThreeVector(0,0,0);
     
     // MgO Volume -
-    G4PVPlacement* physi_MgO = new G4PVPlacement(0, positionnull,
+    new G4PVPlacement(0, positionnull,
                                              m_SquareDetector_CanMgO,
                                              "MgO",
                                              m_SquareDetector_Can,
@@ -207,7 +207,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
 
     
     // NaI Volume -
-    G4PVPlacement* physi_NaI = new G4PVPlacement(0, positionnull,
+    new G4PVPlacement(0, positionnull,
                                                  m_SquareDetector_Crystal,
                                                  "Crystal NaI",
                                                  m_SquareDetector_CanMgO,
@@ -217,7 +217,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     m_SquareDetector_Crystal->SetVisAttributes(m_VisSquare);
     m_SquareDetector_Crystal->SetSensitiveDetector(m_DaliScorer);
 
-       G4VPhysicalVolume* ArrayDali_1 = new G4PVReplica("ArrayDali_1",
+    new G4PVReplica("ArrayDali_1",
                                                         m_SquareDetector_Can,
                                                         Logic_ArrayDali_1 ,
                                                         kYAxis,
