@@ -1,0 +1,32 @@
+%%%%%%%%%%%%%%%%%%%%%% FOR DALI PROTON ELASTIC SCATTERING %%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Beam
+ Particle= 1H 
+ ExcitationEnergy= 0
+ Energy= 170
+ SigmaEnergy= 0.448
+ SigmaThetaX= 0.01 
+ SigmaPhiY= 0.01
+ SigmaX= 0.01 
+ %0.5
+ SigmaY= 0.01 
+ %0.5
+ MeanThetaX= 0
+ MeanPhiY= 0
+ MeanX= 0
+ MeanY= 0
+ %EnergyProfilePath=
+ %XThetaXProfilePath=
+ %YPhiYProfilePath=
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+TwoBodyReaction
+ Beam= 1H
+ Target= 12C
+ Light= 12C
+ Heavy= 1H
+ ExcitationEnergyLight= 0.0
+ ExcitationEnergyHeavy= 0.0
+ CrossSectionPath= flat.txt CSR
+ ShootLight= 1
+ ShootHeavy= 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
