@@ -134,6 +134,7 @@ void Minos::DefineMaterials()
   //
   // define Elements
   //
+
   
   G4Element* H  = new G4Element("Hydrogen",symbol="H" , z= 1., a= 1.01*g/mole);
   G4Element* C  = new G4Element("Carbon"  ,symbol="C" , z= 6., a= 12.01*g/mole);
@@ -150,6 +151,8 @@ void Minos::DefineMaterials()
   new G4Material("Lead"     , z=82., a= 207.19*g/mole, density= 11.35*g/cm3);
   new G4Material("Silicium", z=14., a=28.09*g/mole, density=2.330*g/cm3);
   new G4Material("Titanium", z=22., a=47.87*g/mole, density=4.510*g/cm3);
+  
+
   
   G4Material* iso = new G4Material("isobutane", density=0.002506*g/cm3, ncomponents=2);
   iso->AddElement(C, natoms=4);
@@ -244,7 +247,7 @@ void Minos::DefineMaterials()
   Rohacell->AddElement(O, fractionmass=0.3154);
   Rohacell->AddElement(N, fractionmass=0.00276);
   
-  G4cout << *(G4Material::GetMaterialTable()) << G4endl;
+  //G4cout << *(G4Material::GetMaterialTable()) << G4endl;
   
   //default materials of the World
   defaultMaterial  = Vacuum;
@@ -309,23 +312,6 @@ G4LogicalVolume* Minos::BuildCylindricalDetector(){
     */
 
   
-  TargetRadius = 28.*mm; TargetLength = 150./2.*mm;
-  ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
-  ChamberLength = 300./2.*mm;
-  InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
-  TPCRadiusExt = 100.*mm; WindowThickness = 0.150/2.*mm;
-    
-    DefineMaterials();
-    SetTargetMaterial("LH2");
-    SetChamberMaterial("Inox");
-    SetTPCMaterial("mix"); 
-    SetWindowMaterial("Mylar");  
-    SetKaptonMaterial("Kapton");  
-    SetInnerRohacellMaterial("Rohacell");
-    SetOuterRohacellMaterial("Rohacell");
-    
-
-
 
 
 
@@ -334,6 +320,16 @@ G4LogicalVolume* Minos::BuildCylindricalDetector(){
   }
   return m_CylindricalDetector;
 }
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+// Below are vis attributes that permits someone to test / play 
+  // with the interactive expansion / contraction geometry system of the
+  // vis/OpenInventor driver :
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Minos::BuildTarget(){
   if(!logicTarget){
@@ -350,7 +346,14 @@ G4LogicalVolume* Minos::BuildTarget(){
       logicTarget = new G4LogicalVolume(solidTarget,	//its solid
       				       TargetMaterial,	//its material
       				       "Target");	//its name    
-  }
+  
+
+   {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0.6,1.,1.));
+  atb->SetForceSolid(true);
+  logicTarget->SetVisAttributes(atb);}
+	
+
+   }
   return logicTarget;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -365,7 +368,12 @@ G4LogicalVolume* Minos::BuildChamber(){
       logicChamber = new G4LogicalVolume(solidChamber,	//its solid
                                        ChamberMaterial,	//its material
                                        "Chamber");	//its name                               
-  }
+  
+{G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(0,1,0));
+  simpleBoxVisAtt->SetVisibility(true);
+  logicChamber->SetVisAttributes(simpleBoxVisAtt);}
+
+   }
   return logicChamber;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -380,6 +388,10 @@ G4LogicalVolume* Minos::BuildInnerRohacell(){
       logicInnerRohacell = new G4LogicalVolume(solidInnerRohacell,	//its solid
                                        InnerRohacellMaterial,	//its material
                                        "InnerRohacell");	//its name
+  
+ 
+
+
   }
   return logicInnerRohacell;
 }
@@ -426,7 +438,12 @@ G4LogicalVolume* Minos::BuildTPC(){
       			                  TPCMaterial, //its material
       			                  "TPC"); //name
 
-  }
+ 
+  {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6));
+  logicTPC->SetVisAttributes(atb);}
+
+
+   }
   return logicTPC;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -442,7 +459,14 @@ solidWindow0 = new G4Tubs("WindowTube",		//its name
       logicWindow0 = new G4LogicalVolume(solidWindow0,    //its solid
       			                  WindowMaterial, //its material
       			                  "WindowTube"); //name
-  }
+  
+   {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+  atb->SetForceSolid(true);
+  logicWindow0->SetVisAttributes(atb);}
+
+
+
+   }
   return logicWindow0;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -454,7 +478,13 @@ G4LogicalVolume* Minos::BuildWindow1(){
       logicWindow1 = new G4LogicalVolume(solidWindow1,    //its solid
       			                  WindowMaterial, //its material
       			                  "WindowEntrance"); //name
-  }
+   
+  {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+  atb->SetForceSolid(true);
+  logicWindow1->SetVisAttributes(atb);} 
+
+
+   }
   return logicWindow1;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -466,6 +496,11 @@ solidWindow2 = new G4Tubs("WindowOutcoming",		//its name
       logicWindow2 = new G4LogicalVolume(solidWindow2,    //its solid
       			                  WindowMaterial, //its material
       			                  "WindowOutcoming"); //name
+  
+   {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+  atb->SetForceSolid(true);
+  logicWindow2->SetVisAttributes(atb);} 
+  
   }
   return logicWindow2;
 }
@@ -516,12 +551,28 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
 void Minos::ConstructDetector(G4LogicalVolume* world){
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
 
+  TargetRadius = 28.*mm; TargetLength = 150./2.*mm;
+  ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
+  ChamberLength = 300./2.*mm;
+  InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
+  TPCRadiusExt = 100.*mm; WindowThickness = 0.150/2.*mm;
+    
+    DefineMaterials();
+
+    SetTargetMaterial("LH2");  
+    SetChamberMaterial("Inox");
+    SetTPCMaterial("mix"); 
+    SetWindowMaterial("Mylar");  
+    SetKaptonMaterial("Kapton");  
+    SetInnerRohacellMaterial("Rohacell");
+    SetOuterRohacellMaterial("Rohacell");
+     
     G4double wX = m_R[i] * sin(m_Theta[i] ) * cos(m_Phi[i] ) ;
     G4double wY = m_R[i] * sin(m_Theta[i] ) * sin(m_Phi[i] ) ;
     G4double wZ = m_R[i] * cos(m_Theta[i] ) ;
     G4ThreeVector Det_pos = G4ThreeVector(wX, wY, wZ) ;
     // So the face of the detector is at R instead of the middle
-    Det_pos+=Det_pos.unit()*Minos_NS::Thickness*0.5;
+              Det_pos+=Det_pos.unit()*Minos_NS::Thickness*0.5;       
     // Building Detector reference frame
     G4double ii = cos(m_Theta[i]) * cos(m_Phi[i]);
     G4double jj = cos(m_Theta[i]) * sin(m_Phi[i]);
@@ -536,16 +587,16 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
 
     if(m_Shape[i] == "Cylindrical"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildCylindricalDetector(),
-          "Minos",world,false,i+1);
+      // new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
+      //  BuildCylindricalDetector(),
+      //  "Minos",world,false,i+1);
     }
     else if(m_Shape[i] == "Square"){
-      new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
-          BuildSquareDetector(),
-          "Minos",world,false,i+1);
+          
+
     }
 
+    
     physiTarget = new G4PVPlacement(0,			//no rotation
                                      G4ThreeVector(0,0,TargetLength),	//at (0,0,0)
                                     BuildTarget(),	//its logical volume
@@ -554,7 +605,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                      false,		//no boolean operation
                                      0);		//copy number
  
-      physiChamber = new G4PVPlacement(0,		//its name
+     physiChamber = new G4PVPlacement(0,		//its name
                                     G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
                                        BuildChamber(),	//its logical volume
                                      "Chamber",	//its name
@@ -568,61 +619,53 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                              "InnerRohacell",	//its name
                                              world,	//its mother  volume
                                              false,		//no boolean operation
-                                             0);		//copy number
-
-      physiOuterRohacell = new G4PVPlacement(0,		//its name
-                                             G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
-                                             BuildOuterRohacell(),	//its logical volume
-                                             "OuterRohacell",	//its name
-                                             world,	//its mother  volume
-                                             false,		//no boolean operation
-                                             0);		//copy number
-
+                                             0); physiOuterRohacell = new G4PVPlacement(0,		//its name
+                                                                                        G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
+                                                                                        BuildOuterRohacell(),	//its logical volume
+                                                                                        "OuterRohacell",	//its name
+                                                                                        world,	//its mother  volume
+                                                                                        false,		//no boolean operation
+                                                                                        0);		//copy number
+      
       physiKapton = new G4PVPlacement(0,		//its name
-                                    G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
+                                      G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
                                       BuildKapton(),	//its logical volume
-                                     "Kapton",	//its name
-                                     world,	//its mother  volume
-                                     false,		//no boolean operation
-                                     0);		//copy number
-
+                                      "Kapton",	//its name
+                                      world,	//its mother  volume
+                                      false,		//no boolean operation
+                                      0);		//copy number
+      
       physiTPC = new G4PVPlacement(0,		//its name
-                                    G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
+                                   G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
                                    BuildTPC(),	//its logical volume
-                                     "TPC",	//its name
-                                     world,	//its mother  volume
-                                     false,		//no boolean operation
-                                     0);		//copy number
+                                   "TPC",	//its name
+                                   world,	//its mother  volume
+                                   false,		//no boolean operation
+                                   0);		//copy number
       
-    physiWindow0 = new G4PVPlacement(0,		//its name
-                                    G4ThreeVector(0,0,TargetLength),	//at (0,0,0)
-                                     BuildWindow0(),	//its logical volume
-                                     "WindowTube",	//its name
-                                     world,	//its mother  volume
-                                     false,		//no boolean operation
-                                     0);		//copy number
-
-    physiWindow1 = new G4PVPlacement(0,		//its name
-                                    G4ThreeVector(0,0,-1.*WindowThickness),	//at (0,0,0)
-                                     BuildWindow1(),	//its logical volume
-                                     "WindowEntrance",	//its name
-                                     world,	//its mother  volume
-                                     false,		//no boolean operation
-                                     0);		//copy number
-
-    physiWindow2 = new G4PVPlacement(0,		//its name
-                                    G4ThreeVector(0,0,2.*TargetLength+WindowThickness),	//at (0,0,0)
-                                     BuildWindow2(),	//its logical volume
-                                     "WindowOutcoming",	//its name
-                                     world,	//its mother  volume
-                                     false,		//no boolean operation
-                                     0);		//copy number
-
-      
-  G4Region* aRegion = new G4Region("TPCLog");
-  logicTPC -> SetRegion(aRegion);
-  aRegion -> AddRootLogicalVolume(logicTPC);
-  } 
+      physiWindow0 = new G4PVPlacement(0,		//its name
+                                       G4ThreeVector(0,0,TargetLength),	//at (0,0,0)
+                                       BuildWindow0(),	//its logical volume
+                                       "WindowTube",	//its name
+                                       world,	//its mother  volume
+                                       false,		//no boolean operation
+                                       0);  physiWindow1 = new G4PVPlacement(0,		//its name
+                                                                             G4ThreeVector(0,0,-1.*WindowThickness),	//at (0,0,0)
+                                                                             BuildWindow1(),	//its logical volume
+                                                                             "WindowEntrance",	//its name
+                                                                             world,	//its mother  volume
+                                                                             false,		//no boolean operation
+                                                                             0);  physiWindow2 = new G4PVPlacement(0,		//its name
+                                                                                                                   G4ThreeVector(0,0,2.*TargetLength+WindowThickness),	//at (0,0,0)
+                                                                                                                   BuildWindow2(),	//its logical volume
+                                                                                                                   "WindowOutcoming",	//its name
+                                                                                                                   world,	//its mother  volume
+                                                                                                                   false,		//no boolean operation
+                                                                                                                   0);		//copy number
+      G4Region* aRegion = new G4Region("TPCLog");
+      logicTPC -> SetRegion(aRegion);
+      aRegion -> AddRootLogicalVolume(logicTPC);
+  }
   //                                        
   // Visualization attributes
   //
