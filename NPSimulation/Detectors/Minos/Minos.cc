@@ -72,7 +72,8 @@ namespace Minos_NS{
 // Minos Specific Method
 Minos::Minos(){
   m_Event = new TMinosData() ;
-  m_MinosScorer = 0;
+  m_MinosTargetScorer = 0;
+  m_MinosTPCScorer = 0;
   m_SquareDetector = 0;
   m_CylindricalDetector = 0;
 
@@ -112,7 +113,7 @@ G4LogicalVolume* Minos::BuildSquareDetector(){
     G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(Minos_NS::Material);
     m_SquareDetector = new G4LogicalVolume(box,DetectorMaterial,"logic_Minos_Box",0,0,0);
     m_SquareDetector->SetVisAttributes(m_VisSquare);
-    m_SquareDetector->SetSensitiveDetector(m_MinosScorer);
+    m_SquareDetector->SetSensitiveDetector(m_MinosTargetScorer);
   }
   return m_SquareDetector;
 }
@@ -312,12 +313,7 @@ G4LogicalVolume* Minos::BuildCylindricalDetector(){
     */
 
   
-
-
-
-
-    
-  }
+ }
   return m_CylindricalDetector;
 }
 
@@ -604,7 +600,12 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                      world,	//its mother  volume
                                      false,		//no boolean operation
                                      0);		//copy number
- 
+
+    logicTarget->SetSensitiveDetector(m_MinosTargetScorer);
+
+
+
+    
      physiChamber = new G4PVPlacement(0,		//its name
                                     G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
                                        BuildChamber(),	//its logical volume
@@ -642,7 +643,11 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                    world,	//its mother  volume
                                    false,		//no boolean operation
                                    0);		//copy number
-      
+
+
+      logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
+
+          
       physiWindow0 = new G4PVPlacement(0,		//its name
                                        G4ThreeVector(0,0,TargetLength),	//at (0,0,0)
                                        BuildWindow0(),	//its logical volume
@@ -662,9 +667,51 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                                                                                                    world,	//its mother  volume
                                                                                                                    false,		//no boolean operation
                                                                                                                    0);		//copy number
-      G4Region* aRegion = new G4Region("TPCLog");
-      logicTPC -> SetRegion(aRegion);
-      aRegion -> AddRootLogicalVolume(logicTPC);
+
+            if(!m_ReactionRegion){
+              
+              G4ProductionCuts* ecut = new G4ProductionCuts();
+              G4ProductionCuts* pcut = new G4ProductionCuts();
+              ecut->SetProductionCut(1000,"e-");
+              pcut->SetProductionCut(1,"p");
+                            
+              m_ReactionRegion= new G4Region("NPSimulationProcess");
+              // logicTPC -> SetRegion(m_ReactionRegion);
+              m_ReactionRegion->SetProductionCuts(ecut);
+              m_ReactionRegion->SetProductionCuts(ecut);     
+              //  m_ReactionRegion -> AddRootLogicalVolume(logicTPC);
+              m_ReactionRegion -> AddRootLogicalVolume(logicTarget);
+
+              m_ReactionRegion->SetUserLimits(new G4UserLimits(1.2*mm));
+
+              G4Region* Region_cut = new G4Region("RegionCut");
+              logicTPC->SetRegion(Region_cut);
+              Region_cut->SetProductionCuts(ecut);
+              Region_cut->SetProductionCuts(pcut);
+              Region_cut->AddRootLogicalVolume(logicTPC);                          
+            }
+
+            
+            //G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();  //DOESN WORK
+             
+            // unsigned int size = m_ReactionModel.size();
+             
+             
+             /*
+               for(unsigned int o = 0 ; o < size ; o++){
+               mng->RemoveFastSimulationModel(m_ReactionModel[o]);
+               }
+             */
+             
+             
+             // m_ReactionModel.clear();
+             // G4VFastSimulationModel* fsm;
+             // fsm = new NPS::BeamReaction("BeamReaction",m_ReactionRegion);
+             // m_ReactionModel.push_back(fsm);
+             //fsm = new NPS::Decay("Decay",m_ReactionRegion);
+             //m_ReactionModel.push_back(fsm);
+             
+      
   }
   //                                        
   // Visualization attributes
@@ -686,14 +733,15 @@ void Minos::InitializeRootOutput(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
-// Called at in the EventAction::EndOfEventAvtion
+// Called at in the EventAction::EndOfEventAction
 void Minos::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_MinosScorer->GetPrimitive(0);
+  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_MinosTargetScorer->GetPrimitive(0);
 
+  
   unsigned int size = Scorer->GetMult(); 
   for(unsigned int i = 0 ; i < size ; i++){
     vector<unsigned int> level = Scorer->GetLevel(i); 
@@ -712,19 +760,26 @@ void Minos::ReadSensitive(const G4Event* ){
 void Minos::InitializeScorers() { 
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false; 
-  m_MinosScorer = CheckScorer("MinosScorer",already_exist) ;
+  m_MinosTargetScorer = CheckScorer("MinosTargetScorer",already_exist) ;
+  m_MinosTPCScorer = CheckScorer("MinosTPCScorer",already_exist) ;
 
   if(already_exist) 
     return ;
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
-  G4VPrimitiveScorer* Interaction= new InteractionScorers::PS_Interactions("Interaction",ms_InterCoord, 0) ;
+  G4VPrimitiveScorer* CalorimeterMinosTargetScorer= new CalorimeterScorers::PS_Calorimeter("CalorimeterMinosTargetScore",level, 0) ;
+  G4VPrimitiveScorer* InteractionMinosTargetScorer= new InteractionScorers::PS_Interactions("InteractionMinosTargetScore",ms_InterCoord, 0) ;
   //and register it to the multifunctionnal detector
-  m_MinosScorer->RegisterPrimitive(Calorimeter);
-  m_MinosScorer->RegisterPrimitive(Interaction);
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosScorer) ;
+  m_MinosTargetScorer->RegisterPrimitive(CalorimeterMinosTargetScorer);
+  m_MinosTargetScorer->RegisterPrimitive(InteractionMinosTargetScore);
+
+
+  G4VPrimitiveScorer* TPCScorer= new TPCScorers::PS_TPCCathode("MinosTPC", 0);
+  m_MinosTPCScorer->RegisterPrimitive(TPCScorer);
+  
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTPCScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTargetScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
