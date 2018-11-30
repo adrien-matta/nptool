@@ -31,11 +31,16 @@ using namespace std;
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
 #include "G4MultiFunctionalDetector.hh"
+#include "G4VFastSimulationModel.hh"
+#include "G4UserLimits.hh"
+#include "G4FastSimulationManager.hh"
 
 // NPTool header
 #include "NPSVDetector.hh"
 #include "TMinosData.h"
 #include "NPInputParser.h"
+#include "Decay.hh"
+#include "BeamReaction.hh"
 
 class Minos : public NPS::VDetector{
   ////////////////////////////////////////////////////
@@ -199,7 +204,9 @@ class Minos : public NPS::VDetector{
     void InitializeScorers() ;
 
     //   Associated Scorer
-    G4MultiFunctionalDetector* m_MinosScorer ;
+    G4MultiFunctionalDetector* m_MinosTargetScorer ;
+    G4MultiFunctionalDetector* m_MinosTPCScorer ;
+  
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
     ////////////////////////////////////////////////////
@@ -221,6 +228,13 @@ class Minos : public NPS::VDetector{
     // Visualisation Attribute
     G4VisAttributes* m_VisSquare;
     G4VisAttributes* m_VisCylinder;
+
+
+  private:
+    // Region were reaction can occure:
+    G4Region* m_ReactionRegion;
+    vector<G4VFastSimulationModel*> m_ReactionModel;
+
 
   // Needed for dynamic loading of the library
   public:

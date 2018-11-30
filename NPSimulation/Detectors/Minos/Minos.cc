@@ -42,6 +42,8 @@
 #include "Minos.hh"
 #include "CalorimeterScorers.hh"
 #include "InteractionScorers.hh"
+#include "TPCScorers.hh"
+
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -76,7 +78,7 @@ Minos::Minos(){
   m_MinosTPCScorer = 0;
   m_SquareDetector = 0;
   m_CylindricalDetector = 0;
-
+  m_ReactionRegion=NULL;
 
   // RGB Color + Transparency
   m_VisSquare = new G4VisAttributes(G4Colour(0, 1, 0, 0.5));   
@@ -667,57 +669,53 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                                                                                                    world,	//its mother  volume
                                                                                                                    false,		//no boolean operation
                                                                                                                    0);		//copy number
-
-            if(!m_ReactionRegion){
-              
-              G4ProductionCuts* ecut = new G4ProductionCuts();
-              G4ProductionCuts* pcut = new G4ProductionCuts();
-              ecut->SetProductionCut(1000,"e-");
-              pcut->SetProductionCut(1,"p");
-                            
-              m_ReactionRegion= new G4Region("NPSimulationProcess");
-              // logicTPC -> SetRegion(m_ReactionRegion);
-              m_ReactionRegion->SetProductionCuts(ecut);
-              m_ReactionRegion->SetProductionCuts(ecut);     
-              //  m_ReactionRegion -> AddRootLogicalVolume(logicTPC);
-              m_ReactionRegion -> AddRootLogicalVolume(logicTarget);
-
-              m_ReactionRegion->SetUserLimits(new G4UserLimits(1.2*mm));
-
-              G4Region* Region_cut = new G4Region("RegionCut");
-              logicTPC->SetRegion(Region_cut);
-              Region_cut->SetProductionCuts(ecut);
-              Region_cut->SetProductionCuts(pcut);
-              Region_cut->AddRootLogicalVolume(logicTPC);                          
-            }
-
-            
-            //G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();  //DOESN WORK
-             
-            // unsigned int size = m_ReactionModel.size();
-             
-             
-             /*
-               for(unsigned int o = 0 ; o < size ; o++){
-               mng->RemoveFastSimulationModel(m_ReactionModel[o]);
-               }
-             */
-             
-             
-             // m_ReactionModel.clear();
-             // G4VFastSimulationModel* fsm;
-             // fsm = new NPS::BeamReaction("BeamReaction",m_ReactionRegion);
-             // m_ReactionModel.push_back(fsm);
-             //fsm = new NPS::Decay("Decay",m_ReactionRegion);
-             //m_ReactionModel.push_back(fsm);
-             
+      
+      
+      G4ProductionCuts* ecut = new G4ProductionCuts();
+      G4ProductionCuts* pcut = new G4ProductionCuts();
+      if(!m_ReactionRegion){
+        
+        
+        ecut->SetProductionCut(1000,"e-");
+        pcut->SetProductionCut(1,"p");
+        
+        m_ReactionRegion= new G4Region("NPSimulationProcess");
+        m_ReactionRegion -> AddRootLogicalVolume(logicTarget);
+        
+        // logicTPC -> SetRegion(m_ReactionRegion);
+        m_ReactionRegion->SetProductionCuts(ecut);
+        m_ReactionRegion->SetProductionCuts(ecut);     
+        //  m_ReactionRegion -> AddRootLogicalVolume(logicTPC);
+        
+        m_ReactionRegion->SetUserLimits(new G4UserLimits(1.2*mm)); //???
+      }
+      
+      G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();  //DOESN WORK
+      unsigned int size = m_ReactionModel.size();
+      for(unsigned int o = 0 ; o < size ; o++){
+        mng->RemoveFastSimulationModel(m_ReactionModel[o]);
+      }
+      m_ReactionModel.clear();
+      G4VFastSimulationModel* fsm;
+      fsm = new NPS::BeamReaction("BeamReaction",m_ReactionRegion);
+      m_ReactionModel.push_back(fsm);
+      fsm = new NPS::Decay("Decay",m_ReactionRegion);
+      m_ReactionModel.push_back(fsm);
+      
+      G4Region* Region_cut = new G4Region("RegionCut");
+      logicTPC->SetRegion(Region_cut);
+      Region_cut->SetProductionCuts(ecut);
+      Region_cut->SetProductionCuts(pcut);
+      Region_cut->AddRootLogicalVolume(logicTPC);                          
+      
+      
       
   }
   //                                        
   // Visualization attributes
   //
   world->SetVisAttributes (G4VisAttributes::Invisible);
-
+  
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
@@ -772,7 +770,7 @@ void Minos::InitializeScorers() {
   G4VPrimitiveScorer* InteractionMinosTargetScorer= new InteractionScorers::PS_Interactions("InteractionMinosTargetScore",ms_InterCoord, 0) ;
   //and register it to the multifunctionnal detector
   m_MinosTargetScorer->RegisterPrimitive(CalorimeterMinosTargetScorer);
-  m_MinosTargetScorer->RegisterPrimitive(InteractionMinosTargetScore);
+  m_MinosTargetScorer->RegisterPrimitive(InteractionMinosTargetScorer);
 
 
   G4VPrimitiveScorer* TPCScorer= new TPCScorers::PS_TPCCathode("MinosTPC", 0);
