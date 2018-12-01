@@ -610,7 +610,8 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                       "WindowTube",	//its name
                       world,	//its mother  volume
                       false,		//no boolean operation
-                      0);   new G4PVPlacement(0,		//its name
+                      0);
+    /*new G4PVPlacement(0,		//its name
                                              G4ThreeVector(0,0, -1.*(TargetLength+WindowThickness)),	//at (0,0,0)
                                              BuildWindow1(),	//its logical volume
                                              "WindowEntrance",	//its name
@@ -623,7 +624,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                                                                     logicWindow0,	//its mother  volume
                                                                     false,		//no boolean operation
                                                                     0);		//copy number
-                            
+    */                    
      
     new G4PVPlacement(0,//no rotation
                       G4ThreeVector(0,0,0/*TargetLength*/),	//at (0,0,0)
@@ -640,6 +641,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                       world,	//its mother  volume
                       false,		//no boolean operation
                       0);*/
+    
     new G4PVPlacement(0,		//its name
                       G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
                       BuildOuterRohacell(),	//its logical volume
