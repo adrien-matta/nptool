@@ -91,7 +91,8 @@ class Minos : public NPS::VDetector{
      G4Material* GetTargetMaterial()    {return TargetMaterial;};
      
      G4double    GetTargetRadius()      {return TargetRadius;};
-     
+
+  /*
      const G4VPhysicalVolume* GetphysiWorld() {return physiWorld;};           
      const G4VPhysicalVolume* GetTarget()     {return physiTarget;};
      const G4VPhysicalVolume* GetChamber()    {return physiChamber;};
@@ -102,7 +103,8 @@ class Minos : public NPS::VDetector{
      const G4VPhysicalVolume* GetInnerRohacell()        {return physiInnerRohacell;};
      const G4VPhysicalVolume* GetOuterRohacell()        {return physiOuterRohacell;};
      const G4VPhysicalVolume* GetKapton()        {return physiKapton;};
-     
+  */
+  
   private:
      G4Material*        TargetMaterial;
      G4double           TargetRadius;
@@ -136,45 +138,45 @@ class Minos : public NPS::VDetector{
     G4LogicalVolume* m_SquareDetector;
     G4LogicalVolume* m_CylindricalDetector;
 
-     G4Box*             solidWorld;    //pointer to the solid World 
-     G4LogicalVolume*   logicWorld;    //pointer to the logical World
-     G4VPhysicalVolume* physiWorld;    //pointer to the physical World
+  // G4Box*             solidWorld;    //pointer to the solid World 
+  // G4LogicalVolume*   logicWorld;    //pointer to the logical World
+  // G4VPhysicalVolume* physiWorld;    //pointer to the physical World
 
      G4Tubs*             solidTarget;   
      G4LogicalVolume*   logicTarget;   
-     G4VPhysicalVolume* physiTarget;   
+  // G4VPhysicalVolume* physiTarget;   
      
      G4Tubs*             solidChamber;  
      G4LogicalVolume*   logicChamber;  
-     G4VPhysicalVolume* physiChamber;  
+  // G4VPhysicalVolume* physiChamber;  
          
      G4Tubs*             solidTPC; 
      G4LogicalVolume*   logicTPC; 
-     G4VPhysicalVolume* physiTPC; 
+  // G4VPhysicalVolume* physiTPC; 
      
      G4Tubs*             solidWindow0; 
      G4LogicalVolume*   logicWindow0; 
-     G4VPhysicalVolume* physiWindow0; 
+  // G4VPhysicalVolume* physiWindow0; 
      
      G4Tubs*             solidWindow1; 
      G4LogicalVolume*   logicWindow1; 
-     G4VPhysicalVolume* physiWindow1; 
+  // G4VPhysicalVolume* physiWindow1; 
 
      G4Tubs*             solidWindow2; 
      G4LogicalVolume*   logicWindow2; 
-     G4VPhysicalVolume* physiWindow2; 
+  // G4VPhysicalVolume* physiWindow2; 
     
      G4Tubs*             solidInnerRohacell;   
      G4LogicalVolume*   logicInnerRohacell;   
-     G4VPhysicalVolume* physiInnerRohacell;   
+  // G4VPhysicalVolume* physiInnerRohacell;   
      
      G4Tubs*             solidOuterRohacell;   
      G4LogicalVolume*   logicOuterRohacell;   
-     G4VPhysicalVolume* physiOuterRohacell;   
+  // G4VPhysicalVolume* physiOuterRohacell;   
      
      G4Tubs*             solidKapton;   
      G4LogicalVolume*   logicKapton;   
-     G4VPhysicalVolume* physiKapton;   
+  // G4VPhysicalVolume* physiKapton;   
      
       
   
