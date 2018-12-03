@@ -209,7 +209,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     // NaI Volume -
     new G4PVPlacement(0, positionnull,
                                                  m_SquareDetector_Crystal,
-                                                 "Crystal NaI",
+                                                 "CrystalNaI",
                                                  m_SquareDetector_CanMgO,
                                                  false,
                                                  0); 
@@ -396,8 +396,8 @@ void Dali::InitializeScorers() {
   
   m_DaliScorer = CheckScorer("DaliScorer",already_exist) ;
 
-  //if(already_exist) 
-  // return ;
+  if(already_exist) //Necessary?
+    return ;  //Necessary?
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
