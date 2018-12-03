@@ -1,18 +1,19 @@
 /*****************************************************************************
- * Copyright (C) 2009-2018   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2018   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Elidiano Tronchin  contact address: elidiano.tronchin@studenti.unipd.it                        *
+ * Original Author: E. Tronchin                                              *
+ * contact address: elidiano.tronchin@studenti.unipd.it                      *
  *                                                                           *
  * Creation Date  : septembre 2018                                           *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class describe  Dali simulation                             *
+ *  This class describe  Dali simulation                                     *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -379,8 +380,6 @@ void Dali::ReadSensitive(const G4Event* ){
       int DetectorNbr = (ArrayNbr-1)*3+DetectinsArrayNbr;
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time);
-    
-    
     }
   }
 }
@@ -390,7 +389,7 @@ void Dali::ReadSensitive(const G4Event* ){
 void Dali::InitializeScorers() { 
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false;
-  vector<G4int> NestingLevel;
+  vector<int> NestingLevel;
   NestingLevel.push_back(2);
   NestingLevel.push_back(3);
   
@@ -400,7 +399,7 @@ void Dali::InitializeScorers() {
     return ;  //Necessary?
 
   // Otherwise the scorer is initialised
-  vector<int> level; level.push_back(0);
+//  vector<int> level; level.push_back(0);
   G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter", NestingLevel) ;
   G4VPrimitiveScorer* Interaction= new InteractionScorers::PS_Interactions("Interaction",ms_InterCoord, 0) ;
   //and register it to the multifunctionnal detector
