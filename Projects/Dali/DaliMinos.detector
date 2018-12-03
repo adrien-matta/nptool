@@ -1,0 +1,94 @@
+Minos
+  R= 35 mm
+  THETA= 90 deg
+  POS = 0 0 -10 cm
+  PHI= 63 deg
+  Shape= Cylindrical
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = -60
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 0
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 60
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 120
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 180
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 240
+ Zeta = 90.03
+ Shape = Square
+ Material = NaI(Tl)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = -60
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 0
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 60
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 120
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 180
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 210
+ Alpha = 240
+ Zeta = -90.03
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
