@@ -416,7 +416,7 @@ G4LogicalVolume* Minos::BuildKapton(){
   // Kapton
   //
       solidKapton = new G4Tubs("Kapton",			//its name
-                               ChamberInnerRadius /*+ ChamberThickness+InnerRohacellThickness*/,ChamberInnerRadius + ChamberThickness+InnerRohacellThickness+KaptonThickness,ChamberLength,0,360.); //size
+                               ChamberInnerRadius+ ChamberThickness +InnerRohacellThickness ,ChamberInnerRadius + ChamberThickness+InnerRohacellThickness+KaptonThickness,ChamberLength,0,360.); //size
                        
       logicKapton = new G4LogicalVolume(solidKapton,	//its solid
                                        KaptonMaterial,	//its material
@@ -439,8 +439,8 @@ G4LogicalVolume* Minos::BuildTPC(){
 
  
   {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6));
-  logicTPC->SetVisAttributes(atb);}
-    logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
+   logicTPC->SetVisAttributes(atb);}
+  // logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
 
 
    }
@@ -597,15 +597,48 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     // }
 
     new G4PVPlacement(0,//its name
-                      G4ThreeVector(0,0,0/* ChamberLength*/),	//at (0,0,0)
+                      G4ThreeVector(wX,wY, wZ/* ChamberLength*/),	//at (0,0,0)
                       BuildTPC(),	//its logical volume
                       "TPC",	//its name
                       world,	//its mother  volume
                       false,		//no boolean operation
                       0);		//copy number
-    
+
     new G4PVPlacement(0,		//its name
-                      G4ThreeVector(0,0, -2.*TargetLength),	//at (0,0,0)
+                       G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+                       BuildOuterRohacell(),	//its logical volume
+                      "Rohacell"/*"OuterRohacell"*/,	//its name
+                       logicTPC/*world*/,	//its mother  volume
+                       false,		//no boolean operation
+                       0);		//copy number
+    new G4PVPlacement(0,//its name
+                      G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+                      BuildChamber(),	//its logical volume
+                      "Chamber",	//its name
+                      logicOuterRohacell,	//its mother  volume
+                      false,		//no boolean operation
+                      0);		//copy number
+
+   /*new G4PVPlacement(0,		//its name
+                      G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
+                      BuildInnerRohacell(),	//its logical volume
+                      "InnerRohacell",	//its name
+                      world,	//its mother  volume
+                      false,		//no boolean operation
+                      0);*/   
+ 
+    
+     new G4PVPlacement(0,		//its name
+                       G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+                       BuildKapton(),	//its logical volume
+                       "Kapton",	//its name
+                       logicOuterRohacell,	//its mother  volume
+                       false,		//no boolean operation
+                       0);		//copy number
+
+
+    new G4PVPlacement(0,		//its name
+                      G4ThreeVector(wX,wY, wZ-1.*TargetLength+10*mm),	//at (0,0,0)
                       BuildWindow0(),	//its logical volume
                       "WindowTube",	//its name
                       world,	//its mother  volume
@@ -634,44 +667,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
                       false,		//no boolean operation
                       0);		//copy number
     
-        /*new G4PVPlacement(0,		//its name
-                      G4ThreeVector(0,0,ChamberLength),	//at (0,0,0)
-                      BuildInnerRohacell(),	//its logical volume
-                      "InnerRohacell",	//its name
-                      world,	//its mother  volume
-                      false,		//no boolean operation
-                      0);*/
-    
-    new G4PVPlacement(0,		//its name
-                      G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
-                      BuildOuterRohacell(),	//its logical volume
-                      "OuterRohacell",	//its name
-                      logicTPC/*world*/,	//its mother  volume
-                      false,		//no boolean operation
-                      0);		//copy number
-    
-    
-    new G4PVPlacement(0,		//its name
-                      G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
-                      BuildChamber(),	//its logical volume
-                      "Chamber",	//its name
-                      logicOuterRohacell,	//its mother  volume
-                      false,		//no boolean operation
-                      0);		//copy number
-    
-
-    new G4PVPlacement(0,		//its name
-                      G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
-                      BuildKapton(),	//its logical volume
-                      "Kapton",	//its name
-                      logicOuterRohacell,	//its mother  volume
-                      false,		//no boolean operation
-                      0);		//copy number
-    
-    
-    
-   
-    
+     
     // G4ProductionCuts* ecut = new G4ProductionCuts();
     //G4ProductionCuts* pcut = new G4ProductionCuts();
     if(!m_ReactionRegion){
