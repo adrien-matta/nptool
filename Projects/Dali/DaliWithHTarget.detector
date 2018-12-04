@@ -1,49 +1,52 @@
-Minos
-  R= 35 mm
-  THETA= 90 deg
-  POS = 0 0 -10 cm
-  PHI= 63 deg
-  Shape= Cylindrical
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 150 mm
+ RADIUS=	19.5 mm
+ MATERIAL= H2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= -90.03 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = -60 deg
- Zeta = 90.03 mm 
+ R = 212.4
+ Alpha = -60
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 0 deg 
- Zeta = 90.03 mm
+ R = 212.4
+ Alpha = 0
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 60 deg 
- Zeta = 90.03 mm 
+ R = 212.4
+ Alpha = 60
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 120 deg 
- Zeta = 90.03 mm
+ R = 212.4
+ Alpha = 120
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm
- Alpha = 180 deg 
- Zeta = 90.03 mm
+ R = 212.4
+ Alpha = 180
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 240 deg 
- Zeta = 90.03 mm
+ R = 212.4
+ Alpha = 240
+ Zeta = 90.03
  Shape = Square
  Material = NaI(Tl)
 
@@ -51,44 +54,44 @@ Dali
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm
- Alpha = -60 deg 
- Zeta = -90.03 mm 
+ R = 212.4
+ Alpha = -60
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 0 deg 
- Zeta = -90.03 mm
+ R = 212.4
+ Alpha = 0
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 60 deg 
- Zeta = -90.03 mm
+ R = 212.4
+ Alpha = 60
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 120 deg 
- Zeta = -90.03 mm 
+ R = 212.4
+ Alpha = 120
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 180 deg 
- Zeta = -90.03 mm 
+ R = 212.4
+ Alpha = 180
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4 mm 
- Alpha = 240 deg 
- Zeta = -90.03 mm 
+ R = 212.4
+ Alpha = 240
+ Zeta = -90.03
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,51 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 20 mm
+ RADIUS=	20 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 220 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = -60
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = 0
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = 60
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = 120
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = 180
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4
+ Alpha = 240
+ Zeta = 0
+ Shape = Square
+ Material = NaI(Tl)
