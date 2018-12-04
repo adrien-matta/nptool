@@ -9,43 +9,44 @@ Target
  Z= 220 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = -60
- Zeta = 0
+ R = 212.4 mm 
+ Alpha = 240 deg
+ Zeta = 0 mm 
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = 0
- Zeta = 0
+ R = 212.4 mm 
+ Alpha = 180 deg 
+ Zeta = 0 mm
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = 60
- Zeta = 0
+ R = 212.4 mm 
+ Alpha = 120 deg 
+ Zeta = 0 mm 
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = 120
- Zeta = 0
+ R = 212.4 mm 
+ Alpha = 60 deg 
+ Zeta = 0 mm
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = 180
- Zeta = 0
+ R = 212.4 mm
+ Alpha = 0 deg 
+ Zeta = 0 mm
  Shape = Square
  Material = NaI(Tl)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
- R = 212.4
- Alpha = 240
- Zeta = 0
+ R = 212.4 mm 
+ Alpha = -60 deg 
+ Zeta = 0 mm
  Shape = Square
  Material = NaI(Tl)
+
