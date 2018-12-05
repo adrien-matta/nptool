@@ -27,6 +27,10 @@
 //G4 Geometry object
 #include "G4Tubs.hh"
 #include "G4Box.hh"
+#include "G4ExtrudedSolid.hh"
+
+#include "G4TwoVector.hh"
+#include "G4TessellatedSolid.hh"
 
 //G4 sensitive
 #include "G4SDManager.hh"
@@ -167,9 +171,6 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
 
 
 
-
-
-    
     G4Box* box_3can = new G4Box("Dali_3BoxCan", Dali_NS::Hight*0.5,
                                 Dali_NS::Width*0.5*3, Dali_NS::Thickness*0.5);
     G4Material* Aria = MaterialManager::getInstance()->GetMaterialFromLibrary("Air");
@@ -179,8 +180,26 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     
     G4Box* box_can = new G4Box("Dali_BoxCan", Dali_NS::Hight*0.5,
                                Dali_NS::Width*0.5, Dali_NS::Thickness*0.5);
+
+    std::vector<G4TwoVector> polygon;
+    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, Dali_NS::Width*0.5  )  ) ;
+    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, -Dali_NS::Width*0.5  )  ) ;
+    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, -Dali_NS::Width*0.5  )  ) ;
+    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, Dali_NS::Width*0.5  )  ) ;
+
+    // std::vector<ZSection> zsection;
+    // zsection.push_back(ZSection (Dali_NS::Thickness*0.5, {0,0}, 1. ) );
+    // zsection.push_back(ZSection (-Dali_NS::Thickness*0.5-19.5*2.*mm , {0,0}, 1. ) );
+
+    
+    G4ExtrudedSolid* Extrudedbox_can  = new G4ExtrudedSolid("Dali_BoxCan", polygon, Dali_NS::Thickness*0.5, G4TwoVector(0, 0), 1.0, G4TwoVector(0, 0), 1.0 );
+
+
     G4Material* DetectorCanMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
     m_SquareDetector_Can = new G4LogicalVolume(box_can,DetectorCanMaterial,"logic_Dali_Can",0,0,0);
+    //m_SquareDetector_Can = new G4LogicalVolume(Extrudedbox_can,DetectorCanMaterial,"logic_Dali_Can",0,0,0);
+
+
     G4VisAttributes* Can_Attributes = new G4VisAttributes(G4Colour(0.5,0.5,0.5));
     m_SquareDetector_Can->SetVisAttributes(Can_Attributes);
     
@@ -322,8 +341,8 @@ void Dali::ConstructDetector(G4LogicalVolume* world){
 
 
 
-    
-    if(m_Zeta[i]>0){
+    Rot->rotateX(180*deg);
+    if(m_Zeta[i]<0){
       Rot->rotateY(180*deg); Rot->rotateZ(m_Alpha[i]); 
     } else{Rot->rotateZ(m_Alpha[i]);}
 
