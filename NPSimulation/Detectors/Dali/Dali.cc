@@ -24,11 +24,19 @@
 #include <sstream>
 #include <cmath>
 #include <limits>
+using namespace std;
+
 //G4 Geometry object
 #include "G4Tubs.hh"
 #include "G4Box.hh"
 #include "G4ExtrudedSolid.hh"
+#include "G4VSolid.hh"
+// #ifndef G4UEXTRUDEDSOLID_hh
+// #define G4UEXTRUDEDSOLID_hh
+// #include "G4USolid.hh"
+//  #if ( defined(G4GEOM_USE_USOLIDS) || defined(G4GEOM_USE_PARTIAL_USOLIDS) )
 
+// #include "G4UExtrudedSolid.hh"
 #include "G4TwoVector.hh"
 #include "G4TessellatedSolid.hh"
 
@@ -57,11 +65,7 @@
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
-using namespace std;
 using namespace CLHEP;
-
-
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -182,27 +186,38 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                                Dali_NS::Width*0.5, Dali_NS::Thickness*0.5);
 
     std::vector<G4TwoVector> polygon;
-    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, Dali_NS::Width*0.5  )  ) ;
-    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, -Dali_NS::Width*0.5  )  ) ;
-    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, -Dali_NS::Width*0.5  )  ) ;
-    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, Dali_NS::Width*0.5  )  ) ;
+    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, Dali_NS::Width*0.5*3.  )  ) ;
+    polygon.push_back(G4TwoVector(Dali_NS::Hight*0.5, -Dali_NS::Width*0.5*3.  )  ) ;
+    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, -Dali_NS::Width*0.5*3.  )  ) ;
+    polygon.push_back(G4TwoVector(-Dali_NS::Hight*0.5, Dali_NS::Width*0.5*3.  )  ) ;
 
     // std::vector<ZSection> zsection;
     // zsection.push_back(ZSection (Dali_NS::Thickness*0.5, {0,0}, 1. ) );
     // zsection.push_back(ZSection (-Dali_NS::Thickness*0.5-19.5*2.*mm , {0,0}, 1. ) );
 
     
-    G4ExtrudedSolid* Extrudedbox_can  = new G4ExtrudedSolid("Dali_BoxCan", polygon, Dali_NS::Thickness*0.5, G4TwoVector(0, 0), 1.0, G4TwoVector(0, 0), 1.0 );
+    G4ExtrudedSolid* Extrudedbox_can  = new G4ExtrudedSolid("Dali_BoxCan", polygon, Dali_NS::Thickness, G4TwoVector(0, 0), 1.0, G4TwoVector(0, 0), 1.0 );
 
+    AriaExtrude = new G4LogicalVolume(Extrudedbox_can,Aria, "logic_Ariaextrude",0,0,0);
 
     G4Material* DetectorCanMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
     m_SquareDetector_Can = new G4LogicalVolume(box_can,DetectorCanMaterial,"logic_Dali_Can",0,0,0);
-    //m_SquareDetector_Can = new G4LogicalVolume(Extrudedbox_can,DetectorCanMaterial,"logic_Dali_Can",0,0,0);
+    m_Square2Detector_Can = new G4LogicalVolume(box_can, DetectorCanMaterial,"logic_Dali_Can",0,0,0);
+
+
+    //THE PMT
+    G4Tubs* sPMT = new G4Tubs("sPMT",19.5*mm,20.*mm,75.0*mm,0*deg,360*deg);
+    lPMT = new G4LogicalVolume(sPMT, DetectorCanMaterial ,"lPMT",0,0,0);
+
 
 
     G4VisAttributes* Can_Attributes = new G4VisAttributes(G4Colour(0.5,0.5,0.5));
     m_SquareDetector_Can->SetVisAttributes(Can_Attributes);
-    
+        m_Square2Detector_Can->SetVisAttributes(Can_Attributes);
+        //Extrudedbox_can->SetVisAttributes(Can_Attributes);
+        lPMT->SetVisAttributes(Can_Attributes);
+
+          
     G4Box* box_MgO = new G4Box("Dali_BoxMgO", Dali_NS::Hight*0.5-1*mm,
                                Dali_NS::Width*0.5-1*mm, Dali_NS::Thickness*0.5-1*mm);
  
@@ -214,6 +229,17 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     m_SquareDetector_Crystal = new G4LogicalVolume(box_crystal,NaI_Tl,"logic_Dali_Box",0,0,0);
  
     G4ThreeVector positionnull = G4ThreeVector(0,0,0);
+
+
+
+     new G4PVPlacement(0, positionnull,
+                       lPMT ,
+                           "scPMT",
+                           AriaExtrude,
+                           false,
+                           0);
+
+
     
     // MgO Volume -
     new G4PVPlacement(0, positionnull,
@@ -224,6 +250,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                                              0); 
     G4VisAttributes* MgO_Attributes = new G4VisAttributes(G4Colour(0.0,1.0,0.5));
     m_SquareDetector_CanMgO->SetVisAttributes(MgO_Attributes);
+        AriaExtrude->SetVisAttributes(MgO_Attributes);
 
     
     // NaI Volume -
@@ -245,8 +272,6 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                                                         Dali_NS::Width,    //?????????
                                                         0);
 
-
-       
 
        
   }
@@ -357,7 +382,14 @@ void Dali::ConstructDetector(G4LogicalVolume* world){
       new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
                         BuildSquareDetector(),
           "Dali",world,false,i+1);
-    }
+
+      if(i<1 ){
+         new G4PVPlacement(G4Transform3D(*Rot,Det_pos*3.),
+                     AriaExtrude,"DaliProva",world,false,i+1);
+      }
+
+
+   }
   }
 }
 
