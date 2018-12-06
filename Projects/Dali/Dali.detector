@@ -1,10 +1,13 @@
-Minos
-  R= 35 mm
-  THETA= 90 deg
-  POS = 0 0 -18 cm
-  PHI= 63 deg
-  Shape= Cylindrical
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 20 mm
+ RADIUS=	20 mm
+ MATERIAL= CD2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 220 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 240 deg

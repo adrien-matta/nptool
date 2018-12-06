@@ -63,9 +63,12 @@ class Dali : public NPS::VDetector{
   private:
     G4LogicalVolume* m_SquareDetector;
     G4LogicalVolume* m_SquareDetector_Can;
+    G4LogicalVolume* m_Square2Detector_Can;
     G4LogicalVolume* m_CylindricalDetector;
     G4LogicalVolume*  m_SquareDetector_CanMgO;
     G4LogicalVolume*  m_SquareDetector_Crystal;
+    G4LogicalVolume* lPMT;
+    G4LogicalVolume* AriaExtrude;
     G4LogicalVolume* Logic_ArrayDali_1;
 
     ////////////////////////////////////////////////////
