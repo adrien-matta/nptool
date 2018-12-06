@@ -36,7 +36,7 @@ using namespace std;
 // #include "G4USolid.hh"
 //  #if ( defined(G4GEOM_USE_USOLIDS) || defined(G4GEOM_USE_PARTIAL_USOLIDS) )
 
-// #include "G4UExtrudedSolid.hh"
+//#include "G4UExtrudedSolid.hh"
 #include "G4TwoVector.hh"
 #include "G4TessellatedSolid.hh"
 
@@ -206,17 +206,25 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
 
 
     //THE PMT
-    G4Tubs* sPMT = new G4Tubs("sPMT",19.5*mm,20.*mm,75.0*mm,0*deg,360*deg);
-    lPMT = new G4LogicalVolume(sPMT, DetectorCanMaterial ,"lPMT",0,0,0);
+    G4Tubs* AlPMT = new G4Tubs("AlPMT",16.5*mm, 19.5*mm,75.0*mm,0*deg,360*deg);
+    G4Tubs* MuPMT = new G4Tubs("MuPMT",16.5*mm,20.*mm,75.0*mm,0*deg,360*deg);
+    G4Box* TopPlatePMT = new G4Box("TopPlatePMT",  Dali_NS::Hight*0.5-1*mm,
+                                  Dali_NS::Width*0.5-1*mm, 11.5*mm );
+    G4Tubs* GlassPMT = new G4Tubs("GlassPMT", 0. , 16.5*mm , 11.5*mm ,0*deg,360*deg);
 
+    lAlPMT = new G4LogicalVolume(AlPMT, DetectorCanMaterial ,"lAlPMT",0,0,0);
+    lMuPMT = new G4LogicalVolume(MuPMT, DetectorCanMaterial ,"lMuPMT",0,0,0);
+    lTopPlatePMT = new G4LogicalVolume(TopPlatePMT, DetectorCanMaterial ,"lTopPlatePMT",0,0,0);
+    lGlassPMT = new G4LogicalVolume(GlassPMT , MaterialManager::getInstance()->GetMaterialFromLibrary("Borosillicate_Glass") ,"lGlassPMT",0,0,0);
 
 
     G4VisAttributes* Can_Attributes = new G4VisAttributes(G4Colour(0.5,0.5,0.5));
     m_SquareDetector_Can->SetVisAttributes(Can_Attributes);
         m_Square2Detector_Can->SetVisAttributes(Can_Attributes);
         //Extrudedbox_can->SetVisAttributes(Can_Attributes);
-        lPMT->SetVisAttributes(Can_Attributes);
-
+        lAlPMT->SetVisAttributes(Can_Attributes);
+        lMuPMT->SetVisAttributes(Can_Attributes);
+        lTopPlatePMT->SetVisAttributes(Can_Attributes);
           
     G4Box* box_MgO = new G4Box("Dali_BoxMgO", Dali_NS::Hight*0.5-1*mm,
                                Dali_NS::Width*0.5-1*mm, Dali_NS::Thickness*0.5-1*mm);
@@ -231,15 +239,35 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     G4ThreeVector positionnull = G4ThreeVector(0,0,0);
 
 
+     // PMT Volume -
+    new G4PVPlacement(0, positionnull,
+                      lAlPMT ,
+                      "AlPMT",
+                      lMuPMT,
+                      false,
+                      0);
+    new G4PVPlacement(0, positionnull,
+                      lMuPMT ,
+                      "MuPMT",
+                      AriaExtrude,
+                      false,
+                      0);
+    
+    
+    new G4PVPlacement(0, positionnull,
+                      lGlassPMT,
+                      "GlassPMT",
+                      lTopPlatePMT,
+                      false,
+                      0);
+    new G4PVPlacement(0, positionnull,
+                      lTopPlatePMT,
+                      "TopPlatePMT",
+                      AriaExtrude,
+                      false,
+                      0);
 
-     new G4PVPlacement(0, positionnull,
-                       lPMT ,
-                           "scPMT",
-                           AriaExtrude,
-                           false,
-                           0);
-
-
+    
     
     // MgO Volume -
     new G4PVPlacement(0, positionnull,
