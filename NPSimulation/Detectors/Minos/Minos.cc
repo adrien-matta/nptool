@@ -364,7 +364,7 @@ G4LogicalVolume* Minos::BuildTarget(){
         "Target");	//its name    
 
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0.6,1.,1.));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0.6,1.,1., .4));
       atb->SetForceSolid(true);
       logicTarget->SetVisAttributes(atb);}
     logicTarget->SetSensitiveDetector(m_MinosTargetScorer);
@@ -386,7 +386,7 @@ G4LogicalVolume* Minos::BuildChamber(){
         ChamberMaterial,	//its material
         "Chamber");	//its name                               
 
-    {G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(0,1,0));
+    {G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(0,1,0,.4));
       simpleBoxVisAtt->SetVisibility(true);
       logicChamber->SetVisAttributes(simpleBoxVisAtt);}
 
@@ -406,7 +406,8 @@ G4LogicalVolume* Minos::BuildInnerRohacell(){
         InnerRohacellMaterial,	//its material
         "InnerRohacell");	//its name
 
-
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+      logicInnerRohacell->SetVisAttributes(atb);
 
 
   }
@@ -424,6 +425,11 @@ G4LogicalVolume* Minos::BuildOuterRohacell(){
     logicOuterRohacell = new G4LogicalVolume(solidOuterRohacell,	//its solid
         OuterRohacellMaterial,	//its material
         "OuterRohacell");	//its name
+
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+      logicOuterRohacell->SetVisAttributes(atb);
+
+    
   }
   return logicOuterRohacell;
 }
@@ -439,7 +445,13 @@ G4LogicalVolume* Minos::BuildKapton(){
     logicKapton = new G4LogicalVolume(solidKapton,	//its solid
         KaptonMaterial,	//its material
         "Kapton");	//its name
+
+
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+      logicKapton->SetVisAttributes(atb);
   }
+
+  
   return logicKapton;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -458,7 +470,7 @@ G4LogicalVolume* Minos::BuildTPC(){
 
     {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6));
       logicTPC->SetVisAttributes(atb);}
-    // logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
+    logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
 
 
   }
@@ -478,7 +490,7 @@ G4LogicalVolume* Minos::BuildWindow0(){
         WindowMaterial, //its material
         "WindowTube"); //name
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1, .4));
       atb->SetForceSolid(true);
       logicWindow0->SetVisAttributes(atb);}
 
@@ -497,7 +509,7 @@ G4LogicalVolume* Minos::BuildWindow1(){
         WindowMaterial, //its material
         "WindowEntrance"); //name
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1, .4));
       atb->SetForceSolid(true);
       logicWindow1->SetVisAttributes(atb);} 
 
@@ -515,7 +527,7 @@ G4LogicalVolume* Minos::BuildWindow2(){
         WindowMaterial, //its material
         "WindowOutcoming"); //name
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0,0,1, .4));
       atb->SetForceSolid(true);
       logicWindow2->SetVisAttributes(atb);} 
 
@@ -568,7 +580,7 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
 // Called After DetecorConstruction::AddDetector Method
 void Minos::ConstructDetector(G4LogicalVolume* world){
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
-    TargetRadius = 28.*mm; TargetLength = 150./2.*mm;
+    TargetRadius = 28.*mm; TargetLength = 152.76/2.*mm;
     ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
     ChamberLength = 300./2.*mm;
     InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
@@ -614,7 +626,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     // }
 
     new G4PVPlacement(0,//its name
-        G4ThreeVector(wX,wY, wZ/* ChamberLength*/),	//at (0,0,0)
+        G4ThreeVector(wX,wY, wZ + ChamberLength - TargetLength-WindowThickness*2. - 10*mm ),	// Z positioning putting TPC and Target at just difference of 10mm
         BuildTPC(),	//its logical volume
         "TPC",	//its name
         world,	//its mother  volume
@@ -656,7 +668,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
 
 
     new G4PVPlacement(0,		//its name
-        G4ThreeVector(wX,wY, wZ-1.*TargetLength+10*mm),	//at (0,0,0)
+        G4ThreeVector(wX,wY, wZ ),	//at (0,0,0)
         BuildWindow0(),	//its logical volume
         "WindowTube",	//its name
         world,	//its mother  volume
@@ -772,25 +784,34 @@ void Minos::ReadSensitive(const G4Event* ){
 ////////////////////////////////////////////////////////////////   
 void Minos::InitializeScorers() { 
   // This check is necessary in case the geometry is reloaded
-  bool already_exist = false; 
-  m_MinosTargetScorer = CheckScorer("MinosTargetScorer",already_exist) ;
-  m_MinosTPCScorer = CheckScorer("MinosTPCScorer",already_exist) ;
+  bool already_exist = false;
+  bool already_exist2 = false;
 
-  if(already_exist) 
-    return ;
+  
+  m_MinosTargetScorer = CheckScorer("MinosTargetScorer",already_exist) ;
+  m_MinosTPCScorer = CheckScorer("MinosTPCScorer",already_exist2) ;
+
+  if(already_exist && already_exist2 ) 
+   return ;
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
   G4VPrimitiveScorer* CalorimeterMinosTargetScorer= new CalorimeterScorers::PS_Calorimeter("CalorimeterMinosTargetScore",level, 0) ;
   G4VPrimitiveScorer* InteractionMinosTargetScorer= new InteractionScorers::PS_Interactions("InteractionMinosTargetScore",ms_InterCoord, 0) ;
+
   //and register it to the multifunctionnal detector
   m_MinosTargetScorer->RegisterPrimitive(CalorimeterMinosTargetScorer);
   m_MinosTargetScorer->RegisterPrimitive(InteractionMinosTargetScorer);
 
-
   G4VPrimitiveScorer* TPCScorer= new TPCScorers::PS_TPCCathode("MinosTPC", 0);
-  m_MinosTPCScorer->RegisterPrimitive(TPCScorer);
+  //G4VPrimitiveScorer* TPCCalScorer= new CalorimeterScorers::PS_Calorimeter("TPCCalScorer",level, 0);
+  G4VPrimitiveScorer* TPCInterScorer= new InteractionScorers::PS_Interactions("TPCInterScorer",ms_InterCoord, 0);
 
+  m_MinosTPCScorer->RegisterPrimitive(TPCScorer);
+  // m_MinosTPCScorer->RegisterPrimitive(TPCCalScorer);
+  m_MinosTPCScorer->RegisterPrimitive(TPCInterScorer);
+
+  
   G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTPCScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTargetScorer) ;
 }
