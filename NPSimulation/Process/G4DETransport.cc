@@ -106,7 +106,6 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     G4ThreeVector x0 = pPreStepPoint->GetPosition();
     G4ThreeVector p0 = aStep.GetDeltaPosition().unit();
     G4double      t0 = pPreStepPoint->GetGlobalTime();
-    
     G4double Energy = pPreStepPoint->GetKineticEnergy();
     
     // The time scale is imposed by the distance travelled
@@ -152,10 +151,14 @@ G4DETransport::PostStepDoIt(const G4Track& aTrack, const G4Step& aStep)
     
     G4double sigmaTrans  = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_TRANSVERSALSPREAD")/v_drift);
     G4double sigmaLong   = sqrt(2*step_length*aMaterialPropertiesTable->GetConstProperty("DE_LONGITUDINALSPREAD")/v_drift);
-    
-    G4double d_long  = G4RandGauss::shoot(0,sigmaLong);
+   
     G4double d_trans = G4RandGauss::shoot(0,sigmaTrans);
-    G4double d_drift = step_length+d_long;
+    G4double d_long=0;
+    G4double d_drift=-1;
+    while(d_drift<0){
+      d_long  = G4RandGauss::shoot(0,sigmaLong);
+      d_drift = step_length+d_long;
+    }
     
     G4ThreeVector trans(G4RandGauss::shoot(0,d_trans),0,0);
     trans.rotateY(twopi*G4UniformRand());
