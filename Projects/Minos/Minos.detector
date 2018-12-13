@@ -16,7 +16,7 @@
 Minos
   R= 35 mm
   THETA= 90 deg
-  POS = 100 100 100 cm
+  POS = 0 0 -50 cm
   PHI= 63 deg
   Shape= Cylindrical
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

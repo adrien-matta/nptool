@@ -457,7 +457,7 @@ void Target::InitializeRootOutput()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
-// Called at in the EventAction::EndOfEventAvtion
+// Called at in the EventAction::EndOfEventAction
 void Target::ReadSensitive(const G4Event*)
 {}
 

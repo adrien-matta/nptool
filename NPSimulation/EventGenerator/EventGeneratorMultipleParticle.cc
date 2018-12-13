@@ -51,7 +51,7 @@ EventGeneratorMultipleParticle::EventGeneratorMultipleParticle(){
     m_SigmaX        = 0;
     m_SigmaY        = 0;
     m_Events        = 0;
-    m_File          = StandardPath;
+    m_File          = "";
     m_particleName.clear();
     m_ParticleStack = ParticleStack::getInstance();
     m_Event.clear();

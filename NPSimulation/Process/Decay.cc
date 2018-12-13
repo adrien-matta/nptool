@@ -85,8 +85,9 @@ G4bool Decay::IsApplicable( const G4ParticleDefinition& particleType) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-G4bool Decay::ModelTrigger(const G4FastTrack& ) {
+G4bool Decay::ModelTrigger(const G4FastTrack& fastTrack) {
   //FIXME: Solve the issue of long lived decay
+  m_PreviousEnergy=fastTrack.GetPrimaryTrack()->GetKineticEnergy();
   // Check that a decay is possible:
   return m_Decay.AnyAboveThreshold(NPL::ChangeNameFromG4Standard(m_CurrentName),m_ExcitationEnergy);
 }
