@@ -83,7 +83,9 @@ class Minos : public NPS::VDetector{
     G4LogicalVolume* BuildChamber();
     G4LogicalVolume* BuildInnerRohacell();
     G4LogicalVolume* BuildOuterRohacell();
+    G4LogicalVolume* BuildOuterOuterRohacell();
     G4LogicalVolume* BuildKapton();
+    G4LogicalVolume* BuildOuterKapton();
     G4LogicalVolume* BuildTPC();
     G4LogicalVolume* BuildWindow0();
     G4LogicalVolume* BuildWindow1();

@@ -433,6 +433,30 @@ G4LogicalVolume* Minos::BuildOuterRohacell(){
   return logicOuterRohacell;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//I redefine the Rohacell for bigger cylinder
+G4LogicalVolume* Minos::BuildOuterOuterRohacell(){
+  if(logicOuterRohacell){
+    //                                 
+    // Outer Rohacell
+    //
+    solidOuterRohacell = new G4Tubs("OuterRohacell",			//its name
+        TPCRadiusExt-OuterRohacellThickness-KaptonThickness, TPCRadiusExt ,ChamberLength,0,360.); //size
+
+    logicOuterRohacell = new G4LogicalVolume(solidOuterRohacell,	//its solid
+        OuterRohacellMaterial,	//its material
+        "OuterRohacell");	//its name
+
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+      logicOuterRohacell->SetVisAttributes(atb);
+
+    
+  }
+  return logicOuterRohacell;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4LogicalVolume* Minos::BuildKapton(){
   if(!logicKapton){
     //                                 
@@ -440,6 +464,27 @@ G4LogicalVolume* Minos::BuildKapton(){
     //
     solidKapton = new G4Tubs("Kapton",			//its name
         ChamberInnerRadius+ ChamberThickness +InnerRohacellThickness ,ChamberInnerRadius + ChamberThickness+InnerRohacellThickness+KaptonThickness,ChamberLength,0,360.); //size
+
+    logicKapton = new G4LogicalVolume(solidKapton,	//its solid
+        KaptonMaterial,	//its material
+        "Kapton");	//its name
+
+
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+      logicKapton->SetVisAttributes(atb);
+  }
+
+  
+  return logicKapton;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+G4LogicalVolume* Minos::BuildOuterKapton(){
+  if(logicKapton){
+    //                                 
+    // Kapton
+    //
+    solidKapton = new G4Tubs("Kapton",			//its name
+        TPCRadiusExt-OuterRohacellThickness-KaptonThickness, TPCRadiusExt-OuterRohacellThickness,ChamberLength,0,360.); //size
 
     logicKapton = new G4LogicalVolume(solidKapton,	//its solid
         KaptonMaterial,	//its material
@@ -581,10 +626,14 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
     TargetRadius = 28.*mm; TargetLength = m_TargetLength[i]/2.;
     m_TargetLength[i] = m_TargetLength[i]/2.;
+    
     ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
     ChamberLength = 300./2.*mm;
+    
     InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
-    TPCRadiusExt = 100.*mm; WindowThickness = 0.150/2.*mm;
+    TPCRadiusExt = 91.525*mm;
+
+    WindowThickness = 0.150/2.*mm;
 
     DefineMaterials();
 
@@ -643,6 +692,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
 
     //check the order and positioning of kapton , chamber and rohacell from pag 16 of Thesis Clementine
 
+
     
     new G4PVPlacement(0,//its name
         G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
@@ -669,7 +719,23 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
         false,		//no boolean operation
         0);		//copy number
 
+    new G4PVPlacement(0,		//its name
+        G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+        BuildOuterOuterRohacell(),	//its logical volume
+        "Rohacell"/*"OuterRohacell"*/,	//its name
+        logicTPC/*world*/,	//its mother  volume
+        false,		//no boolean operation
+        0);		//copy number
 
+    new G4PVPlacement(0,		//its name
+        G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+        BuildOuterKapton(),	//its logical volume
+        "Kapton",	//its name
+        logicOuterRohacell,	//its mother  volume
+        false,		//no boolean operation
+        0);		//copy number
+
+    
     new G4PVPlacement(0,		//its name
         G4ThreeVector(wX,wY, wZ ),	//at (0,0,0)
         BuildWindow0(),	//its logical volume
