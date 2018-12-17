@@ -58,7 +58,11 @@ class Minos : public NPS::VDetector{
     void AddDetector(G4ThreeVector POS, string Shape);
     // Spherical
     void AddDetector(double R,double Theta,double Phi,string Shape);  
-
+    // With TargetLenght
+    void AddDetector(double R,double Theta,double Phi, double TargetLength);
+  // With TargetLenght
+    void AddDetector(G4ThreeVector POS, double TargetLength);
+ 
   private:
   //For material definition
     void DefineMaterials();
@@ -109,7 +113,7 @@ class Minos : public NPS::VDetector{
      G4Material*        TargetMaterial;
      G4double           TargetRadius;
      G4double           TargetLength;
-     
+
      G4Material*        WindowMaterial;
      G4double           WindowThickness;
      
@@ -224,9 +228,9 @@ class Minos : public NPS::VDetector{
     vector<double>  m_Theta;
     vector<double>  m_Phi; 
 
-  //   Shape type
-    vector<string> m_Shape ;
-   
+  //   Target Length
+    vector<double>   m_TargetLength;
+
     // Visualisation Attribute
     G4VisAttributes* m_VisSquare;
     G4VisAttributes* m_VisCylinder;

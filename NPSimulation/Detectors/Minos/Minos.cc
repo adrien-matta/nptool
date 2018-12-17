@@ -107,21 +107,20 @@ Minos::Minos(){
 Minos::~Minos(){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Minos::AddDetector(G4ThreeVector POS, string  Shape){
+void Minos::AddDetector(G4ThreeVector POS, double TargetLength){
   // Convert the POS value to R theta Phi as Spherical coordinate is easier in G4 
   m_R.push_back(POS.mag());
   m_Theta.push_back(POS.theta());
   m_Phi.push_back(POS.phi());
-  m_Shape.push_back(Shape);
+  m_TargetLength.push_back(TargetLength);
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Minos::AddDetector(double  R, double  Theta, double  Phi, string  Shape){
+void Minos::AddDetector(double  R, double  Theta, double  Phi, double TargetLength){
   m_R.push_back(R);
   m_Theta.push_back(Theta);
   m_Phi.push_back(Phi);
-  m_Shape.push_back(Shape);
+  m_TargetLength.push_back(TargetLength);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -545,8 +544,8 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS","Shape"};
-  vector<string> sphe = {"R","Theta","Phi","Shape"};
+  vector<string> cart = {"POS","TargetLength"};
+  vector<string> sphe = {"R","Theta","Phi","TargetLength"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(cart)){
@@ -554,8 +553,8 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
         cout << endl << "////  Minos " << i+1 <<  endl;
 
       G4ThreeVector Pos = NPS::ConvertVector(blocks[i]->GetTVector3("POS","mm"));
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(Pos,Shape);
+      double TargetLength = blocks[i]->GetDouble("TargetLength","mm");
+      AddDetector(Pos,TargetLength);
     }
     else if(blocks[i]->HasTokenList(sphe)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
@@ -563,8 +562,8 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
-      string Shape = blocks[i]->GetString("Shape");
-      AddDetector(R,Theta,Phi,Shape);
+      double TargetLength = blocks[i]->GetDouble("TargetLength","mm");
+      AddDetector(R,Theta,Phi,TargetLength);
     }
     else{
       cout << "ERROR: check your input file formatting " << endl;
@@ -580,7 +579,8 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
 // Called After DetecorConstruction::AddDetector Method
 void Minos::ConstructDetector(G4LogicalVolume* world){
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
-    TargetRadius = 28.*mm; TargetLength = 152.76/2.*mm;
+    TargetRadius = 28.*mm; TargetLength = m_TargetLength[i]/2.;
+    m_TargetLength[i] = m_TargetLength[i]/2.;
     ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
     ChamberLength = 300./2.*mm;
     InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
@@ -626,7 +626,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     // }
 
     new G4PVPlacement(0,//its name
-        G4ThreeVector(wX,wY, wZ + ChamberLength - TargetLength-WindowThickness*2. - 10*mm ),	// Z positioning putting TPC and Target at just difference of 10mm
+        G4ThreeVector(wX,wY, wZ + ChamberLength - m_TargetLength[i]-WindowThickness*2. + 11*mm ),	// Z positioning putting TPC beginn and Target beginning w/ difference of 11mm 
         BuildTPC(),	//its logical volume
         "TPC",	//its name
         world,	//its mother  volume
@@ -641,6 +641,9 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
         false,		//no boolean operation
         0);		//copy number
 
+    //check the order and positioning of kapton , chamber and rohacell from pag 16 of Thesis Clementine
+
+    
     new G4PVPlacement(0,//its name
         G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
         BuildChamber(),	//its logical volume
@@ -676,13 +679,13 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
         0);
 
     /*new G4PVPlacement(0,		//its name
-      G4ThreeVector(0,0, -1.*(TargetLength+WindowThickness)),	//at (0,0,0)
+      G4ThreeVector(0,0, -1.*(m_TargetLength[i]+WindowThickness)),	//at (0,0,0)
       BuildWindow1(),	//its logical volume
       "WindowEntrance",	//its name
       logicWindow0,	//its mother  volume
       false,		//no boolean operation
       0);  new G4PVPlacement(0,		//its name
-      G4ThreeVector(0,0, (TargetLength+WindowThickness)),	//at (0,0,0)
+      G4ThreeVector(0,0, (m_TargetLength[i]+WindowThickness)),	//at (0,0,0)
       BuildWindow2(),	//its logical volume
       "WindowOutcoming",	//its name
       logicWindow0,	//its mother  volume
@@ -691,7 +694,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
       */                    
 
     new G4PVPlacement(0,//no rotation
-        G4ThreeVector(0,0,0/*TargetLength*/),	//at (0,0,0)
+        G4ThreeVector(0,0,0/*m_TargetLength[i]*/),	//at (0,0,0)
         BuildTarget(),	//its logical volume
         "Target",	//its name
         logicWindow0,	//its mother  volume
