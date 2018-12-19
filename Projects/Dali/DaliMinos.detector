@@ -3,7 +3,7 @@ Minos
   THETA= 90 deg
   POS = 0 0 -307.07 mm
   PHI= 63 deg
-  Shape= Cylindrical
+  TargetLength = 152.76 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
