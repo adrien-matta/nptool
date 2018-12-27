@@ -516,7 +516,6 @@ G4LogicalVolume* Minos::BuildTPC(){
       logicTPC->SetVisAttributes(atb);}
     logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
 
-
   }
   return logicTPC;
 }
@@ -528,7 +527,7 @@ G4LogicalVolume* Minos::BuildTPC(){
 G4LogicalVolume* Minos::BuildWindow0(){
   if(!logicWindow0){
     solidWindow0 = new G4Tubs("WindowTube",		//its name
-        0./*TargetRadius*/,TargetRadius+WindowThickness*2.,TargetLength+WindowThickness*2.,0,360.);
+        0./*TargetRadius*/,TargetRadius+WindowThickness*2.,TargetLength+WindowThickness*2.,0,360.);   // WindowThickness*2. it is multiply by 2 because because it was divided by 2 
 
     logicWindow0 = new G4LogicalVolume(solidWindow0,    //its solid
         WindowMaterial, //its material
@@ -627,7 +626,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     TargetRadius = 28.*mm; TargetLength = m_TargetLength[i]/2.;
     m_TargetLength[i] = m_TargetLength[i]/2.;
     
-    ChamberInnerRadius = 37.*mm; ChamberThickness = 1.*mm; 
+    ChamberInnerRadius = 37.*mm; ChamberThickness = 2.*mm; 
     ChamberLength = 300./2.*mm;
     
     InnerRohacellThickness = 1.*mm; KaptonThickness = 0.125*mm; OuterRohacellThickness = 2.*mm;
