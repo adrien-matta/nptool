@@ -233,12 +233,13 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
         lTopPlatePMT->SetVisAttributes(Can_Attributes);
           
     G4Box* box_MgO = new G4Box("Dali_BoxMgO", Dali_NS::Hight*0.5-1*mm,
-                               Dali_NS::Width*0.5-1*mm, Dali_NS::Thickness*0.5-1*mm);
+                               Dali_NS::Width*0.5-1*mm, Dali_NS::Thickness*0.5-1*mm);    // Size of Al Can but w/o thickness of AlCan
  
     m_SquareDetector_CanMgO = new G4LogicalVolume(box_MgO,MgO,"logic_Dali_CanMg0",0,0,0);
 
     G4Box* box_crystal = new G4Box("Dali_BoxNaI", Dali_NS::Hight*0.5-2.4*mm,
-                           Dali_NS::Width*0.5-2.4*mm, Dali_NS::Thickness*0.5-2.4*mm);
+                           Dali_NS::Width*0.5-2.4*mm, Dali_NS::Thickness*0.5-2.4*mm); // Size of AlCan but w/o thickness of AlCan and MgO
+    
     G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(Dali_NS::Material);
     m_SquareDetector_Crystal = new G4LogicalVolume(box_crystal,NaI_Tl,"logic_Dali_Box",0,0,0);
  
@@ -322,12 +323,12 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     m_SquareDetector_Crystal->SetSensitiveDetector(m_DaliScorer);
 
 
-    new G4PVPlacement(0, positionnull,
-                                                 m_SquareDetector_Crystal,
-                                                 "CrystalNaI",
-                                                 m_SquareDetector_CanMgO,
-                                                 false,
-                                                 0); 
+    // new G4PVPlacement(0, positionnull,
+    //                                              m_SquareDetector_Crystal,
+    //                                              "CrystalNaI",
+    //                                              m_SquareDetector_CanMgO,
+    //                                              false,
+    //                                              0); 
 
 
                                                 
