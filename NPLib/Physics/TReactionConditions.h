@@ -96,7 +96,7 @@ public:
     // emmitted particles
     void SetParticleName       (const string & Particle_Name)         {fRC_Particle_Name.push_back(Particle_Name);}//!
     void SetTheta              (const double & Angle)                 {fRC_Theta.push_back(Angle);}//!
-    void SetPhi              (const double & Angle)                 {fRC_Phi.push_back(Angle);}//!
+    void SetPhi              (const double & AnglePhi)                 {fRC_Phi.push_back(AnglePhi);}//!
     void SetKineticEnergy      (const double & Kinetic_Energy)        {fRC_Kinetic_Energy.push_back(Kinetic_Energy);}//!
     void SetMomentumDirectionX (const double & Momentum_Direction_X)  {fRC_Momentum_Direction_X.push_back(Momentum_Direction_X);}//!
     void SetMomentumDirectionY (const double & Momentum_Direction_Y)  {fRC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}//!
