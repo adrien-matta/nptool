@@ -308,6 +308,10 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     // Angle 3 and 4 //
     m_ReactionConditions->SetTheta(Theta3/deg);
     m_ReactionConditions->SetTheta(Theta4/deg);
+
+    m_ReactionConditions->SetPhi(phi/deg);
+    if((phi+pi)/deg > 360 ) m_ReactionConditions->SetPhi((phi-pi)/deg);
+    else m_ReactionConditions->SetPhi((phi+pi)/deg);
     // Energy 3 and 4 //
     m_ReactionConditions->SetKineticEnergy(Energy3);
     m_ReactionConditions->SetKineticEnergy(Energy4);

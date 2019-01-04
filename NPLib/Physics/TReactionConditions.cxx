@@ -53,6 +53,7 @@ void TReactionConditions::Clear(){
     // emmitted particles
     fRC_Particle_Name.clear();
     fRC_Theta.clear();
+    fRC_Phi.clear();
     fRC_Kinetic_Energy.clear();
     fRC_Momentum_Direction_X.clear();
     fRC_Momentum_Direction_Y.clear();
