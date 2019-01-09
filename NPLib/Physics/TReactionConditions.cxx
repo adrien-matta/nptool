@@ -54,6 +54,8 @@ void TReactionConditions::Clear(){
     fRC_Particle_Name.clear();
     fRC_Theta.clear();
     fRC_Phi.clear();
+    fRC_LAB_Theta.clear();
+    fRC_LAB_Phi.clear();
     fRC_Kinetic_Energy.clear();
     fRC_Momentum_Direction_X.clear();
     fRC_Momentum_Direction_Y.clear();

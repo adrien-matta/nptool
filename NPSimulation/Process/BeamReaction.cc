@@ -229,7 +229,7 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     
     G4ThreeVector U(1,0,0);
     G4ThreeVector V(0,1,0);
-    
+    G4ThreeVector ZZ(0,0,1);
     m_ReactionConditions->SetBeamEmittanceTheta(PrimaryTrack->GetMomentumDirection().theta()/deg);
     m_ReactionConditions->SetBeamEmittancePhi(PrimaryTrack->GetMomentumDirection().phi()/deg);
     m_ReactionConditions->SetBeamEmittanceThetaX(PrimaryTrack->GetMomentumDirection().angle(U)/deg);
@@ -238,17 +238,24 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     ///// Build rotation matrix to go from the incident //////
     ///// beam frame to the "world" frame               //////
     //////////////////////////////////////////////////////////
+
+    /*
     G4ThreeVector col1(cos(Beam_theta) * cos(Beam_phi),
                        cos(Beam_theta) * sin(Beam_phi),
                        -sin(Beam_theta));
-    G4ThreeVector col2(-sin(Beam_phi),
-                       cos(Beam_phi),
+    G4ThreeVector col2(-sin(-Beam_phi),
+                       cos(-Beam_phi),
                        0);
     G4ThreeVector col3(sin(Beam_theta) * cos(Beam_phi),
                        sin(Beam_theta) * sin(Beam_phi),
                        cos(Beam_theta));
+    
     G4RotationMatrix BeamToWorld(col1, col2, col3);
     
+    
+    */
+
+
     /////////////////////////////////////////////////////////////////
     ///// Angles for emitted particles following Cross Section //////
     ///// Angles are in the beam frame                         //////
@@ -257,7 +264,7 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     // Angles
     // Shoot and Set a Random ThetaCM
     m_Reaction.ShootRandomThetaCM();
-    double phi     = RandFlat::shoot() * 2. * pi;
+    double phi  =  RandFlat::shoot() * 2. * pi;
     
     //////////////////////////////////////////////////
     /////  Momentum and angles from  kinematics  /////
@@ -272,18 +279,20 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     G4ThreeVector momentum_kine3_beam(sin(Theta3) * cos(phi),
                                       sin(Theta3) * sin(phi),
                                       cos(Theta3));
-    // Momentum in World frame
-    G4ThreeVector momentum_kine3_world = BeamToWorld * momentum_kine3_beam;
-    
+    // Momentum in World frame //to go from the incident beam frame to the "world" frame
+    G4ThreeVector momentum_kine3_world = /*BeamToWorld */ momentum_kine3_beam ;
+    momentum_kine3_world.rotate(Beam_theta, V ); // rotation of Beam_theta on Y axis
+    momentum_kine3_world.rotate(Beam_phi, ZZ );  // rotation of Beam_phi on Z axis
     
     // Momentum in beam frame for heavy particle
     G4ThreeVector momentum_kine4_beam(sin(Theta4) * cos(phi+pi),
                                       sin(Theta4) * sin(phi+pi),
                                       cos(Theta4));
     // Momentum in World frame
-    G4ThreeVector momentum_kine4_world = BeamToWorld * momentum_kine4_beam;
-    
-    
+    G4ThreeVector momentum_kine4_world = /*BeamToWorld */ momentum_kine4_beam;
+    momentum_kine4_world.rotate(Beam_theta, V ); // rotation of Beam_theta on Y axis
+    momentum_kine4_world.rotate(Beam_phi, ZZ );  // rotation of Beam_phi on Z axis
+        
     // Emitt secondary
     if(m_Reaction.GetShoot3()){
       G4DynamicParticle particle3(LightName,momentum_kine3_world,Energy3);
@@ -312,6 +321,14 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     m_ReactionConditions->SetPhi(phi/deg);
     if((phi+pi)/deg > 360 ) m_ReactionConditions->SetPhi((phi-pi)/deg);
     else m_ReactionConditions->SetPhi((phi+pi)/deg);
+
+    // Angle 3 and 4 in LAB ZAXIS FRAME //
+    m_ReactionConditions->SetLABTheta(momentum_kine3_world.theta()/deg);
+    m_ReactionConditions->SetLABTheta(momentum_kine4_world.theta()/deg);
+
+    m_ReactionConditions->SetLABPhi(momentum_kine3_world.phi()/deg);
+    m_ReactionConditions->SetLABPhi(momentum_kine4_world.phi()/deg);
+        
     // Energy 3 and 4 //
     m_ReactionConditions->SetKineticEnergy(Energy3);
     m_ReactionConditions->SetKineticEnergy(Energy4);
