@@ -123,24 +123,24 @@ public:
     int GetParticleMultiplicity()                const {return fRC_Kinetic_Energy.size();}//!
     string GetParticleName        (const int &i) const {return fRC_Particle_Name[i];}//!
     double GetTheta               (const int &i) const {return fRC_Theta[i];}//!
-    double GetPhi               (const int &i) const {return fRC_Phi[i];}//!
+    double GetPhi                 (const int &i) const {return fRC_Phi[i];}//!
     double GetKineticEnergy       (const int &i) const {return fRC_Kinetic_Energy[i];}//!
     double GetMomentumDirectionX  (const int &i) const {return fRC_Momentum_Direction_X[i];}//!
     double GetMomentumDirectionY  (const int &i) const {return fRC_Momentum_Direction_Y[i];}//!
     double GetMomentumDirectionZ  (const int &i) const {return fRC_Momentum_Direction_Z[i];}//!
 
-    TVector3 GetBeamDirection         () const ;//!
-    TVector3 GetParticleDirection     (const int &i) const ;//!
-    
-    double GetThetaLab_WorldFrame (const int &i) const {
+    TVector3 GetBeamDirection         () const ;
+    TVector3 GetParticleDirection     (const int i) const ; 
+ 
+    double GetThetaLab_WorldFrame (const int i) const {
         return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
-    } //!
+    } 
     
-    double GetThetaLab_BeamFrame (const int &i) const{
+    double GetThetaLab_BeamFrame (const int i) const{
         return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
-    } //!
+    } 
     
-    unsigned int GetEmittedMult() const {return fRC_Particle_Name.size();} //!
+    unsigned int GetEmittedMult() const {return fRC_Particle_Name.size();} 
     
     ClassDef(TReactionConditions, 1) // TReactionConditions structure
 };

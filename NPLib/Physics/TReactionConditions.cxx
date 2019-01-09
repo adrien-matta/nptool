@@ -103,7 +103,7 @@ TVector3 TReactionConditions::GetBeamDirection() const{
                     cos(fRC_Beam_Emittance_Theta*deg));
 }
 ////////////////////////////////////////////////////////////////////////////////
-TVector3 TReactionConditions::GetParticleDirection (const int &i) const {
+TVector3 TReactionConditions::GetParticleDirection (const int i) const {
     return TVector3(  fRC_Momentum_Direction_X[i],
                     fRC_Momentum_Direction_Y[i],
                     fRC_Momentum_Direction_Z[i]);
