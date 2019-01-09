@@ -54,8 +54,6 @@ void TReactionConditions::Clear(){
     fRC_Particle_Name.clear();
     fRC_Theta.clear();
     fRC_Phi.clear();
-    fRC_LAB_Theta.clear();
-    fRC_LAB_Phi.clear();
     fRC_Kinetic_Energy.clear();
     fRC_Momentum_Direction_X.clear();
     fRC_Momentum_Direction_Y.clear();
@@ -106,7 +104,7 @@ TVector3 TReactionConditions::GetBeamDirection() const{
 }
 ////////////////////////////////////////////////////////////////////////////////
 TVector3 TReactionConditions::GetParticleDirection (const int i) const {
-    return TVector3(  fRC_Momentum_Direction_X[i],
+    return TVector3(fRC_Momentum_Direction_X[i],
                     fRC_Momentum_Direction_Y[i],
                     fRC_Momentum_Direction_Z[i]);
 }

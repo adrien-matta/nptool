@@ -322,13 +322,6 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     if((phi+pi)/deg > 360 ) m_ReactionConditions->SetPhi((phi-pi)/deg);
     else m_ReactionConditions->SetPhi((phi+pi)/deg);
 
-    // Angle 3 and 4 in LAB ZAXIS FRAME //
-    m_ReactionConditions->SetLABTheta(momentum_kine3_world.theta()/deg);
-    m_ReactionConditions->SetLABTheta(momentum_kine4_world.theta()/deg);
-
-    m_ReactionConditions->SetLABPhi(momentum_kine3_world.phi()/deg);
-    m_ReactionConditions->SetLABPhi(momentum_kine4_world.phi()/deg);
-        
     // Energy 3 and 4 //
     m_ReactionConditions->SetKineticEnergy(Energy3);
     m_ReactionConditions->SetKineticEnergy(Energy4);

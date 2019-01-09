@@ -63,8 +63,6 @@ private:
     vector<string> fRC_Particle_Name;
     vector<double> fRC_Theta;
     vector<double> fRC_Phi;
-    vector<double> fRC_LAB_Theta;
-    vector<double> fRC_LAB_Phi; 
     vector<double> fRC_Kinetic_Energy;
     vector<double> fRC_Momentum_Direction_X;
     vector<double> fRC_Momentum_Direction_Y;
@@ -99,8 +97,6 @@ public:
     void SetParticleName       (const string & Particle_Name)         {fRC_Particle_Name.push_back(Particle_Name);}//!
     void SetTheta              (const double & Angle)                 {fRC_Theta.push_back(Angle);}//!
     void SetPhi              (const double & AnglePhi)                 {fRC_Phi.push_back(AnglePhi);}//!
-    void SetLABTheta              (const double & LABAngle)                 {fRC_LAB_Theta.push_back(LABAngle);}//!
-    void SetLABPhi              (const double & LABAnglePhi)                 {fRC_LAB_Phi.push_back(LABAnglePhi);}//!
     void SetKineticEnergy      (const double & Kinetic_Energy)        {fRC_Kinetic_Energy.push_back(Kinetic_Energy);}//!
     void SetMomentumDirectionX (const double & Momentum_Direction_X)  {fRC_Momentum_Direction_X.push_back(Momentum_Direction_X);}//!
     void SetMomentumDirectionY (const double & Momentum_Direction_Y)  {fRC_Momentum_Direction_Y.push_back(Momentum_Direction_Y);}//!
@@ -135,13 +131,18 @@ public:
 
     TVector3 GetBeamDirection         () const ;
     TVector3 GetParticleDirection     (const int i) const ; 
- 
-    double GetThetaLab_WorldFrame (const int i) const {
-        return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
-    } 
+
+
+    double GetThetaLab_WorldFrame(const int i) const{
+      return (GetParticleDirection(i).Theta())/deg;
+    }
+    
+    double GetPhiLab_WorldFrame (const int i) const {
+      return (GetParticleDirection(i).Phi())/deg;
+    }
     
     double GetThetaLab_BeamFrame (const int i) const{
-        return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
+      return (GetParticleDirection(i).Angle(GetBeamDirection()))/deg;
     } 
     
     unsigned int GetEmittedMult() const {return fRC_Particle_Name.size();} 
