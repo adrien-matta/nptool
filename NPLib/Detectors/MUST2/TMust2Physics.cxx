@@ -74,108 +74,104 @@ ClassImp(TMust2Physics)
   m_SiLi_MatchingX.resize(16, 0);
   m_SiLi_MatchingY.resize(16, 0);
 
-  for (int i = 0; i < 16; ++i) {
-    m_SiLi_MatchingX[0] = 112;
-    m_SiLi_MatchingY[1] = 112;
+  m_SiLi_MatchingX[0] = 112;
+  m_SiLi_MatchingY[1] = 112;
 
-    m_SiLi_MatchingX[1] = 112;
-    m_SiLi_MatchingY[1] = 80;
+  m_SiLi_MatchingX[1] = 112;
+  m_SiLi_MatchingY[1] = 80;
 
-    m_SiLi_MatchingX[2] = 80;
-    m_SiLi_MatchingY[2] = 112;
+  m_SiLi_MatchingX[2] = 80;
+  m_SiLi_MatchingY[2] = 112;
 
-    m_SiLi_MatchingX[3] = 80;
-    m_SiLi_MatchingY[3] = 80;
-    //
-    m_SiLi_MatchingX[4] = 48;
-    m_SiLi_MatchingY[4] = 80;
+  m_SiLi_MatchingX[3] = 80;
+  m_SiLi_MatchingY[3] = 80;
+  //
+  m_SiLi_MatchingX[4] = 48;
+  m_SiLi_MatchingY[4] = 80;
 
-    m_SiLi_MatchingX[5] = 48;
-    m_SiLi_MatchingY[5] = 112;
+  m_SiLi_MatchingX[5] = 48;
+  m_SiLi_MatchingY[5] = 112;
 
-    m_SiLi_MatchingX[6] = 16;
-    m_SiLi_MatchingY[6] = 80;
+  m_SiLi_MatchingX[6] = 16;
+  m_SiLi_MatchingY[6] = 80;
 
-    m_SiLi_MatchingX[7] = 16;
-    m_SiLi_MatchingY[7] = 112;
-    //
-    m_SiLi_MatchingX[8] = 112;
-    m_SiLi_MatchingY[8] = 16;
+  m_SiLi_MatchingX[7] = 16;
+  m_SiLi_MatchingY[7] = 112;
+  //
+  m_SiLi_MatchingX[8] = 112;
+  m_SiLi_MatchingY[8] = 16;
 
-    m_SiLi_MatchingX[9] = 112;
-    m_SiLi_MatchingY[9] = 48;
+  m_SiLi_MatchingX[9] = 112;
+  m_SiLi_MatchingY[9] = 48;
 
-    m_SiLi_MatchingX[10] = 80;
-    m_SiLi_MatchingY[10] = 16;
+  m_SiLi_MatchingX[10] = 80;
+  m_SiLi_MatchingY[10] = 16;
 
-    m_SiLi_MatchingX[11] = 80;
-    m_SiLi_MatchingY[11] = 48;
-    //
-    m_SiLi_MatchingX[12] = 48;
-    m_SiLi_MatchingY[12] = 48;
+  m_SiLi_MatchingX[11] = 80;
+  m_SiLi_MatchingY[11] = 48;
+  //
+  m_SiLi_MatchingX[12] = 48;
+  m_SiLi_MatchingY[12] = 48;
 
-    m_SiLi_MatchingX[13] = 48;
-    m_SiLi_MatchingY[13] = 16;
+  m_SiLi_MatchingX[13] = 48;
+  m_SiLi_MatchingY[13] = 16;
 
-    m_SiLi_MatchingX[14] = 16;
-    m_SiLi_MatchingY[14] = 48;
+  m_SiLi_MatchingX[14] = 16;
+  m_SiLi_MatchingY[14] = 48;
 
-    m_SiLi_MatchingX[15] = 16;
-    m_SiLi_MatchingY[15] = 16;
-  }
+  m_SiLi_MatchingX[15] = 16;
+  m_SiLi_MatchingY[15] = 16;
 
   m_CsI_Size = 32;
   m_CsI_MatchingX.resize(16, 0);
   m_CsI_MatchingY.resize(16, 0);
-  for (int i = 0; i < 16; ++i) {
-    m_CsI_MatchingX[0] = 112;
-    m_CsI_MatchingY[0] = 112;
+  m_CsI_MatchingX[0] = 112;
+  m_CsI_MatchingY[0] = 112;
 
-    m_CsI_MatchingX[1] = 112;
-    m_CsI_MatchingY[1] = 80;
+  m_CsI_MatchingX[1] = 112;
+  m_CsI_MatchingY[1] = 80;
 
-    m_CsI_MatchingX[2] = 112;
-    m_CsI_MatchingY[2] = 48;
+  m_CsI_MatchingX[2] = 112;
+  m_CsI_MatchingY[2] = 48;
 
-    m_CsI_MatchingX[3] = 112;
-    m_CsI_MatchingY[3] = 16;
-    //
-    m_CsI_MatchingX[4] = 80;
-    m_CsI_MatchingY[4] = 16;
+  m_CsI_MatchingX[3] = 112;
+  m_CsI_MatchingY[3] = 16;
+  //
+  m_CsI_MatchingX[4] = 80;
+  m_CsI_MatchingY[4] = 16;
 
-    m_CsI_MatchingX[5] = 80;
-    m_CsI_MatchingY[5] = 48;
+  m_CsI_MatchingX[5] = 80;
+  m_CsI_MatchingY[5] = 48;
 
-    m_CsI_MatchingX[6] = 80;
-    m_CsI_MatchingY[6] = 80;
+  m_CsI_MatchingX[6] = 80;
+  m_CsI_MatchingY[6] = 80;
 
-    m_CsI_MatchingX[7] = 80;
-    m_CsI_MatchingY[7] = 112;
-    //
-    m_CsI_MatchingX[8] = 48;
-    m_CsI_MatchingY[8] = 16;
+  m_CsI_MatchingX[7] = 80;
+  m_CsI_MatchingY[7] = 112;
+  //
+  m_CsI_MatchingX[8] = 48;
+  m_CsI_MatchingY[8] = 16;
 
-    m_CsI_MatchingX[9] = 48;
-    m_CsI_MatchingY[9] = 48;
+  m_CsI_MatchingX[9] = 48;
+  m_CsI_MatchingY[9] = 48;
 
-    m_CsI_MatchingX[10] = 48;
-    m_CsI_MatchingY[10] = 80;
+  m_CsI_MatchingX[10] = 48;
+  m_CsI_MatchingY[10] = 80;
 
-    m_CsI_MatchingX[11] = 48;
-    m_CsI_MatchingY[11] = 112;
-    //
-    m_CsI_MatchingX[12] = 16;
-    m_CsI_MatchingY[12] = 16;
+  m_CsI_MatchingX[11] = 48;
+  m_CsI_MatchingY[11] = 112;
+  //
+  m_CsI_MatchingX[12] = 16;
+  m_CsI_MatchingY[12] = 16;
 
-    m_CsI_MatchingX[13] = 16;
-    m_CsI_MatchingY[13] = 48;
+  m_CsI_MatchingX[13] = 16;
+  m_CsI_MatchingY[13] = 48;
 
-    m_CsI_MatchingX[14] = 16;
-    m_CsI_MatchingY[14] = 80;
+  m_CsI_MatchingX[14] = 16;
+  m_CsI_MatchingY[14] = 80;
 
-    m_CsI_MatchingX[15] = 16;
-    m_CsI_MatchingY[15] = 112;
-  }
+  m_CsI_MatchingX[15] = 16;
+  m_CsI_MatchingY[15] = 112;
 }
 
 ///////////////////////////////////////////////////////////////////////////
