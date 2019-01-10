@@ -103,14 +103,6 @@ void TVamosPhysics::BuildPhysicalEvent() {
 
         DriftTime = m_EventData->Get_DriftTime(d)*microsecond;
         
-        /* cout<<7.5*centimeter/DriftSpeed/microsecond<<endl; */
-        
-        /* double p = 1*microsecond; */
-        /* cout<<DriftSpeed<<endl; */
-        /* cout<<p<<endl; */
-        /* cout<<p/microsecond<<endl; */
-
-
         // 7.5 centimeter is half times the height of Chamber 
         // to separate negative Y from positive Y
         if (DriftTime > 7.5*centimeter/DriftSpeed) {
