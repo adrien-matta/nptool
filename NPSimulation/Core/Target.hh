@@ -66,7 +66,7 @@ public:
   void InitializeRootOutput();
   
   //   Read sensitive part and fill the Root tree.
-  //   Called at in the EventAction::EndOfEventAvtion
+  //   Called at in the EventAction::EndOfEventAction
   void ReadSensitive(const G4Event* event);
   
 public:

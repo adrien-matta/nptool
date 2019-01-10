@@ -1,4 +1,0 @@
-void nomeoke()
-{
-   TEveManager::Create();
-}

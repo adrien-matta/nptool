@@ -53,6 +53,7 @@ void TReactionConditions::Clear(){
     // emmitted particles
     fRC_Particle_Name.clear();
     fRC_Theta.clear();
+    fRC_Phi.clear();
     fRC_Kinetic_Energy.clear();
     fRC_Momentum_Direction_X.clear();
     fRC_Momentum_Direction_Y.clear();
@@ -102,8 +103,8 @@ TVector3 TReactionConditions::GetBeamDirection() const{
                     cos(fRC_Beam_Emittance_Theta*deg));
 }
 ////////////////////////////////////////////////////////////////////////////////
-TVector3 TReactionConditions::GetParticleDirection (const int &i) const {
-    return TVector3(  fRC_Momentum_Direction_X[i],
+TVector3 TReactionConditions::GetParticleDirection (const int i) const {
+    return TVector3(fRC_Momentum_Direction_X[i],
                     fRC_Momentum_Direction_Y[i],
                     fRC_Momentum_Direction_Z[i]);
 }
