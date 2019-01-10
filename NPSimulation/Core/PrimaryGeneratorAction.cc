@@ -41,7 +41,7 @@
 
 // Event Generator Class
 #include "EventGeneratorIsotropic.hh"
-#include "EventGeneratorCosmic.hh"
+/* #include "EventGeneratorCosmic.hh" */
 #include "EventGeneratorMultipleParticle.hh"
 #include "EventGeneratorBeam.hh"
 
@@ -111,13 +111,13 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
         m_EventGenerator.push_back(myEventGenerator);
     }
     blocks.clear();
-    blocks = parser.GetAllBlocksWithToken("Cosmic");
-    if (blocks.size()>0) {
-        NPS::VEventGenerator* myEventGenerator = new EventGeneratorCosmic();
-        myEventGenerator->ReadConfiguration(parser);
-        myEventGenerator->InitializeRootOutput();
-        m_EventGenerator.push_back(myEventGenerator);
-    }
+    /* blocks = parser.GetAllBlocksWithToken("Cosmic"); */
+    /* if (blocks.size()>0) { */
+    /*     NPS::VEventGenerator* myEventGenerator = new EventGeneratorCosmic(); */
+    /*     myEventGenerator->ReadConfiguration(parser); */
+    /*     myEventGenerator->InitializeRootOutput(); */
+    /*     m_EventGenerator.push_back(myEventGenerator); */
+    /* } */
     
     m_Target=m_detector->GetTarget();
     if(m_Target!=NULL){

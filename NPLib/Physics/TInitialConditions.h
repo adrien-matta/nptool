@@ -128,6 +128,10 @@ public:
     TVector3 GetBeamDirection         () const ;
     TVector3 GetParticleDirection     (const int &i) const ;
     
+    double GetParticlePositionX (const int &i, const double &Z) const;
+    double GetParticlePositionY (const int &i, const double &Z) const;
+
+
     double GetThetaLab_WorldFrame (const int &i) const {
         return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
     }

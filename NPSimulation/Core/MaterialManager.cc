@@ -864,6 +864,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
     string newName= oss.str();
     map<string,G4Material*>::iterator it;
     it = m_Material.find(Name);
+
     double density = 0 ;
     
     G4double Vm=0.08206*Temperature*atmosphere/(Pressure*kelvin);
@@ -878,7 +879,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("C"), 1);
             material->AddElement(GetElementFromLibrary("F"), 4);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
 
@@ -886,7 +887,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             density =  (4.0026/Vm)*mg/cm3;
             G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("He"), 1);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
         
@@ -895,7 +896,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("C"), 4);
             material->AddElement(GetElementFromLibrary("H"), 10);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
         
@@ -904,7 +905,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("C"), 1);
             material->AddElement(GetElementFromLibrary("H"), 4);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
 
@@ -913,7 +914,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("C"), 1);
             material->AddElement(GetElementFromLibrary("O"), 2);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
 
@@ -922,7 +923,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("H"), 2);
             //material->AddElement(GetElementFromLibrary("H"), 1);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
         
@@ -931,7 +932,7 @@ G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, dou
             G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
             material->AddElement(GetElementFromLibrary("D"), 2);
             //material->AddElement(GetElementFromLibrary("D"), 1);
-            m_Material[Name]=material;
+            m_Material[newName]=material;
             return material;
         }
         
