@@ -240,18 +240,17 @@ void NPS::BeamReaction::DoIt(const G4FastTrack& fastTrack,G4FastStep& fastStep) 
     //////////////////////////////////////////////////////////
 
     /*
+
     G4ThreeVector col1(cos(Beam_theta) * cos(Beam_phi),
                        cos(Beam_theta) * sin(Beam_phi),
                        -sin(Beam_theta));
-    G4ThreeVector col2(-sin(-Beam_phi),
-                       cos(-Beam_phi),
+    G4ThreeVector col2(-sin(Beam_phi),
+                       cos(Beam_phi),
                        0);
     G4ThreeVector col3(sin(Beam_theta) * cos(Beam_phi),
                        sin(Beam_theta) * sin(Beam_phi),
                        cos(Beam_theta));
-    
     G4RotationMatrix BeamToWorld(col1, col2, col3);
-    
     
     */
 
