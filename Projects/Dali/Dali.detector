@@ -1,12 +1,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Target
- THICKNESS= 20 mm
- RADIUS=	20 mm
- MATERIAL= CD2
- ANGLE= 0 deg
- X= 0 mm
- Y= 0 mm
- Z= 220 mm
+%Target
+% THICKNESS= 20 mm
+% RADIUS=	20 mm
+% MATERIAL= CD2
+% ANGLE= 0 deg
+% X= 0 mm
+% Y= 0 mm
+% Z= 220 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
