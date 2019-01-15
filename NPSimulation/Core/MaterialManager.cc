@@ -861,96 +861,90 @@ G4Element* MaterialManager::GetElementFromLibrary(string Name) {
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//
-G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure,
-                                               double Temperature) {
-  ostringstream oss;
-  oss << Name << "_" << Pressure << "_" << Temperature;
-  string newName = oss.str();
-  map<string, G4Material*>::iterator it;
-  it             = m_Material.find(Name);
-  double density = 0;
+//   
+G4Material* MaterialManager::GetGasFromLibrary(string Name, double Pressure, double Temperature){
+    ostringstream oss;
+    oss << Name<< "_"<<Pressure<<"_"<<Temperature;
+    string newName= oss.str();
+    map<string,G4Material*>::iterator it;
+    it = m_Material.find(Name);
 
-  G4double Vm = 0.08206 * Temperature * atmosphere / (Pressure * kelvin);
+    double density = 0 ;
+    
+    G4double Vm=0.08206*Temperature*atmosphere/(Pressure*kelvin);
+    
+    // The element is not found
+    if(it==m_Material.end()){
+        if(Name == "CF4"){ // 52 torr
+            density =  3.72*kg/m3;
+            double refTemp= (273.15+15)*kelvin;
+            double refPres= 1.01325*bar;
+            density = density*(refTemp/Temperature)/(refPres/Pressure);
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("F"), 4);
+            m_Material[newName]=material;
+            return material;
+        }
 
-  // The element is not found
-  if (it == m_Material.end()) {
-    if (Name == "CF4") { // 52 torr
-      density        = 3.72 * kg / m3;
-      double refTemp = (273.15 + 15) * kelvin;
-      double refPres = 1.01325 * bar;
-      density        = density * (refTemp / Temperature) / (refPres / Pressure);
-      G4Material* material = new G4Material("NPS_" + newName, density, 2,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("C"), 1);
-      material->AddElement(GetElementFromLibrary("F"), 4);
-      m_Material[newName] = material;
-      return material;
-    }
+        if(Name == "He"){
+            density =  (4.0026/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("He"), 1);
+            m_Material[newName]=material;
+            return material;
+        }
+        
+        if(Name == "iC4H10" || Name == "Isobutane" || Name == "isobutane"){
+            density	= ((4*12.0107+10*1.00794)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 4);
+            material->AddElement(GetElementFromLibrary("H"), 10);
+            m_Material[newName]=material;
+            return material;
+        }
+        
+        if(Name == "CH4"){
+            density	= ((12.0107+4*1.00794)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("H"), 4);
+            m_Material[newName]=material;
+            return material;
+        }
 
-    if (Name == "He") {
-      density              = (4.0026 / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 1,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("He"), 1);
-      m_Material[newName] = material;
-      return material;
-    }
+        if(Name == "CO2"){
+            density	= ((12.0107+2*16)/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,2,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("C"), 1);
+            material->AddElement(GetElementFromLibrary("O"), 2);
+            m_Material[newName]=material;
+            return material;
+        }
 
-    if (Name == "iC4H10" || Name == "Isobutane" || Name == "isobutane") {
-      density              = ((4 * 12.0107 + 10 * 1.00794) / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 2,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("C"), 4);
-      material->AddElement(GetElementFromLibrary("H"), 10);
-      m_Material[newName] = material;
-      return material;
-    }
+        if(Name == "H2"){
+            density	= (2*1.00794/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("H"), 2);
+            //material->AddElement(GetElementFromLibrary("H"), 1);
+            m_Material[newName]=material;
+            return material;
+        }
+        
+        if(Name == "D2"){
+            density	= (2*2.0140/Vm)*mg/cm3;
+            G4Material* material = new G4Material("NPS_"+newName,density,1,kStateGas,Temperature,Pressure);
+            material->AddElement(GetElementFromLibrary("D"), 2);
+            //material->AddElement(GetElementFromLibrary("D"), 1);
+            m_Material[newName]=material;
+            return material;
+        }
+        
 
-    if (Name == "CH4") {
-      density              = ((12.0107 + 4 * 1.00794) / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 2,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("C"), 1);
-      material->AddElement(GetElementFromLibrary("H"), 4);
-      m_Material[newName] = material;
-      return material;
-    }
-
-    if (Name == "CO2") {
-      density              = ((12.0107 + 2 * 16) / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 2,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("C"), 1);
-      material->AddElement(GetElementFromLibrary("O"), 2);
-      m_Material[newName] = material;
-      return material;
-    }
-
-    if (Name == "H2") {
-      density              = (2 * 1.00794 / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 1,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("H"), 2);
-      // material->AddElement(GetElementFromLibrary("H"), 1);
-      m_Material[newName] = material;
-      return material;
-    }
-
-    if (Name == "D2") {
-      density              = (2 * 2.0140 / Vm) * mg / cm3;
-      G4Material* material = new G4Material("NPS_" + newName, density, 1,
-                                            kStateGas, Temperature, Pressure);
-      material->AddElement(GetElementFromLibrary("D"), 2);
-      // material->AddElement(GetElementFromLibrary("D"), 1);
-      m_Material[newName] = material;
-      return material;
-    }
-
-    else {
-      exit(1);
-    }
-  }
+        else{
+          exit(1);
+        }
+     }
   return NULL;
 }
 

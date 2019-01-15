@@ -106,3 +106,12 @@ TVector3 TInitialConditions::GetParticleDirection (const int &i) const {
                     fIC_Momentum_Direction_Z[i]);
 }
 
+double TInitialConditions::GetParticlePositionX (const int &i, const double &Z) const {
+    double t = (Z-fIC_Incident_Position_Z) / fIC_Momentum_Direction_Z[i];
+    return  t*fIC_Momentum_Direction_X[i] + fIC_Incident_Position_X ;
+}
+
+double TInitialConditions::GetParticlePositionY (const int &i, const double &Z) const {
+    double t = (Z-fIC_Incident_Position_Z) / fIC_Momentum_Direction_Z[i];
+    return t*fIC_Momentum_Direction_Y[i] + fIC_Incident_Position_Y;
+}

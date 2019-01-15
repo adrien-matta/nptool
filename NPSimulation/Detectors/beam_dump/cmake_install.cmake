@@ -1,4 +1,4 @@
-# Install script for directory: /scratch/nptool/NPSimulation/Detectors/beam_dump
+# Install script for directory: /home/lenain/nptool/NPSimulation/Detectors/beam_dump
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
