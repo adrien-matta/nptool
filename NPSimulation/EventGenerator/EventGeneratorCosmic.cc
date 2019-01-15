@@ -136,8 +136,8 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
 
 
   G4double CosmicAngle;
-  G4double H = 1500*mm;
-  G4double R = 500*mm; 
+  G4double H = 1500.*mm;
+  G4double R = 500.*mm; 
   G4double x0 =0;
   G4double m_y0 = 0;
   G4double z0 = 0;
@@ -148,7 +148,7 @@ void EventGeneratorCosmic::ReadConfiguration(NPL::InputParser parser){
   G4double angle = 0;
 //<<<<<<< HEAD
 
-  TF1* cosSq= new TF1("cosSq", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2);
+  TF1* cosSq= new TF1("cosSq", "TMath::Power(cos(x),2)", 0, (TMath::Pi())/2.);
 //TH1F* DistribCosmicAngle= new TH1F("DistribCosmicAngle","DistribCosmicAngle",100, 0, (TMath::Pi())/2);
 //TH2F* DistribMomZMomX= new TH2F("DistribMomZMomX","Horizontals components of Cosmic rays Momentums",50, -1, 1, 50, -1, 1);
 //TCanvas* DisCanva = new TCanvas("DisCanva","Distribution");
@@ -185,7 +185,7 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
         
 
-        angle = RandFlat::shoot()*2*pi;
+        angle = RandFlat::shoot()*2.*pi;
         CosmicAngle = cosSq->GetRandom();
         randomize1 = RandFlat::shoot()    ;
         randomize2 = RandFlat::shoot()    ;
@@ -211,16 +211,16 @@ void EventGeneratorCosmic::GenerateEvent(G4Event*){
 
         // Begin Constrain to pass in a square with L = 3* R
 
-        x0 = R*(randomize1-0.5)*3;
-        z0 = R*(randomize2-0.5)*3;
+        x0 = R*(randomize1-0.5)*3.;
+        z0 = R*(randomize2-0.5)*3.;
     
         momentum_y = cos(CosmicAngle);
         momentum_x = cos(angle)*sin(CosmicAngle);
         momentum_z = sin(angle)*sin(CosmicAngle);
 
-        x0 = x0-momentum_x*( H/2 / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
-        z0 = z0-momentum_z*( H/2 / momentum_y);
-        par.m_y0 = H/2; // momentum_y*( H/2 / momentum_y);
+        x0 = x0-momentum_x*( H/2. / momentum_y);// *( H/2 / momentum_y) this is to have the origin always with par.m_y0 = H/2;
+        z0 = z0-momentum_z*( H/2. / momentum_y);
+        par.m_y0 = H/2.; // momentum_y*( H/2 / momentum_y);
 
         // End Constrain to pass in a square with L = 3* R
         
