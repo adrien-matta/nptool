@@ -181,7 +181,7 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     G4Material* Aria = MaterialManager::getInstance()->GetMaterialFromLibrary("Air");
     Logic_ArrayDali_1 = new G4LogicalVolume(box_3can,Aria,"logic_ArrayDali",0,0,0);
 
-    Logic_ArrayDali_1->SetVisAttributes(G4VisAttributes(G4Colour(1,1,1, 0.01)));
+    Logic_ArrayDali_1->SetVisAttributes(G4VisAttributes(G4Colour(1,1,1, 0)));
 
     
     G4Box* box_can = new G4Box("Dali_BoxCan", Dali_NS::Hight*0.5,
@@ -225,9 +225,9 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
 
     G4VisAttributes* Can_Attributes = new G4VisAttributes(G4Colour(0.5,0.5,0.5, .3));
     m_SquareDetector_Can->SetVisAttributes(Can_Attributes);
-    m_Square2Detector_Can->SetVisAttributes(G4VisAttributes(G4Colour(1,1,1,0.1)));
+    m_Square2Detector_Can->SetVisAttributes(G4VisAttributes(G4Colour(1,1,1,0)));
                                                 
-        //Extrudedbox_can->SetVisAttributes(Can_Attributes);
+        AriaExtrude->SetVisAttributes(G4VisAttributes(G4Colour(1,1,1,0)));
         lAlPMT->SetVisAttributes(Can_Attributes);
         lMuPMT->SetVisAttributes(Can_Attributes);
         lTopPlatePMT->SetVisAttributes(Can_Attributes);
@@ -308,7 +308,6 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                                              0); 
     G4VisAttributes* MgO_Attributes = new G4VisAttributes(G4Colour(1,1,1, .3));
     m_SquareDetector_CanMgO->SetVisAttributes(MgO_Attributes);
-        AriaExtrude->SetVisAttributes(MgO_Attributes);
 
     
     // NaI Volume -
