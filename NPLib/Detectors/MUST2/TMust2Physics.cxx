@@ -126,18 +126,14 @@ ClassImp(TMust2Physics)
 
   m_SiLi_MatchingX[15] = 16;
   m_SiLi_MatchingY[15] = 16;
-<<<<<<< HEAD
 
   //////////////////
   // CsI matching //
   //////////////////
-=======
->>>>>>> 829cd8f97e25935a8e10c6975a1be9d39da18977
 
   m_CsI_Size = 32;
   m_CsI_MatchingX.resize(16, 0);
   m_CsI_MatchingY.resize(16, 0);
-<<<<<<< HEAD
 
   m_CsI_MatchingX[0] = 112;
   m_CsI_MatchingY[0] = 112;
@@ -184,7 +180,6 @@ ClassImp(TMust2Physics)
   m_CsI_MatchingX[14] = 16;
   m_CsI_MatchingY[14] = 80;
 
-=======
   m_CsI_MatchingX[0] = 112;
   m_CsI_MatchingY[0] = 112;
 
@@ -230,7 +225,6 @@ ClassImp(TMust2Physics)
   m_CsI_MatchingX[14] = 16;
   m_CsI_MatchingY[14] = 80;
 
->>>>>>> 829cd8f97e25935a8e10c6975a1be9d39da18977
   m_CsI_MatchingX[15] = 16;
   m_CsI_MatchingY[15] = 112;
 }
@@ -389,17 +383,6 @@ void TMust2Physics::BuildPhysicalEvent() {
   } // loop on event multiplicity
 
   // Check CsI_Size
-
-  if (CsI_E.size() != TelescopeNumber.size()) {
-    cout << couple_size << " " << TelescopeNumber.size() << " " << Si_E.size()
-         << " " << CsI_E.size() << endl;
-    cout << "////////////////////////////////////////////" << endl;
-    cout << "THIS IS A FEATURE" << endl;
-    cout << "////////////////////////////////////////////" << endl;
-    cout << "\n";
-    // Clear();
-  } 
-
   return;
 }
 
@@ -860,12 +843,6 @@ bool TMust2Physics::Match_Si_SiLi(int X, int Y, int PadNbr) {
 
 ///////////////////////////////////////////////////////////////////////////
 bool TMust2Physics::Match_Si_CsI(int X, int Y, int CristalNbr) {
-
-  cout << "???????" << endl;
-  cout << X << " " << Y << " " << CristalNbr << endl;
-  cout << m_CsI_MatchingX[CristalNbr - 1] << " "
-       << m_CsI_MatchingY[CristalNbr - 1] << endl;
-  cout << m_CsI_Size << endl;
 
   if (abs(m_CsI_MatchingX[CristalNbr - 1] - X) < (double)m_CsI_Size / 2.
       && abs(m_CsI_MatchingY[CristalNbr - 1] - Y) < (double)m_CsI_Size / 2.) {
