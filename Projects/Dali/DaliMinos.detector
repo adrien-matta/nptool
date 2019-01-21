@@ -1,0 +1,94 @@
+Minos
+  R= 35 mm
+  THETA= 90 deg
+  POS = 0 0 -307.07 mm
+  PHI= 63 deg
+  TargetLength = 152.76 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 240 deg
+ Zeta = -90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 180 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 120 deg 
+ Zeta = -90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 60 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm
+ Alpha = 0 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = -60 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm
+ Alpha = 240 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 180 deg 
+ Zeta = 90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 120 deg 
+ Zeta = 90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 60 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 0 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = -60 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

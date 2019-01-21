@@ -123,6 +123,16 @@ Z.clear();
 trackID.clear();
 parentID.clear();
 
+ //For take fitpar values
+MINOSx_0.clear();
+MINOSy_0.clear();
+MINOSz_0.clear();
+ MINOS_D_min.clear();
+ MINOS_Radius.clear();
+ MINOS_NumberTracks.clear();
+ theta0.clear();
+ phi0.clear();
+energy0.clear();
 
 
 

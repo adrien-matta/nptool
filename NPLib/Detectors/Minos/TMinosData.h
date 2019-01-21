@@ -68,7 +68,7 @@ vector<double> x0, y0, z0, theta0, phi0, energy0;
 vector<bool> detection;
 int event;
 */
-
+ vector<Double_t> MINOSx_0, MINOSy_0, MINOSz_0, MINOS_D_min, MINOS_Radius, MINOS_NumberTracks, theta0, phi0, energy0; //For take fitpar values
 
   //////////////////////////////////////////////////////////////
   // Constructor and destructor
@@ -111,6 +111,33 @@ int event;
     };//!
     //
 
+
+
+    //Setters for position vertex and obsv in experiment analysis
+
+    // Position
+    inline void SetVertexPos(const Double_t& x,const Double_t& y,const Double_t& z)	{
+      MINOSx_0.push_back(x);
+      MINOSy_0.push_back(y);
+      MINOSz_0.push_back(z);     
+    };//!
+
+// Min Distance
+    inline void SetD_min(const Double_t& dmin)     {
+      MINOS_D_min.push_back(dmin);
+    };//!
+
+
+
+
+
+
+
+
+
+
+    
+
     //////////////////////    GETTERS    ////////////////////////
     // Energy
     inline UShort_t GetMultEnergy() const
@@ -128,6 +155,20 @@ int event;
     inline Double_t Get_Time(const unsigned int &i) const 
       {return fMinos_Time[i];}//!
 
+
+    // Position
+    inline Double_t GetVertexPos() const
+    {return MINOSz_0[0] ; }//!
+    inline Double_t GetVertexPosX() const
+    {return MINOSx_0[0] ; }//!
+    inline Double_t GetVertexPosY() const
+    {return MINOSy_0[0] ; }//!
+    inline Double_t GetVertexPosZ() const
+    {return MINOSz_0[0] ; }//!
+
+    // Min Distance
+    inline Double_t GetD_min() const
+    {return MINOS_D_min[0] ; }//!
 
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary

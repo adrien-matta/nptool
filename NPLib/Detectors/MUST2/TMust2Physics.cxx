@@ -126,14 +126,18 @@ ClassImp(TMust2Physics)
 
   m_SiLi_MatchingX[15] = 16;
   m_SiLi_MatchingY[15] = 16;
+<<<<<<< HEAD
 
   //////////////////
   // CsI matching //
   //////////////////
+=======
+>>>>>>> 829cd8f97e25935a8e10c6975a1be9d39da18977
 
   m_CsI_Size = 32;
   m_CsI_MatchingX.resize(16, 0);
   m_CsI_MatchingY.resize(16, 0);
+<<<<<<< HEAD
 
   m_CsI_MatchingX[0] = 112;
   m_CsI_MatchingY[0] = 112;
@@ -180,6 +184,53 @@ ClassImp(TMust2Physics)
   m_CsI_MatchingX[14] = 16;
   m_CsI_MatchingY[14] = 80;
 
+=======
+  m_CsI_MatchingX[0] = 112;
+  m_CsI_MatchingY[0] = 112;
+
+  m_CsI_MatchingX[1] = 112;
+  m_CsI_MatchingY[1] = 80;
+
+  m_CsI_MatchingX[2] = 112;
+  m_CsI_MatchingY[2] = 48;
+
+  m_CsI_MatchingX[3] = 112;
+  m_CsI_MatchingY[3] = 16;
+  //
+  m_CsI_MatchingX[4] = 80;
+  m_CsI_MatchingY[4] = 16;
+
+  m_CsI_MatchingX[5] = 80;
+  m_CsI_MatchingY[5] = 48;
+
+  m_CsI_MatchingX[6] = 80;
+  m_CsI_MatchingY[6] = 80;
+
+  m_CsI_MatchingX[7] = 80;
+  m_CsI_MatchingY[7] = 112;
+  //
+  m_CsI_MatchingX[8] = 48;
+  m_CsI_MatchingY[8] = 16;
+
+  m_CsI_MatchingX[9] = 48;
+  m_CsI_MatchingY[9] = 48;
+
+  m_CsI_MatchingX[10] = 48;
+  m_CsI_MatchingY[10] = 80;
+
+  m_CsI_MatchingX[11] = 48;
+  m_CsI_MatchingY[11] = 112;
+  //
+  m_CsI_MatchingX[12] = 16;
+  m_CsI_MatchingY[12] = 16;
+
+  m_CsI_MatchingX[13] = 16;
+  m_CsI_MatchingY[13] = 48;
+
+  m_CsI_MatchingX[14] = 16;
+  m_CsI_MatchingY[14] = 80;
+
+>>>>>>> 829cd8f97e25935a8e10c6975a1be9d39da18977
   m_CsI_MatchingX[15] = 16;
   m_CsI_MatchingY[15] = 112;
 }
