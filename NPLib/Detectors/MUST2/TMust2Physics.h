@@ -31,6 +31,7 @@
 #include "NPVDetector.h"
 #include "TMust2Data.h"
 #include "TMust2Spectra.h"
+
 // ROOT
 #include "TH1.h"
 #include "TObject.h"
@@ -43,24 +44,25 @@ using namespace std;
 class TMust2Spectra;
 
 class TMust2Physics : public TObject, public NPL::VDetector {
-  public:
+public:
   TMust2Physics();
   ~TMust2Physics();
 
-  public:
+public:
   void Clear();
   void Clear(const Option_t*){};
 
-  public:
+public:
   vector<TVector2> Match_X_Y();
-  bool Match_Si_CsI(int X, int Y, int CristalNbr);
-  bool Match_Si_SiLi(int X, int Y, int PadNbr);
-  bool ResolvePseudoEvent();
-  int  CheckEvent();
+  void             CheckEvent(int N);
+  bool             Match_Si_CsI(int X, int Y, int CristalNbr);
+  bool             Match_Si_SiLi(int X, int Y, int PadNbr);
+  bool             ResolvePseudoEvent();
 
-  public:
+public:
   //   Provide Physical Multiplicity
-  Int_t EventMultiplicity;
+  // Int_t EventMultiplicity;
+  int EventMultiplicity;
 
   //   Provide a Classification of Event
   vector<int> EventType;
@@ -95,7 +97,7 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   // Physical Value
   vector<double> TotalEnergy;
 
-  public: //   Innherited from VDetector Class
+public: //   Innherited from VDetector Class
   //   Read stream at ConfigFile to pick-up parameters of detector
   //   (Position,...) using Token
   void ReadConfiguration(NPL::InputParser parser);
@@ -149,7 +151,7 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   // Used for Online only, clear all the spectra hold by the Spectra class
   void ClearSpectra();
 
-  public: //   Specific to MUST2 Array
+public: //   Specific to MUST2 Array
   //   Clear The PreTeated object
   void ClearPreTreatedData() { m_PreTreatedData->Clear(); }
 
@@ -211,7 +213,7 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   TVector3 GetPositionOfInteraction(const int i) const;
   TVector3 GetTelescopeNormal(const int i) const;
 
-  private: //   Parameter used in the analysis
+private: //   Parameter used in the analysis
   // By default take EX and TY.
   bool m_Take_E_Y; //!
   bool m_Take_T_Y; //!
@@ -268,39 +270,45 @@ class TMust2Physics : public TObject, public NPL::VDetector {
   bool m_Ignore_not_matching_SiLi; //!
   bool m_Ignore_not_matching_CsI; //!
 
-  private: //   Root Input and Output tree classes
+private: //   Root Input and Output tree classes
   TMust2Data*    m_EventData; //!
   TMust2Data*    m_PreTreatedData; //!
   TMust2Physics* m_EventPhysics; //!
 
-  private: //   Map of activated channel
+private: //   Map of activated channel
   map<int, vector<bool>> m_XChannelStatus; //!
   map<int, vector<bool>> m_YChannelStatus; //!
   map<int, vector<bool>> m_SiLiChannelStatus; //!
   map<int, vector<bool>> m_CsIChannelStatus; //!
 
-  private
-      : //   Spatial Position of Strip Calculated on bases of detector position
+private:
   int m_NumberOfTelescope; //!
 
   vector<vector<vector<double>>> m_StripPositionX; //!
   vector<vector<vector<double>>> m_StripPositionY; //!
   vector<vector<vector<double>>> m_StripPositionZ; //!
 
-  private:
-  map<int, int>    m_HitStripX; //!
-  map<int, int>    m_HitStripY; //!
+public:
+  // Prevent to treat event with ambiguous matching beetween X and Y
+  int           m_OrderMatch; //!
+  map<int, int> m_NMatchDet; //!
+  map<int, int> m_StripXMultDet; //!
+  map<int, int> m_StripYMultDet; //!
 
-  private: // Spectra Class
+private:
+  map<int, bool> m_CsIPresent; //!
+  map<int, bool> m_SiLiPresent; //!
+
+private: // Spectra Class
   TMust2Spectra* m_Spectra; //!
 
-  public:
+public:
   void WriteSpectra(); //!
 
-  public: // Spectra Getter
+public: // Spectra Getter
   map<string, TH1*> GetSpectra();
 
-  public: // Static constructor to be passed to the Detector Factory
+public: // Static constructor to be passed to the Detector Factory
   static NPL::VDetector* Construct();
   ClassDef(TMust2Physics, 1) // Must2Physics structure
 };
@@ -322,6 +330,6 @@ double fSiLi_T(const TMust2Data* Data, const int& i);
 //   CsI
 double fCsI_E(const TMust2Data* Data, const int& i);
 double fCsI_T(const TMust2Data* Data, const int& i);
-}
+} // namespace MUST2_LOCAL
 
 #endif
