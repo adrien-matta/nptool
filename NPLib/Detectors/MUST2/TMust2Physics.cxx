@@ -241,7 +241,7 @@ void TMust2Physics::BuildPhysicalEvent() {
   PreTreat();
 
   // FIXME has to be set in the configuration file
-  bool InterstripTreatment = true;
+  bool InterstripTreatment = false;
 
   bool check_SILI = false;
   bool check_CSI  = false;
