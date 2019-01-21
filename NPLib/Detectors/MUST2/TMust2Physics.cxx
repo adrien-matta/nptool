@@ -351,34 +351,46 @@ void TMust2Physics::BuildPhysicalEvent() {
     CheckEvent(N);
     /////////////////////////////////////////////////
 
-    // This test retrieves only Y interstrips
-    // see Xavier Mougeot's PhD. In the case where
-    if (InterstripTreatment && m_OrderMatch == 2) {
-      EventType.push_back(2);
-      Si_E.push_back(std::max(Si_X_E, Si_Y_E));
+    if (m_OrderMatch == 2) {
+      Clear();
     } else {
-      EventType.push_back(1);
+      // This test retrieves only Y interstrips
+      // see Xavier Mougeot's PhD. In the case where
+      // if (InterstripTreatment == true) {
+      //   EventType.push_back(2);
+      //   Si_E.push_back(std::max(Si_X_E, Si_Y_E));
+      // } else if (InterstripTreatment == false) {
+      //   EventType.push_back(2);
+      //   Si_E.push_back(-1000);
+      // } else {
+      //   EventType.push_back(1);
+      //   if (m_Take_E_Y)
+      //     Si_E.push_back(Si_Y_E);
+      //   else
+      //     Si_E.push_back(Si_X_E);
+      // }
+
       if (m_Take_E_Y)
         Si_E.push_back(Si_Y_E);
       else
         Si_E.push_back(Si_X_E);
-    }
 
-    if (m_Take_T_Y)
-      Si_T.push_back(Si_Y_T);
-    else
-      Si_T.push_back(Si_X_T);
+      if (m_Take_T_Y)
+        Si_T.push_back(Si_Y_T);
+      else
+        Si_T.push_back(Si_X_T);
 
-    if (!check_SILI) {
-      SiLi_N.push_back(0);
-      SiLi_E.push_back(-1000);
-      SiLi_T.push_back(-1000);
-    }
+      if (!check_SILI) {
+        SiLi_N.push_back(0);
+        SiLi_E.push_back(-1000);
+        SiLi_T.push_back(-1000);
+      }
 
-    if (!check_CSI) {
-      CsI_N.push_back(0);
-      CsI_E.push_back(-1000);
-      CsI_T.push_back(-1000);
+      if (!check_CSI) {
+        CsI_N.push_back(0);
+        CsI_E.push_back(-1000);
+        CsI_T.push_back(-1000);
+      }
     }
   } // loop on event multiplicity
 
