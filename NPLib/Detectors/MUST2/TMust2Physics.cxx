@@ -978,8 +978,8 @@ void TMust2Physics::ReadConfiguration(NPL::InputParser parser) {
       TVector3 C = blocks[i]->GetTVector3("X1_Y128", "mm");
       TVector3 D = blocks[i]->GetTVector3("X128_Y128", "mm");
       AddTelescope(A, B, C, D);
-      m_CsIPresent[i + 1]  = blocks[i]->GetBool("CSI");
-      m_SiLiPresent[i + 1] = blocks[i]->GetBool("SILI");
+      m_CsIPresent[i + 1]  = blocks[i]->GetInt("CSI");
+      m_SiLiPresent[i + 1] = blocks[i]->GetInt("SILI");
     }
 
     else if (blocks[i]->HasTokenList(sphe)) {
@@ -992,8 +992,8 @@ void TMust2Physics::ReadConfiguration(NPL::InputParser parser) {
       vector<double> beta  = blocks[i]->GetVectorDouble("BETA", "deg");
       AddTelescope(Theta, Phi, R, beta[0], beta[1], beta[2]);
 
-      m_CsIPresent[i + 1]  = blocks[i]->GetBool("CSI");
-      m_SiLiPresent[i + 1] = blocks[i]->GetBool("SILI");
+      m_CsIPresent[i + 1]  = blocks[i]->GetInt("CSI");
+      m_SiLiPresent[i + 1] = blocks[i]->GetInt("SILI");
     }
 
     else {
