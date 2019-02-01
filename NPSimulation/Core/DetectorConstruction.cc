@@ -236,15 +236,9 @@ void DetectorConstruction::ClearGeometry(){
   // Delete previous Sensitive Detector (Scorer) 
   delete G4SDManager::GetSDMpointer();
 
-
-  //  MaterialManager::getInstance()->ClearMaterialLibrary();
   G4GeometryManager::GetInstance()->OpenGeometry();
-  //  G4PhysicalVolumeStore::GetInstance()->Clean();
-  //  G4LogicalVolumeStore::GetInstance()->Clean();
-  //  G4SolidStore::GetInstance()->Clean();
 
   // Cleaning stores by hand (everything but the world)
-  // Check mechanism to insure volume a deleted once only
   // Cleaning the PVP
   G4PhysicalVolumeStore* PVP = G4PhysicalVolumeStore::GetInstance();
   while(PVP->size()>1){
