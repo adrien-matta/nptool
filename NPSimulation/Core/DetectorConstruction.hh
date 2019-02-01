@@ -67,6 +67,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction{
       };
 
   private:
+    // Solid world 
+    G4Box* world_box;
     // Logical volumes
     G4LogicalVolume* world_log;
     //G4LogicalVolume* Chamber_log;

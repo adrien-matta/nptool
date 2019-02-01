@@ -63,12 +63,19 @@ void MaterialManager::Destroy() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void MaterialManager::ClearMaterialLibrary() {
-  map<string, G4Material*>::iterator it;
-  for (it = m_Material.begin(); it != m_Material.end(); it++) {
-    delete it->second;
-  }
-
+ // map<string, G4Material*>::iterator it;
+ // for (it = m_Material.begin(); it != m_Material.end(); it++) {
+ //   delete it->second;
+ // }
+ 
+  // Geant4 own pointer to the material
+  // we can forget about them but not delete it
+  // as they can be deleted by the kernel e.g. when Cleaning the PVPStore
   m_Material.clear();
+  m_D   = NULL;
+  m_T   = NULL;
+  m_He3 = NULL;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

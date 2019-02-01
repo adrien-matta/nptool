@@ -50,6 +50,8 @@
 #include "BeamReaction.hh"
 #include "G4FastSimulationManager.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4RegionStore.hh"
+#include "G4RunManager.hh"
 using namespace CLHEP ;
 
 // NPS
@@ -61,7 +63,6 @@ using namespace CLHEP ;
 #include "NPInputParser.h"
 using namespace std;
 
-Target* Target::TargetInstance=0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Specific Method of this class
@@ -72,8 +73,6 @@ Target::Target(){
   m_TargetRadius       = 0   ;
   m_TargetDensity      = 0   ;
   m_TargetNbLayers     = 5;   // Number of steps by default
-  // Set the global pointer
-  TargetInstance = this;
   m_ReactionRegion=NULL;
 
   m_TargetDensity = 0 ;
@@ -102,7 +101,14 @@ Target::Target(){
 
 
 }
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+Target::~Target(){
+  unsigned int size = m_ReactionModel.size();
+  for(unsigned int i = 0 ; i < size ; i++){
+    delete m_ReactionModel[i];
+    }  
+  m_ReactionModel.clear();
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4Material* Target::GetMaterialFromLibrary(G4String MaterialName){
   return MaterialManager::getInstance()->GetMaterialFromLibrary(MaterialName,m_TargetDensity);
@@ -227,10 +233,8 @@ void Target::ConstructDetector(G4LogicalVolume* world){
       // rotation of target
       G4RotationMatrix *rotation = new G4RotationMatrix();
       rotation->rotateY(m_TargetAngle);
-
       new G4PVPlacement(rotation, G4ThreeVector(m_TargetX, m_TargetY, m_TargetZ), 
           m_TargetLogic, "Target", world, false, 0);
-
       G4VisAttributes* TargetVisAtt = new G4VisAttributes(G4Colour(0., 0., 1.));
       m_TargetLogic->SetVisAttributes(TargetVisAtt);
     }
@@ -377,7 +381,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
     G4VisAttributes* FrameVisAtt = new G4VisAttributes(G4Colour(0.3, 0.4, 0.4,1));
     FrameLogic->SetVisAttributes(FrameVisAtt);
 
-   G4RotationMatrix* Rotation=new G4RotationMatrix();
+    G4RotationMatrix* Rotation=new G4RotationMatrix();
     Rotation->rotateX(90*deg);
 
 
@@ -401,7 +405,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
           0,360);
 
     G4RotationMatrix Rot ;  Rot.rotateX(90*deg);    
-     
+
     G4Transform3D transformBack(Rot, G4ThreeVector(0,m_ShieldInnerRadius,-m_ShieldTopLength));
 
     G4SubtractionSolid* subtraction =
@@ -417,7 +421,7 @@ void Target::ConstructDetector(G4LogicalVolume* world){
           m_ShieldMaterial,
           "logicShield");
 
-       new G4PVPlacement(Rotation, G4ThreeVector(0,m_ShieldTopLength, 0), 
+    new G4PVPlacement(Rotation, G4ThreeVector(0,m_ShieldTopLength, 0), 
         ShieldLogic, "ShieldTarget", world, false, 0);
     G4VisAttributes* ShieldVisAtt = new G4VisAttributes(G4Colour(0.7, 0.9, 0.9,0.5));
     ShieldLogic->SetVisAttributes(ShieldVisAtt);
@@ -427,17 +431,14 @@ void Target::ConstructDetector(G4LogicalVolume* world){
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Target::SetReactionRegion(){
-  if(!m_ReactionRegion){
-    m_ReactionRegion= new G4Region("NPSimulationProcess");
-    m_ReactionRegion->AddRootLogicalVolume(m_TargetLogic);
-    m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.));
-  }
-
+  m_ReactionRegion = G4RegionStore::GetInstance()->FindOrCreateRegion("NPSimulationProcess");
+  m_ReactionRegion->AddRootLogicalVolume(m_TargetLogic);
+  m_ReactionRegion->SetUserLimits(new G4UserLimits(m_TargetThickness/10.));
   G4FastSimulationManager* mng = m_ReactionRegion->GetFastSimulationManager();
 
   unsigned int size = m_ReactionModel.size();
   for(unsigned int i = 0 ; i < size ; i++)
-    mng->RemoveFastSimulationModel(m_ReactionModel[i]);
+  mng->RemoveFastSimulationModel(m_ReactionModel[i]);
 
   m_ReactionModel.clear();
   G4VFastSimulationModel* fsm;
@@ -446,7 +447,6 @@ void Target::SetReactionRegion(){
   m_ReactionModel.push_back(fsm); 
   fsm = new NPS::Decay("Decay",m_ReactionRegion);
   m_ReactionModel.push_back(fsm); 
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

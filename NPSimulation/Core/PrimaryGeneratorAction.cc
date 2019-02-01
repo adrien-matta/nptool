@@ -65,15 +65,11 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
     // In case the target has changed
-    if(m_Target!=NULL) SetTarget();
     unsigned int mysize = m_EventGenerator.size();
     for (unsigned int i = 0 ; i < mysize; i++) {
-        //m_EventGenerator[i]->GenerateEvent(anEvent);
         (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
     }
-    
     ParticleStack::getInstance()->ShootAllParticle(anEvent);
-    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -121,7 +117,7 @@ void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
     
     m_Target=m_detector->GetTarget();
     if(m_Target!=NULL){
-        m_Target->SetReactionRegion();
+       m_Target->SetReactionRegion();
     }
     
 }
@@ -133,12 +129,4 @@ void PrimaryGeneratorAction::ClearEventGenerator(){
     }
     
     m_EventGenerator.clear();
-    
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PrimaryGeneratorAction::SetTarget(){
-    for (unsigned int i = 0 ; i < m_EventGenerator.size(); i++) {
-        m_EventGenerator[i]->SetTarget(m_Target);
-    }
-}
-

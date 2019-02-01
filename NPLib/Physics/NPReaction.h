@@ -57,7 +57,7 @@ namespace NPL{
       // This constructor aim to provide a fast way to instantiate a reaction without input file
       // The string should be of the form "A(b,c)D@E" with E the ernegy of the beam in MeV
       Reaction(string);
-      virtual ~Reaction();
+      ~Reaction();
 
     public:  // Various Method
       Nucleus GetNucleus(string name, NPL::InputParser parser);
