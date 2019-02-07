@@ -141,8 +141,7 @@ void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx)
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx,const double& valy){
   // Fill the local histo
-  ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
-
+  int val = ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::AddSpectra(TH1* h){

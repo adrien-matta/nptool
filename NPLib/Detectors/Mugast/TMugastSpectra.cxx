@@ -55,9 +55,11 @@ TMugastSpectra::TMugastSpectra(map<int,int> TelescopeIndex){
 
   SetName("Mugast");
   for(map<int,int>::iterator it=TelescopeIndex.begin() ; it!=TelescopeIndex.end() ; it++){
-    fTelescopeIndex[it->second-1]=it->first; 
+    fTelescopeToIndex[it->second-1]=it->first; 
     }
-  fNumberOfTelescope=fTelescopeIndex.size();
+
+  fIndexToTelescope=TelescopeIndex;
+  fNumberOfTelescope=fTelescopeToIndex.size();
   fStripX=128;
   fStripY=128;
   fStripSecondLayer=16;
@@ -75,33 +77,34 @@ TMugastSpectra::~TMugastSpectra(){
 void TMugastSpectra::InitRawSpectra(){
 
   static string name;
-  for (unsigned int i = 0; i < fTelescopeIndex.size(); i++) { // loop on number of detectors
-    TString nbr = NPL::itoa(fTelescopeIndex[i]);
+  for (unsigned int i = 0; i < fTelescopeToIndex.size(); i++) { // loop on number of detectors
+    TString nbr = NPL::itoa(fTelescopeToIndex[i]);
     
     // STRX_E_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRX_E_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_E_RAW";
     // AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 8192, 16384,  "Mugast/RAW/STRXE");
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 10000, 7000, 17000,  "Mugast/RAW/STRXE");
 
     // STRY_E_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRY_E_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_E_RAW";
     // AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "Mugast/RAW/STRYE");
     AddHisto2D(name, name, fStripY, 1, fStripY+1,10000, 0, 10000, "Mugast/RAW/STRYE");
 
     // STRX_T_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRX_T_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_T_RAW";
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 512, 0, 8192, "Mugast/RAW/STRXT");
 
     // STRY_T_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRY_T_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_T_RAW";
     AddHisto2D(name, name, fStripY, 1, fStripY+1, 512, 0, 8192, "Mugast/RAW/STRYT");
 
     // SDLR_E_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_SDLR_E_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_SDLR_E_RAW";
     AddHisto2D(name, name, fStripSecondLayer, 1, fStripSecondLayer+1, 512, 0, 8192, "Mugast/RAW/SDLRE");
 
     // SDLR_T_RAW
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_SDLR_T_RAW";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_SDLR_T_RAW";
+    AddHisto2D(name, name, fStripSecondLayer, 1, fStripSecondLayer+1, 512, 0, 8192, "Mugast/RAW/SDLRT");
   }
 }
 
@@ -112,27 +115,27 @@ void TMugastSpectra::InitPreTreatedSpectra()
   string name;
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRX_E_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_E_CAL";
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 50, "Mugast/CAL/STRXE");
 
     // STRY_E_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRY_E_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_E_CAL";
     AddHisto2D(name, name, fStripY, 1, fStripY+1, 500, 0, 50, "Mugast/CAL/STRYE");
 
     // STRX_T_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRX_T_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_T_CAL";
     AddHisto2D(name, name, fStripX, 1, fStripX+1, 1000, 0, 1000, "Mugast/CAL/STRXT");
 
     // STRY_T_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_STRY_T_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_T_CAL";
     AddHisto2D(name, name, fStripY, 1, fStripY+1, 1000, 0, 1000, "Mugast/CAL/STRYT");
 
     // SDLR_E_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_SDLR_E_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_SDLR_E_CAL";
     AddHisto2D(name, name, fStripSecondLayer, 1, fStripSecondLayer+1, 500, 0, 50, "Mugast/CAL/SDLRE");
 
     // SDLR_T_CAL
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_SDLR_T_CAL";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_SDLR_T_CAL";
     AddHisto2D(name, name, fStripSecondLayer, 1, fStripSecondLayer+1, 500, 0, 50, "Mugast/CAL/SDLRT");
 
   }  // end loop on number of detectors
@@ -153,7 +156,7 @@ void TMugastSpectra::InitPhysicsSpectra(){
 
   // X-Y Energy Correlation
   for (unsigned int i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_XY_COR";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_XY_COR";
     AddHisto2D(name, name,500,0,50,500,0,50, "Mugast/PHY"); 
   }
 
@@ -174,15 +177,15 @@ void TMugastSpectra::InitPhysicsSpectra(){
   // ID plot detector by detector
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // E-TOF:
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_E_TOF";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_E_TOF";
     AddHisto2D(name, name,500,0,50,500,200,1200,"Mugast/PHY");
 
     // SDLRE-DE:
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_SDLRE_E";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_SDLRE_E";
     AddHisto2D(name, name,500,0,200,500,0,50,"Mugast/PHY");
 
     // Etot-DE:
-    name = "MG"+NPL::itoa(fTelescopeIndex[i])+"_Etot_E";
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_Etot_E";
     AddHisto2D(name, name,500,0,500,500,0,50,"Mugast/PHY");
   }
 
@@ -198,7 +201,7 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
 
   // STRX_E 
   for (unsigned int i = 0; i < RawData->GetDSSDXEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[RawData->GetDSSDXEDetectorNbr(i)])+"_STRX_E_RAW";
+    name = "MG"+NPL::itoa( RawData->GetDSSDXEDetectorNbr(i))+"_STRX_E_RAW";
     family = "Mugast/RAW/STRXE";
 
     FillSpectra(family,name
@@ -208,7 +211,7 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
 
   // STRY_E
   for (unsigned int i = 0; i < RawData->GetDSSDYEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[RawData->GetDSSDYEDetectorNbr(i)] )+"_STRY_E_RAW";
+    name = "MG"+NPL::itoa( RawData->GetDSSDYEDetectorNbr(i) )+"_STRY_E_RAW";
     family = "Mugast/RAW/STRYE";
 
     FillSpectra(family,name
@@ -218,7 +221,7 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
 
   // STRX_T
   for (unsigned int i = 0; i < RawData->GetDSSDXTMult(); i++) {
-    name = "MG"+NPL::itoa(fTelescopeIndex[RawData->GetDSSDXTDetectorNbr(i)])+"_STRX_T_RAW";
+    name = "MG"+NPL::itoa(RawData->GetDSSDXTDetectorNbr(i))+"_STRX_T_RAW";
     family = "Mugast/RAW/STRXT";
 
     FillSpectra(family,name
@@ -227,7 +230,7 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   }
   // STRY_T
   for (unsigned int i = 0; i < RawData->GetDSSDYTMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[RawData->GetDSSDYTDetectorNbr(i)])+"_STRY_T_RAW";
+    name = "MG"+NPL::itoa( RawData->GetDSSDYTDetectorNbr(i))+"_STRY_T_RAW";
     family = "Mugast/RAW/STRYT";
 
     FillSpectra(family,name
@@ -237,7 +240,7 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
 
   // SDLR_E
   for (unsigned int i = 0; i < RawData->GetSecondLayerEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[RawData->GetSecondLayerEDetectorNbr(i)])+"_SDLR_E_RAW";
+    name = "MG"+NPL::itoa( RawData->GetSecondLayerEDetectorNbr(i))+"_SDLR_E_RAW";
     family = "Mugast/RAW/SDLRE";
 
     FillSpectra(family,name
@@ -264,7 +267,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   static string family;
   // STRX_E
   for (unsigned int i = 0; i < PreTreatedData->GetDSSDXEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetDSSDXEDetectorNbr(i)])+"_STRX_E_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXEDetectorNbr(i))+"_STRX_E_CAL";
     family = "Mugast/CAL/STRXE";
 
     FillSpectra(family,name
@@ -273,7 +276,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   }
   // STRY_E
   for (unsigned int i = 0; i < PreTreatedData->GetDSSDYEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetDSSDYEDetectorNbr(i)])+"_STRY_E_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetDSSDYEDetectorNbr(i))+"_STRY_E_CAL";
     family = "Mugast/CAL/STRYE";
 
     FillSpectra(family,name
@@ -282,7 +285,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   }
   // STRX_T
   for (unsigned int i = 0; i < PreTreatedData->GetDSSDXTMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetDSSDXTDetectorNbr(i)])+"_STRX_T_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXTDetectorNbr(i))+"_STRX_T_CAL";
     family = "Mugast/CAL/STRXT";
 
     FillSpectra(family,name
@@ -291,7 +294,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   }
   // STRY_T
   for (unsigned int i = 0; i < PreTreatedData->GetDSSDYTMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetDSSDYTDetectorNbr(i)])+"_STRY_T_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetDSSDYTDetectorNbr(i))+"_STRY_T_CAL";
     family = "Mugast/CAL/STRYT";
 
     FillSpectra(family,name
@@ -300,7 +303,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   }
   // SDLR_E
   for (unsigned int i = 0; i < PreTreatedData->GetSecondLayerEMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetSecondLayerEDetectorNbr(i)])+"_SDLR_E_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetSecondLayerEDetectorNbr(i))+"_SDLR_E_CAL";
     family = "Mugast/CAL/SDLRE";
 
     FillSpectra(family,name
@@ -309,7 +312,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   }
   // SDLR_T
   for (unsigned int i = 0; i < PreTreatedData->GetSecondLayerTMult(); i++) {
-    name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetSecondLayerTDetectorNbr(i)])+"_SDLR_T_CAL";
+    name = "MG"+NPL::itoa( PreTreatedData->GetSecondLayerTDetectorNbr(i))+"_SDLR_T_CAL";
     family = "Mugast/CAL/SDLRT";
 
     FillSpectra(family,name
@@ -323,7 +326,7 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
     for (unsigned int j = 0; j < PreTreatedData->GetSecondLayerEMult(); j++) {
 
       if(PreTreatedData->GetDSSDXEDetectorNbr(i) == PreTreatedData->GetSecondLayerEDetectorNbr(j)){ 
-        name = "MG"+NPL::itoa( fTelescopeIndex[PreTreatedData->GetDSSDXEDetectorNbr(i)])+"_SDLR"+NPL::itoa(PreTreatedData->GetSecondLayerEStripNbr(j))+"_CAL_ID";
+        name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXEDetectorNbr(i))+"_SDLR"+NPL::itoa(PreTreatedData->GetSecondLayerEStripNbr(j))+"_CAL_ID";
 
         FillSpectra(family,name
             ,PreTreatedData->GetSecondLayerEEnergy(j), 

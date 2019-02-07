@@ -50,7 +50,8 @@ class TMugastSpectra:public VSpectra{
     void FillPhysicsSpectra(TMugastPhysics*);
 
   private: // Information on Mugast
-    map<int,int> fTelescopeIndex;
+    map<int,int> fTelescopeToIndex;
+    map<int,int> fIndexToTelescope;
     unsigned int fNumberOfTelescope;
     unsigned int fStripX;
     unsigned int fStripY;
