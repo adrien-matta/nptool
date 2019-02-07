@@ -416,7 +416,9 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
     if(m_Ready[id]){
       // Do the job
       (det->*m_ClearEventPhysicsPtr)();
+
       (det->*m_BuildPhysicalPtr)();
+
       if(m_FillSpectra){
         (det->*m_FillSpectra)();
        if(m_CheckSpectra)
@@ -426,6 +428,7 @@ void NPL::DetectorManager::StartThread(NPL::VDetector* det,unsigned int id){
      std::this_thread::yield();
    }
    else{
+//    std::this_thread::sleep_for(std::chrono::milliseconds(100));
     std::this_thread::yield();
    }
 
@@ -447,7 +450,9 @@ bool NPL::DetectorManager::IsDone(){
   static std::vector<bool>::iterator it;
   static std::vector<bool>::iterator begin = m_Ready.begin(); 
   static std::vector<bool>::iterator end = m_Ready.end();
+  unsigned int i = 0 ;
   for( it = begin ; it!=end ; it++){
+    //std::cout << i++ << " " << *it << std::endl;
     if((*it))
       return false;
   }

@@ -30,7 +30,7 @@
 #include "NPInputParser.h"
 #include "NPVDetector.h"
 #include "TMugastData.h"
-//#include "TMugastSpectra.h"
+#include "TMugastSpectra.h"
 // ROOT
 #include "TH1.h"
 #include "TObject.h"
@@ -40,7 +40,7 @@
 using namespace std;
 
 // Forward Declaration
-//class TMugastSpectra;
+class TMugastSpectra;
 
 class TMugastPhysics : public TObject, public NPL::VDetector {
   public:
@@ -177,27 +177,30 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   TMugastData* GetPreTreatedData() const { return m_PreTreatedData; }
 
   // Use to access the strip position
-  double GetStripPositionX(const int N, const int X, const int Y) const {
-    return m_StripPositionX[N - 1][X - 1][Y - 1];
+  double GetStripPositionX(const int N, const int X, const int Y) {
+    return m_StripPositionX[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1];
   };
-  double GetStripPositionY(const int N, const int X, const int Y) const {
-    return m_StripPositionY[N - 1][X - 1][Y - 1];
+  double GetStripPositionY(const int N, const int X, const int Y) {
+    return m_StripPositionY[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1];
   };
-  double GetStripPositionZ(const int N, const int X, const int Y) const {
-    return m_StripPositionZ[N - 1][X - 1][Y - 1];
+  double GetStripPositionZ(const int N, const int X, const int Y) {
+    return m_StripPositionZ[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1];
   };
 
   double GetNumberOfTelescope() const { return m_NumberOfTelescope; };
 
-  // To be called after a build Physical Event
+  // To be called after a build Physical Even
   int GetEventMultiplicity() const { return EventMultiplicity; };
 
   double GetEnergyDeposit(const int i) const { return TotalEnergy[i]; };
 
-  TVector3 GetPositionOfInteraction(const int i) const;
-  TVector3 GetTelescopeNormal(const int i) const;
+  TVector3 GetPositionOfInteraction(const int i) ;
+  TVector3 GetTelescopeNormal(const int i) ;
 
   private: //   Parameter used in the analysis
+  // Shape of the detector Trapezoid or Square
+  map<int, int> m_DetectorNumberIndex; 
+
   // By default take EX and TY.
   bool m_Take_E_Y; //!
   bool m_Take_T_Y; //!
@@ -213,7 +216,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   int m_DSSD_Y_E_RAW_Threshold; //!
   int m_SecondLayer_E_RAW_Threshold; //!
 
-  // Calibrated Threshold
+    // Calibrated Threshold
   double m_DSSD_X_E_Threshold; //!
   double m_DSSD_Y_E_Threshold; //!
   double m_SecondLayer_E_Threshold; //!
@@ -240,8 +243,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   map<int, int>    m_HitDSSDY; //!
 
   private: // Spectra Class
-  //TMugastSpectra* m_Spectra; //!
-
+  TMugastSpectra* m_Spectra; //!
+  
   public:
   void WriteSpectra(); //!
 
