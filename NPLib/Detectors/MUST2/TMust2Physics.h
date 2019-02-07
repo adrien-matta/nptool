@@ -290,7 +290,9 @@ private:
 
 public:
   // Prevent to treat event with ambiguous matching beetween X and Y
+  bool          m_multimatch; //!
   int           m_OrderMatch; //!
+  vector<int>   m_match_type; //!
   map<int, int> m_NMatchDet; //!
   map<int, int> m_StripXMultDet; //!
   map<int, int> m_StripYMultDet; //!
