@@ -361,40 +361,40 @@ void Plastic::ReadSensitive(const G4Event* event){
   //Detector Number
   static string collectionName;
   collectionName = "PlasticScorer/PlasticNumber";
-  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName)     ;
-  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))          ;
-  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
+  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID));
+  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin();
 
   //Energy
   collectionName = "PlasticScorer/Energy";
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName)      ;
-  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))           ;
-  Energy_itr = EnergyHitMap->GetMap()->begin()                                                                ;
+  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID));
+  Energy_itr = EnergyHitMap->GetMap()->begin();
 
   //Time of Flight
   collectionName = "PlasticScorer/Time";
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName)          ;
-  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))               ;
-  Time_itr = TimeHitMap->GetMap()->begin()                                                                    ;
+  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
+  Time_itr = TimeHitMap->GetMap()->begin();
 
-  G4int sizeN = DetectorNumberHitMap->entries()    ;
-  G4int sizeE = EnergyHitMap->entries()          ;
-  G4int sizeT = TimeHitMap->entries()          ;
+  G4int sizeN = DetectorNumberHitMap->entries();
+  G4int sizeE = EnergyHitMap->entries();
+  G4int sizeT = TimeHitMap->entries();
   vector<double> energy;
   vector<double> time;
   vector<int>    det;
 
   // Loop on Plastic Number
   for (G4int l = 0 ; l < sizeN ; l++) {
-    G4int N     =      *(DetectorNumber_itr->second)    ;
-    G4int NTrackID  =   DetectorNumber_itr->first - N  ;
+    G4int N     =      *(DetectorNumber_itr->second);
+    G4int NTrackID  =   DetectorNumber_itr->first - N;
       if (N > 0) {
       det.push_back(N);
       //  Energy
       Energy_itr = EnergyHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first  - N      ;
-        G4double E     = *(Energy_itr->second)         ;
+        G4int ETrackID  =   Energy_itr->first - N;
+        G4double E     = *(Energy_itr->second);
         if (ETrackID == NTrackID) {
           energy.push_back(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
         }
@@ -405,10 +405,10 @@ void Plastic::ReadSensitive(const G4Event* event){
       //  Time
       Time_itr = TimeHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first   - N    ;
-        G4double T     = *(Time_itr->second)      ;
+        G4int TTrackID  =   Time_itr->first - N;
+        G4double T     = *(Time_itr->second);
       if (TTrackID == NTrackID) {
-          time.push_back(RandGauss::shoot(T, ResoTime)) ;
+          time.push_back(RandGauss::shoot(T, ResoTime));
       } 
         Time_itr++;
       }
@@ -422,9 +422,9 @@ void Plastic::ReadSensitive(const G4Event* event){
 
 
   // clear map for next event
-  TimeHitMap->clear()   ;
-  DetectorNumberHitMap->clear()   ;
-  EnergyHitMap->clear()    ;
+  TimeHitMap->clear();
+  DetectorNumberHitMap->clear();
+  EnergyHitMap->clear();
 }
 
 
@@ -434,16 +434,14 @@ void Plastic::InitializeScorers() {
   m_PlasticScorer = CheckScorer("PlasticScorer",already_exist) ;
 
   if(already_exist) return ;
-
-  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
-  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)                   ;
-  G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)                         ;
+  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0);
+  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0);
+  G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0);
   //and register it to the multifunctionnal detector
-  m_PlasticScorer->RegisterPrimitive(DetNbr)                         ;
-  m_PlasticScorer->RegisterPrimitive(Energy)                         ;
-  m_PlasticScorer->RegisterPrimitive(Time)                            ;
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer) ;
-
+  m_PlasticScorer->RegisterPrimitive(DetNbr);
+  m_PlasticScorer->RegisterPrimitive(Energy);
+  m_PlasticScorer->RegisterPrimitive(Time);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer);
 }
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

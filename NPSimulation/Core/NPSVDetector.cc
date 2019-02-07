@@ -25,7 +25,8 @@
 #include "NPSVDetector.hh"
 #include "RootOutput.h"
 #include "G4SDManager.hh"
-
+#include <iostream>
+ using namespace std;
 TInteractionCoordinates* NPS::VDetector::ms_InterCoord = 0;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -52,13 +53,14 @@ void NPS::VDetector::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4MultiFunctionalDetector* NPS::VDetector::CheckScorer(string name,bool &exist){
     exist = true;
-    G4MultiFunctionalDetector* ptr =
-    (G4MultiFunctionalDetector*) G4SDManager::GetSDMpointer()->FindSensitiveDetector(name.c_str(),false);
+    G4MultiFunctionalDetector* ptr = NULL;
     
-    if(!ptr){
-        ptr = new G4MultiFunctionalDetector(name.c_str());
-        exist = false;
+    ptr =
+    (G4MultiFunctionalDetector*) G4SDManager::GetSDMpointer()->FindSensitiveDetector(name,false);
+
+if(!ptr){
+      ptr = new G4MultiFunctionalDetector(name.c_str());
+      exist = false;
     }
-    
     return ptr;
 }

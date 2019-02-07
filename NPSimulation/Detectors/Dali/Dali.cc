@@ -140,13 +140,11 @@ void Dali::AddDetector2(double  R, double  Alpha, double  Zeta, string  Shape){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-
-G4LogicalVolume* Dali::BuildSquareDetector(){
-  if(!m_SquareDetector){
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// Definition Materials MgO and NaI(Tl)
 
-
+ void Dali::DefinitionMaterials()
+ {
     //G4Element* H       = new G4Element("Hydrogen","H" , 1., 1.01*g/mole);
     
     G4Isotope* Mg24 = new G4Isotope ("Mg24", 12, 24, 23.985041*g/mole);
@@ -160,20 +158,32 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
     G4Isotope* O16 = new G4Isotope ("O16", 8, 16, 15.99*g/mole);
     G4Isotope* O17 = new G4Isotope ("O17", 8, 17, 17.00*g/mole);
     G4Isotope* O18 = new G4Isotope ("O18", 8, 18, 18.00*g/mole);
-    G4Element* O= new G4Element("elOxygen","O",3);
+    G4Element* O = new G4Element("elOxygen","O",3);
     O->AddIsotope(O16, 99.76*perCent);
     O->AddIsotope(O17, 0.04*perCent);
     O->AddIsotope(O18, 0.20*perCent);
 
-    G4Material* MgO = new G4Material("MgO",3.6*g/cm3,2);
+    
+    MgO = new G4Material("MgO",3.6*g/cm3, 2 );
     MgO->AddElement(Mg,1);
     MgO->AddElement(O, 1);
     
     G4Element *elTl = new G4Element("Thallium","Tl",81.,204.383*g/mole );
-    G4Material* NaI_Tl = new G4Material("NaI_Tl",3.6667*g/cm3, 2);
-    NaI_Tl->AddMaterial(MaterialManager::getInstance()->GetMaterialFromLibrary("NaI"),99.6*perCent);
-    NaI_Tl->AddElement(elTl,0.4*perCent);
+    
+    NaI_Tl = new G4Material("NaI_Tl",3.6667*g/cm3, 2);
+    NaI_Tl->AddMaterial(MaterialManager::getInstance()->GetMaterialFromLibrary("NaI"), 99.6*perCent);
+    NaI_Tl->AddElement(elTl, 0.4*perCent);
 
+ }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+G4LogicalVolume* Dali::BuildSquareDetector(){
+  if(!m_SquareDetector){
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
     G4Box* box_3can = new G4Box("Dali_3BoxCan", Dali_NS::Hight*0.5,
@@ -241,7 +251,11 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                            Dali_NS::Width*0.5-2.4*mm, Dali_NS::Thickness*0.5-2.4*mm); // Size of AlCan but w/o thickness of AlCan and MgO
     
     G4Material* DetectorMaterial = MaterialManager::getInstance()->GetMaterialFromLibrary(Dali_NS::Material);
-    m_SquareDetector_Crystal = new G4LogicalVolume(box_crystal,NaI_Tl,"logic_Dali_Box",0,0,0);
+
+    m_SquareDetector_Crystal = new G4LogicalVolume(box_crystal,
+                                                   NaI_Tl,
+                                                   // DetectorMaterial,
+                                                   "logic_Dali_Box",0,0,0);
  
     G4ThreeVector positionnull = G4ThreeVector(0,0,0);
 
@@ -418,6 +432,7 @@ void Dali::ReadConfiguration(NPL::InputParser parser){
 void Dali::ConstructDetector(G4LogicalVolume* world){    
 
 
+  DefinitionMaterials();
   
   for (unsigned short i = 0 ; i < m_R.size() ; i++) {
 

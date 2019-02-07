@@ -21,7 +21,6 @@
  *****************************************************************************/
 // NPS
 #include "RunAction.hh"
-#include "PrimaryGeneratorAction.hh"
 #include "EventAction.hh"
 #include "ParticleStack.hh"
 #include "MaterialManager.hh"
@@ -30,7 +29,7 @@
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4VTrajectory.hh"
-
+#include "G4RegionStore.hh"
 // NPL
 #include "RootOutput.h"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

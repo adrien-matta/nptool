@@ -22,7 +22,7 @@
 // G4 headers
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
-#include "G4SDManager.hh"
+//#include "G4SDManager.hh"
 #include "G4RunManager.hh"
 #include "G4Trajectory.hh"
 #include "G4TrajectoryContainer.hh"

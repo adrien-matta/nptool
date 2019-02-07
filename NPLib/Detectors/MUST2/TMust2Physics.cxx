@@ -993,8 +993,8 @@ void TMust2Physics::ReadConfiguration(NPL::InputParser parser) {
       vector<double> beta  = blocks[i]->GetVectorDouble("BETA", "deg");
       AddTelescope(Theta, Phi, R, beta[0], beta[1], beta[2]);
 
-      m_CsIPresent[i + 1]  = blocks[i]->GetBool("CSI");
-      m_SiLiPresent[i + 1] = blocks[i]->GetBool("SILI");
+      m_CsIPresent[i + 1]  = blocks[i]->GetInt("CSI");
+      m_SiLiPresent[i + 1] = blocks[i]->GetInt("SILI");
     }
 
     else {

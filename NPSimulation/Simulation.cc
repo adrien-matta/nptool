@@ -74,14 +74,8 @@ int main(int argc, char** argv){
     runManager->SetUserInitialization(detector);
     
     PhysicsList* physicsList   = new PhysicsList();
-    //G4VModularPhysicsList* physicsList   = new QBBC;
     physicsList->SetVerboseLevel(0);
     runManager->SetUserInitialization(physicsList);
-        
-
-    
-
-    
     PrimaryGeneratorAction* primary = new PrimaryGeneratorAction(detector);
 
     // Initialize Geant4 kernel

@@ -12,7 +12,7 @@
  * Last update    : october 2010                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold must2 treated data                                       *
+ *  This class hold Mugast treated data                                       *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -345,13 +345,13 @@ vector<TVector2> TMugastPhysics::Match_X_Y() {
 bool TMugastPhysics::IsValidChannel(const int& DetectorType,
                                    const int& telescope, const int& channel) {
   if (DetectorType == 0)
-    return *(m_XChannelStatus[telescope - 1].begin() + channel - 1);
+    return *(m_XChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
   else if (DetectorType == 1)
-    return *(m_YChannelStatus[telescope - 1].begin() + channel - 1);
+    return *(m_YChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
   else if (DetectorType == 2)
-    return *(m_SecondLayerChannelStatus[telescope - 1].begin() + channel - 1);
+    return *(m_SecondLayerChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
   else
     return false;
@@ -449,20 +449,24 @@ void TMugastPhysics::Clear() {
 
 ///////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("M2Telescope");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Mugast");
   if (NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " Telescope found " << endl;
 
+  unsigned int det=0;
   // Cartesian Case
   vector<string> cart
-      = {"X1_Y1", "X1_Y128", "X128_Y1", "X128_Y128", "SI", "SILI", "CSI"};
+      = {"DetectorNumber","X1_Y1", "X1_Y128", "X128_Y1", "X128_Y128"};
   // Spherical Case
-  vector<string> sphe = {"R", "THETA", "PHI", "BETA", "SI", "SILI", "CSI"};
+  vector<string> sphe = {"DetectorNumber","R", "THETA", "PHI", "BETA"};
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
     if (blocks[i]->HasTokenList(cart)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Mugast Telescope " << i + 1 << endl;
+      cout << endl << "////  Mugast Telescope " << i + 1 << endl;
+      int detectorNbr = blocks[i]->GetInt("DetectorNumber");
+      det = i+1;
+      m_DetectorNumberIndex[detectorNbr]=det;
       TVector3 A = blocks[i]->GetTVector3("X1_Y1", "mm");
       TVector3 B = blocks[i]->GetTVector3("X128_Y1", "mm");
       TVector3 C = blocks[i]->GetTVector3("X1_Y128", "mm");
@@ -472,8 +476,10 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
 
     else if (blocks[i]->HasTokenList(sphe)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Mugast Telescope " << i + 1 << endl;
-
+      cout << endl << "////  Mugast Telescope " << i + 1 << endl;
+      int detectorNbr = blocks[i]->GetInt("DetectorNumber");
+      det = i+1;
+      m_DetectorNumberIndex[detectorNbr]=det;
       double         Theta = blocks[i]->GetDouble("THETA", "deg");
       double         Phi   = blocks[i]->GetDouble("PHI", "deg");
       double         R     = blocks[i]->GetDouble("R", "mm");
@@ -482,7 +488,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
     }
 
     else {
-      cout << "ERROR: Missing token for M2Telescope blocks, check your input "
+      cout << "ERROR: Missing token for Mugast, check your input "
               "file"
            << endl;
       exit(1);
@@ -490,7 +496,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
   }
 
   InitializeStandardParameter();
-  ReadAnalysisConfig();
+  //ReadAnalysisConfig();
 }
 //////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::InitSpectra() {
@@ -524,6 +530,8 @@ map<string, TH1*> TMugastPhysics::GetSpectra() {
     map<string, TH1*> empty;
     return empty;
   }*/
+  map<string, TH1*> empty;
+  return empty;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -621,15 +629,13 @@ void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
 
   m_NumberOfTelescope++;
 
-  //   Vector U on Telescope Face (paralelle to Y Strip) (NB: remember that Y
-  //   strip are allong X axis)
-  TVector3 U      = C_X128_Y1 - C_X1_Y1;
-  double   Ushift = (U.Mag() - 98) / 2.;
-  U               = U.Unit();
-  //   Vector V on Telescope Face (parallele to X Strip)
-  TVector3 V      = C_X1_Y128 - C_X1_Y1;
-  double   Vshift = (V.Mag() - 98) / 2.;
-  V               = V.Unit();
+  // Vector U parallel to BaseLarge
+  TVector3 U = C_X128_Y1 - C_X1_Y1;
+  U = U.Unit();
+
+  // Vector V parallel to height
+  TVector3 V = 0.5 * (C_X1_Y128 + C_X128_Y128 - C_X1_Y1 - C_X128_Y1);
+  V = V.Unit();
 
   //   Position Vector of Strip Center
   TVector3 StripCenter = TVector3(0, 0, 0);
@@ -651,7 +657,7 @@ void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
 
   //   Moving StripCenter to 1.1 corner:
   Strip_1_1 = C_X1_Y1 + (U + V) * (StripPitch / 2.);
-  Strip_1_1 += U * Ushift + V * Vshift;
+  Strip_1_1 += U + V ;
 
   for (int i = 0; i < 128; ++i) {
     lineX.clear();
@@ -784,7 +790,7 @@ void TMugastPhysics::AddTelescope(double theta, double phi, double distance,
   m_StripPositionZ.push_back(OneTelescopeStripPositionZ);
 }
 
-TVector3 TMugastPhysics::GetPositionOfInteraction(const int i) const {
+TVector3 TMugastPhysics::GetPositionOfInteraction(const int i) {
   TVector3 Position
       = TVector3(GetStripPositionX(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]),
                  GetStripPositionY(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]),
@@ -793,7 +799,7 @@ TVector3 TMugastPhysics::GetPositionOfInteraction(const int i) const {
   return (Position);
 }
 
-TVector3 TMugastPhysics::GetTelescopeNormal(const int i) const {
+TVector3 TMugastPhysics::GetTelescopeNormal(const int i) {
   TVector3 U = TVector3(GetStripPositionX(TelescopeNumber[i], 128, 1),
                         GetStripPositionY(TelescopeNumber[i], 128, 1),
                         GetStripPositionZ(TelescopeNumber[i], 128, 1))
@@ -899,14 +905,14 @@ NPL::VDetector* TMugastPhysics::Construct() {
 //            Registering the construct method to the factory                 //
 ////////////////////////////////////////////////////////////////////////////////
 extern "C" {
-class proxy_must2 {
+class proxy_Mugast {
   public:
-  proxy_must2() {
+  proxy_Mugast() {
     NPL::DetectorFactory::getInstance()->AddToken("Mugast", "Mugast");
     NPL::DetectorFactory::getInstance()->AddDetector("Mugast",
                                                      TMugastPhysics::Construct);
   }
 };
 
-proxy_must2 p_must2;
+proxy_Mugast p_Mugast;
 }
