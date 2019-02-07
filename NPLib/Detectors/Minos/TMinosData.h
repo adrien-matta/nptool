@@ -42,6 +42,16 @@ class TMinosData : public TObject {
     vector<UShort_t>   fMinos_T_DetectorNbr;
     vector<Double_t>   fMinos_Time;
 
+    // Charge
+    vector<UShort_t>   fMinos_Charge_Pad;
+    vector<Double_t>   fMinos_Charge_X;
+    vector<Double_t>   fMinos_Charge_Y;
+    vector<Double_t>   fMinos_Charge;
+
+    // DriftTime
+    vector<UShort_t>   fMinos_Drift_Pad;
+    vector<Double_t>   fMinos_DriftTime;
+
     // maybe directions with angle varagles have to be added?
 
 //From Santamaria:
@@ -109,7 +119,23 @@ int event;
       fMinos_Time.push_back(Time);
       fMinos_T_DetectorNbr.push_back(DetNbr);
     };//!
-    //
+
+     // Charge
+    inline void SetCharge(const UShort_t& Pad,const Double_t& Charge, const Double_t& X,const Double_t& Y ){
+      fMinos_Charge_Pad.push_back(Pad);
+      fMinos_Charge_X.push_back(X);
+      fMinos_Charge_Y.push_back(Y);
+      fMinos_Charge.push_back(Charge);
+    };//!
+
+     // DriftTime
+    inline void SetDriftTime(const UShort_t& Pad,const Double_t& DriftTime){
+      fMinos_Drift_Pad.push_back(Pad);
+      fMinos_DriftTime.push_back(DriftTime);
+    };//!
+
+  
+//
 
 
 
@@ -169,6 +195,9 @@ int event;
     // Min Distance
     inline Double_t GetD_min() const
     {return MINOS_D_min[0] ; }//!
+
+    // Charge
+
 
   //////////////////////////////////////////////////////////////
   // Required for ROOT dictionnary

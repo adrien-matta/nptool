@@ -90,8 +90,8 @@ class Minos : public NPS::VDetector{
     G4LogicalVolume* BuildWindow0();
     G4LogicalVolume* BuildWindow1();
     G4LogicalVolume* BuildWindow2();
-  
-  public:
+ 
+ public:
      
      G4double    GetTargetLength()      {return TargetLength*2.;};
      G4Material* GetTargetMaterial()    {return TargetMaterial;};
@@ -140,6 +140,7 @@ class Minos : public NPS::VDetector{
      G4double           WorldSizeXY;
      G4double           WorldSizeZ;
 
+     G4double           AnodeThickness;
   
     G4LogicalVolume* m_SquareDetector;
     G4LogicalVolume* m_CylindricalDetector;
@@ -159,7 +160,8 @@ class Minos : public NPS::VDetector{
      G4Tubs*             solidTPC; 
      G4LogicalVolume*   logicTPC; 
   // G4VPhysicalVolume* physiTPC; 
-     
+ 
+  ////////////////
      G4Tubs*             solidWindow0; 
      G4LogicalVolume*   logicWindow0; 
   // G4VPhysicalVolume* physiWindow0; 
@@ -214,6 +216,7 @@ class Minos : public NPS::VDetector{
     //   Associated Scorer
     G4MultiFunctionalDetector* m_MinosTargetScorer ;
     G4MultiFunctionalDetector* m_MinosTPCScorer ;
+    G4MultiFunctionalDetector* m_MinosPadScorer ;
   
     ////////////////////////////////////////////////////
     ///////////Event class to store Data////////////////
@@ -248,4 +251,82 @@ class Minos : public NPS::VDetector{
   public:
     static NPS::VDetector* Construct();
 };
+
+class PadParameterisation : public G4VPVParameterisation
+{
+ public:
+ PadParameterisation(){};
+ ~PadParameterisation(){};
+ void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume* physVol) const{
+   // Note: copyNo will start with zero!
+    int PadsPerRing[18]={144,152,156,164,172,176,184,192,196,204,212,216,224,228,236,244,248,256};  
+    G4int Ring = 0;
+    if  (copyNo<144){
+        Ring = 0;}
+    else if (144<=copyNo && copyNo<296){
+        Ring = 1;}
+    else if (296<=copyNo && copyNo<452){
+        Ring = 2;}
+    else if (452<=copyNo && copyNo<616){
+        Ring = 3;}
+    else if (616<=copyNo && copyNo<788){
+        Ring = 4;}
+    else if (788<=copyNo && copyNo<964){
+        Ring = 5;}
+    else if (964<=copyNo && copyNo<1148){
+        Ring = 6;}
+    else if (1148<=copyNo && copyNo<1340){
+        Ring = 7;}
+    else if (1340<=copyNo && copyNo<1536){
+        Ring = 8;}
+    else if (1536<=copyNo && copyNo<1740){
+        Ring = 9;}
+    else if (1740<=copyNo && copyNo<1952){
+        Ring = 10;}
+    else if (1952<=copyNo && copyNo<2168){
+        Ring = 11;}
+    else if (2168<=copyNo && copyNo<2392){
+        Ring = 12;}
+    else if (2392<=copyNo && copyNo<2620){
+        Ring = 13;}
+    else if (2620<=copyNo && copyNo<2856){
+        Ring = 14;}
+    else if (2856<=copyNo && copyNo<3100){
+        Ring = 15;}
+    else if (3100<=copyNo && copyNo<3348){
+        Ring = 16;}
+    else if (3348<=copyNo && copyNo<3604){
+        Ring = 17;}
+ 
+    G4double R = (50.+ Ring*2.2)*mm;
+    G4double dPhi= (2*M_PI/PadsPerRing[Ring]);
+    G4double Phi = copyNo*dPhi;
+    G4double Xposition = R*cos(Phi);
+    G4double Yposition = R*sin(Phi);
+    G4ThreeVector origin(Xposition,Yposition,0);
+    physVol->SetTranslation(origin);
+    G4RotationMatrix* Rot = new G4RotationMatrix();
+    Rot->rotateZ(-Phi);
+    physVol->SetRotation(Rot);
+ } 
+
+}; 
+
+
+
+/* class PadParameterisation : public G4VPVParameterisation */
+/* { */
+
+/*   public: */
+
+/*       PadParameterisation();//G4int NoPads, G4double StartZ, G4double Spacing); */
+
+/*     ~PadParameterisation(); */
+     
+/*     void ComputeTransformation(const G4int copyNo, */
+/*                              G4VPhysicalVolume *physVol) const; */
+   
+/* }; */
+
+
 #endif
