@@ -50,7 +50,14 @@ void TMinosData::Clear() {
   // Time
   fMinos_T_DetectorNbr.clear();
   fMinos_Time.clear();
-
+  // Charge
+  fMinos_Charge_Pad.clear();
+  fMinos_Charge_X.clear();
+  fMinos_Charge_Y.clear();
+  fMinos_Charge.clear();
+  // DriftTime
+  fMinos_Drift_Pad.clear();
+  fMinos_DriftTime.clear();
 
 //From Santamaria:
 

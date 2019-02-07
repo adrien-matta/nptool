@@ -32,23 +32,40 @@
 #include "G4MultiFunctionalDetector.hh"
 
 //G4 various object
-#include "G4Material.hh"
+#include "G4Material.hh" 
 #include "G4Transform3D.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+#include "G4PVReplica.hh"
+#include "G4PVParameterised.hh"
+#include "G4VPVParameterisation.hh"
+
+// G4 Field
+#include "G4FieldManager.hh"
+#include "G4ElectricField.hh"
+#include "G4UniformElectricField.hh"
+#include "G4TransportationManager.hh"
+#include "G4EqMagElectricField.hh"
+#include "G4MagIntegratorStepper.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4MagIntegratorDriver.hh"
+#include "G4ChordFinder.hh"
+#include "G4MaterialPropertiesTable.hh"
 
 // NPTool header
 #include "Minos.hh"
 #include "CalorimeterScorers.hh"
 #include "InteractionScorers.hh"
 #include "TPCScorers.hh"
+#include "CylinderTPCScorers.hh"
 
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 #include "NPOptionManager.h"
 #include "NPSHitsMap.hh"
+
 // CLHEP header
 #include "CLHEP/Random/RandGauss.h"
 
@@ -76,6 +93,7 @@ Minos::Minos(){
   m_Event = new TMinosData() ;
   m_MinosTargetScorer = 0;
   m_MinosTPCScorer = 0;
+  m_MinosPadScorer = 0;
   m_SquareDetector = 0;
   m_CylindricalDetector = 0;
   m_ReactionRegion=NULL;
@@ -101,7 +119,6 @@ Minos::Minos(){
   logicOuterRohacell=0;   
   solidKapton=0;   
   logicKapton=0;   
-
 }
 
 Minos::~Minos(){
@@ -122,6 +139,7 @@ void Minos::AddDetector(double  R, double  Theta, double  Phi, double TargetLeng
   m_Phi.push_back(Phi);
   m_TargetLength.push_back(TargetLength);
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // G4LogicalVolume* Minos::BuildSquareDetector(){
@@ -190,6 +208,17 @@ void Minos::DefineMaterials()
   mix->AddElement(Ar, fractionmass=82.*perCent);
   // overwrite computed meanExcitationEnergy with ICRU recommended value 
   mix->GetIonisation()->SetMeanExcitationEnergy(25.0*eV);
+
+  ///////// Drift properties
+
+  G4MaterialPropertiesTable* MPT = new G4MaterialPropertiesTable();      
+  MPT->AddConstProperty("DE_PAIRENERGY",30*eV);
+  MPT->AddConstProperty("DE_ABSLENGTH",10*pc); 
+  MPT->AddConstProperty("DE_DRIFTSPEED",11*cm/microsecond);
+  MPT->AddConstProperty("DE_TRANSVERSALSPREAD",50e-5*mm2/ns);
+  MPT->AddConstProperty("DE_LONGITUDINALSPREAD",50e-5*mm2/ns);
+  mix->SetMaterialPropertiesTable(MPT);
+
 
   G4Material* Ar_CF4_95_5 = 
     new G4Material("Ar_CF4_95_5", density= 0.0017611*g/cm3, ncomponents=2);
@@ -335,9 +364,6 @@ G4LogicalVolume* Minos::BuildCylindricalDetector(){
   }
   return m_CylindricalDetector;
 }
-
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -512,13 +538,15 @@ G4LogicalVolume* Minos::BuildTPC(){
         "TPC"); //name
 
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6,0.7));
       logicTPC->SetVisAttributes(atb);}
     logicTPC->SetSensitiveDetector(m_MinosTPCScorer);
 
   }
   return logicTPC;
 }
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //                               
 // windows
@@ -577,6 +605,7 @@ G4LogicalVolume* Minos::BuildWindow2(){
   }
   return logicWindow2;
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Virtual Method of NPS::VDetector class
@@ -597,7 +626,7 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
         cout << endl << "////  Minos " << i+1 <<  endl;
 
       G4ThreeVector Pos = NPS::ConvertVector(blocks[i]->GetTVector3("POS","mm"));
-      double TargetLength = blocks[i]->GetDouble("TargetLength","mm");
+       TargetLength = blocks[i]->GetDouble("TargetLength","mm");
       AddDetector(Pos,TargetLength);
     }
     else if(blocks[i]->HasTokenList(sphe)){
@@ -606,7 +635,7 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
       double R = blocks[i]->GetDouble("R","mm");
       double Theta = blocks[i]->GetDouble("Theta","deg");
       double Phi = blocks[i]->GetDouble("Phi","deg");
-      double TargetLength = blocks[i]->GetDouble("TargetLength","mm");
+       TargetLength = blocks[i]->GetDouble("TargetLength","mm");
       AddDetector(R,Theta,Phi,TargetLength);
     }
     else{
@@ -618,7 +647,6 @@ void Minos::ReadConfiguration(NPL::InputParser parser){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 // Construct detector and inialise sensitive part.
 // Called After DetecorConstruction::AddDetector Method
 void Minos::ConstructDetector(G4LogicalVolume* world){
@@ -633,6 +661,8 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     TPCRadiusExt = 91.525*mm;
 
     WindowThickness = 0.150/2.*mm;
+
+    AnodeThickness = 10*mm;
 
     DefineMaterials();
 
@@ -661,7 +691,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     v = v.unit();
     u = u.unit();
 
-    G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w);
+    /* G4RotationMatrix* Rot = new G4RotationMatrix(u,v,w); */
 
     // if(m_Shape[i] == "Cylindrical"){
     //   // new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
@@ -681,11 +711,79 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
         false,		//no boolean operation
         0);		//copy number
 
+
+//////// ELECTRIC FIELD
+
+    G4ElectricField* field = new G4UniformElectricField(G4ThreeVector(0.0,0.0,200*volt/cm));
+    // Create an equation of motion for this field
+    G4EqMagElectricField*  Equation = new G4EqMagElectricField(field); 
+    G4MagIntegratorStepper* Stepper = new G4ClassicalRK4( Equation, 8 );       
+
+    // Get the global field manager 
+    G4FieldManager* FieldManager= new G4FieldManager();
+    // Set this field to the global field manager 
+    FieldManager->SetDetectorField(field );
+    BuildTPC()->SetFieldManager(FieldManager,true);
+
+    G4MagInt_Driver* IntgrDriver = new G4MagInt_Driver(0.1*mm, 
+        Stepper, 
+        Stepper->GetNumberOfVariables() );
+
+    G4ChordFinder* ChordFinder = new G4ChordFinder(IntgrDriver);
+    FieldManager->SetChordFinder( ChordFinder );
+
+
+///////// CONSTRUCT ANODE w/ PADS
+
+    G4double InnerRadius = 45*mm; 
+    G4double OuterRadius = 88.46*mm; 
+    // Volume where Pads are placed 
+    G4Tubs* solidAnode = new G4Tubs("Anode",	
+        InnerRadius, OuterRadius, 1.2*mm,0,360*deg);
+    G4LogicalVolume* logicAnode = new G4LogicalVolume(solidAnode,
+        TPCMaterial, 
+        "Anode");
+    new G4PVPlacement(0,		
+            G4ThreeVector(0,0,-ChamberLength+2*mm),
+        logicAnode,	//its logical volume
+        "Anode",	//its name
+        logicTPC,	//its mother  volume
+        false,		//no boolean operation
+        0);		//copy number
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1., 1., 0.,0.1));
+    logicAnode->SetVisAttributes(atb);}
+
+    G4Material* Cu
+            = MaterialManager::getInstance()->GetMaterialFromLibrary("Cu");
+  
+    G4Box* solidPad = new G4Box("Pad", 1.05*mm,1.05*mm,1.05*mm);
+    G4LogicalVolume* logicPad = new G4LogicalVolume(solidPad, Cu,"Pad");
+
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0.8, 0.4, 0.,0.8));
+    logicPad->SetVisAttributes(atb);}
+    logicPad->SetSensitiveDetector(m_MinosPadScorer);
+    
+    G4int NbOfPads = 3604;
+  
+  G4VPVParameterisation* PadParam =
+    new PadParameterisation(
+            );
+
+    new G4PVParameterised("Pad",       // their name
+        logicPad,   // their logical volume
+        logicAnode,       // Mother logical volume
+        kZAxis,          // Are placed along this axis
+        NbOfPads,    // Number of Pads
+        PadParam,    // The parametrisation
+        false); // checking overlaps
+
+//////////////////////////////////////
+   
     new G4PVPlacement(0,		//its name
-        G4ThreeVector(0,0,0/*ChamberLength*/),	//at (0,0,0)
+        G4ThreeVector(0,0,0),	//at (0,0,0)
         BuildOuterRohacell(),	//its logical volume
-        "Rohacell"/*"OuterRohacell"*/,	//its name
-        logicTPC/*world*/,	//its mother  volume
+        "Rohacell",	//its name
+        logicTPC,	//its mother  volume
         false,		//no boolean operation
         0);		//copy number
 
@@ -771,7 +869,6 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     //G4ProductionCuts* pcut = new G4ProductionCuts();
     if(!m_ReactionRegion){
 
-
       //    ecut->SetProductionCut(1000,"e-");
       //  pcut->SetProductionCut(1,"p");
 
@@ -812,6 +909,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
   world->SetVisAttributes (G4VisAttributes::Invisible);
 
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Add Detector branch to the EventTree.
 // Called After DetecorConstruction::AddDetector Method
@@ -834,7 +932,6 @@ void Minos::ReadSensitive(const G4Event* ){
   // Calorimeter scorer
   CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_MinosTargetScorer->GetPrimitive(0);
 
-
   unsigned int size = Scorer->GetMult(); 
   for(unsigned int i = 0 ; i < size ; i++){
     vector<unsigned int> level = Scorer->GetLevel(i); 
@@ -846,6 +943,21 @@ void Minos::ReadSensitive(const G4Event* ){
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
+
+  ///////////
+  // DriftElectron scorer
+  CylinderTPCScorers::PS_TPCAnode* Scorer2= (CylinderTPCScorers::PS_TPCAnode*) m_MinosPadScorer->GetPrimitive(0);
+
+  unsigned int size2 = Scorer2->GetMult(); 
+  for(unsigned int i = 0 ; i < size2 ; i++){
+    int Pad = Scorer2->GetPad(i);
+    double Charge = Scorer2->GetCharge(i);
+    double X = Scorer2->GetX(i);
+    double Y = Scorer2->GetY(i);
+    double DriftTime = RandGauss::shoot(Scorer2->GetDriftTime(i),Minos_NS::ResoTime);
+    m_Event->SetCharge(Pad,Charge,X,Y);
+    m_Event->SetDriftTime(Pad,DriftTime); 
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -854,34 +966,42 @@ void Minos::InitializeScorers() {
   // This check is necessary in case the geometry is reloaded
   bool already_exist = false;
   bool already_exist2 = false;
-
+  bool already_exist3 = false;
   
   m_MinosTargetScorer = CheckScorer("MinosTargetScorer",already_exist) ;
   m_MinosTPCScorer = CheckScorer("MinosTPCScorer",already_exist2) ;
+  m_MinosPadScorer = CheckScorer("MinosPadScorer",already_exist3) ;
 
-  if(already_exist && already_exist2 ) 
+  if(already_exist && already_exist2 && already_exist3 ) 
    return ;
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
   G4VPrimitiveScorer* CalorimeterMinosTargetScorer= new CalorimeterScorers::PS_Calorimeter("CalorimeterMinosTargetScore",level, 0) ;
   G4VPrimitiveScorer* InteractionMinosTargetScorer= new InteractionScorers::PS_Interactions("InteractionMinosTargetScore",ms_InterCoord, 0) ;
+  G4VPrimitiveScorer* DriftElectronMinosTPCScorer= new CylinderTPCScorers::PS_TPCAnode("DriftElectronsScore",level, 0) ;
+
 
   //and register it to the multifunctionnal detector
   m_MinosTargetScorer->RegisterPrimitive(CalorimeterMinosTargetScorer);
   m_MinosTargetScorer->RegisterPrimitive(InteractionMinosTargetScorer);
+  m_MinosPadScorer->RegisterPrimitive(DriftElectronMinosTPCScorer);
 
   G4VPrimitiveScorer* TPCScorer= new TPCScorers::PS_TPCCathode("MinosTPC", 0);
-  //G4VPrimitiveScorer* TPCCalScorer= new CalorimeterScorers::PS_Calorimeter("TPCCalScorer",level, 0);
+  
   G4VPrimitiveScorer* TPCInterScorer= new InteractionScorers::PS_Interactions("TPCInterScorer",ms_InterCoord, 0);
 
+  G4VPrimitiveScorer* PadScorer= new CylinderTPCScorers::PS_TPCAnode("MinosTPCAnode",level, 0);
+  
   m_MinosTPCScorer->RegisterPrimitive(TPCScorer);
   // m_MinosTPCScorer->RegisterPrimitive(TPCCalScorer);
   m_MinosTPCScorer->RegisterPrimitive(TPCInterScorer);
+  m_MinosPadScorer->RegisterPrimitive(PadScorer);
 
   
   G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTPCScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosTargetScorer) ;
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_MinosPadScorer) ;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
