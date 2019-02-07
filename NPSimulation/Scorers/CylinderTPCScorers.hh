@@ -1,28 +1,26 @@
 #ifndef DEAnodeScorers_h
+
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
- *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre MORFOUACE  contact address: morfouace@ganil.fr    *
+ * Original Author: Cyril Lenain  contact address: lenain@lpccaen.in2p3.fr   *
  *                                                                           *
- * Creation Date  : July 2018                                                *
+ * Creation Date  : february 2019                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  File old the scorer specific to the Silicon Detector                     *
+ *  Scorer for MINOS-TPC Drift Electron collector                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- * This new style of scorer is aim to become the standard way of doing scorer*
- * in NPTool.                                                                *
- *The index is build using the TrackID, Detector Number and Strip Number.    *
- *The scorer Hold Energy and time together                                   *
- *Only one scorer is needed for a detector                                   *
+ * Count drift electrons per pads in MINOS                                    *
+ *                                                                           *
  *****************************************************************************/
+
 #include "G4VPrimitiveScorer.hh"
 #include "NPSHitsMap.hh"
 

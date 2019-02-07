@@ -5,17 +5,17 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre MORFOUACE  contact address: morfouace@ganil.fr    *
+ * Original Author: Cyril Lenain  contact address: lenain@lpccaen.in2p3.fr   *
  *                                                                           *
- * Creation Date  : June 2018                                                *
+ * Creation Date  : february 2019                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  Scorer for TPC Drift Electron collector                                  *
+ *  Scorer for MINOS-TPC Drift Electron collector                            *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- * This new type of scorer to count drift electron in the cathode            *
+ * Count drift electrons per pads in MINOS                                    *
  *                                                                           *
  *****************************************************************************/
 #include "CylinderTPCScorers.hh"
