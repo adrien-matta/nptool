@@ -13,42 +13,42 @@ Dali
  Alpha = 240 deg
  Zeta = -90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 180 deg 
  Zeta = -90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 120 deg 
  Zeta = -90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 60 deg 
  Zeta = -90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm
  Alpha = 0 deg 
  Zeta = -90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = -60 deg 
  Zeta = -90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 
 
 
@@ -58,40 +58,40 @@ Dali
  Alpha = 240 deg 
  Zeta = 90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 180 deg 
  Zeta = 90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 120 deg 
  Zeta = 90.03 mm
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 60 deg 
  Zeta = 90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = 0 deg 
  Zeta = 90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Dali
  R = 212.4 mm 
  Alpha = -60 deg 
  Zeta = 90.03 mm 
  Shape = Square
- Material = NaI(Tl)
+ Material = NaI_Tl
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

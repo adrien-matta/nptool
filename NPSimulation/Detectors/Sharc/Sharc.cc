@@ -80,9 +80,9 @@ Sharc::Sharc(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Sharc::~Sharc(){
-  delete m_BOXScorer;
-  delete m_PADScorer;
-  delete m_QQQScorer;
+  //delete m_BOXScorer;
+  //delete m_PADScorer;
+  //delete m_QQQScorer;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -690,14 +690,13 @@ void Sharc::ReadSensitive(const G4Event* ){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::InitializeScorers(){
-
   //   Silicon Associate Scorer
   bool already_exist = false;
   m_BOXScorer = CheckScorer("Sharc_BOXScorer",already_exist);
   m_PADScorer = CheckScorer("Sharc_PADScorer",already_exist);
   m_QQQScorer = CheckScorer("Sharc_QQQScorer",already_exist);
   // if the scorer were created previously nothing else need to be made
-  if(already_exist) return;
+ if(already_exist) return;
 
   G4VPrimitiveScorer* BOXScorer =
     new  DSSDScorers::PS_Rectangle("SharcBOX",0,
@@ -735,10 +734,12 @@ void Sharc::InitializeScorers(){
   m_QQQScorer->RegisterPrimitive(QQQScorer);
   m_QQQScorer->RegisterPrimitive(InterScorerQQQ);
 
+  G4SDManager::GetSDMpointer()->ListTree();
   //   Add All Scorer to the Global Scorer Manager
   G4SDManager::GetSDMpointer()->AddNewDetector(m_BOXScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_QQQScorer) ;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

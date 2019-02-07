@@ -70,7 +70,7 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command, G4String value){
   else if( command == OpenCmd ){ 
     Detector->RedefineGeometry(value); 
   }
-  else if(command ==ExportCmd ){
+  else if(command == ExportCmd ){
     Detector->ExportGeometry(value);
   }
 }

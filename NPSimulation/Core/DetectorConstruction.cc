@@ -37,6 +37,9 @@
 #include "G4VPhysicalVolume.hh"
 #include "G4SolidStore.hh"
 #include "G4RunManager.hh"
+#include "G4SDManager.hh"
+#include "G4RegionStore.hh"
+#include "G4TransportationManager.hh"
 
 #ifdef NPS_GDML
 #include"G4GDMLParser.hh"
@@ -57,9 +60,12 @@
 #include "MaterialManager.hh"
 #include "DetectorMessenger.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-DetectorConstruction::DetectorConstruction():  world_log(0), world_phys(0){
-  m_Target   = NULL;
-  m_Chamber  = NULL ;
+DetectorConstruction::DetectorConstruction(){
+  world_log   = NULL;
+  world_phys  = NULL;
+  world_box   = NULL;
+  m_Target    = NULL;
+  m_Chamber   = NULL ;
   m_Messenger =  new DetectorMessenger(this);
   m_ReadSensitivePtr = &NPS::VDetector::ReadSensitive;
 }
@@ -91,7 +97,6 @@ void DetectorConstruction::AddDetector(NPS::VDetector* NewDetector){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
-  
   // Construct the World volume
   G4Material* Vacuum = MaterialManager::getInstance()->GetMaterialFromLibrary("Vacuum");
 
@@ -100,14 +105,19 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   G4double world_y = 100.0 * m;
   G4double world_z = 100.0 * m;
 
-  G4Box* world_box
-    = new G4Box("world_box", world_x, world_y, world_z);
+  if(!world_box)
+    world_box = new G4Box("world_box", world_x, world_y, world_z);
 
-  world_log = new G4LogicalVolume(world_box, Vacuum, "world_log", 0, 0, 0);
-  world_phys = new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
-
-    G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
+  if(!world_log)
+    world_log = new G4LogicalVolume(world_box, Vacuum, "world_log", 0, 0, 0);
+  
+  if(!world_phys)
+    world_phys = new G4PVPlacement(0, G4ThreeVector(), world_log, "world", 0, false, 0);
+  
+  G4VisAttributes* VisAtt = new G4VisAttributes(G4VisAttributes::Invisible);
   world_log->SetVisAttributes(VisAtt);
+
+
 
   //------------------------------------------------------------------
 
@@ -127,9 +137,13 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   }
   else
     VerboseLevel = 0;
-  
-   if(VerboseLevel)
+
+  if(VerboseLevel)
     cout << endl << "\033[1;36m//// Reading detector file  "<< Path  << endl<<endl; 
+
+  if(already)
+    cout << endl << "\033[1;36m//// Changing detector file to  "<< Path  << endl<<endl; 
+
 
   // Access the DetectorFactory and ask it to load the Class List
   std::string classlist = getenv("NPTOOL");
@@ -148,12 +162,12 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
     AddDetector(m_Target);
   }
   else{
-     blocks = parser.GetAllBlocksWithToken("CryogenicTarget");
-     if(blocks.size()==1){
+    blocks = parser.GetAllBlocksWithToken("CryogenicTarget");
+    if(blocks.size()==1){
       m_Target = new Target();
       m_Target->ReadConfiguration(parser);
       AddDetector(m_Target);
-     }
+    }
     else{
       cout << "WARNING: No target found in detector input file! Use with caution" << endl;
     }
@@ -175,25 +189,24 @@ G4VPhysicalVolume* DetectorConstruction::ReadConfigurationFile(){
   std::vector<std::string> token = parser.GetAllBlocksToken();
   // Look for detectors among them
   for(unsigned int i = 0 ; i < token.size() ; i++){
-  NPS::VDetector* detector = theFactory->Construct(token[i]);
-  if(detector!=NULL && check.find(token[i])==check.end()){
-    cout << "/////////////////////////////////////////" << endl;
-    cout << "//// Adding Detector " << token[i] << endl; 
-    detector->ReadConfiguration(parser);
-    cout << "/////////////////////////////////////////" << endl;
-    // Add array to the VDetector Vector
-    AddDetector(detector);
-    check.insert(token[i]);
-  }
-  else if(detector!=NULL)
-    delete detector;
+    NPS::VDetector* detector = theFactory->Construct(token[i]);
+    if(detector!=NULL && check.find(token[i])==check.end()){
+      cout << "/////////////////////////////////////////" << endl;
+      cout << "//// Adding Detector " << token[i] << endl; 
+      detector->ReadConfiguration(parser);
+      cout << "/////////////////////////////////////////" << endl;
+      // Add array to the VDetector Vector
+      AddDetector(detector);
+      check.insert(token[i]);
+    }
+    else if(detector!=NULL)
+      delete detector;
   }
 
   cout << "\033[0m" ;
 
   // Create the Material sample for DEDX tables
   MaterialManager::getInstance()->CreateSampleVolumes(world_log);
-
   return world_phys;
 }
 
@@ -212,6 +225,7 @@ G4LogicalVolume* DetectorConstruction::GetWorldLogic(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::ClearGeometry(){
+
   unsigned int mySize = m_Detectors.size();
 
   for (unsigned short i = 0 ; i < mySize ; i++) {
@@ -219,29 +233,57 @@ void DetectorConstruction::ClearGeometry(){
   }
 
   m_Detectors.clear();
-  m_Target = 0;
-  m_Chamber = 0 ;
-  world_log=0;
-  world_phys=0;
+  // Delete previous Sensitive Detector (Scorer) 
+  delete G4SDManager::GetSDMpointer();
 
   G4GeometryManager::GetInstance()->OpenGeometry();
-  G4PhysicalVolumeStore::GetInstance()->Clean();
-  G4LogicalVolumeStore::GetInstance()->Clean();
-  G4SolidStore::GetInstance()->Clean();
+
+  // Cleaning stores by hand (everything but the world)
+  // Cleaning the PVP
+  G4PhysicalVolumeStore* PVP = G4PhysicalVolumeStore::GetInstance();
+  while(PVP->size()>1){
+    delete PVP->at(PVP->size()-1);
+    PVP->pop_back();
+  }
+  // Cleaning the Logical Volume
+  G4LogicalVolumeStore* LV = G4LogicalVolumeStore::GetInstance();
+  while(LV->size()>1) {
+    delete LV->at(LV->size()-1);
+    LV->pop_back();
+  }
+  // Cleaning the Solid store
+  G4SolidStore* SL = G4SolidStore::GetInstance();
+  while(SL->size()>1) {
+    delete SL->at(SL->size()-1);
+    SL->pop_back();
+  }
+  
+  G4Region* reg = G4RegionStore::GetInstance()->GetRegion("NPSimulationProcess",false);
+  if(reg)
+    G4RegionStore::GetInstance()->DeRegister(reg);
+  
+  delete reg;
+
+  m_Target   = 0;
+  m_Chamber  = 0;
+  world_log->ClearDaughters();
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void DetectorConstruction::RedefineGeometry(std::string file){
   ClearGeometry() ;
-  
+
   if(file!="")
     NPOptionManager::getInstance()->SetDetectorFile(file);
+  Construct();
+ 
+ if(m_Target)
+    m_Target->SetReactionRegion();
 
-  G4RunManager::GetRunManager()->DefineWorldVolume(Construct());
   G4RunManager::GetRunManager()->GeometryHasBeenModified();
   G4RunManager::GetRunManager()->PhysicsHasBeenModified() ;
   G4RunManager::GetRunManager()->Initialize();
-  
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -18,6 +18,6 @@ Minos
   THETA= 90 deg
   POS = 0 0 -50 cm
   PHI= 63 deg
-  Shape= Cylindrical
+  TargetLength = 152.76 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

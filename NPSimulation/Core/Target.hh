@@ -50,7 +50,7 @@ using namespace CLHEP;
 class Target : public NPS::VDetector{
 public:
   Target();
-  ~Target(){};
+  ~Target();
   
 public:
   //   Read stream at Configfile to pick-up parameters of detector (Position,...)
@@ -148,14 +148,16 @@ private:
   G4double    m_TargetY;
   G4double    m_TargetZ;
 
-public: // Region were reaction can occure
-  void SetReactionRegion();  
- 
 private:
   // Region were reaction can occure:
   G4Region* m_ReactionRegion;
   vector<G4VFastSimulationModel*> m_ReactionModel;
-  // Pointer to the last target generated (0 if none)
+ 
+ public: // Region were reaction can occure
+  void SetReactionRegion();  
+  inline G4Region* GetReactionRegion(){return m_ReactionRegion;}; 
+  inline G4LogicalVolume* GetLogicalVolume(){return m_TargetLogic;};
+
   private:
     static Target*  TargetInstance ;
 

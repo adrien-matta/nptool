@@ -530,6 +530,8 @@ map<string, TH1*> TMugastPhysics::GetSpectra() {
     map<string, TH1*> empty;
     return empty;
   }*/
+  map<string, TH1*> empty;
+  return empty;
 }
 
 ///////////////////////////////////////////////////////////////////////////

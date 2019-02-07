@@ -55,7 +55,7 @@ class Dali : public NPS::VDetector{
     // Spherical
     void AddDetector(double R,double Theta,double Phi,string Shape);  
     //Cylindrical
-    void AddDetector2(double R,double Alpha,double Zeta,string Shape);  
+  void AddDetector2(double R,double Alpha,double Zeta,string Shape);
 
     G4LogicalVolume* BuildSquareDetector();
     G4LogicalVolume* BuildCylindricalDetector();
@@ -74,6 +74,12 @@ class Dali : public NPS::VDetector{
     G4LogicalVolume* AriaExtrude;
     G4LogicalVolume* Logic_ArrayDali_1;
 
+    G4Material* MgO;
+    G4Material* NaI_Tl;
+
+
+  
+
     ////////////////////////////////////////////////////
     //////  Inherite from NPS::VDetector class /////////
     ////////////////////////////////////////////////////
@@ -82,6 +88,11 @@ class Dali : public NPS::VDetector{
     // Called in DetecorConstruction::ReadDetextorConfiguration Method
     void ReadConfiguration(NPL::InputParser) ;
 
+    // Definition of materials
+    // Called in ConstructDetector()
+    void DefinitionMaterials();
+
+  
     // Construct detector and inialise sensitive part.
     // Called After DetecorConstruction::AddDetector Method
     void ConstructDetector(G4LogicalVolume* world) ;
