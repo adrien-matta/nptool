@@ -102,6 +102,7 @@ class NPOptionManager{
       bool   GetOnline()                   {return fOnline;}
       bool   GetPROOF()                    {return fPROOFMode;}
       bool   GetG4BatchMode()              {return fG4BatchMode;}
+      bool   GetCircularTree()                 {return fCircularTree;}
       int    GetVerboseLevel()             {return fVerboseLevel;}
       int    GetNumberOfEntryToAnalyse()   {return fNumberOfEntryToAnalyse;} 
       int    GetFirstEntryToAnalyse()      {return fFirstEntryToAnalyse;} 
@@ -141,6 +142,7 @@ class NPOptionManager{
       bool   fLastPhyFile;
       bool   fLastResFile;
       bool   fLastAnyFile;
+      bool   fCircularTree;
       int    fVerboseLevel; // 0 for not talk, 1 for talking
       int    fNumberOfEntryToAnalyse; // use to limit the number of analysed in NPA
       int    fFirstEntryToAnalyse; // use to set the first event analysed in NPA (total: fFirstEntryToAnalyse -> fFirstEntryToAnalyse + fNumberOfEntryToAnalyse)

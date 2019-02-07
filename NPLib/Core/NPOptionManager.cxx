@@ -76,6 +76,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
   fPROOFMode = false;
+  fCircularTree = false;
   fOnline = false;
   fG4BatchMode = false;
 #ifdef __linux__
@@ -158,6 +159,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--last-any")                            fLastAnyFile = true ;
 
     else if (argument == "--online")                              {fOnline = true ;fGenerateHistoOption=true;}
+
+    else if (argument == "--circular")                            {fCircularTree = true;}
 
 
     //else ;
@@ -408,6 +411,7 @@ void NPOptionManager::DisplayHelp(){
   std::cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << std::endl ;
   std::cout << "\t--last-any\t\t\tIgnore the list of Run to treat if any and analysed the last generated root file" << std::endl ;
   std::cout << "\t--online  \t\t\tStart the spectra server" << std::endl ;
+  std::cout << "\t--circular \t\t\tSet the output tree a circular one" << std::endl ;
   std::cout << std::endl << "NPSimulation only:"<<std::endl;
   std::cout << "\t-M <arg>\t\t\tExecute Geant4 macro <arg> at startup" << std::endl ;
   std::cout << "\t-B <arg>\t\t\tExecute in batch mode (no ui) with Geant4 macro <arg> at startup" << std::endl ;

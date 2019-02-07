@@ -125,6 +125,10 @@ RootOutput::RootOutput(std::string fileNameBase, std::string treeNameBase){
   // Init TAsciiFile objects
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
+
+  if(!NPOptionManager::getInstance()->GetCircularTree()){
+    pRootTree->SetCircular(10000); 
+  }
 }
 
 
