@@ -22,6 +22,7 @@
 
 #include "NPSpectraServer.h"
 #include "NPCore.h"
+#include "RootOutput.h"
 #include <cstdlib>
 #include <unistd.h>
 #include<iostream>
@@ -62,13 +63,15 @@ NPL::SpectraServer::SpectraServer(){
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
+ /*FIXME
   if(m_Server && m_Monitor){
-    TSocket* s ;
     m_Monitor->ResetInterrupt();
-    if((s=m_Monitor->Select(1))!=(TSocket*)-1){
-      HandleSocket(s);
+    TSocket* s = m_Monitor->Select();
+    if(s){
+        HandleSocket(s);
     }
   }
+  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,17 +109,18 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     answer.Reset();
     TObject* h =NULL;
     if (!strcmp(request, "RequestSpectra")){
-      std::cout << "Prepare" << std::endl;
       answer.WriteObject(m_Spectra);
-      std::cout << "Compress" << std::endl;
-      answer.Compress();
-      std::cout << "Send " << std::endl;
       s->Send(answer);
-      std::cout << "done" << std::endl;
     }
 
     else if (!strcmp(request, "RequestClear")){
       // TO DO 
+    }
+
+    else if (!strcmp(request, "RequestTree")){
+      TTree* tree = RootOutput::getInstance()->GetTree();
+      answer.WriteObject(tree);
+      s->Send(answer);
     }
 
     else{
