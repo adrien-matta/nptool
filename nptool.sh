@@ -1,35 +1,8 @@
-#! /bin/bash
-
-# remove a given directory to PATH
-function np_path_remove {
-  # Delete path by parts so we can never accidentally remove sub paths
-  PATH=${PATH//":$1:"/":"} # delete any instances in the middle
-  PATH=${PATH/#"$1:"/} # delete any instance at the beginning
-  PATH=${PATH/%":$1"/} # delete any instance in the at the end
-}
-
-# remove a given directory to LD_LIBRARY_PATH
-function np_ld_remove {
-  # Delete path by parts so we can never accidentally remove sub paths
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH//":$1:"/":"} # delete any instances in the middle
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH/#"$1:"/} # delete any instance at the beginning
-  LD_LIBRARY_PATH=${LD_LIBRARY_PATH/%":$1"/} # delete any instance in the at the end
-}
-# remove a given directory to DYLD_LIBRARY_PATH
-function np_dyld_remove {
-  # Delete path by parts so we can never accidentally remove sub paths
-  DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH//":$1:"/":"} # delete any instances in the middle
-  DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH/#"$1:"/} # delete any instance at the beginning
-  DYLD_LIBRARY_PATH=${DYLD_LIBRARY_PATH/%":$1"/} # delete any instance in the at the end
-}
-
-
-  CMD="export"
-  SEP="="
+#!/bin/sh
 
 # test if export is supported
 export 1>/dev/null 2>/dev/null
-if [ "${?}" == 0 ]; then
+if [ $? -eq 0 ]; then
   CMD="export"
   SEP="="
 else
@@ -52,21 +25,6 @@ elif [ -n "$BASH_VERSION" ]; then
 else
    echo "neither bash or zsh is used, abort"
    exit 1
-fi
-
-# if NPTOOL already exist, remove old path from PATH and LIBRARY_PATH
-if [ ! -z "{$NPTOOL}" ];
-then
-  np_path_remove ${NPTOOL}/NPLib/bin
-  np_path_remove ${NPTOOL}/NPSimulation/bin
-  if [ "${NPARCH}" = "Darwin" ] ; 
-  then 
-  np_dyld_remove ${NPTOOL}/NPLib/lib
-  np_dyld_remove ${NPTOOL}/NPSimulation/lib
-  else
-  np_ld_remove ${NPTOOL}/NPLib/lib
-  np_ld_remove ${NPTOOL}/NPSimulation/lib
-  fi
 fi
 
 # export NPTOOL environment variable
@@ -123,7 +81,8 @@ _npp() {
 # associate the tab completion to npp
 if [ -n "$ZSH_VERSION" ]; then
   # ZSH have its own command to make things easy
- compdef _function foobar
+  #compdef _directories -W $NPTOLL/Project npp
+  :
 else
   # the rest of the world use standard posix complete
   complete -F _npp -o filenames npp
