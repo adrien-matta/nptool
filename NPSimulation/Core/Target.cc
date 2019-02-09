@@ -64,6 +64,8 @@ using namespace CLHEP ;
 using namespace std;
 
 
+
+Target* Target::TargetInstance=0;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Specific Method of this class
 Target::Target(){
@@ -96,10 +98,7 @@ Target::Target(){
   m_ShieldFrontRadius = 0 ; 
   m_ShieldBackRadius = 0 ;
   m_ShieldMaterial = 0 ;
-
-
-
-
+  TargetInstance = this;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Target::~Target(){
@@ -205,7 +204,7 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       exit(1);
     }
 
-    if(ctarget[0]->HasToken("360AYERS"))
+    if(ctarget[0]->HasToken("NBLAYERS"))
       m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
 
   }

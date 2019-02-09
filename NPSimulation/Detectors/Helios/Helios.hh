@@ -1,3 +1,5 @@
+#ifndef Helios_h
+#define Helios_h 1
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -6,71 +8,116 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : 31/01/12                                                 *
- * Last update    : 31/08/15                                                 *
+ * Creation Date  : octobre 2016                                             *
+ * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class manages different shapes of module for the Helios  *
- *             detector. It allows to have Helios geometries with an         *
- *             heterogeneous set of modules                                  *
+ * Decription:                                                               *
+ *  This class describe  Helios simulation                                  *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
  *                                                                           *
- *                                                                           *
  *****************************************************************************/
 
-#ifndef Helios_h
-#define Helios_h 1
-
-// C++ headers
+// C++ header
+#include <string>
 #include <vector>
+#include <set>
+using namespace std;
+
+// G4 headers
+#include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
+#include "G4LogicalVolume.hh"
+#include "G4MultiFunctionalDetector.hh"
 
 // NPTool header
 #include "NPSVDetector.hh"
-#include "HeliosModule.hh"
+#include "THeliosData.h"
 #include "NPInputParser.h"
-using namespace std;
-using namespace CLHEP;
 
+class Helios : public NPS::VDetector{
+  ////////////////////////////////////////////////////
+  /////// Default Constructor and Destructor /////////
+  ////////////////////////////////////////////////////
+  public:
+    Helios() ;
+    virtual ~Helios() ;
 
+    ////////////////////////////////////////////////////
+    /////// Specific Function of this Class ///////////
+    ////////////////////////////////////////////////////
+  public:
+    // adding Helios silicon and support tube
+    void AddHelios(double Z,string Face);
 
-class Helios : public NPS::VDetector
-{
-   ////////////////////////////////////////////////////
-   /////// Default Constructor and Destructor /////////
-   ////////////////////////////////////////////////////
-public:
-   Helios();
-   virtual ~Helios();
+    G4LogicalVolume* BuildSquareTube();
+    G4LogicalVolume* BuildSiliconWafer();
+    G4LogicalVolume* BuildMagnet();
 
-   ////////////////////////////////////////////////////
-   /////////  Inherite from NPS::VDetector class ///////////
-   ////////////////////////////////////////////////////
-public:
-   // Read stream at Configfile to pick-up parameters of detector (Position,...)
-   // Called in DetecorConstruction::ReadDetextorConfiguration Method
-   void ReadConfiguration(NPL::InputParser);
+  private:
+    G4LogicalVolume* m_SquareTube;
+    G4LogicalVolume* m_SiliconWafer;
+    G4LogicalVolume* m_ActiveWafer;
+    G4LogicalVolume* m_Magnet; 
+    
+    ////////////////////////////////////////////////////
+    //////  Inherite from NPS::VDetector class /////////
+    ////////////////////////////////////////////////////
+  public:
+    // Read stream at Configfile to pick-up parameters of detector (Position,...)
+    // Called in DetecorConstruction::ReadDetextorConfiguration Method
+    void ReadConfiguration(NPL::InputParser) ;
 
-   // Construct detector and inialise sensitive part.
-   // Called After DetecorConstruction::AddDetector Method
-   void ConstructDetector(G4LogicalVolume* world);
+    // Construct detector and inialise sensitive part.
+    // Called After DetecorConstruction::AddDetector Method
+    void ConstructDetector(G4LogicalVolume* world) ;
 
-   // Add Detector branch to the EventTree.
-   // Called After DetecorConstruction::AddDetector Method
-   void InitializeRootOutput();
+    // Add Detector branch to the EventTree.
+    // Called After DetecorConstruction::AddDetector Method
+    void InitializeRootOutput() ;
 
-   // Read sensitive part and fill the Root tree.
-   // Called at in the EventAction::EndOfEventAvtion
-   void ReadSensitive(const G4Event* event);
+    // Read sensitive part and fill the Root tree.
+    // Called at in the EventAction::EndOfEventAvtion
+    void ReadSensitive(const G4Event* event) ;
 
-public:
-   // Initialize all scorers necessary for each detector
-   void InitializeScorers();
+  public:   // Scorer
+    //   Initialize all Scorer used by the MUST2Array
+    void InitializeScorers() ;
 
-private:
-   vector<HeliosModule*> m_Modules;
-public:
+    //   Associated Scorer
+    G4MultiFunctionalDetector* m_HeliosScorer ;
+    ////////////////////////////////////////////////////
+    ///////////Event class to store Data////////////////
+    ////////////////////////////////////////////////////
+  private:
+    THeliosData* m_Event ;
+
+    ////////////////////////////////////////////////////
+    ///////////////Private intern Data//////////////////
+    ////////////////////////////////////////////////////
+  private: // Geometry
+    // Detector Coordinate 
+    vector<double>  m_Z; 
+    vector<string>  m_Face;
+    
+    // keep track of the Z used to put the tube only once
+    set<double>     m_UsedZ; 
+    
+    // Magnetic field
+    double m_B ;
+   
+    // Visualisation Attribute
+    G4VisAttributes* m_VisSquareTube;
+    G4VisAttributes* m_VisPassiveSilicon;
+
+    G4VisAttributes* m_VisSilicon;
+    G4VisAttributes* m_VisMagnet;
+
+  // Needed for dynamic loading of the library
+  public:
     static NPS::VDetector* Construct();
 };
 #endif

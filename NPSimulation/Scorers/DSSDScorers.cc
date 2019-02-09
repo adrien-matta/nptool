@@ -373,21 +373,21 @@ G4bool PS_Resistive::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   if(it!=m_HitUp.end())
     it->Add(t_EnergyUp);
   else
-    m_HitUp.Set(t_EnergyUp,t_Time,t_DetectorNumber,t_StripWidthNumber);
+    m_HitUp.Set(t_EnergyUp,t_Time,t_StripWidthNumber,t_DetectorNumber);
     
   // Down
   it = m_HitDown.find(DSSDData::CalculateIndex(t_DetectorNumber,t_StripWidthNumber));
   if(it!=m_HitDown.end())
     it->Add(t_EnergyDown);
   else
-    m_HitDown.Set(t_EnergyDown,t_Time,t_DetectorNumber,t_StripWidthNumber);
+    m_HitDown.Set(t_EnergyDown,t_Time,t_StripWidthNumber,t_DetectorNumber);
   
    // Back
   it = m_HitBack.find(DSSDData::CalculateIndex(t_DetectorNumber,t_StripWidthNumber));
   if(it!=m_HitBack.end())
     it->Add(t_Energy);
   else
-    m_HitBack.Set(t_Energy,t_Time,t_DetectorNumber,1);
+    m_HitBack.Set(t_Energy,t_Time,1,t_DetectorNumber);
   
   
   
