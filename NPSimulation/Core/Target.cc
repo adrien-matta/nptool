@@ -204,7 +204,7 @@ void Target::ReadConfiguration(NPL::InputParser parser){
       exit(1);
     }
 
-    if(ctarget[0]->HasToken("360AYERS"))
+    if(ctarget[0]->HasToken("NBLAYERS"))
       m_TargetNbLayers = ctarget[0]->GetInt("NBLAYERS");
 
   }

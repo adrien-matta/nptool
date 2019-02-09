@@ -126,8 +126,9 @@ RootOutput::RootOutput(std::string fileNameBase, std::string treeNameBase){
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
 
-  if(!NPOptionManager::getInstance()->GetCircularTree()){
-    pRootTree->SetCircular(10000); 
+  if(NPOptionManager::getInstance()->GetCircularTree()){
+    cout << "Information: Output tree is set to circular mode" << endl;
+    pRootTree->SetCircular(1000); 
   }
 }
 

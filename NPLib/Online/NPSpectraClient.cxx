@@ -173,6 +173,45 @@ bool NPL::SpectraClient::Update(std::string name){
     return true;
   }
 }
+////////////////////////////////////////////////////////////////////////////////
+TTree* NPL::SpectraClient::GetTree(){
+  if(!m_Sock || !(m_Sock->IsValid())){
+    if(m_Sock){
+      m_Sock->Close("force");
+      delete m_Sock;
+      m_Sock = NULL;
+    }
+    NPL::SendWarning("NPL::SpectraClient","Update failed: Connection lost");
+
+    return NULL;
+  }
+
+  TMessage* message=NULL;
+  m_Sock->Send("RequestTree",kMESS_STRING||kMESS_ACK);
+
+  if(m_Sock->Recv(message)<=0){
+    if(m_Sock){
+      m_Sock->Close("force");
+      delete m_Sock;
+      m_Sock = NULL;
+    }
+
+    NPL::SendWarning("NPL::SpectraClient","Update failed: message return unreadable");
+
+    return NULL;
+  }
+
+  if(message){
+    TTree* tree = (TTree*) message->ReadObject(message->GetClass());
+    return tree;
+  }
+  
+  else{
+    NPL::SendInformation("NPL::SpectraClient","Server return an empty tree");
+    return NULL;
+  }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 TList* NPL::SpectraClient::GetSpectra(){

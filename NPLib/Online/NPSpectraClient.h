@@ -27,6 +27,7 @@
 #include "TMessage.h"
 #include "TList.h"
 #include "TH1.h"
+#include "TTree.h"
 #include "string"
 
 namespace NPL{
@@ -44,6 +45,8 @@ namespace NPL{
       // Update a single spectra
       bool Update(std::string name);
       void UpdateTH1(TH1* Old, TH1* New );
+      // Access the tree
+      TTree* GetTree();
     private: // The sochet use for connection
       TSocket* m_Sock;
       std::string m_Address;
