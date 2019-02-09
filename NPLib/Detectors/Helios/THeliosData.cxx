@@ -6,90 +6,112 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Marc Labiche    contact address: marc.labiche@stfc.ac.uk *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : 30/01/12                                                 *
- * Last update    : 31/08/15                                                 *
+ * Creation Date  : octobre 2016                                             *
+ * Last update    :                                                          *
  *---------------------------------------------------------------------------*
- * Decription: This class stores the results of the G4 simulation for the    *
- *             tracker part of the Gaspard detector.                         *
- *             The format mimics what was used for the GANIL experiments     *
- *             after conversion of the raw data with GRU. Ask                *
- *             N. de Sereville for more informations.                        *
- *             This class derives from TObject (ROOT) and its aim is to be   *
- *             stored in the output TTree of the G4 simulation               *
+ * Decription:                                                               *
+ *  This class hold Helios Raw data                                         *
+ *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *                                                                           *   
  *                                                                           *
  *****************************************************************************/
-
-#include <iostream>
 #include "THeliosData.h"
 
-using namespace std;
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+using namespace std; 
 
 ClassImp(THeliosData)
 
-THeliosData::THeliosData()
-{
-   // Default constructor
 
-   Clear();
+//////////////////////////////////////////////////////////////////////
+THeliosData::THeliosData() {
 }
 
-
-
-THeliosData::~THeliosData()
-{
+//////////////////////////////////////////////////////////////////////
+THeliosData::~THeliosData() {
 }
 
-void THeliosData::Clear()
-{
-   // DSSD
-/* For helisol
-   // (X,E)
-   fHelios_FirstStage_E_DetectorNbr.clear();
-   //fHelios_FirstStage_E_StripNbr.clear()  ;
-   fHelios_FirstStage_E_StripLNbr.clear()  ;
-   fHelios_FirstStage_E_StripTNbr.clear()  ;
-   fHelios_FirstStage_E_Energy.clear()    ;
-   // (X,T)
-   fHelios_FirstStage_T_DetectorNbr.clear()  ;
-   //fHelios_FirstStage_T_StripNbr.clear()  ;
-   fHelios_FirstStage_T_StripLNbr.clear()  ;
-   fHelios_FirstStage_T_StripTNbr.clear()  ;
-   fHelios_FirstStage_T_Time.clear()      ;
-*/
-   /* for helios */
-   // (X,E)   
-   fHelios_FirstStage_E_DetectorNbr.clear();
-   fHelios_FirstStage_E_StripNbr.clear()  ;
-   fHelios_FirstStage_E_Energy.clear()    ;
-   // (X,T)
-   fHelios_FirstStage_T_DetectorNbr.clear()  ;
-   fHelios_FirstStage_T_StripNbr.clear()  ;
-   fHelios_FirstStage_T_Time.clear()      ;
-   
-
+//////////////////////////////////////////////////////////////////////
+void THeliosData::Clear() {
+  fHelios_EBack_DetectorNbr.clear();
+  fHelios_EBack_Energy.clear();
+  fHelios_EUp_DetectorNbr.clear();
+  fHelios_EUp_Energy.clear();
+  fHelios_EDw_DetectorNbr.clear();
+  fHelios_EDw_Energy.clear();
+ 
+  fHelios_TBack_DetectorNbr.clear();
+  fHelios_TBack_Time.clear();
+  fHelios_TUp_DetectorNbr.clear();
+  fHelios_TUp_Time.clear();
+  fHelios_TDw_DetectorNbr.clear();
+  fHelios_TDw_Time.clear();
 }
 
-
-
-void THeliosData::Dump() const
-{
-   cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event XXXXXXXXXXXXXXXXX" << endl;
-
-   // DSSD
-   // (X,E)
-   cout << "Helios_FirstStage_FrontE_Mult = " << fHelios_FirstStage_E_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fHelios_FirstStage_E_DetectorNbr.size(); i++)
-     cout << "DetNbr: " << fHelios_FirstStage_E_DetectorNbr[i] << " Strip: " << fHelios_FirstStage_E_StripNbr[i] << " Energy: " << fHelios_FirstStage_E_Energy[i] << endl;
-      //cout << "DetNbr: " << fHelios_FirstStage_E_DetectorNbr[i] << " StripL: " << fHelios_FirstStage_E_StripLNbr[i] << " StripT: " << fHelios_FirstStage_E_StripTNbr[i]<< " Energy: " << fHelios_FirstStage_E_Energy[i] << endl;
-   // (X,T)
-   cout << "Helios_FirstStage_FrontT_Mult = " << fHelios_FirstStage_T_DetectorNbr.size() << endl;
-   for (UShort_t i = 0; i < fHelios_FirstStage_T_DetectorNbr.size(); i++)
-     cout << "DetNbr: " << fHelios_FirstStage_T_DetectorNbr[i] << " Strip: " << fHelios_FirstStage_T_StripNbr[i] << " Time: " << fHelios_FirstStage_T_Time[i] << endl;
-     // cout << "DetNbr: " << fHelios_FirstStage_T_DetectorNbr[i] << " StripL: " << fHelios_FirstStage_T_StripLNbr[i] << " StripT: " << fHelios_FirstStage_T_StripTNbr[i] << " Time: " << fHelios_FirstStage_T_Time[i] << endl;
+//////////////////////////////////////////////////////////////////////
+void THeliosData::Dump() const {
+  // This method is very useful for debuging and worth the dev.
+  cout << "XXXXXXXXXXXXXXXXXXXXXXXX New Event [THeliosData::Dump()] XXXXXXXXXXXXXXXXX" << endl;
   
+  // E Back
+  size_t mysize = fHelios_EBack_DetectorNbr.size();
+  cout << "Helios_EBack_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_EBack_DetectorNbr[i]
+      << " Energy: " << fHelios_EBack_Energy[i];
+  }
+
+  // E Up
+  mysize = fHelios_EUp_DetectorNbr.size();
+  cout << "Helios_EUp_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_EUp_DetectorNbr[i]
+      << " Energy: " << fHelios_EUp_Energy[i];
+  }
+
+  // E Dw
+  mysize = fHelios_EDw_DetectorNbr.size();
+  cout << "Helios_EDw_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_EDw_DetectorNbr[i]
+      << " Energy: " << fHelios_EDw_Energy[i];
+  }
+
+  // T Back
+  mysize = fHelios_TBack_DetectorNbr.size();
+  cout << "Helios_TBack_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_TBack_DetectorNbr[i]
+      << " Time: " << fHelios_TBack_Time[i];
+  }
+
+  // T Up
+  mysize = fHelios_TUp_DetectorNbr.size();
+  cout << "Helios_TUp_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_TUp_DetectorNbr[i]
+      << " Time: " << fHelios_TUp_Time[i];
+  }
+
+  // T Dw
+  mysize = fHelios_TDw_DetectorNbr.size();
+  cout << "Helios_TDw_Mult: " << mysize << endl;
+
+  for (size_t i = 0 ; i < mysize ; i++){
+    cout << "DetNbr: " << fHelios_TDw_DetectorNbr[i]
+      << " Time: " << fHelios_TDw_Time[i];
+  }
+
 }

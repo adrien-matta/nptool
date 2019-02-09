@@ -1,20 +1,20 @@
-#ifndef THelios2SPECTRA_H
-#define THelios2SPECTRA_H
+#ifndef THeliosSPECTRA_H
+#define THeliosSPECTRA_H
 /*****************************************************************************
- * Copyright (C) 2009-2016   this file is part of the NPTool Project       *
+ * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
  * For the licensing terms see $NPTOOL/Licence/NPTool_Licence                *
  * For the list of contributors see $NPTOOL/Licence/Contributors             *
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr                        *
+ * Original Author: Adrien Matta  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : octobre 2016                                           *
+ * Creation Date  : octobre 2016                                             *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This class hold Helios2 Spectra                                     *
+ *  This class hold Helios Spectra                                           *
  *                                                                           *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
@@ -24,20 +24,20 @@
 
 // NPLib headers
 #include "NPVSpectra.h"
-#include "THelios2Data.h"
-#include "THelios2Physics.h"
+#include "THeliosData.h"
+#include "THeliosPhysics.h"
 
 // Forward Declaration
-class THelios2Physics;
+class THeliosPhysics;
 
 
-class THelios2Spectra : public VSpectra {
+class THeliosSpectra : public VSpectra {
   //////////////////////////////////////////////////////////////
   // constructor and destructor
   public:
-    THelios2Spectra();
-    THelios2Spectra(unsigned int NumberOfDetectors);
-    ~THelios2Spectra();
+    THeliosSpectra();
+    THeliosSpectra(unsigned int NumberOfDetectors);
+    ~THeliosSpectra();
 
   //////////////////////////////////////////////////////////////
   // Initialization methods
@@ -49,9 +49,9 @@ class THelios2Spectra : public VSpectra {
   //////////////////////////////////////////////////////////////
   // Filling methods
   public:
-    void FillRawSpectra(THelios2Data*);
-    void FillPreTreatedSpectra(THelios2Data*);
-    void FillPhysicsSpectra(THelios2Physics*);
+    void FillRawSpectra(THeliosData*);
+    void FillPreTreatedSpectra(THeliosData*);
+    void FillPhysicsSpectra(THeliosPhysics*);
 
   //////////////////////////////////////////////////////////////
   // Detector parameters 
