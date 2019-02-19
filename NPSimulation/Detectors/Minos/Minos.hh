@@ -298,16 +298,23 @@ class PadParameterisation : public G4VPVParameterisation
     else if (3348<=copyNo && copyNo<3604){
         Ring = 17;}
  
-    G4double R = (50.+ Ring*2.2)*mm;
-    G4double dPhi= (2*M_PI/PadsPerRing[Ring]);
+    G4double R = (45.2+ (Ring+0.5)*2.1)*mm;
+    G4double dPhi= (2.*M_PI/PadsPerRing[Ring]);
+
     G4double Phi = copyNo*dPhi;
     G4double Xposition = R*cos(Phi);
     G4double Yposition = R*sin(Phi);
     G4ThreeVector origin(Xposition,Yposition,0);
     physVol->SetTranslation(origin);
+    //Rotation for trapezes
     G4RotationMatrix* Rot = new G4RotationMatrix();
-    Rot->rotateZ(-Phi);
+    Rot->rotateY(-90*deg);
+    Rot->rotateX(+Phi);
     physVol->SetRotation(Rot);
+    //Rotation for boxes
+    /* G4RotationMatrix* Rot2 = new G4RotationMatrix(); */
+    /* Rot2->rotateZ(-20*deg); */
+    /* physVol->SetRotation(Rot2); */
  } 
 
 }; 

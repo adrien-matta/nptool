@@ -42,14 +42,11 @@ class TMinosData : public TObject {
     vector<UShort_t>   fMinos_T_DetectorNbr;
     vector<Double_t>   fMinos_Time;
 
-    // Charge
-    vector<UShort_t>   fMinos_Charge_Pad;
-    vector<Double_t>   fMinos_Charge_X;
-    vector<Double_t>   fMinos_Charge_Y;
+    // Pads
+    vector<UShort_t>   fMinos_Pad;
+    vector<Double_t>   fMinos_X;
+    vector<Double_t>   fMinos_Y;
     vector<Double_t>   fMinos_Charge;
-
-    // DriftTime
-    vector<UShort_t>   fMinos_Drift_Pad;
     vector<Double_t>   fMinos_DriftTime;
 
     // maybe directions with angle varagles have to be added?
@@ -120,24 +117,16 @@ int event;
       fMinos_T_DetectorNbr.push_back(DetNbr);
     };//!
 
-     // Charge
-    inline void SetCharge(const UShort_t& Pad,const Double_t& Charge, const Double_t& X,const Double_t& Y ){
-      fMinos_Charge_Pad.push_back(Pad);
-      fMinos_Charge_X.push_back(X);
-      fMinos_Charge_Y.push_back(Y);
-      fMinos_Charge.push_back(Charge);
-    };//!
-
-     // DriftTime
-    inline void SetDriftTime(const UShort_t& Pad,const Double_t& DriftTime){
-      fMinos_Drift_Pad.push_back(Pad);
+     // Minos Pads
+    inline void SetCharge(const UShort_t& Pad,const Double_t& Charge, const Double_t& X,const Double_t& Y,const Double_t& DriftTime){
+      fMinos_Pad.push_back(Pad);
+      fMinos_X.push_back(X);
+      fMinos_Y.push_back(Y);
       fMinos_DriftTime.push_back(DriftTime);
-    };//!
-
+      fMinos_Charge.push_back(Charge);
+   };//!
   
 //
-
-
 
     //Setters for position vertex and obsv in experiment analysis
 
@@ -152,17 +141,7 @@ int event;
     inline void SetD_min(const Double_t& dmin)     {
       MINOS_D_min.push_back(dmin);
     };//!
-
-
-
-
-
-
-
-
-
-
-    
+   
 
     //////////////////////    GETTERS    ////////////////////////
     // Energy
