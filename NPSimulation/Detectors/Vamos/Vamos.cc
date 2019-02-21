@@ -94,7 +94,7 @@ namespace Vamos_NS {
     const G4double DetectionVolumeThickness = 1300 * mm;
     const G4double DetectionVolumeWidth     = 1000 * mm;
     const G4double DetectionVolumeLength    = 1000 * mm;
-    const G4double Det_Theta                = 0 * deg;
+    const G4double Det_Theta                = 45 * deg;
 
 } 
 
