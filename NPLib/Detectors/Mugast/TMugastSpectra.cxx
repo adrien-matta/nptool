@@ -116,11 +116,11 @@ void TMugastSpectra::InitPreTreatedSpectra()
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
     // STRX_E_CAL
     name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_E_CAL";
-    AddHisto2D(name, name, fStripX, 1, fStripX+1, 500, 0, 50, "Mugast/CAL/STRXE");
+    AddHisto2D(name, name, fStripX, 1, fStripX+1, 10000, 0, 50, "Mugast/CAL/STRXE");
 
     // STRY_E_CAL
     name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_E_CAL";
-    AddHisto2D(name, name, fStripY, 1, fStripY+1, 500, 0, 50, "Mugast/CAL/STRYE");
+    AddHisto2D(name, name, fStripY, 1, fStripY+1, 10000, 0, 50, "Mugast/CAL/STRYE");
 
     // STRX_T_CAL
     name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_T_CAL";

@@ -472,8 +472,8 @@ void NPL::DetectorManager::SetSpectraServer(){
   }
 
   // Avoid warning on gcc
-  int r;
-  r=system("nponline localhost 9092 & ");
+  // int r;
+  //r=system("nponline localhost 9092 & ");
   m_SpectraServer->CheckRequest(); 
 }
 ////////////////////////////////////////////////////////////////////////////////

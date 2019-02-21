@@ -66,7 +66,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Telescope
   vector<int> TelescopeNumber;
-
+  map<int,MG_DetectorType> DetectorType;
   //   DSSD
   vector<double> DSSD_E;
   vector<double> DSSD_T;
@@ -135,7 +135,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   // Used for Online only, clear all the spectra hold by the Spectra class
   void ClearSpectra();
 
-  public: //   Specific to MUST2 Array
+  public: //   Specific to MUGAST Array
   //   Clear The PreTeated object
   void ClearPreTreatedData() { m_PreTreatedData->Clear(); }
 
@@ -163,9 +163,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   void AddTelescope(double theta, double phi, double distance, double beta_u,
                     double beta_v, double beta_w);
 
-  // Use for reading Calibration Run, very simple methods; only apply
-  // calibration, no condition
-  void ReadCalibrationRun();
+ //   Special Method for Annular S1
+  void AddTelescope(TVector3 C_Center);
 
   // Give and external TMustData object to TMugastPhysics. Needed for online
   // analysis for example.
@@ -256,7 +255,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   ClassDef(TMugastPhysics, 1) // MugastPhysics structure
 };
 
-namespace MUST2_LOCAL {
+namespace MUGAST_LOCAL {
 //   DSSD
 //   X
 double fDSSD_X_E(const TMugastData* Data, const int& i);
