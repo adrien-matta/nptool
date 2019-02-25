@@ -62,19 +62,18 @@ NPL::SpectraServer::SpectraServer(){
   m_Spectra = new TList;
 
   NPL::SendInformation("NPL::SpectraServer","Server started");
+  m_RawTree = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
- /*FIXME
   if(m_Server && m_Monitor){
     m_Monitor->ResetInterrupt();
-    TSocket* s = m_Monitor->Select();
-    if(s){
+    TSocket* s = m_Monitor->Select(1);
+    if(s && s!=(TSocket*)-1){
         HandleSocket(s);
     }
   }
-  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +106,7 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     }
 
     // send requested object back
-    static TMessage answer(kMESS_OBJECT);
+    static TMessage answer(kMESS_OBJECT|kMESS_ACK);
     answer.SetCompressionLevel(1);
     answer.Reset();
     TObject* h =NULL;
@@ -125,6 +124,12 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
       answer.WriteObject(tree);
       s->Send(answer);
     }
+    
+    else if (!strcmp(request, "RequestRawTree")){
+      answer.WriteObject(m_RawTree);
+      s->Send(answer);
+    }
+
 
     else{
       h = m_Spectra->FindObject(request);
