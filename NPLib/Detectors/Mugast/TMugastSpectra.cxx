@@ -354,13 +354,13 @@ void TMugastSpectra::FillPhysicsSpectra(TMugastPhysics* Physics){
     Theta = Theta/deg;
     FillSpectra(family,name,Theta,Physics->DSSD_E[i]);
 
-//    // STRX_E_CAL
+    // STRX_E_CAL
 //    name = "MG"+NPL::itoa( Physics->TelescopeNumber[i])+"_XY_COR";
-//    FillSpectra(family,name,Physics->DSSD_EX[i],Physics->DSSD_EY[i]);
+ //   FillSpectra(family,name,Physics->DSSD_E[i],Physics->DSSD_EY[i]);
 
 
     // Fill only for particle stopped in the first stage
-    if(Physics->SecondLayer_E[i]<0 && Physics->SecondLayer_E[i]<0){
+    if(Physics->SecondLayer_E[i]<0 ){
       // E-TOF:
       name = "MG_E_TOF";
       FillSpectra(family,name,Physics->DSSD_E[i],Physics->DSSD_T[i]);

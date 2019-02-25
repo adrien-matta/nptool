@@ -90,17 +90,18 @@ void TMugastPhysics::PreTreat() {
           m_EventData->GetDSSDXEStripNbr(i))) {
       double EX = fDSSD_X_E(m_EventData, i);
       if (EX > m_DSSD_X_E_Threshold)
-        m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
-        m_EventData->GetDSSDXEDetectorNbr(i),
-        m_EventData->GetDSSDXEStripNbr(i), EX);
+      m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
+          m_EventData->GetDSSDXEDetectorNbr(i),
+          m_EventData->GetDSSDXEStripNbr(i), EX);
     }
   }
+
   //   T
   for (unsigned int i = 0; i < DSSDX_TMult; ++i) {
     if (IsValidChannel(0, m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i)))
       m_PreTreatedData->SetDSSDXT(MG_NOCHANGE,
-m_EventData->GetDSSDXTDetectorNbr(i),
+          m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i),
           fDSSD_X_T(m_EventData, i));
   }
@@ -114,7 +115,7 @@ m_EventData->GetDSSDXTDetectorNbr(i),
       double EY = fDSSD_Y_E(m_EventData, i);
       if (EY > m_DSSD_Y_E_Threshold)
         m_PreTreatedData->SetDSSDYE(MG_NOCHANGE,
-m_EventData->GetDSSDYEDetectorNbr(i),
+            m_EventData->GetDSSDYEDetectorNbr(i),
             m_EventData->GetDSSDYEStripNbr(i), EY);
     }
   }
@@ -124,7 +125,7 @@ m_EventData->GetDSSDYEDetectorNbr(i),
     if (IsValidChannel(1, m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i)))
       m_PreTreatedData->SetDSSDYT(MG_NOCHANGE,
-m_EventData->GetDSSDYTDetectorNbr(i),
+          m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i),
           fDSSD_Y_T(m_EventData, i));
   }
@@ -348,9 +349,9 @@ vector<TVector2> TMugastPhysics::Match_X_Y() {
 ////////////////////////////////////////////////////////////////////////////
 bool TMugastPhysics::IsValidChannel(const int& DetectorType,
     const int& telescope, const int& channel) {
-  if (DetectorType == 0)
+  if (DetectorType == 0){
     return *(m_XChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
-
+  }
   else if (DetectorType == 1)
     return *(m_YChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
@@ -468,18 +469,18 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
   string Type; 
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
-   
+
     if (blocks[i]->HasTokenList(cart)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-      
-      Type = blocks[i]->GetMainValue();
+
+        Type = blocks[i]->GetMainValue();
       cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
-      
+
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
       else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
       else if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
-   
+
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
       TVector3 A = blocks[i]->GetTVector3("X1_Y1", "mm");
@@ -488,10 +489,10 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       TVector3 D = blocks[i]->GetTVector3("X128_Y128", "mm");
       AddTelescope(A, B, C, D);
     }
-    
+
     else if (blocks[i]->HasTokenList(annular)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-      Type = blocks[i]->GetMainValue();
+        Type = blocks[i]->GetMainValue();
       cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
@@ -500,7 +501,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       if(Type!="Annular"){
         cout << "ERROR: Using Mugast Annular Token for Square or Trapezoid detector " << endl;
         exit(1);
-        }
+      }
 
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
@@ -511,13 +512,13 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
 
     else if (blocks[i]->HasTokenList(sphe)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-      Type = blocks[i]->GetMainValue();
+        Type = blocks[i]->GetMainValue();
       cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
       else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
       else if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
-  
+
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
       double         Theta = blocks[i]->GetDouble("THETA", "deg");
@@ -533,6 +534,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
         << endl;
       exit(1);
     }
+
   }
 
   InitializeStandardParameter();
@@ -541,7 +543,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
   std::ofstream shapeFile(".MugastShape");
   for(auto& it:DetectorType){
     shapeFile << it.first << " " << it.second << endl;
-    }
+  }
   shapeFile.close();
   //ReadAnalysisConfig();
 }
@@ -571,8 +573,8 @@ void TMugastPhysics::WriteSpectra() {
 
 ///////////////////////////////////////////////////////////////////////////
 map<string, TH1*> TMugastPhysics::GetSpectra() {
- if(m_Spectra)
-  return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
   else {
     map<string, TH1*> empty;
     return empty;
@@ -776,22 +778,22 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
   vector< vector< double > >   OneStripPositionX   ;
   vector< vector< double > >   OneStripPositionY   ;
   vector< vector< double > >   OneStripPositionZ   ;
-  
- /* The logic behind the strip numbering of S1 in NPTOOL: 
- The number of rings goes from 1->64, the number of sectors goes from 1->16 
- (4 per quadrant). There's a redundancy in the fact that 1->64 already contain 
- the information about the quadrant and the majority of these positions are 
- indeed not physical. Example: 
- A hit combining Ring 17 (first ring in Quadrant 2) and 
- Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
- of the detector frontside-backside layout. 
- The possible (allowed hits) are R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12),
- R(50-64)S(13-16). 
- The three loops however takes all the possible combintation that an analysis
- can produce. This works perfectly for cases where the detector does not have 
- "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
- non physical hit combinations. 
- */
+
+  /* The logic behind the strip numbering of S1 in NPTOOL: 
+     The number of rings goes from 1->64, the number of sectors goes from 1->16 
+     (4 per quadrant). There's a redundancy in the fact that 1->64 already contain 
+     the information about the quadrant and the majority of these positions are 
+     indeed not physical. Example: 
+     A hit combining Ring 17 (first ring in Quadrant 2) and 
+     Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
+     of the detector frontside-backside layout. 
+     The possible (allowed hits) are R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12),
+     R(50-64)S(13-16). 
+     The three loops however takes all the possible combintation that an analysis
+     can produce. This works perfectly for cases where the detector does not have 
+     "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
+     non physical hit combinations. 
+     */
   for(int iQuad = 0 ; iQuad < NumberOfQuadrant ; iQuad++){
     for(int iRing = 0 ; iRing < NumberofRing; iRing++){
       lineX.clear() ;
@@ -799,25 +801,27 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
       lineZ.clear() ;
       for(int iSector = 0 ; iSector < NumberofSector ; iSector++){
         //Build vector
-        StripCenter = Strip_1_1;
-        StripCenter = TVector3(R_Min+(iRing+0.5)*StripPitchRing,0, Z);
+        StripCenter = TVector3(C_Center.X()+R_Min+(iRing+0.5)*StripPitchRing,C_Center.Y(), Z);
         StripCenter.RotateZ( ( Phi_0 - (iSector+0.5)*StripPitchSector ) *M_PI/180.);
 
         // if the hit is not "allowed" (see comment above) use a default value
         if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
-          StripCenter.SetXYZ(-100,-100, Z-100);
-        
+          StripCenter.SetXYZ(-1000,-1000, Z-1000);
+
         lineX.push_back( StripCenter.X() );// these vectors will contain 16x4 = 64 elements
         lineY.push_back( StripCenter.Y() );
         lineZ.push_back( StripCenter.Z() );
       }
-
       OneStripPositionX.push_back(lineX);
       OneStripPositionY.push_back(lineY);
       OneStripPositionZ.push_back(lineZ);
-
     }
   }
+  vector<double> defaultLine;
+  defaultLine.resize(128,-1000);
+  OneStripPositionX.resize(128,defaultLine);
+  OneStripPositionY.resize(128,defaultLine);
+  OneStripPositionZ.resize(128,defaultLine);
   m_StripPositionX.push_back( OneStripPositionX ) ;
   m_StripPositionY.push_back( OneStripPositionY ) ;
   m_StripPositionZ.push_back( OneStripPositionZ ) ;
