@@ -69,7 +69,7 @@ NPL::SpectraServer::SpectraServer(){
 void NPL::SpectraServer::CheckRequest(){
   if(m_Server && m_Monitor){
     m_Monitor->ResetInterrupt();
-    TSocket* s = m_Monitor->Select(1);
+    TSocket* s = m_Monitor->Select(100);
     if(s && s!=(TSocket*)-1){
         HandleSocket(s);
     }

@@ -26,7 +26,8 @@ using namespace MUGAST_LOCAL;
 #include <iostream>
 #include <limits>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib>
+#include <time.h>
 
 //   NPL
 #include "NPDetectorFactory.h"
@@ -37,8 +38,10 @@ using namespace MUGAST_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 using namespace NPUNITS;
+
 //   ROOT
 #include "TChain.h"
+
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TMugastPhysics)
@@ -47,6 +50,7 @@ ClassImp(TMugastPhysics)
     EventMultiplicity                  = 0;
     m_EventData                        = new TMugastData;
     m_PreTreatedData                   = new TMugastData;
+    m_random                           = new TRandom3();
     m_EventPhysics                     = this;
     m_Spectra                          = NULL;
     m_NumberOfTelescope                = 0;
@@ -159,26 +163,26 @@ void TMugastPhysics::PreTreat() {
 ///////////////////////////////////////////////////////////////////////////
 
 void TMugastPhysics::BuildPhysicalEvent() {
-
   PreTreat();
 
-
-  bool check_SILI = false;
   bool check_SecondLayer  = false;
   static unsigned int DSSDXEMult, DSSDYEMult, DSSDXTMult, DSSDYTMult,SecondLayerEMult,SecondLayerTMult; 
   DSSDXEMult = m_PreTreatedData->GetDSSDXEMult();
   DSSDYEMult = m_PreTreatedData->GetDSSDYEMult();
   DSSDXTMult = m_PreTreatedData->GetDSSDXTMult();
   DSSDYTMult = m_PreTreatedData->GetDSSDYTMult();
-  SecondLayerEMult    = m_PreTreatedData->GetSecondLayerEMult();
-  SecondLayerTMult    = m_PreTreatedData->GetSecondLayerTMult();
+  SecondLayerEMult = m_PreTreatedData->GetSecondLayerEMult();
+  SecondLayerTMult = m_PreTreatedData->GetSecondLayerTMult();
+
+  // random->SetSeed(42);
+
+  // srand(time(NULL));
 
   if (1 /*CheckEvent() == 1*/) {
     vector<TVector2> couple = Match_X_Y();
 
     EventMultiplicity = couple.size();
     for (unsigned int i = 0; i < couple.size(); ++i) {
-      check_SILI = false;
       check_SecondLayer  = false;
 
       int N = m_PreTreatedData->GetDSSDXEDetectorNbr(couple[i].X());
@@ -212,22 +216,31 @@ void TMugastPhysics::BuildPhysicalEvent() {
         }
       }
 
-      // if (N==9)
-      //   cout << X << " " << Y << endl;
       DSSD_X.push_back(X);
       DSSD_Y.push_back(Y);
       TelescopeNumber.push_back(N);
 
-      PosX.push_back(GetPositionOfInteraction(i).x());
-      PosY.push_back(GetPositionOfInteraction(i).y());
-      PosZ.push_back(GetPositionOfInteraction(i).z());
-      // if (N==9){
-      //   cout << GetPositionOfInteraction(i).x() << endl;
-      //   cout << GetPositionOfInteraction(i).y() << endl;
-      // }
+      // Randomize annular detector in Phi
+      if (DetectorType[N]==MG_ANNULAR){
+        TVector3 Inter = GetPositionOfInteraction(i);
+        double Phi  = Inter.Phi();
+        double Perp = Inter.Perp();
+        double rPhi = m_random->Uniform(-11.25/180.*M_PI, 11.25/180.*M_PI); 
+        double rPerp= m_random->Uniform(-0.75,0.75); 
 
-      // if (N==9)
-      //   cout << X << " " << Y << endl;
+        Inter.SetPhi(Phi+rPhi);
+        Inter.SetPerp(Perp+rPerp);
+        PosX.push_back(Inter.X());
+        PosY.push_back(Inter.Y());
+        PosZ.push_back(Inter.Z());
+      }
+      
+      // No random for Trapezoid and Square
+      else{
+        PosX.push_back(GetPositionOfInteraction(i).x());
+        PosY.push_back(GetPositionOfInteraction(i).y());
+        PosZ.push_back(GetPositionOfInteraction(i).z());
+      }
 
       if (m_Take_E_Y)
         DSSD_E.push_back(DSSD_Y_E);
@@ -361,15 +374,15 @@ vector<TVector2> TMugastPhysics::Match_X_Y() {
 }
 
 ////////////////////////////////////////////////////////////////////////////
-bool TMugastPhysics::IsValidChannel(const int& DetectorType,
+bool TMugastPhysics::IsValidChannel(const int& Type,
     const int& telescope, const int& channel) {
-  if (DetectorType == 0){
+  if (Type == 0){
     return *(m_XChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
   }
-  else if (DetectorType == 1)
+  else if (Type == 1)
     return *(m_YChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
-  else if (DetectorType == 2)
+  else if (Type == 2)
     return *(m_SecondLayerChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
   else
@@ -498,7 +511,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
       else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
-      else if(Type=="Annular"){
+      else{
         cout << "ERROR bad Annular token" << endl;
         exit(1);
       }
@@ -518,10 +531,8 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
         Type = blocks[i]->GetMainValue();
       cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
-      if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
-      else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
-      else if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
-      if(Type!="Annular"){
+      if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
+      else{
         cout << "ERROR: Using Mugast Annular Token for Square or Trapezoid detector " << endl;
         exit(1);
       }
@@ -540,7 +551,10 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
       else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
-      else if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
+      else{
+        cout << "ERROR bad Annular token" << endl;
+        exit(1);
+      }
 
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
@@ -862,12 +876,13 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
     }
   }
 
-  // ?? FIXME
-  // vector<double> defaultLine;
-  // defaultLine.resize(128,-1000);
-  // OneStripPositionX.resize(128,defaultLine);
-  // OneStripPositionY.resize(128,defaultLine);
-  // OneStripPositionZ.resize(128,defaultLine);
+  // Increase the size of the Position array to 128 to avoid seg fault
+  // in case of connecting a trapezoid to an annular
+  vector<double> defaultLine;
+  defaultLine.resize(128,-1000);
+  OneStripPositionX.resize(128,defaultLine);
+  OneStripPositionY.resize(128,defaultLine);
+  OneStripPositionZ.resize(128,defaultLine);
 
   m_StripPositionX.push_back( OneStripPositionX ) ;
   m_StripPositionY.push_back( OneStripPositionY ) ;
@@ -971,7 +986,7 @@ TVector3 TMugastPhysics::GetPositionOfInteraction(const int i) {
         GetStripPositionY(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]),
         GetStripPositionZ(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]));
 
-  return (Position);
+  return Position;
 }
 
 TVector3 TMugastPhysics::GetTelescopeNormal(const int i) {

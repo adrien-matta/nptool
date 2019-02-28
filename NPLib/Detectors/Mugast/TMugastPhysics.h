@@ -36,6 +36,7 @@
 #include "TObject.h"
 #include "TVector2.h"
 #include "TVector3.h"
+#include "TRandom3.h"
 
 using namespace std;
 
@@ -57,6 +58,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   bool ResolvePseudoEvent();
   int  CheckEvent();
 
+  TRandom3* m_random; //!
+
   public:
   //   Provide Physical Multiplicity
   Int_t EventMultiplicity;
@@ -66,8 +69,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Telescope
   vector<int> TelescopeNumber;
-  map<int,MG_DetectorType> DetectorType;
-  //   DSSD
+   //   DSSD
   vector<double> DSSD_E;
   vector<double> DSSD_T;
   vector<int>    DSSD_X;
@@ -76,6 +78,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   vector<double> PosX;
   vector<double> PosY;
   vector<double> PosZ;
+  vector<double> Theta;
 
   //   Second Layer
   vector<double> SecondLayer_E;
@@ -84,6 +87,10 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Physical Value
   vector<double> TotalEnergy;
+
+  private:
+  map<int,MG_DetectorType> DetectorType;//!
+ 
 
   public: //   Innherited from VDetector Class
   //   Read stream at ConfigFile to pick-up parameters of detector
@@ -148,7 +155,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   //   Return false if the channel is disabled by user
   //   Frist argument is either 0 for X,1 Y,2 SecondLayer 3
-  bool IsValidChannel(const int& DetectorType, const int& telescope,
+  bool IsValidChannel(const int& Type, const int& telescope,
                       const int& channel);
 
   //   Initialize the standard parameter for analysis

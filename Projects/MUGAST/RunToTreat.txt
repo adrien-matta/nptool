@@ -1,4 +1,4 @@
 TTreeName 
-	SimulatedTree
+	AutoTree
 RootFileName 
- ../../Outputs/Simulation/myResult.root
+  /data/mugastX/mugast/acquisition/root/run_0040_0.root 
