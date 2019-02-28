@@ -73,6 +73,10 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   vector<int>    DSSD_X;
   vector<int>    DSSD_Y;
 
+  vector<double> PosX;
+  vector<double> PosY;
+  vector<double> PosZ;
+
   //   Second Layer
   vector<double> SecondLayer_E;
   vector<double> SecondLayer_T;
@@ -151,7 +155,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   //   ie: all channel enable, maximum multiplicity for strip = number of
   //   telescope
   void InitializeStandardParameter();
-
+  
   //   Read the user configuration file; if no file found, load standard one
   void ReadAnalysisConfig();
 
@@ -177,6 +181,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Use to access the strip position
   double GetStripPositionX(const int N, const int X, const int Y) {
+    // if (N==9)
+    // cout << N << " " << X << " " << Y << " " << m_DetectorNumberIndex[N] << " " << m_StripPositionX[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1] << endl; 
     return m_StripPositionX[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1];
   };
   double GetStripPositionY(const int N, const int X, const int Y) {
@@ -215,7 +221,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   int m_DSSD_Y_E_RAW_Threshold; //!
   int m_SecondLayer_E_RAW_Threshold; //!
 
-    // Calibrated Threshold
+  // Calibrated Threshold
   double m_DSSD_X_E_Threshold; //!
   double m_DSSD_Y_E_Threshold; //!
   double m_SecondLayer_E_Threshold; //!
@@ -243,7 +249,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   private: // Spectra Class
   TMugastSpectra* m_Spectra; //!
-  
+
   public:
   void WriteSpectra(); //!
 
@@ -256,18 +262,18 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 };
 
 namespace MUGAST_LOCAL {
-//   DSSD
-//   X
-double fDSSD_X_E(const TMugastData* Data, const int& i);
-double fDSSD_X_T(const TMugastData* Data, const int& i);
+  //   DSSD
+  //   X
+  double fDSSD_X_E(const TMugastData* Data, const int& i);
+  double fDSSD_X_T(const TMugastData* Data, const int& i);
 
-//   Y
-double fDSSD_Y_E(const TMugastData* Data, const int& i);
-double fDSSD_Y_T(const TMugastData* Data, const int& i);
+  //   Y
+  double fDSSD_Y_E(const TMugastData* Data, const int& i);
+  double fDSSD_Y_T(const TMugastData* Data, const int& i);
 
-//  Second Layer 
-double fSecondLayer_E(const TMugastData* Data, const int& i);
-double fSecondLayer_T(const TMugastData* Data, const int& i);
+  //  Second Layer 
+  double fSecondLayer_E(const TMugastData* Data, const int& i);
+  double fSecondLayer_T(const TMugastData* Data, const int& i);
 }
 
 #endif

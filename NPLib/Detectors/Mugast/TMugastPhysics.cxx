@@ -90,9 +90,9 @@ void TMugastPhysics::PreTreat() {
           m_EventData->GetDSSDXEStripNbr(i))) {
       double EX = fDSSD_X_E(m_EventData, i);
       if (EX > m_DSSD_X_E_Threshold)
-      m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
-          m_EventData->GetDSSDXEDetectorNbr(i),
-          m_EventData->GetDSSDXEStripNbr(i), EX);
+        m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
+            m_EventData->GetDSSDXEDetectorNbr(i),
+            m_EventData->GetDSSDXEStripNbr(i), EX);
     }
   }
 
@@ -162,6 +162,7 @@ void TMugastPhysics::BuildPhysicalEvent() {
 
   PreTreat();
 
+
   bool check_SILI = false;
   bool check_SecondLayer  = false;
   static unsigned int DSSDXEMult, DSSDYEMult, DSSDXTMult, DSSDYTMult,SecondLayerEMult,SecondLayerTMult; 
@@ -211,9 +212,22 @@ void TMugastPhysics::BuildPhysicalEvent() {
         }
       }
 
+      // if (N==9)
+      //   cout << X << " " << Y << endl;
       DSSD_X.push_back(X);
       DSSD_Y.push_back(Y);
       TelescopeNumber.push_back(N);
+
+      PosX.push_back(GetPositionOfInteraction(i).x());
+      PosY.push_back(GetPositionOfInteraction(i).y());
+      PosZ.push_back(GetPositionOfInteraction(i).z());
+      // if (N==9){
+      //   cout << GetPositionOfInteraction(i).x() << endl;
+      //   cout << GetPositionOfInteraction(i).y() << endl;
+      // }
+
+      // if (N==9)
+      //   cout << X << " " << Y << endl;
 
       if (m_Take_E_Y)
         DSSD_E.push_back(DSSD_Y_E);
@@ -364,20 +378,20 @@ bool TMugastPhysics::IsValidChannel(const int& DetectorType,
 
 ///////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::ReadAnalysisConfig() {
-
   NPL::InputParser parser("./configs/ConfigMugast.dat");
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ConfigMugast");
+
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
     if(blocks[i]->HasToken("MAX_STRIP_MULTIPLICITY"))
       m_MaximumStripMultiplicityAllowed = blocks[i]->GetInt("MAX_STRIP_MULTIPLICITY");
-    else if(blocks[i]->HasToken("STRIP_ENERGY_MATCHING"))
+    if(blocks[i]->HasToken("STRIP_ENERGY_MATCHING"))
       m_StripEnergyMatching = blocks[i]->GetDouble("STRIP_ENERGY_MATCHING","MeV");
-    else if(blocks[i]->HasToken("DISABLE_CHANNEL")){
+    if(blocks[i]->HasToken("DISABLE_CHANNEL")){
       vector<int> v = blocks[i]->GetVectorInt("DISABLE_CHANNEL");
       *(m_XChannelStatus[v[0] - 1].begin() + v[1] - 1) = false;
     }
-    else if(blocks[i]->HasToken("DISABLE_ALL")){
+    if(blocks[i]->HasToken("DISABLE_ALL")){
       int telescope = blocks[i]->GetInt("DISABLE_ALL");
       vector<bool> ChannelStatus;
       ChannelStatus.resize(128, false);
@@ -386,34 +400,34 @@ void TMugastPhysics::ReadAnalysisConfig() {
       ChannelStatus.resize(16, false);
       m_SecondLayerChannelStatus[telescope - 1]  = ChannelStatus;
     }
-    else if (blocks[i]->HasToken("TAKE_E_Y"))
+    if (blocks[i]->HasToken("TAKE_E_Y"))
       m_Take_E_Y = blocks[i]->GetInt("TAKE_E_Y");
 
-    else if (blocks[i]->HasToken("TAKE_T_Y"))
+    if (blocks[i]->HasToken("TAKE_T_Y"))
       m_Take_T_Y = blocks[i]->GetInt("TAKE_T_Y");
 
-    else if (blocks[i]->HasToken("TAKE_E_X"))
+    if (blocks[i]->HasToken("TAKE_E_X"))
       m_Take_E_Y = !(blocks[i]->GetInt("TAKE_E_X"));
 
-    else if (blocks[i]->HasToken("TAKE_T_X"))
+    if (blocks[i]->HasToken("TAKE_T_X"))
       m_Take_T_Y = !(blocks[i]->GetInt("TAKE_T_X"));
 
-    else if (blocks[i]->HasToken("DSSD_X_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_X_E_RAW_THRESHOLD"))
       m_DSSD_X_E_RAW_Threshold = blocks[i]->GetInt("DSSD_X_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("DSSD_Y_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_Y_E_RAW_THRESHOLD"))
       m_DSSD_Y_E_RAW_Threshold = blocks[i]->GetInt("DSSD_Y_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("SECONDLAYER_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("SECONDLAYER_E_RAW_THRESHOLD"))
       m_SecondLayer_E_RAW_Threshold = blocks[i]->GetInt("SECONDLAYER_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("DSSD_X_E_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_X_E_THRESHOLD"))
       m_DSSD_X_E_Threshold = blocks[i]->GetDouble("DSSD_X_E_THRESHOLD","MeV");
 
-    else if (blocks[i]->HasToken("DSSD_Y_E_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_Y_E_THRESHOLD"))
       m_DSSD_Y_E_Threshold = blocks[i]->GetDouble("DSSD_Y_E_THRESHOLD","MeV");
 
-    else if (blocks[i]->HasToken("SECONDLAYER_E_THRESHOLD"))
+    if (blocks[i]->HasToken("SECONDLAYER_E_THRESHOLD"))
       m_SecondLayer_E_Threshold = blocks[i]->GetDouble("SECONDLAYER_E_THRESHOLD","MeV");
   }
 }
@@ -438,11 +452,16 @@ void TMugastPhysics::Clear() {
   EventType.clear();
   TotalEnergy.clear();
 
-  // DSSD X
+  PosX.clear();
+  PosY.clear();
+  PosZ.clear();
+
+  // DSSD 
   DSSD_E.clear();
   DSSD_T.clear();
   DSSD_X.clear();
   DSSD_Y.clear();
+
   // SecondLayer
   SecondLayer_E.clear();
   SecondLayer_T.clear();
@@ -479,7 +498,10 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
       if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
       else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
-      else if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
+      else if(Type=="Annular"){
+        cout << "ERROR bad Annular token" << endl;
+        exit(1);
+      }
 
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
@@ -487,6 +509,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
       TVector3 B = blocks[i]->GetTVector3("X128_Y1", "mm");
       TVector3 C = blocks[i]->GetTVector3("X1_Y128", "mm");
       TVector3 D = blocks[i]->GetTVector3("X128_Y128", "mm");
+
       AddTelescope(A, B, C, D);
     }
 
@@ -545,7 +568,7 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
     shapeFile << it.first << " " << it.second << endl;
   }
   shapeFile.close();
-  //ReadAnalysisConfig();
+  ReadAnalysisConfig();
 }
 //////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::InitSpectra() {
@@ -587,38 +610,40 @@ void TMugastPhysics::AddParameterToCalibrationManager() {
   // Good for simulation, close to typical values
   vector<double> standardX    = {-63, 63. / 8192.};
   vector<double> standardY    = {63, -63. / 8192.};
-  vector<double> standardSecondLayer  = {-250, 250. / 8192.};
+  vector<double> standardSecondLayer  = {-63, 63. / 8192.};
   vector<double> standardT    = {-1000, 1000. / 8192.};
 
-  for (int i = 0; i < m_NumberOfTelescope; ++i) {
+  map<int,int>::iterator it= m_DetectorNumberIndex.begin();
 
-    for (int j = 0; j < 128; ++j) {
+  for (; it!= m_DetectorNumberIndex.end(); it++) {
+
+    for (int j = 0; j < 128; j++) {
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
           standardX);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
           standardY);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
           standardT);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
           standardT);
     }
 
     for (int j = 0; j < 16; ++j) {
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
           standardSecondLayer);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
           standardT);
     }
   }
@@ -668,7 +693,6 @@ void TMugastPhysics::InitializeRootOutput() {
 }
 
 /////   Specific to MugastArray   ////
-
 void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
     TVector3 C_X1_Y128, TVector3 C_X128_Y128) {
   // To avoid warning
@@ -750,7 +774,7 @@ void TMugastPhysics::InitializeStandardParameter() {
   return;
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::AddTelescope(TVector3 C_Center) {
   // To avoid warning
   m_NumberOfTelescope++;
@@ -766,18 +790,19 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
   int NumberofRing = 16 ; //Per Quadrant
   int NumberofSector = 16 ; //Per detector, ( 4 in each Quad)
 
-  double StripPitchSector = (Phi_Max-Phi_Min)/(NumberofSector) ; //radial strip spacing in rad
+  double StripPitchSector = (Phi_Max-Phi_Min)/(NumberofSector) ; //radial strip spacing in rad 
   double StripPitchRing = (R_Max-R_Min)/NumberofRing  ; // ring strip spacing in mm
 
-  double Phi_0 = (8)*StripPitchSector; //Phi Offset: 1st sector starts at 180 degrees and ends at 180-22.5 degrees in the lab frame, numbering goes clockwise
+  // double Phi_0 = 8*StripPitchSector; // Phi Offset: 1st sector starts at 180 degrees and ends at 180-22.5 degrees in the lab frame, numbering goes clockwise
+  double Phi_0 = 90;
   TVector3 Strip_1_1=TVector3(0,0,Z);
   TVector3 StripCenter = Strip_1_1;
 
   //   Buffer object to fill Position Array
   vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
-  vector< vector< double > >   OneStripPositionX   ;
-  vector< vector< double > >   OneStripPositionY   ;
-  vector< vector< double > >   OneStripPositionZ   ;
+  vector<vector<double>> OneStripPositionX;
+  vector<vector<double>> OneStripPositionY;
+  vector<vector<double>> OneStripPositionZ;
 
   /* The logic behind the strip numbering of S1 in NPTOOL: 
      The number of rings goes from 1->64, the number of sectors goes from 1->16 
@@ -787,28 +812,47 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
      A hit combining Ring 17 (first ring in Quadrant 2) and 
      Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
      of the detector frontside-backside layout. 
-     The possible (allowed hits) are R(1-16)S(1-4), R(17-32)S(5-8), R(33-49)S(9-12),
-     R(50-64)S(13-16). 
      The three loops however takes all the possible combintation that an analysis
      can produce. This works perfectly for cases where the detector does not have 
      "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
      non physical hit combinations. 
      */
-  for(int iQuad = 0 ; iQuad < NumberOfQuadrant ; iQuad++){
+
+  for(int iQuad = 0; iQuad < NumberOfQuadrant ; iQuad++){
     for(int iRing = 0 ; iRing < NumberofRing; iRing++){
-      lineX.clear() ;
-      lineY.clear() ;
-      lineZ.clear() ;
+
+      lineX.clear();
+      lineY.clear();
+      lineZ.clear();
+
       for(int iSector = 0 ; iSector < NumberofSector ; iSector++){
+
         //Build vector
         StripCenter = TVector3(C_Center.X()+R_Min+(iRing+0.5)*StripPitchRing,C_Center.Y(), Z);
-        StripCenter.RotateZ( ( Phi_0 - (iSector+0.5)*StripPitchSector ) *M_PI/180.);
+        StripCenter.RotateZ((Phi_0 + (iSector+0.5)*StripPitchSector) *M_PI/180.);
 
         // if the hit is not "allowed" (see comment above) use a default value
-        if ( (iRing+(iQuad*NumberofRing))/NumberofSector != (iSector/NumberOfQuadrant) ) 
-          StripCenter.SetXYZ(-1000,-1000, Z-1000);
+        if(iQuad == 2){
+          if(!(iSector == 0 || iSector == 1 || iSector == 14 || iSector == 15)) {
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        } else if(iQuad == 3){
+          if(!(iSector > 1 && iSector < 6)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        } else if(iQuad == 1){
+          if(!(iSector > 5 && iSector < 10)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        }
+        else if(iQuad == 0){
+          if(!(iSector > 9 && iSector < 14)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        }
 
-        lineX.push_back( StripCenter.X() );// these vectors will contain 16x4 = 64 elements
+        // these vectors will contain 16x4 = 64 elements
+        lineX.push_back( StripCenter.X() );
         lineY.push_back( StripCenter.Y() );
         lineZ.push_back( StripCenter.Z() );
       }
@@ -817,11 +861,14 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
       OneStripPositionZ.push_back(lineZ);
     }
   }
-  vector<double> defaultLine;
-  defaultLine.resize(128,-1000);
-  OneStripPositionX.resize(128,defaultLine);
-  OneStripPositionY.resize(128,defaultLine);
-  OneStripPositionZ.resize(128,defaultLine);
+
+  // ?? FIXME
+  // vector<double> defaultLine;
+  // defaultLine.resize(128,-1000);
+  // OneStripPositionX.resize(128,defaultLine);
+  // OneStripPositionY.resize(128,defaultLine);
+  // OneStripPositionZ.resize(128,defaultLine);
+
   m_StripPositionX.push_back( OneStripPositionX ) ;
   m_StripPositionY.push_back( OneStripPositionY ) ;
   m_StripPositionZ.push_back( OneStripPositionZ ) ;
@@ -830,7 +877,7 @@ void TMugastPhysics::AddTelescope(TVector3 C_Center) {
 
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::AddTelescope(double theta, double phi, double distance,
     double beta_u, double beta_v, double beta_w) {
 
