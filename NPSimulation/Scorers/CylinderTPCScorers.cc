@@ -62,8 +62,24 @@ G4bool PS_TPCAnode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     // contain Enegy Time, DetNbr, StripFront and StripBack
     t_Charge = aStep->GetTrack()->GetWeight();
     t_DriftTime = aStep->GetPreStepPoint()->GetProperTime();
+   
+    // Convert Pad number to X,Y position 
+
+        //For the case of replica pads
+    G4int Ring = aStep->GetPreStepPoint()->GetTouchableHandle()->GetCopyNumber(1);   
+    int PadsPerRing[18]={144,152,156,164,172,176,184,192,196,204,212,216,224,228,236,244,248,256};  
     
-       int PadsPerRing[18]={144,152,156,164,172,176,184,192,196,204,212,216,224,228,236,244,248,256};  
+    G4double R = (50.+ Ring*2.2)*mm;
+    G4double dPhi= (2.*M_PI/PadsPerRing[Ring]);
+    G4double Phi = Pad*dPhi;
+    for(int i = 0; i < Ring; i++){
+        Pad += PadsPerRing[i];
+    }
+    t_Pad = Pad;
+
+        //For the case of parameterized pads
+    /*
+    t_Pad = Pad;
     G4int Ring = 0;
     if  (Pad<144){
         Ring = 0;}
@@ -77,7 +93,7 @@ G4bool PS_TPCAnode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
         Ring = 4;}
     else if (788<=Pad && Pad<964){
         Ring = 5;}
-    else if (964<=Pad && Pad<1148){
+   else if (964<=Pad && Pad<1148){
         Ring = 6;}
     else if (1148<=Pad && Pad<1340){
         Ring = 7;}
@@ -104,12 +120,15 @@ G4bool PS_TPCAnode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
 
     G4double R = (50.+ Ring*2.2)*mm;
     G4double dPhi= (2*M_PI/PadsPerRing[Ring]);
+    for(int i = 0; i < Ring; i++) {
+        Pad -= PadsPerRing[Ring];
+    }
     G4double Phi = Pad*dPhi;
+    */
     
+
     t_X = R*cos(Phi);
     t_Y = R*sin(Phi);
-
-    t_Pad = Pad;
 
     vector<AnodeData>::iterator it;
     it = m_Data.find(t_Pad);
