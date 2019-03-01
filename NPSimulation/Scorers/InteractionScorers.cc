@@ -46,14 +46,19 @@ G4bool PS_Interactions::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   t_Energy = aStep->GetTotalEnergyDeposit();
   t_Time = point->GetGlobalTime();
   t_Position  = point->GetPosition();
+  
+  // add it to check the theta of momentum
+  // MOMENT  = aStep->GetPreStepPoint()->GetMomentumDirection();
+  
   t_Index = aStep->GetTrack()->GetTrackID(); 
   vector<InteractionData>::iterator it;
   it = m_DataVector.find(t_Index); 
   if(it!=m_DataVector.end())
     it->Add(t_Energy);
   else
-    m_DataVector.Set(t_Index,t_Energy,t_Time,t_Position.x(),t_Position.y(),t_Position.z(),t_Position.theta(),t_Position.phi());
-
+   { m_DataVector.Set(t_Index,t_Energy,t_Time,t_Position.x(),t_Position.y(),t_Position.z(), /*MOMENT*/ t_Position.theta(),t_Position.phi());
+	
+}
 
   return TRUE;
 }
