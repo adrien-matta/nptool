@@ -36,6 +36,7 @@
 #include "TObject.h"
 #include "TVector2.h"
 #include "TVector3.h"
+#include "TRandom3.h"
 
 using namespace std;
 
@@ -57,6 +58,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   bool ResolvePseudoEvent();
   int  CheckEvent();
 
+  TRandom3* m_random; //!
+
   public:
   //   Provide Physical Multiplicity
   Int_t EventMultiplicity;
@@ -66,12 +69,16 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Telescope
   vector<int> TelescopeNumber;
-
-  //   DSSD
+   //   DSSD
   vector<double> DSSD_E;
   vector<double> DSSD_T;
   vector<int>    DSSD_X;
   vector<int>    DSSD_Y;
+
+  vector<double> PosX;
+  vector<double> PosY;
+  vector<double> PosZ;
+  vector<double> Theta;
 
   //   Second Layer
   vector<double> SecondLayer_E;
@@ -80,6 +87,10 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Physical Value
   vector<double> TotalEnergy;
+
+  private:
+  map<int,MG_DetectorType> DetectorType;//!
+ 
 
   public: //   Innherited from VDetector Class
   //   Read stream at ConfigFile to pick-up parameters of detector
@@ -135,7 +146,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   // Used for Online only, clear all the spectra hold by the Spectra class
   void ClearSpectra();
 
-  public: //   Specific to MUST2 Array
+  public: //   Specific to MUGAST Array
   //   Clear The PreTeated object
   void ClearPreTreatedData() { m_PreTreatedData->Clear(); }
 
@@ -144,14 +155,14 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   //   Return false if the channel is disabled by user
   //   Frist argument is either 0 for X,1 Y,2 SecondLayer 3
-  bool IsValidChannel(const int& DetectorType, const int& telescope,
+  bool IsValidChannel(const int& Type, const int& telescope,
                       const int& channel);
 
   //   Initialize the standard parameter for analysis
   //   ie: all channel enable, maximum multiplicity for strip = number of
   //   telescope
   void InitializeStandardParameter();
-
+  
   //   Read the user configuration file; if no file found, load standard one
   void ReadAnalysisConfig();
 
@@ -163,9 +174,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   void AddTelescope(double theta, double phi, double distance, double beta_u,
                     double beta_v, double beta_w);
 
-  // Use for reading Calibration Run, very simple methods; only apply
-  // calibration, no condition
-  void ReadCalibrationRun();
+ //   Special Method for Annular S1
+  void AddTelescope(TVector3 C_Center);
 
   // Give and external TMustData object to TMugastPhysics. Needed for online
   // analysis for example.
@@ -178,6 +188,8 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   // Use to access the strip position
   double GetStripPositionX(const int N, const int X, const int Y) {
+    // if (N==9)
+    // cout << N << " " << X << " " << Y << " " << m_DetectorNumberIndex[N] << " " << m_StripPositionX[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1] << endl; 
     return m_StripPositionX[ m_DetectorNumberIndex[N] - 1][X - 1][Y - 1];
   };
   double GetStripPositionY(const int N, const int X, const int Y) {
@@ -216,7 +228,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   int m_DSSD_Y_E_RAW_Threshold; //!
   int m_SecondLayer_E_RAW_Threshold; //!
 
-    // Calibrated Threshold
+  // Calibrated Threshold
   double m_DSSD_X_E_Threshold; //!
   double m_DSSD_Y_E_Threshold; //!
   double m_SecondLayer_E_Threshold; //!
@@ -244,7 +256,7 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
 
   private: // Spectra Class
   TMugastSpectra* m_Spectra; //!
-  
+
   public:
   void WriteSpectra(); //!
 
@@ -256,19 +268,19 @@ class TMugastPhysics : public TObject, public NPL::VDetector {
   ClassDef(TMugastPhysics, 1) // MugastPhysics structure
 };
 
-namespace MUST2_LOCAL {
-//   DSSD
-//   X
-double fDSSD_X_E(const TMugastData* Data, const int& i);
-double fDSSD_X_T(const TMugastData* Data, const int& i);
+namespace MUGAST_LOCAL {
+  //   DSSD
+  //   X
+  double fDSSD_X_E(const TMugastData* Data, const int& i);
+  double fDSSD_X_T(const TMugastData* Data, const int& i);
 
-//   Y
-double fDSSD_Y_E(const TMugastData* Data, const int& i);
-double fDSSD_Y_T(const TMugastData* Data, const int& i);
+  //   Y
+  double fDSSD_Y_E(const TMugastData* Data, const int& i);
+  double fDSSD_Y_T(const TMugastData* Data, const int& i);
 
-//  Second Layer 
-double fSecondLayer_E(const TMugastData* Data, const int& i);
-double fSecondLayer_T(const TMugastData* Data, const int& i);
+  //  Second Layer 
+  double fSecondLayer_E(const TMugastData* Data, const int& i);
+  double fSecondLayer_T(const TMugastData* Data, const int& i);
 }
 
 #endif

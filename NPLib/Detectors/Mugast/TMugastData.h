@@ -22,7 +22,18 @@
  *                                                                           *
  *****************************************************************************/
 #include <vector>
+#include <map>
+#include <iostream>
 #include "TObject.h"
+
+
+// Type of detector to index the correct strip map
+enum MG_DetectorType{
+  MG_SQUARE,
+  MG_TRAPEZE,
+  MG_ANNULAR,
+  MG_NOCHANGE
+  };
 
 using namespace std ;
 class TMugastData : public TObject {
@@ -58,6 +69,15 @@ class TMugastData : public TObject {
       vector<unsigned short>   fMG_SecondLayerT_StripNbr;
       vector<double>           fMG_SecondLayerT_Time;
 
+   private:
+      std::map<unsigned int, unsigned int> fMG_MapTrapezeX;//!
+      std::map<unsigned int, unsigned int> fMG_MapSquareX;//!
+      std::map<unsigned int, unsigned int> fMG_MapAnnularX;//!
+      std::map<unsigned int, unsigned int> fMG_MapTrapezeY;//!
+      std::map<unsigned int, unsigned int> fMG_MapSquareY;//!
+      std::map<unsigned int, unsigned int> fMG_MapAnnularY;//!
+  
+
    public:
       TMugastData();
       virtual ~TMugastData();
@@ -69,6 +89,21 @@ class TMugastData : public TObject {
       /////////////////////           SETTERS           ////////////////////////
       // FirstLayer
       // (X,E)
+      public:
+      inline void   SetDSSDXE(MG_DetectorType type,const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
+        static unsigned int newStrip;
+      newStrip = StripNbr;
+      if(type==MG_SQUARE)
+       newStrip=fMG_MapSquareX[StripNbr]; 
+      else if(type==MG_TRAPEZE)
+       newStrip=fMG_MapTrapezeX[StripNbr]; 
+      else if(type==MG_ANNULAR)
+       newStrip=fMG_MapAnnularX[StripNbr];  
+      
+      SetDSSDXE(DetNbr,newStrip,Energy); 
+
+      }
+      private:
       inline void   SetDSSDXE(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
         fMG_DSSDXE_DetectorNbr.push_back(DetNbr);
         fMG_DSSDXE_StripNbr.push_back(StripNbr);
@@ -76,12 +111,44 @@ class TMugastData : public TObject {
       }
       
       // (X,T)
+      public:
+      inline void   SetDSSDXT(MG_DetectorType type,const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Time){
+        static unsigned int newStrip;
+
+      newStrip = StripNbr;
+      if(type==MG_SQUARE)
+       newStrip=fMG_MapSquareX[StripNbr]; 
+      else if(type==MG_TRAPEZE)
+       newStrip=fMG_MapTrapezeX[StripNbr]; 
+      else if(type==MG_ANNULAR)
+       newStrip=fMG_MapAnnularX[StripNbr];  
+
+      SetDSSDXT(DetNbr,newStrip,Time); 
+      }
+ 
+     private:
      inline void   SetDSSDXT(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Time){   
       fMG_DSSDXT_DetectorNbr.push_back(DetNbr);  
       fMG_DSSDXT_StripNbr.push_back(StripNbr);       
       fMG_DSSDXT_Time.push_back(Time);  
      } 
        // (Y,E)
+     public:
+       inline void   SetDSSDYE(MG_DetectorType type,const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
+        static unsigned int newStrip;
+
+      newStrip = StripNbr;
+      if(type==MG_SQUARE)
+       newStrip=fMG_MapSquareY[StripNbr]; 
+      else if(type==MG_TRAPEZE)
+       newStrip=fMG_MapTrapezeY[StripNbr]; 
+      else if(type==MG_ANNULAR)
+       newStrip=fMG_MapAnnularY[StripNbr];  
+
+      SetDSSDYE(DetNbr,newStrip,Energy); 
+      }
+ 
+      private:
       inline void   SetDSSDYE(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
         fMG_DSSDYE_DetectorNbr.push_back(DetNbr);
         fMG_DSSDYE_StripNbr.push_back(StripNbr);
@@ -89,12 +156,29 @@ class TMugastData : public TObject {
       }
       
       // (Y,T)
+      public:
+      inline void   SetDSSDYT(MG_DetectorType type,const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Time){
+        static unsigned int newStrip;
+
+      newStrip = StripNbr;
+      if(type==MG_SQUARE)
+       newStrip=fMG_MapSquareY[StripNbr]; 
+      else if(type==MG_TRAPEZE)
+       newStrip=fMG_MapTrapezeY[StripNbr]; 
+      else if(type==MG_ANNULAR)
+       newStrip=fMG_MapAnnularY[StripNbr];  
+
+      SetDSSDYT(DetNbr,newStrip,Time); 
+      }
+ 
+
+      private:
      inline void   SetDSSDYT(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Time){   
       fMG_DSSDYT_DetectorNbr.push_back(DetNbr);  
       fMG_DSSDYT_StripNbr.push_back(StripNbr);       
       fMG_DSSDYT_Time.push_back(Time);  
      } 
-      
+     public: 
       // Second Layer
       // E
       inline void SetSecondLayerE(const unsigned short& DetNbr, const unsigned short& StripNbr, const double& Energy){
@@ -110,7 +194,7 @@ class TMugastData : public TObject {
       fMG_SecondLayerT_Time.push_back(Time);  
      } 
  
-
+public:
       /////////////////////           GETTERS           ////////////////////////
       // DSSD
       // (X,E)

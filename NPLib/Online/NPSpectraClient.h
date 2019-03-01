@@ -47,6 +47,7 @@ namespace NPL{
       void UpdateTH1(TH1* Old, TH1* New );
       // Access the tree
       TTree* GetTree();
+      TTree* GetRawTree();
     private: // The sochet use for connection
       TSocket* m_Sock;
       std::string m_Address;

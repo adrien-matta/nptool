@@ -23,6 +23,7 @@
 #include "NPSpectraServer.h"
 #include "NPCore.h"
 #include "RootOutput.h"
+#include "NPOptionManager.h"
 #include <cstdlib>
 #include <unistd.h>
 #include<iostream>
@@ -42,7 +43,9 @@ void NPL::SpectraServer::Destroy(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 NPL::SpectraServer::SpectraServer(){
-  m_Server= new TServerSocket(9092,true,100);
+  int port = NPOptionManager::getInstance()->GetSpectraServerPort();
+  std::cout << "Spectra Server port set to : " << port << std::endl;  
+  m_Server= new TServerSocket(port,true,100);
   if(!m_Server->IsValid())
     exit(1);
 
@@ -58,20 +61,19 @@ NPL::SpectraServer::SpectraServer(){
   // Create the list of Canvas
   m_Spectra = new TList;
 
-  NPL::SendInformation("NPL::SpectraServer","Server started on port 9092");
+  NPL::SendInformation("NPL::SpectraServer","Server started");
+  m_RawTree = NULL;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
- /*FIXME
   if(m_Server && m_Monitor){
     m_Monitor->ResetInterrupt();
-    TSocket* s = m_Monitor->Select();
-    if(s){
+    TSocket* s = m_Monitor->Select(100);
+    if(s && s!=(TSocket*)-1){
         HandleSocket(s);
     }
   }
-  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,7 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     }
 
     // send requested object back
-    static TMessage answer(kMESS_OBJECT);
+    static TMessage answer(kMESS_OBJECT|kMESS_ACK);
     answer.SetCompressionLevel(1);
     answer.Reset();
     TObject* h =NULL;
@@ -122,6 +124,12 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
       answer.WriteObject(tree);
       s->Send(answer);
     }
+    
+    else if (!strcmp(request, "RequestRawTree")){
+      answer.WriteObject(m_RawTree);
+      s->Send(answer);
+    }
+
 
     else{
       h = m_Spectra->FindObject(request);
