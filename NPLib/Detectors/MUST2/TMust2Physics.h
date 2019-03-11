@@ -54,10 +54,10 @@ public:
 
 public:
   vector<TVector2> Match_X_Y();
-  void             CheckEvent(int N);
-  bool             Match_Si_CsI(int X, int Y, int CristalNbr);
-  bool             Match_Si_SiLi(int X, int Y, int PadNbr);
-  bool             ResolvePseudoEvent();
+  int  CheckEvent(int N);
+  bool Match_Si_CsI(int X, int Y, int CristalNbr);
+  bool Match_Si_SiLi(int X, int Y, int PadNbr);
+  bool ResolvePseudoEvent();
 
 public:
   //   Provide Physical Multiplicity
@@ -291,7 +291,6 @@ private:
 public:
   // Prevent to treat event with ambiguous matching beetween X and Y
   bool          m_multimatch; //!
-  int           m_OrderMatch; //!
   vector<int>   m_match_type; //!
   map<int, int> m_NMatchDet; //!
   map<int, int> m_StripXMultDet; //!
