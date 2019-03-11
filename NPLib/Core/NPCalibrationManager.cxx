@@ -144,6 +144,10 @@ void CalibrationManager::LoadParameterFromFile(){
 
 
   unsigned int sizeF = fFileList.size();
+  if(sizeF){// If calibration parameter are given, suppress all default calibration
+    fCalibrationCoeff.clear();
+  }
+
   for(unsigned int i = 0 ; i < sizeF ; i++){
     CalibFile.open( fFileList[i].c_str() );
     std::map<std::string,std::string>::iterator it ;
@@ -153,7 +157,7 @@ void CalibrationManager::LoadParameterFromFile(){
       message << "file " << fFileList[i] << " is missing " ;
       NPL::SendWarning ("NPL::CalibrationManager" , message.str());
     }
-
+    
     else {
       // Append the Calibration File to the RootOuput for Back-up
       std::string comment = "%%% From File " + fFileList[i] + "%%%";

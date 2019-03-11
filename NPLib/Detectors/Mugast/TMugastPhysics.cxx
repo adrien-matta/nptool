@@ -19,14 +19,15 @@
  *                                                                           *
  *****************************************************************************/
 #include "TMugastPhysics.h"
-using namespace MUST2_LOCAL;
+using namespace MUGAST_LOCAL;
 
 //   STL
 #include <cmath>
 #include <iostream>
 #include <limits>
 #include <sstream>
-#include <stdlib.h>
+#include <cstdlib>
+#include <time.h>
 
 //   NPL
 #include "NPDetectorFactory.h"
@@ -37,8 +38,10 @@ using namespace MUST2_LOCAL;
 #include "RootOutput.h"
 #include "TAsciiFile.h"
 using namespace NPUNITS;
+
 //   ROOT
 #include "TChain.h"
+
 ///////////////////////////////////////////////////////////////////////////
 
 ClassImp(TMugastPhysics)
@@ -47,6 +50,7 @@ ClassImp(TMugastPhysics)
     EventMultiplicity                  = 0;
     m_EventData                        = new TMugastData;
     m_PreTreatedData                   = new TMugastData;
+    m_random                           = new TRandom3();
     m_EventPhysics                     = this;
     m_Spectra                          = NULL;
     m_NumberOfTelescope                = 0;
@@ -90,15 +94,18 @@ void TMugastPhysics::PreTreat() {
           m_EventData->GetDSSDXEStripNbr(i))) {
       double EX = fDSSD_X_E(m_EventData, i);
       if (EX > m_DSSD_X_E_Threshold)
-        m_PreTreatedData->SetDSSDXE(m_EventData->GetDSSDXEDetectorNbr(i),
+        m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
+            m_EventData->GetDSSDXEDetectorNbr(i),
             m_EventData->GetDSSDXEStripNbr(i), EX);
     }
   }
+
   //   T
   for (unsigned int i = 0; i < DSSDX_TMult; ++i) {
     if (IsValidChannel(0, m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i)))
-      m_PreTreatedData->SetDSSDXT(m_EventData->GetDSSDXTDetectorNbr(i),
+      m_PreTreatedData->SetDSSDXT(MG_NOCHANGE,
+          m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i),
           fDSSD_X_T(m_EventData, i));
   }
@@ -111,7 +118,8 @@ void TMugastPhysics::PreTreat() {
           m_EventData->GetDSSDYEStripNbr(i))) {
       double EY = fDSSD_Y_E(m_EventData, i);
       if (EY > m_DSSD_Y_E_Threshold)
-        m_PreTreatedData->SetDSSDYE(m_EventData->GetDSSDYEDetectorNbr(i),
+        m_PreTreatedData->SetDSSDYE(MG_NOCHANGE,
+            m_EventData->GetDSSDYEDetectorNbr(i),
             m_EventData->GetDSSDYEStripNbr(i), EY);
     }
   }
@@ -120,7 +128,8 @@ void TMugastPhysics::PreTreat() {
   for (unsigned int i = 0; i < DSSDY_TMult; ++i) {
     if (IsValidChannel(1, m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i)))
-      m_PreTreatedData->SetDSSDYT(m_EventData->GetDSSDYTDetectorNbr(i),
+      m_PreTreatedData->SetDSSDYT(MG_NOCHANGE,
+          m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i),
           fDSSD_Y_T(m_EventData, i));
   }
@@ -154,25 +163,26 @@ void TMugastPhysics::PreTreat() {
 ///////////////////////////////////////////////////////////////////////////
 
 void TMugastPhysics::BuildPhysicalEvent() {
-
   PreTreat();
 
-  bool check_SILI = false;
   bool check_SecondLayer  = false;
   static unsigned int DSSDXEMult, DSSDYEMult, DSSDXTMult, DSSDYTMult,SecondLayerEMult,SecondLayerTMult; 
   DSSDXEMult = m_PreTreatedData->GetDSSDXEMult();
   DSSDYEMult = m_PreTreatedData->GetDSSDYEMult();
   DSSDXTMult = m_PreTreatedData->GetDSSDXTMult();
   DSSDYTMult = m_PreTreatedData->GetDSSDYTMult();
-  SecondLayerEMult    = m_PreTreatedData->GetSecondLayerEMult();
-  SecondLayerTMult    = m_PreTreatedData->GetSecondLayerTMult();
+  SecondLayerEMult = m_PreTreatedData->GetSecondLayerEMult();
+  SecondLayerTMult = m_PreTreatedData->GetSecondLayerTMult();
+
+  // random->SetSeed(42);
+
+  // srand(time(NULL));
 
   if (1 /*CheckEvent() == 1*/) {
     vector<TVector2> couple = Match_X_Y();
 
     EventMultiplicity = couple.size();
     for (unsigned int i = 0; i < couple.size(); ++i) {
-      check_SILI = false;
       check_SecondLayer  = false;
 
       int N = m_PreTreatedData->GetDSSDXEDetectorNbr(couple[i].X());
@@ -209,6 +219,28 @@ void TMugastPhysics::BuildPhysicalEvent() {
       DSSD_X.push_back(X);
       DSSD_Y.push_back(Y);
       TelescopeNumber.push_back(N);
+
+      // Randomize annular detector in Phi
+      if (DetectorType[N]==MG_ANNULAR){
+        TVector3 Inter = GetPositionOfInteraction(i);
+        double Phi  = Inter.Phi();
+        double Perp = Inter.Perp();
+        double rPhi = m_random->Uniform(-11.25/180.*M_PI, 11.25/180.*M_PI); 
+        double rPerp= m_random->Uniform(-0.75,0.75); 
+
+        Inter.SetPhi(Phi+rPhi);
+        Inter.SetPerp(Perp+rPerp);
+        PosX.push_back(Inter.X());
+        PosY.push_back(Inter.Y());
+        PosZ.push_back(Inter.Z());
+      }
+      
+      // No random for Trapezoid and Square
+      else{
+        PosX.push_back(GetPositionOfInteraction(i).x());
+        PosY.push_back(GetPositionOfInteraction(i).y());
+        PosZ.push_back(GetPositionOfInteraction(i).z());
+      }
 
       if (m_Take_E_Y)
         DSSD_E.push_back(DSSD_Y_E);
@@ -342,15 +374,15 @@ vector<TVector2> TMugastPhysics::Match_X_Y() {
 }
 
 ////////////////////////////////////////////////////////////////////////////
-bool TMugastPhysics::IsValidChannel(const int& DetectorType,
+bool TMugastPhysics::IsValidChannel(const int& Type,
     const int& telescope, const int& channel) {
-  if (DetectorType == 0)
+  if (Type == 0){
     return *(m_XChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
-
-  else if (DetectorType == 1)
+  }
+  else if (Type == 1)
     return *(m_YChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
-  else if (DetectorType == 2)
+  else if (Type == 2)
     return *(m_SecondLayerChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
 
   else
@@ -359,20 +391,20 @@ bool TMugastPhysics::IsValidChannel(const int& DetectorType,
 
 ///////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::ReadAnalysisConfig() {
-
   NPL::InputParser parser("./configs/ConfigMugast.dat");
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ConfigMugast");
+
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
     if(blocks[i]->HasToken("MAX_STRIP_MULTIPLICITY"))
       m_MaximumStripMultiplicityAllowed = blocks[i]->GetInt("MAX_STRIP_MULTIPLICITY");
-    else if(blocks[i]->HasToken("STRIP_ENERGY_MATCHING"))
+    if(blocks[i]->HasToken("STRIP_ENERGY_MATCHING"))
       m_StripEnergyMatching = blocks[i]->GetDouble("STRIP_ENERGY_MATCHING","MeV");
-    else if(blocks[i]->HasToken("DISABLE_CHANNEL")){
+    if(blocks[i]->HasToken("DISABLE_CHANNEL")){
       vector<int> v = blocks[i]->GetVectorInt("DISABLE_CHANNEL");
       *(m_XChannelStatus[v[0] - 1].begin() + v[1] - 1) = false;
     }
-    else if(blocks[i]->HasToken("DISABLE_ALL")){
+    if(blocks[i]->HasToken("DISABLE_ALL")){
       int telescope = blocks[i]->GetInt("DISABLE_ALL");
       vector<bool> ChannelStatus;
       ChannelStatus.resize(128, false);
@@ -381,34 +413,34 @@ void TMugastPhysics::ReadAnalysisConfig() {
       ChannelStatus.resize(16, false);
       m_SecondLayerChannelStatus[telescope - 1]  = ChannelStatus;
     }
-    else if (blocks[i]->HasToken("TAKE_E_Y"))
+    if (blocks[i]->HasToken("TAKE_E_Y"))
       m_Take_E_Y = blocks[i]->GetInt("TAKE_E_Y");
 
-    else if (blocks[i]->HasToken("TAKE_T_Y"))
+    if (blocks[i]->HasToken("TAKE_T_Y"))
       m_Take_T_Y = blocks[i]->GetInt("TAKE_T_Y");
 
-    else if (blocks[i]->HasToken("TAKE_E_X"))
+    if (blocks[i]->HasToken("TAKE_E_X"))
       m_Take_E_Y = !(blocks[i]->GetInt("TAKE_E_X"));
 
-    else if (blocks[i]->HasToken("TAKE_T_X"))
+    if (blocks[i]->HasToken("TAKE_T_X"))
       m_Take_T_Y = !(blocks[i]->GetInt("TAKE_T_X"));
 
-    else if (blocks[i]->HasToken("DSSD_X_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_X_E_RAW_THRESHOLD"))
       m_DSSD_X_E_RAW_Threshold = blocks[i]->GetInt("DSSD_X_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("DSSD_Y_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_Y_E_RAW_THRESHOLD"))
       m_DSSD_Y_E_RAW_Threshold = blocks[i]->GetInt("DSSD_Y_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("SECONDLAYER_E_RAW_THRESHOLD"))
+    if (blocks[i]->HasToken("SECONDLAYER_E_RAW_THRESHOLD"))
       m_SecondLayer_E_RAW_Threshold = blocks[i]->GetInt("SECONDLAYER_E_RAW_THRESHOLD");
 
-    else if (blocks[i]->HasToken("DSSD_X_E_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_X_E_THRESHOLD"))
       m_DSSD_X_E_Threshold = blocks[i]->GetDouble("DSSD_X_E_THRESHOLD","MeV");
 
-    else if (blocks[i]->HasToken("DSSD_Y_E_THRESHOLD"))
+    if (blocks[i]->HasToken("DSSD_Y_E_THRESHOLD"))
       m_DSSD_Y_E_Threshold = blocks[i]->GetDouble("DSSD_Y_E_THRESHOLD","MeV");
 
-    else if (blocks[i]->HasToken("SECONDLAYER_E_THRESHOLD"))
+    if (blocks[i]->HasToken("SECONDLAYER_E_THRESHOLD"))
       m_SecondLayer_E_Threshold = blocks[i]->GetDouble("SECONDLAYER_E_THRESHOLD","MeV");
   }
 }
@@ -433,11 +465,16 @@ void TMugastPhysics::Clear() {
   EventType.clear();
   TotalEnergy.clear();
 
-  // DSSD X
+  PosX.clear();
+  PosY.clear();
+  PosZ.clear();
+
+  // DSSD 
   DSSD_E.clear();
   DSSD_T.clear();
   DSSD_X.clear();
   DSSD_Y.clear();
+
   // SecondLayer
   SecondLayer_E.clear();
   SecondLayer_T.clear();
@@ -459,25 +496,66 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
     = {"DetectorNumber","X1_Y1", "X1_Y128", "X128_Y1", "X128_Y128"};
   // Spherical Case
   vector<string> sphe = {"DetectorNumber","R", "THETA", "PHI", "BETA"};
+  // Annular Case
+  vector<string> annular = {"DetectorNumber","Center"};
+  string Type; 
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
+
     if (blocks[i]->HasTokenList(cart)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Mugast Telescope " << i + 1 << endl;
+
+        Type = blocks[i]->GetMainValue();
+      cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
+
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
+      if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
+      else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
+      else{
+        cout << "ERROR bad Annular token" << endl;
+        exit(1);
+      }
+
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
       TVector3 A = blocks[i]->GetTVector3("X1_Y1", "mm");
       TVector3 B = blocks[i]->GetTVector3("X128_Y1", "mm");
       TVector3 C = blocks[i]->GetTVector3("X1_Y128", "mm");
       TVector3 D = blocks[i]->GetTVector3("X128_Y128", "mm");
+
       AddTelescope(A, B, C, D);
     }
 
+    else if (blocks[i]->HasTokenList(annular)) {
+      if (NPOptionManager::getInstance()->GetVerboseLevel())
+        Type = blocks[i]->GetMainValue();
+      cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
+      int detectorNbr = blocks[i]->GetInt("DetectorNumber");
+      if(Type=="Annular") DetectorType[detectorNbr]=MG_ANNULAR;
+      else{
+        cout << "ERROR: Using Mugast Annular Token for Square or Trapezoid detector " << endl;
+        exit(1);
+      }
+
+      det = i+1;
+      m_DetectorNumberIndex[detectorNbr]=det;
+      TVector3 Center = blocks[i]->GetTVector3("Center", "mm");
+      AddTelescope(Center);
+    }
+
+
     else if (blocks[i]->HasTokenList(sphe)) {
       if (NPOptionManager::getInstance()->GetVerboseLevel())
-        cout << endl << "////  Mugast Telescope " << i + 1 << endl;
+        Type = blocks[i]->GetMainValue();
+      cout << endl << "////  Mugast Telescope " << Type << " " << i + 1 << endl;
       int detectorNbr = blocks[i]->GetInt("DetectorNumber");
+      if(Type=="Square") DetectorType[detectorNbr]=MG_SQUARE;
+      else if(Type=="Trapezoid") DetectorType[detectorNbr]=MG_TRAPEZE;
+      else{
+        cout << "ERROR bad Annular token" << endl;
+        exit(1);
+      }
+
       det = i+1;
       m_DetectorNumberIndex[detectorNbr]=det;
       double         Theta = blocks[i]->GetDouble("THETA", "deg");
@@ -493,10 +571,18 @@ void TMugastPhysics::ReadConfiguration(NPL::InputParser parser) {
         << endl;
       exit(1);
     }
+
   }
 
   InitializeStandardParameter();
-  //ReadAnalysisConfig();
+  // Create a file to be read by Ganil2Root telling which detector
+  // is which shape
+  std::ofstream shapeFile(".MugastShape");
+  for(auto& it:DetectorType){
+    shapeFile << it.first << " " << it.second << endl;
+  }
+  shapeFile.close();
+  ReadAnalysisConfig();
 }
 //////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::InitSpectra() {
@@ -524,8 +610,8 @@ void TMugastPhysics::WriteSpectra() {
 
 ///////////////////////////////////////////////////////////////////////////
 map<string, TH1*> TMugastPhysics::GetSpectra() {
- if(m_Spectra)
-  return m_Spectra->GetMapHisto();
+  if(m_Spectra)
+    return m_Spectra->GetMapHisto();
   else {
     map<string, TH1*> empty;
     return empty;
@@ -538,38 +624,40 @@ void TMugastPhysics::AddParameterToCalibrationManager() {
   // Good for simulation, close to typical values
   vector<double> standardX    = {-63, 63. / 8192.};
   vector<double> standardY    = {63, -63. / 8192.};
-  vector<double> standardSecondLayer  = {-250, 250. / 8192.};
+  vector<double> standardSecondLayer  = {-63, 63. / 8192.};
   vector<double> standardT    = {-1000, 1000. / 8192.};
 
-  for (int i = 0; i < m_NumberOfTelescope; ++i) {
+  map<int,int>::iterator it= m_DetectorNumberIndex.begin();
 
-    for (int j = 0; j < 128; ++j) {
+  for (; it!= m_DetectorNumberIndex.end(); it++) {
+
+    for (int j = 0; j < 128; j++) {
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_E",
           standardX);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_E",
           standardY);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_X" + NPL::itoa(j + 1) + "_T",
           standardT);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_DSSD_Y" + NPL::itoa(j + 1) + "_T",
           standardT);
     }
 
     for (int j = 0; j < 16; ++j) {
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
-          "Mugast_T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
+          "Mugast", "T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
+          "Mugast_T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_E",
           standardSecondLayer);
       Cal->AddParameter(
-          "Mugast", "T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
-          "Mugast_T" + NPL::itoa(i + 1) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
+          "Mugast", "T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
+          "Mugast_T" + NPL::itoa(it->first) + "_SecondLayer" + NPL::itoa(j + 1) + "_T",
           standardT);
     }
   }
@@ -619,7 +707,6 @@ void TMugastPhysics::InitializeRootOutput() {
 }
 
 /////   Specific to MugastArray   ////
-
 void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
     TVector3 C_X1_Y128, TVector3 C_X128_Y128) {
   // To avoid warning
@@ -701,6 +788,111 @@ void TMugastPhysics::InitializeStandardParameter() {
   return;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+void TMugastPhysics::AddTelescope(TVector3 C_Center) {
+  // To avoid warning
+  m_NumberOfTelescope++;
+  double Z = C_Center.Z();
+
+  double R_Min = 24;
+  double R_Max = 48;
+
+  double Phi_Min = 0  ;
+  double Phi_Max = 360;
+
+  int NumberOfQuadrant = 4 ;
+  int NumberofRing = 16 ; //Per Quadrant
+  int NumberofSector = 16 ; //Per detector, ( 4 in each Quad)
+
+  double StripPitchSector = (Phi_Max-Phi_Min)/(NumberofSector) ; //radial strip spacing in rad 
+  double StripPitchRing = (R_Max-R_Min)/NumberofRing  ; // ring strip spacing in mm
+
+  // double Phi_0 = 8*StripPitchSector; // Phi Offset: 1st sector starts at 180 degrees and ends at 180-22.5 degrees in the lab frame, numbering goes clockwise
+  double Phi_0 = 90;
+  TVector3 Strip_1_1=TVector3(0,0,Z);
+  TVector3 StripCenter = Strip_1_1;
+
+  //   Buffer object to fill Position Array
+  vector<double> lineX ; vector<double> lineY ; vector<double> lineZ ;
+  vector<vector<double>> OneStripPositionX;
+  vector<vector<double>> OneStripPositionY;
+  vector<vector<double>> OneStripPositionZ;
+
+  /* The logic behind the strip numbering of S1 in NPTOOL: 
+     The number of rings goes from 1->64, the number of sectors goes from 1->16 
+     (4 per quadrant). There's a redundancy in the fact that 1->64 already contain 
+     the information about the quadrant and the majority of these positions are 
+     indeed not physical. Example: 
+     A hit combining Ring 17 (first ring in Quadrant 2) and 
+     Sector 4 (last sector in Quadrant 1) is not possible due to physical mismatch 
+     of the detector frontside-backside layout. 
+     The three loops however takes all the possible combintation that an analysis
+     can produce. This works perfectly for cases where the detector does not have 
+     "Quadrants", e.g. S3 type. For the S1 an extra condition is added to flag the
+     non physical hit combinations. 
+     */
+
+  for(int iQuad = 0; iQuad < NumberOfQuadrant ; iQuad++){
+    for(int iRing = 0 ; iRing < NumberofRing; iRing++){
+
+      lineX.clear();
+      lineY.clear();
+      lineZ.clear();
+
+      for(int iSector = 0 ; iSector < NumberofSector ; iSector++){
+
+        //Build vector
+        StripCenter = TVector3(C_Center.X()+R_Min+(iRing+0.5)*StripPitchRing,C_Center.Y(), Z);
+        StripCenter.RotateZ((Phi_0 + (iSector+0.5)*StripPitchSector) *M_PI/180.);
+
+        // if the hit is not "allowed" (see comment above) use a default value
+        if(iQuad == 2){
+          if(!(iSector == 0 || iSector == 1 || iSector == 14 || iSector == 15)) {
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        } else if(iQuad == 3){
+          if(!(iSector > 1 && iSector < 6)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        } else if(iQuad == 1){
+          if(!(iSector > 5 && iSector < 10)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        }
+        else if(iQuad == 0){
+          if(!(iSector > 9 && iSector < 14)){
+            StripCenter.SetXYZ(-1000,-1000, Z-1000);
+          }
+        }
+
+        // these vectors will contain 16x4 = 64 elements
+        lineX.push_back( StripCenter.X() );
+        lineY.push_back( StripCenter.Y() );
+        lineZ.push_back( StripCenter.Z() );
+      }
+      OneStripPositionX.push_back(lineX);
+      OneStripPositionY.push_back(lineY);
+      OneStripPositionZ.push_back(lineZ);
+    }
+  }
+
+  // Increase the size of the Position array to 128 to avoid seg fault
+  // in case of connecting a trapezoid to an annular
+  vector<double> defaultLine;
+  defaultLine.resize(128,-1000);
+  OneStripPositionX.resize(128,defaultLine);
+  OneStripPositionY.resize(128,defaultLine);
+  OneStripPositionZ.resize(128,defaultLine);
+
+  m_StripPositionX.push_back( OneStripPositionX ) ;
+  m_StripPositionY.push_back( OneStripPositionY ) ;
+  m_StripPositionZ.push_back( OneStripPositionZ ) ;
+
+  return;
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
 void TMugastPhysics::AddTelescope(double theta, double phi, double distance,
     double beta_u, double beta_v, double beta_w) {
 
@@ -794,7 +986,7 @@ TVector3 TMugastPhysics::GetPositionOfInteraction(const int i) {
         GetStripPositionY(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]),
         GetStripPositionZ(TelescopeNumber[i], DSSD_X[i], DSSD_Y[i]));
 
-  return (Position);
+  return Position;
 }
 
 TVector3 TMugastPhysics::GetTelescopeNormal(const int i) {
@@ -820,12 +1012,12 @@ TVector3 TMugastPhysics::GetTelescopeNormal(const int i) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-namespace MUST2_LOCAL {
+namespace MUGAST_LOCAL {
   //   DSSD
   //   X
   double fDSSD_X_E(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetDSSDXEDetectorNbr(i));
     name += "_DSSD_X";
     name += NPL::itoa(m_EventData->GetDSSDXEStripNbr(i));
@@ -836,7 +1028,7 @@ namespace MUST2_LOCAL {
 
   double fDSSD_X_T(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetDSSDXTDetectorNbr(i));
     name += "_DSSD_X";
     name += NPL::itoa(m_EventData->GetDSSDXTStripNbr(i));
@@ -848,7 +1040,7 @@ namespace MUST2_LOCAL {
   //   Y
   double fDSSD_Y_E(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetDSSDYEDetectorNbr(i));
     name += "_DSSD_Y";
     name += NPL::itoa(m_EventData->GetDSSDYEStripNbr(i));
@@ -859,7 +1051,7 @@ namespace MUST2_LOCAL {
 
   double fDSSD_Y_T(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetDSSDYTDetectorNbr(i));
     name += "_DSSD_Y";
     name += NPL::itoa(m_EventData->GetDSSDYTStripNbr(i));
@@ -871,7 +1063,7 @@ namespace MUST2_LOCAL {
   //   SecondLayer
   double fSecondLayer_E(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetSecondLayerEDetectorNbr(i));
     name += "_SecondLayer";
     name += NPL::itoa(m_EventData->GetSecondLayerEStripNbr(i));
@@ -882,7 +1074,7 @@ namespace MUST2_LOCAL {
 
   double fSecondLayer_T(const TMugastData* m_EventData, const int& i) {
     static string name;
-    name = "MUST2/T";
+    name = "Mugast/T";
     name += NPL::itoa(m_EventData->GetSecondLayerTDetectorNbr(i));
     name += "_SecondLayer";
     name += NPL::itoa(m_EventData->GetSecondLayerTStripNbr(i));

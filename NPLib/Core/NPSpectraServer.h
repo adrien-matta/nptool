@@ -26,6 +26,7 @@
 #include "TServerSocket.h"
 #include "TMonitor.h"
 #include "TMessage.h"
+#include "TTree.h"
 #include "TList.h"
 #include "TH1.h"
 #include "TH2.h"
@@ -52,11 +53,14 @@ namespace NPL{
       void FillSpectra(const std::string& name,const double& valx);
       void FillSpectra(const std::string& name,const double& valx, const double& valy);
       void CheckRequest();
+      // Use for Online purpose 
+      void SetRawTree(TTree* tree){m_RawTree=tree;} ;
 
     private:
       bool m_stop;
       TServerSocket* m_Server;     
       TMonitor* m_Monitor;     
+      TTree* m_RawTree;
       TList* m_Sockets;
       TList* m_Spectra;
   };

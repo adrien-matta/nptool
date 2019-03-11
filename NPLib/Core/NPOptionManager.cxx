@@ -72,6 +72,7 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fVerboseLevel               = 1;
   fNumberOfEntryToAnalyse     = -1;
 	fFirstEntryToAnalyse        = 0;
+  fSpectraServerPort          = 9092;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
@@ -129,6 +130,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "-V"  && argc >= i + 1)                  fVerboseLevel = atoi(argv[++i]) ;
 
     else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[++i]) ;
+
+    else if (argument == "-P"  && argc >= i + 1)                  fSpectraServerPort = atoi(argv[++i]) ;
 
     else if (argument == "--disable-branch")                      fDisableAllBranchOption = true ;
 
@@ -406,6 +409,7 @@ void NPOptionManager::DisplayHelp(){
   std::cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << std::endl  ;
   std::cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << std::endl ;
   std::cout << "\t-F <arg>\t\t\tSet the first event to analyse to arg (analysis goes from F -> L+F)" << std::endl ;
+  std::cout << "\t-P <arg>\t\t\tSet the Spectra Server Port for online analyis" << std::endl ;
   std::cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << std::endl ;
   std::cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << std::endl ;
   std::cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << std::endl ;

@@ -55,6 +55,7 @@ namespace InteractionScorers {
       double m_PositionZ;
       double m_Theta;
       double m_Phi;
+      
 
     public:
       unsigned int GetIndex() const{return m_Index;};
@@ -131,6 +132,7 @@ namespace InteractionScorers {
       double t_Energy;
       double t_Time;
       G4ThreeVector t_Position;
+      //G4ThreeVector MOMENT;
   };
 
 }
