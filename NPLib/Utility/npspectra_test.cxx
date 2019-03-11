@@ -6,11 +6,12 @@
 #include"NPSpectraServer.h"
 #include<cstdlib>
 #include<iostream>
+#include"RootOutput.h"
 
 int main(int argc , char** argv){
   // Root will not issue any BS warning message
   gErrorIgnoreLevel = 10000;
-
+  RootOutput::getInstance("testOnline.root","TestTree");
   NPL::SpectraServer* server = NPL::SpectraServer::getInstance();
 
   // Create two test spectrum
@@ -46,6 +47,7 @@ int main(int argc , char** argv){
     }
     
     server->CheckRequest(); 
+    usleep(1000);
     }
 
   return 0;

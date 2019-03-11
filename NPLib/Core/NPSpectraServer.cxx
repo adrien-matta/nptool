@@ -63,7 +63,6 @@ NPL::SpectraServer::SpectraServer(){
 
 ///////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::CheckRequest(){
- /*FIXME
   if(m_Server && m_Monitor){
     m_Monitor->ResetInterrupt();
     TSocket* s = m_Monitor->Select();
@@ -71,7 +70,6 @@ void NPL::SpectraServer::CheckRequest(){
         HandleSocket(s);
     }
   }
-  */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +102,7 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
     }
 
     // send requested object back
-    static TMessage answer(kMESS_OBJECT);
+    static TMessage answer(kMESS_OBJECT|kMESS_ACK);
     answer.SetCompressionLevel(1);
     answer.Reset();
     TObject* h =NULL;

@@ -90,7 +90,9 @@ bool NPL::SpectraClient::Sync(){
   }
 
   TMessage* message=NULL;
-  m_Sock->Send("RequestSpectra");
+  m_Sock->Send("RequestSpectra",kMESS_STRING|kMESS_ACK);
+  
+
 
   if(m_Sock->Recv(message)<=0){
     if(m_Sock){
@@ -187,7 +189,7 @@ TTree* NPL::SpectraClient::GetTree(){
   }
 
   TMessage* message=NULL;
-  m_Sock->Send("RequestTree",kMESS_STRING||kMESS_ACK);
+  m_Sock->Send("RequestTree",kMESS_STRING|kMESS_ACK);
 
   if(m_Sock->Recv(message)<=0){
     if(m_Sock){
