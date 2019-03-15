@@ -391,7 +391,7 @@ G4LogicalVolume* Minos::BuildTarget(){
 
 
     {G4VisAttributes* atb= new G4VisAttributes(G4Colour(0.6,1.,1., .4));
-      atb->SetForceSolid(true);
+      //atb->SetForceSolid(true);
       logicTarget->SetVisAttributes(atb);}
     //logicTarget->SetSensitiveDetector(m_MinosTargetScorer);
 
@@ -412,7 +412,7 @@ G4LogicalVolume* Minos::BuildChamber(){
         ChamberMaterial,	//its material
         "Chamber");	//its name                               
 
-    {G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(0,1,0,.4));
+    {G4VisAttributes* simpleBoxVisAtt= new G4VisAttributes(G4Colour(0,1,0,.6));
       simpleBoxVisAtt->SetVisibility(true);
       logicChamber->SetVisAttributes(simpleBoxVisAtt);}
 
@@ -432,7 +432,7 @@ G4LogicalVolume* Minos::BuildInnerRohacell(){
         InnerRohacellMaterial,	//its material
         "InnerRohacell");	//its name
 
-    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .3));
       logicInnerRohacell->SetVisAttributes(atb);
 
 
@@ -473,7 +473,7 @@ G4LogicalVolume* Minos::BuildOuterOuterRohacell(){
         OuterRohacellMaterial,	//its material
         "OuterRohacell");	//its name
 
-    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .4));
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,1., .8));
       logicOuterRohacell->SetVisAttributes(atb);
 
     
@@ -497,7 +497,7 @@ G4LogicalVolume* Minos::BuildKapton(){
         "Kapton");	//its name
 
 
-    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6,0.7));
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6,0.4));
       logicKapton->SetVisAttributes(atb);
   }
 
@@ -518,7 +518,7 @@ G4LogicalVolume* Minos::BuildOuterKapton(){
         "Kapton");	//its name
 
 
-    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6,0.7));
+    G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,1.,0.6,0.8));
       logicKapton->SetVisAttributes(atb);
       // logicKapton->SetSensitiveDetector(m_MinosTPCScorer);  // decomment this and coment line logicTPC->SetSensitiveDetector(m_MinosTPCScorer); to see only kaptonOuter
   }
@@ -540,7 +540,7 @@ G4LogicalVolume* Minos::BuildTPC(){
         "TPC"); //name
 
 
-    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,0.5,0.6,0.5));
+    {G4VisAttributes* atb= new G4VisAttributes(G4Colour(1.,0.5,0.6,0));
       logicTPC->SetVisAttributes(atb);}
     //logicTPC->SetSensitiveDetector(m_MinosTPCScorer); // decomment if interested
 
