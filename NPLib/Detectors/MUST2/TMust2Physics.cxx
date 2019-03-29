@@ -270,8 +270,7 @@ void TMust2Physics::BuildPhysicalEvent() {
 
   for (unsigned int i = 0; i < couple_size; ++i) {
 
-    if (m_match_type[i] == 1) {
-
+    if (m_match_type[i] == 1 || m_multimatch) {
       check_SILI = false;
       check_CSI  = false;
 
@@ -378,11 +377,10 @@ void TMust2Physics::BuildPhysicalEvent() {
         CsI_T.push_back(-1000);
       }
 
-      EventType.push_back(1);
+      EventType.push_back(m_match_type[i]);
     }
   } // loop on event multiplicity
 
-  // Check CsI_Size
   return;
 }
 
@@ -590,25 +588,22 @@ vector<TVector2> TMust2Physics::Match_X_Y() {
 
   for (unsigned int i = 0; i < couple_size; ++i) {
     int N = m_PreTreatedData->GetMMStripXEDetectorNbr(ArrayOfGoodCouple[i].X());
-
-    CheckEvent(N);
-
-    if (m_OrderMatch == 2)
-      m_match_type.push_back(2);
-    else
-      m_match_type.push_back(1);
+    m_match_type.push_back(CheckEvent(N));
   }
 
   return ArrayOfGoodCouple;
 }
 
 ////////////////////////////////////////////////////////////////////////////
-void TMust2Physics::CheckEvent(int N) {
+int TMust2Physics::CheckEvent(int N) {
+  // Bad event
   if (m_NMatchDet[N] > m_StripXMultDet[N]
       || m_NMatchDet[N] > m_StripYMultDet[N]) {
-    m_OrderMatch = 2;
-  } else {
-    m_OrderMatch = 1;
+    return  2;
+  } 
+  // Good event
+  else {
+    return 1;
   }
 }
 
@@ -869,7 +864,6 @@ bool TMust2Physics::Match_Si_CsI(int X, int Y, int CristalNbr) {
 void TMust2Physics::Clear() {
   EventMultiplicity = 0;
 
-  m_OrderMatch = 0;
   m_match_type.clear();
 
   m_StripXMultDet.clear();

@@ -89,7 +89,9 @@ bool NPL::SpectraClient::Sync(){
   }
 
   TMessage* message=NULL;
-  m_Sock->Send("RequestSpectra");
+  m_Sock->Send("RequestSpectra",kMESS_STRING|kMESS_ACK);
+  
+
 
   if(m_Sock->Recv(message)<=0){
     if(m_Sock){
