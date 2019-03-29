@@ -42,7 +42,7 @@ void Analysis::Init() {
   myInit = new TInitialConditions();
   // get MUST2 and Gaspard objects
   M2 = (TMust2Physics*)  m_DetectorManager -> GetDetector("M2Telescope");
-  GD = (GaspardTracker*) m_DetectorManager -> GetDetector("GaspardTracker");
+  MG = (TMugastPhysics*) m_DetectorManager -> GetDetector("Mugast");
 
   // get reaction information
   myReaction.ReadConfigurationFile(NPOptionManager::getInstance()->GetReactionFile());
@@ -55,8 +55,8 @@ void Analysis::Init() {
   string WindowsMaterial = "";//m_DetectorManager->GetWindowsMaterial();
 
  // energy losses
-  string light=NPL::ChangeNameToG4Standard(myReaction.GetNucleus3().GetName());
-  string beam=NPL::ChangeNameToG4Standard(myReaction.GetNucleus1().GetName());
+  string light=NPL::ChangeNameToG4Standard(myReaction.GetNucleus3()->GetName());
+  string beam=NPL::ChangeNameToG4Standard(myReaction.GetNucleus1()->GetName());
   LightTarget = NPL::EnergyLoss(light+"_"+TargetMaterial+".G4table","G4Table",100 );
   LightAl = NPL::EnergyLoss(light+"_Al.G4table","G4Table",100);
   LightSi = NPL::EnergyLoss(light+"_Si.G4table","G4Table",100);
@@ -77,6 +77,7 @@ void Analysis::Init() {
   DetectorNumber = 0;
   ThetaNormalTarget = 0;
   ThetaM2Surface = 0;
+  ThetaMGSurface = 0;
   Si_E_M2 = 0;
   CsI_E_M2 = 0;
   Energy = 0;
@@ -99,8 +100,7 @@ void Analysis::TreatEvent() {
   BeamImpact = TVector3(0,0,zImpact); 
   // determine beam energy for a randomized interaction point in target
   // 1% FWHM randominastion (E/100)/2.35
-  myReaction.SetBeamEnergy(Rand.Gaus(myInit->GetIncidentFinalKineticEnergy(),myInit->GetIncidentFinalKineticEnergy()/235));
-
+  //myReaction.SetBeamEnergy(Rand.Gaus(myInit->GetIncidentFinalKineticEnergy(),myInit->GetIncidentFinalKineticEnergy()/235));
 
   //////////////////////////// LOOP on MUST2 //////////////////
   for(unsigned int countMust2 = 0 ; countMust2 < M2->Si_E.size() ; countMust2++){
@@ -166,51 +166,45 @@ void Analysis::TreatEvent() {
 
   ////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////
-  //////////////////////////// LOOP on GASPARD //////////////////
-  if(GD->GetEnergyDeposit()>0){
-    /************************************************/
+  //////////////////////////// LOOP on MUGAST //////////////////
+  
+/*  
+for(unsigned int countMugast = 0 ; countMugast < MG->DSSD_E.size() ; countMugast++){
+  if(MG->GetEnergyDeposit(countMugast)>0){
     // Part 1 : Impact Angle
-    ThetaGDSurface = 0;
+    ThetaMGSurface = 0;
     ThetaNormalTarget = 0;
-    TVector3 HitDirection = GD -> GetPositionOfInteraction() - BeamImpact ;
+    TVector3 HitDirection = MG -> GetPositionOfInteraction(countMugast) - BeamImpact ;
     ThetaLab = HitDirection.Angle( BeamDirection );
 
-    X =  GD -> GetPositionOfInteraction().X();
-    Y =  GD -> GetPositionOfInteraction().Y();
-    Z =  GD -> GetPositionOfInteraction().Z();
+    X =  MG -> GetPositionOfInteraction(countMugast).X();
+    Y =  MG -> GetPositionOfInteraction(countMugast).Y();
+    Z =  MG -> GetPositionOfInteraction(countMugast).Z();
 
-    ThetaGDSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
+    ThetaMGSurface = HitDirection.Angle( TVector3(0,0,1) ) ;
     ThetaNormalTarget = HitDirection.Angle( TVector3(0,0,1) ) ;
 
-    /************************************************/
 
-    /************************************************/
     // Part 2 : Impact Energy
     Energy = ELab = 0;
-    Energy = GD->GetEnergyDeposit();
+    Energy = MG->GetEnergyDeposit(countMugast);
     // Target Correction
     ELab   = LightTarget.EvaluateInitialEnergy( Energy ,TargetThickness*0.5-zImpact, ThetaNormalTarget);
 
     if(LightWindow)
       ELab = LightWindow->EvaluateInitialEnergy( ELab ,WindowsThickness, ThetaNormalTarget);
     
-      dE= myInit->GetKineticEnergy(0) - ELab ;
-      dTheta = (myInit->GetThetaLab_WorldFrame(0)*deg-ThetaLab)/deg ;
-    /************************************************/
-
-    /************************************************/
     // Part 3 : Excitation Energy Calculation
     Ex = myReaction.ReconstructRelativistic( ELab , ThetaLab );
 
-    /************************************************/
 
-    /************************************************/
     // Part 4 : Theta CM Calculation
     ThetaCM  = myReaction.EnergyLabToThetaCM( ELab , ThetaLab)/deg;
     ThetaLab=ThetaLab/deg;
 
-    /************************************************/
-  }//end loop GASPARD
+  }//end loop Mugast
+}
+*/
 
 }
 

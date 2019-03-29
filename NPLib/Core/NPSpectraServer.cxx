@@ -69,7 +69,7 @@ NPL::SpectraServer::SpectraServer(){
 void NPL::SpectraServer::CheckRequest(){
   if(m_Server && m_Monitor){
     m_Monitor->ResetInterrupt();
-    TSocket* s = m_Monitor->Select(100);
+    TSocket* s = m_Monitor->Select(1);
     if(s && s!=(TSocket*)-1){
         HandleSocket(s);
     }
@@ -107,7 +107,7 @@ void NPL::SpectraServer::HandleSocket(TSocket* s){
 
     // send requested object back
     static TMessage answer(kMESS_OBJECT|kMESS_ACK);
-    answer.SetCompressionLevel(1);
+    answer.SetCompressionLevel();
     answer.Reset();
     TObject* h =NULL;
     if (!strcmp(request, "RequestSpectra")){
@@ -153,13 +153,9 @@ void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx)
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::FillSpectra(const std::string& name,const double& valx,const double& valy){
   // Fill the local histo
-  int val = ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
+  ((TH2*) m_Spectra->FindObject(name.c_str()))->Fill(valx,valy);
 }
 ////////////////////////////////////////////////////////////////////////////////
 void NPL::SpectraServer::AddSpectra(TH1* h){
   m_Spectra->Add(h);
 }
-////////////////////////////////////////////////////////////////////////////////
-//void NPL::SpectraServer::AddSpectra(TH2* h){
-//  m_Spectra->Add(h);
-//}

@@ -27,7 +27,7 @@
 #include"RootOutput.h"
 #include"RootInput.h"
 #include "TMust2Physics.h"
-#include "GaspardTracker.h"
+#include "TMugastPhysics.h"
 #include "TInitialConditions.h"
 #include <TRandom3.h>
 #include <TVector3.h>
@@ -76,6 +76,7 @@ class Analysis: public NPL::VAnalysis{
   int DetectorNumber  ;
   double ThetaNormalTarget;
   double ThetaM2Surface ;
+  double ThetaMGSurface ;
   double Si_E_M2 ;
   double CsI_E_M2  ;
   double Energy ;
@@ -89,7 +90,7 @@ class Analysis: public NPL::VAnalysis{
   double dTheta;
   // Branches and detectors
   TMust2Physics* M2;
-  GaspardTracker* GD;
+  TMugastPhysics* MG;
   TInitialConditions* myInit ;
 
 };

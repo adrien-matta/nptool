@@ -85,16 +85,17 @@ void TMugastPhysics::PreTreat() {
   DSSDY_TMult = m_EventData->GetDSSDYTMult();
   SecondLayer_EMult = m_EventData->GetSecondLayerEMult();
   SecondLayer_TMult = m_EventData->GetSecondLayerTMult();
-
+  MG_DetectorType type = MG_NOCHANGE;
   //   X
   //   E
   for (unsigned int i = 0; i < DSSDX_EMult; ++i) {
+    type=DetectorType[m_EventData->GetDSSDXEDetectorNbr(i)];
     if (m_EventData->GetDSSDXEEnergy(i) > m_DSSD_X_E_RAW_Threshold
         && IsValidChannel(0, m_EventData->GetDSSDXEDetectorNbr(i),
           m_EventData->GetDSSDXEStripNbr(i))) {
       double EX = fDSSD_X_E(m_EventData, i);
       if (EX > m_DSSD_X_E_Threshold)
-        m_PreTreatedData->SetDSSDXE(MG_NOCHANGE,
+        m_PreTreatedData->SetDSSDXE(type,
             m_EventData->GetDSSDXEDetectorNbr(i),
             m_EventData->GetDSSDXEStripNbr(i), EX);
     }
@@ -102,9 +103,10 @@ void TMugastPhysics::PreTreat() {
 
   //   T
   for (unsigned int i = 0; i < DSSDX_TMult; ++i) {
+    type=DetectorType[m_EventData->GetDSSDXTDetectorNbr(i)];
     if (IsValidChannel(0, m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i)))
-      m_PreTreatedData->SetDSSDXT(MG_NOCHANGE,
+      m_PreTreatedData->SetDSSDXT(type,
           m_EventData->GetDSSDXTDetectorNbr(i),
           m_EventData->GetDSSDXTStripNbr(i),
           fDSSD_X_T(m_EventData, i));
@@ -113,12 +115,13 @@ void TMugastPhysics::PreTreat() {
   //   Y
   //   E
   for (unsigned int i = 0; i < DSSDY_EMult; ++i) {
+    type=DetectorType[m_EventData->GetDSSDYEDetectorNbr(i)];
     if (m_EventData->GetDSSDYEEnergy(i) < m_DSSD_Y_E_RAW_Threshold
         && IsValidChannel(1, m_EventData->GetDSSDYEDetectorNbr(i),
           m_EventData->GetDSSDYEStripNbr(i))) {
       double EY = fDSSD_Y_E(m_EventData, i);
       if (EY > m_DSSD_Y_E_Threshold)
-        m_PreTreatedData->SetDSSDYE(MG_NOCHANGE,
+        m_PreTreatedData->SetDSSDYE(type,
             m_EventData->GetDSSDYEDetectorNbr(i),
             m_EventData->GetDSSDYEStripNbr(i), EY);
     }
@@ -126,9 +129,10 @@ void TMugastPhysics::PreTreat() {
 
   //   T
   for (unsigned int i = 0; i < DSSDY_TMult; ++i) {
+    type=DetectorType[m_EventData->GetDSSDYTDetectorNbr(i)];
     if (IsValidChannel(1, m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i)))
-      m_PreTreatedData->SetDSSDYT(MG_NOCHANGE,
+      m_PreTreatedData->SetDSSDYT(type,
           m_EventData->GetDSSDYTDetectorNbr(i),
           m_EventData->GetDSSDYTStripNbr(i),
           fDSSD_Y_T(m_EventData, i));

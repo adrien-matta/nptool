@@ -4,4 +4,4 @@ add_custom_command(OUTPUT TMugastDataDict.cxx COMMAND ../../scripts/build_dict.s
 add_library(NPMugast SHARED TMugastData.cxx TMugastDataDict.cxx TMugastPhysics.cxx TMugastPhysicsDict.cxx TMugastSpectra.h TMugastSpectra.cxx)
 target_link_libraries(NPMugast ${ROOT_LIBRARIES} NPCore) 
 #install(FILES TMugastData.h TMugastPhysics.h TMugastSpectra.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
-install(FILES MugastMap.h TMugastData.h TMugastPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})
+install(FILES MugastMap.h TMugastSpectra.h TMugastData.h TMugastPhysics.h DESTINATION ${CMAKE_INCLUDE_OUTPUT_DIRECTORY})

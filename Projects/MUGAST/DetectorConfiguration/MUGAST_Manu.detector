@@ -11,48 +11,47 @@ Target
  Z= 0
  NBLAYERS= 100
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 GaspardTracker
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 Annular Back
 GPDAnnular
-        Z=      -134.15
-        RMIN=     16
-        RMAX=     45
-        FIRSTSTAGE=  1
-        SECONDSTAGE= 1
-        THIRDSTAGE=  1
-        VIS= all
+ Z=      -134.15
+ RMIN=     16
+ RMAX=     45
+ FIRSTSTAGE=  1
+ SECONDSTAGE= 1
+ THIRDSTAGE=  1
+ VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1 End-Cap Back
 GPDTrapezoid
-   X128_Y128=        41.963   21.364  -99.28
-   X1_Y128=          23.737   39.592  -99.282
-   X128_Y1=         122.368   54.712  -31.789
-   X1_Y1= 	     57.084  119.996  -31.789
-   FIRSTSTAGE=    1
-   SECONDSTAGE=   0
-   THIRDSTAGE=    0
-   VIS= all
+ X128_Y128=        41.963   21.364  -99.28
+ X1_Y128=          23.737   39.592  -99.282
+ X128_Y1=         122.368   54.712  -31.789
+ X1_Y1= 	     57.084  119.996  -31.789
+ FIRSTSTAGE=    1
+ SECONDSTAGE=   0
+ THIRDSTAGE=    0
+ VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%2
 GPDTrapezoid
-   X128_Y128=       -41.963  -21.364  -99.28
-   X1_Y128=         -23.737  -39.592  -99.282
-   X128_Y1=        -122.368  -54.712  -31.789
-   X1_Y1= 	    -57.084 -119.996  -31.789
-   FIRSTSTAGE= 1
-   SECONDSTAGE= 0
-   THIRDSTAGE= 0
-   VIS= all
+ X128_Y128=       -41.963  -21.364  -99.28
+ X1_Y128=         -23.737  -39.592  -99.282
+ X128_Y1=        -122.368  -54.712  -31.789
+ X1_Y1= 	    -57.084 -119.996  -31.789
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%3
 GPDTrapezoid
-   X128_Y128=      -21.364   41.963  -99.28
-   X1_Y128=        -39.592   23.737  -99.282
-   X128_Y1=        -54.712  122.368  -31.789
-   X1_Y1= 	  -119.996   57.084  -31.789
-   FIRSTSTAGE= 1
-   SECONDSTAGE= 0
-   THIRDSTAGE= 0
-   VIS= all
+ X128_Y128=      -21.364   41.963  -99.28
+ X1_Y128=        -39.592   23.737  -99.282
+ X128_Y1=        -54.712  122.368  -31.789
+ X1_Y1= 	  -119.996   57.084  -31.789
+ FIRSTSTAGE= 1
+ SECONDSTAGE= 0
+ THIRDSTAGE= 0
+ VIS= all
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%4
 GPDTrapezoid
    X128_Y128=      21.364  -41.963  -99.28
