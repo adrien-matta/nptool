@@ -246,15 +246,20 @@ void TMugastPhysics::BuildPhysicalEvent() {
         PosZ.push_back(GetPositionOfInteraction(i).z());
       }
 
-      if (m_Take_E_Y)
+      if (m_Take_E_Y){
         DSSD_E.push_back(DSSD_Y_E);
-      else
+        TotalEnergy.push_back(DSSD_Y_E);
+      }
+      else{
         DSSD_E.push_back(DSSD_X_E);
+        TotalEnergy.push_back(DSSD_X_E);
+      }
 
       if (m_Take_T_Y)
         DSSD_T.push_back(DSSD_Y_T);
       else
         DSSD_T.push_back(DSSD_X_T);
+
 
       for (unsigned int j = 0; j < SecondLayerEMult; ++j) {
         if (m_PreTreatedData->GetSecondLayerEDetectorNbr(j) == N) {
@@ -284,8 +289,8 @@ void TMugastPhysics::BuildPhysicalEvent() {
         SecondLayer_E.push_back(-1000);
         SecondLayer_T.push_back(-1000);
       }
-    }
-  }
+    } // loop on couples
+  } // if (CheckEvent)
   return;
 }
 
@@ -379,15 +384,17 @@ vector<TVector2> TMugastPhysics::Match_X_Y() {
 
 ////////////////////////////////////////////////////////////////////////////
 bool TMugastPhysics::IsValidChannel(const int& Type,
+// Uses raw channel number
     const int& telescope, const int& channel) {
   if (Type == 0){
-    return *(m_XChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
+    return *(m_XChannelStatus[telescope].begin() + channel - 1);
   }
-  else if (Type == 1)
-    return *(m_YChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
+  else if (Type == 1){
+    return *(m_YChannelStatus[telescope].begin() + channel - 1);
+    }
 
   else if (Type == 2)
-    return *(m_SecondLayerChannelStatus[m_DetectorNumberIndex[telescope] - 1].begin() + channel - 1);
+    return *(m_SecondLayerChannelStatus[telescope].begin() + channel - 1);
 
   else
     return false;
@@ -398,25 +405,35 @@ void TMugastPhysics::ReadAnalysisConfig() {
   NPL::InputParser parser("./configs/ConfigMugast.dat");
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("ConfigMugast");
 
+  cout << endl << "//// Read MUGAST analysis configuration" <<endl;
 
   for (unsigned int i = 0; i < blocks.size(); i++) {
     if(blocks[i]->HasToken("MAX_STRIP_MULTIPLICITY"))
       m_MaximumStripMultiplicityAllowed = blocks[i]->GetInt("MAX_STRIP_MULTIPLICITY");
+    
     if(blocks[i]->HasToken("STRIP_ENERGY_MATCHING"))
       m_StripEnergyMatching = blocks[i]->GetDouble("STRIP_ENERGY_MATCHING","MeV");
-    if(blocks[i]->HasToken("DISABLE_CHANNEL")){
-      vector<int> v = blocks[i]->GetVectorInt("DISABLE_CHANNEL");
-      *(m_XChannelStatus[v[0] - 1].begin() + v[1] - 1) = false;
+    
+    if(blocks[i]->HasToken("DISABLE_CHANNEL_X")){
+      vector<int> v = blocks[i]->GetVectorInt("DISABLE_CHANNEL_X");
+      *(m_XChannelStatus[v[0]].begin() + v[1] - 1) = false;
     }
+    
+    if(blocks[i]->HasToken("DISABLE_CHANNEL_Y")){
+      vector<int> v = blocks[i]->GetVectorInt("DISABLE_CHANNEL_Y");
+      *(m_YChannelStatus[v[0]].begin() + v[1] - 1) = false;
+    }
+    
     if(blocks[i]->HasToken("DISABLE_ALL")){
       int telescope = blocks[i]->GetInt("DISABLE_ALL");
       vector<bool> ChannelStatus;
       ChannelStatus.resize(128, false);
-      m_XChannelStatus[telescope - 1] = ChannelStatus;
-      m_YChannelStatus[telescope - 1] = ChannelStatus;
+      m_XChannelStatus[telescope] = ChannelStatus;
+      m_YChannelStatus[telescope] = ChannelStatus;
       ChannelStatus.resize(16, false);
-      m_SecondLayerChannelStatus[telescope - 1]  = ChannelStatus;
+      m_SecondLayerChannelStatus[telescope]  = ChannelStatus;
     }
+
     if (blocks[i]->HasToken("TAKE_E_Y"))
       m_Take_E_Y = blocks[i]->GetInt("TAKE_E_Y");
 
@@ -732,9 +749,20 @@ void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
   TVector3 Strip_1_1;
 
   //   Geometry Parameter
-  double Face          = 98; // mm
+  double Base,Height;
+  if(DetectorType[m_NumberOfTelescope-1]==MG_TRAPEZE){
+    Base          = 91.48; // mm
+    Height        = 104.688; // mm
+  }
+    
+  if(DetectorType[m_NumberOfTelescope-1]==MG_SQUARE){
+    Base          = 91.716; // mm
+    Height        = 94.916; // mm
+  }
+    //double Face          = 98; // mm
   double NumberOfStrip = 128;
-  double StripPitch    = Face / NumberOfStrip; // mm
+  double StripPitchBase    = Base / NumberOfStrip; // mm
+  double StripPitchHeight  = Height / NumberOfStrip; // mm
   //   Buffer object to fill Position Array
   vector<double> lineX;
   vector<double> lineY;
@@ -745,8 +773,9 @@ void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
   vector<vector<double>> OneTelescopeStripPositionZ;
 
   //   Moving StripCenter to 1.1 corner:
-  Strip_1_1 = C_X1_Y1 + (U + V) * (StripPitch / 2.);
-  Strip_1_1 += U + V ;
+  //Strip_1_1 = C_X1_Y1 + (U + V) * (StripPitch / 2.);
+  Strip_1_1 = C_X1_Y1 + U  * (StripPitchBase / 2.) + V * (StripPitchHeight / 2.);
+  //Strip_1_1 += U + V ;
 
   for (int i = 0; i < 128; ++i) {
     lineX.clear();
@@ -754,7 +783,8 @@ void TMugastPhysics::AddTelescope(TVector3 C_X1_Y1, TVector3 C_X128_Y1,
     lineZ.clear();
 
     for (int j = 0; j < 128; ++j) {
-      StripCenter = Strip_1_1 + StripPitch * (i * U + j * V);
+      //StripCenter = Strip_1_1 + StripPitch * (i * U + j * V);
+      StripCenter = Strip_1_1 + i*U*StripPitchBase  + j*V*StripPitchHeight;
       lineX.push_back(StripCenter.X());
       lineY.push_back(StripCenter.Y());
       lineZ.push_back(StripCenter.Z());
@@ -778,13 +808,24 @@ void TMugastPhysics::InitializeStandardParameter() {
 
   ChannelStatus.resize(128, true);
   for (int i = 0; i < m_NumberOfTelescope; ++i) {
-    m_XChannelStatus[i] = ChannelStatus;
-    m_YChannelStatus[i] = ChannelStatus;
+    auto it=m_DetectorNumberIndex.begin();
+    for(unsigned int j = 0 ; j < i; j++){
+      it++;
+      }
+    int det= it->first;
+    m_XChannelStatus[det] = ChannelStatus;
+    m_YChannelStatus[det] = ChannelStatus;
   }
 
   ChannelStatus.resize(16, true);
   for (int i = 0; i < m_NumberOfTelescope; ++i) {
-    m_SecondLayerChannelStatus[i]  = ChannelStatus;
+    auto it=m_DetectorNumberIndex.begin();
+    for(unsigned int j = 0 ; j < i; j++){
+      it++;
+      }
+
+    int det= it->first;
+    m_SecondLayerChannelStatus[det]  = ChannelStatus;
   }
 
   m_MaximumStripMultiplicityAllowed = m_NumberOfTelescope;
