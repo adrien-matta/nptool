@@ -1,5 +1,5 @@
-#ifndef EventGeneratorRadioactiveDecay_h
-#define EventGeneratorRadioactiveDecay_h
+#ifndef EventGeneratorRadioactiveDecay_H
+#define EventGeneratorRadioactiveDecay_H
 /*****************************************************************************
  * Copyright (C) 2009-2016   this file is part of the NPTool Project         *
  *                                                                           *
@@ -8,74 +8,93 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Daniel Cox    contact address: daniel.m.cox@jyu.fi       *
+ * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
- * Creation Date  : June 2017                                                *
- * Last update    : 16/06/2017                                               *
+ * Creation Date  : January 2009                                             *
+ * Last update    : January 2013                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
+ *  This event Generator is used to simulated two body two body reaction.    *
+ *  A Relativistic computation is performed to determine angle and energy of *
+ *   the different particle, knowing the ThetaCM angle given by a cross      *
+ *   section shoot. Eleastic scattering can also be simulated.               *
+ *---------------------------------------------------------------------------*
+ * Comment:                                                                  *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
+ *    + 23/01/2013: Class change name (ild name EventGeneratorTransfert)     *
+ *                  (A. MATTA)                                               *
  *                                                                           *
  *                                                                           *
  *****************************************************************************/
-// C++ header
+// C++ headers
 #include <string>
 
-// G4 header defining G4 types
-#include "globals.hh"
-
 // G4 headers
-#include "G4ParticleGun.hh"
-#include "G4Event.hh"
-#include "G4ThreeVector.hh"
+#include "G4RadioactiveDecay.hh"
 
 // NPSimulation
 #include "VEventGenerator.hh"
 #include "Target.hh"
+#include "Particle.hh"
 #include "ParticleStack.hh"
 
-using namespace CLHEP;
+// NPLib header
+#include "NPReaction.h"
+
 using namespace std;
+using namespace CLHEP;
+using namespace NPL ;
 
 
-class EventGeneratorRadioactiveDecay: public NPS::VEventGenerator{
-    public://constructor and destructor
+class EventGeneratorRadioactiveDecay : public NPS::VEventGenerator
+{
+   public:     // Constructors and Destructors
+      // Default constructor used to allocate memory
       EventGeneratorRadioactiveDecay();
+
+      // Default Destructor
       virtual ~EventGeneratorRadioactiveDecay();
 
-    public: // Inherit from VEventGenerator class
+
+   public: // Inherit from VEventGenerator class
       void ReadConfiguration(NPL::InputParser);
       void GenerateEvent(G4Event*);
-      void InitializeRootOutput() {};
+      void SetTarget(Target* Target) ;
 
-      void LevelReader(const char* filename);//read in the level scheme file
-      void ICCReader(const char* filename);//read in the icc file
-      void IntensityReader(const char* filename);//read in the intensity file
 
-      // Used in some case to generate event inside the target
-      virtual void SetTarget(Target*) {};
-
-      // Used to simulate beam emmitance effect
-      void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y, double NumberOfSigma = 10000);
-
-    private: // Pointer to the Particle stack for faster acces
+   private: // Particle Shoot Option
       ParticleStack* m_ParticleStack;
+      bool m_ShootLight;
+      bool m_ShootHeavy;
+      vector<double>*        m_InitalLevelLight;
+      vector<double>*        m_InitalPopulationLight;
+      vector<double>*        m_InitalLevelHeavy;
+      vector<double>*        m_InitalPopulationHeavy;
+      G4String               m_RadioactiveDecayLight;
+      G4String               m_RadioactiveDecayHeavy;
 
-      G4double               m_EnergyLow        ;  // Lower limit of energy range
-      G4double               m_EnergyHigh       ;  // Upper limit of energy range
-      G4double               m_x0               ;  // Vertex Position X
-      G4double               m_y0               ;  // Vertex Position Y
-      G4double               m_z0               ;  // Vertex Position Z
-      G4double               m_SigmaX           ;
-      G4double               m_SigmaY           ;
-      G4double               m_HalfOpenAngleMin ;  // Min Half open angle of the source
-      G4double               m_HalfOpenAngleMax ;  // Max Half open angle of the source
+      G4String               m_PhotonEvaporation;
       G4int                  m_Z                ;
       G4int                  m_A                ;
-      G4double               m_ExcitationEnergy ;  // Excitation energy of the emitted particle
-      G4String               m_PhotonEvaporation;
-      G4String               m_RadioactiveDecay ;
-      vector<double>         m_InitalLevel      ;
-      vector<double>         m_InitalPopulation ;
-  };
+
+
+   private: // Target Parameter
+      Target* m_Target;
+
+
+   private: // Reaction and CrossSection Shoot
+      Reaction* m_Reaction;
+
+
+   private: // Beam Parameters
+        string m_BeamName;
+
+        G4RadioactiveDecay* radioactiveDecay;
+
+      // Other methods
+      void Print() const;
+      void InitializeRootOutput();
+};
 
 #endif

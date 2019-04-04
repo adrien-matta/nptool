@@ -229,6 +229,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   // Shoot and Set a Random ThetaCM
   G4double ThetaCM = m_Reaction->ShootRandomThetaCM();
   G4double phi     = RandFlat::shoot() * 2. * pi;
+  //G4double phi     = RandFlat::shoot() * .1 * pi;// TODO this is a bad, bad thing
  
   //////////////////////////////////////////////////
   /////  Momentum and angles from  kinematics  /////

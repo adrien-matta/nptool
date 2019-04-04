@@ -9,74 +9,99 @@
  * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
  *                                                                           *
  * Creation Date  : January 2009                                             *
- * Last update    : 03/11/2009                                               *
+ * Last update    : January 2013                                             *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *                                                                           *
- *                                                                           *
- *                                                                           *
- *                                                                           *
- *                                                                           *
- *                                                                           *
+ *  This event Generator is used to simulated two body two body reaction.    *
+ *  A Relativistic computation is performed to determine angle and energy of *
+ *   the different particle, knowing the ThetaCM angle given by a cross      *
+ *   section shoot. Eleastic scattering can also be simulated.               *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
- *                                                                           *
+ *    + 20/01/2011: Add support for excitation energy for light ejectile     *
+ *                  (N. de Sereville)                                        *
+ *    + 23/01/2013: Class change name (ild name EventGeneratorTransfert)     *
+ *                  (A. MATTA)                                               *
  *                                                                           *
  *****************************************************************************/
-#include "EventGeneratorRadioactiveDecay.hh"
-
-// NPS
-#include "Particle.hh"
-
-// NPL headers
-#include "NPOptionManager.h"
-
 // C++ headers
-#include "cmath"
-#include <string>
+#include <iostream>
+#include <fstream>
+#include <limits>
+#include <random>
+
+// G4 header defining G4 types
+#include "globals.hh"
 
 // G4 headers
-#include "G4UnitsTable.hh"
 #include "G4ParticleTable.hh"
 #include "G4IonTable.hh"
+#include "G4RotationMatrix.hh"
 #include "G4UIManager.hh"
 
-// CLHEP headers
+// G4 headers including CLHEP headers
+// for generating random numbers
 #include "Randomize.hh"
+
+// NPTool headers
+#include "EventGeneratorRadioactiveDecay.hh"
+#include "RootOutput.h"
+
+using namespace CLHEP;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 EventGeneratorRadioactiveDecay::EventGeneratorRadioactiveDecay()
+:  m_ShootLight(0),
+m_ShootHeavy(0),
+m_Target(0),
+m_Reaction(new Reaction)
 {
-    m_EnergyLow    = 0;
-    m_EnergyHigh   = 0;
-    m_x0           = 0;
-    m_y0           = 0;
-    m_z0           = 0;
-    m_SigmaX       = 0;
-    m_SigmaY       = 0;
-    m_Z            = 0;
-    m_A            = 0;
-    m_ParticleStack = ParticleStack::getInstance();
+  //------------- Default Constructor -------------
+  m_ParticleStack= ParticleStack::getInstance();
+  //radioactiveDecay->AddUserDecayDataFile(82, 188, "simplez82.a188");
 
-    /* initialize random seed: */
-    srand (time(NULL));
 }
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-EventGeneratorRadioactiveDecay::~EventGeneratorRadioactiveDecay()
-{
+void EventGeneratorRadioactiveDecay::SetTarget(Target* Target) {
+  if (Target != 0) {
+    m_Target = Target;
+  }
 }
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
-{
-    vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Radioactive");
+EventGeneratorRadioactiveDecay::~EventGeneratorRadioactiveDecay(){
+  //------------- Default Destructor ------------
+  delete m_Reaction;
+}
 
-    // if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << endl << "\033[1;35m//// Radioactive decay reaction found " << endl;
 
-    vector<string> token = {"Z","A","EnergyLow","EnergyHigh","x0","y0","z0","HalfOpenAngleMin","HalfOpenAngleMax"};
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventGeneratorRadioactiveDecay::InitializeRootOutput(){
+  
+}
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void EventGeneratorRadioactiveDecay::Print() const{
+  
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//    Inherit from VEventGenerator
+
+void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser){
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("RadioactiveDecay");
     for(unsigned int i = 0 ; i < blocks.size() ; i++)
     {
+        m_Z                 =blocks[i]->GetInt("Z");
+        m_A                 =blocks[i]->GetInt("A");
         if(blocks[i]->HasToken("PhotonEvaporation"))
         {
             G4String command = "/grdm/setPhotoEvaporationFile ";
@@ -90,129 +115,208 @@ void EventGeneratorRadioactiveDecay::ReadConfiguration(NPL::InputParser parser)
             if (m_PhotonEvaporation) UI->ApplyCommand(m_PhotonEvaporation);
         }
     }
-    for(unsigned int i = 0 ; i < blocks.size() ; i++)
-    {
-        if(blocks[i]->HasTokenList(token))
-        {
-            m_Z                 =blocks[i]->GetInt("Z");
-            m_A                 =blocks[i]->GetInt("A");
-            m_EnergyLow         =blocks[i]->GetDouble("EnergyLow","MeV");
-            m_EnergyHigh        =blocks[i]->GetDouble("EnergyHigh","MeV");
-            m_x0                =blocks[i]->GetDouble("x0","mm");
-            m_y0                =blocks[i]->GetDouble("y0","mm");
-            m_z0                =blocks[i]->GetDouble("z0","mm");
-            m_HalfOpenAngleMin  =blocks[i]->GetDouble("HalfOpenAngleMin","deg");
-            m_HalfOpenAngleMax  =blocks[i]->GetDouble("HalfOpenAngleMax","deg");
-        }
-	  if(blocks[i]->HasToken("SigmaX"))
-		  m_SigmaX=blocks[i]->GetDouble("SigmaX","mm");
-	  if(blocks[i]->HasToken("SigmaY"))
-		  m_SigmaX=blocks[i]->GetDouble("SigmaY","mm");
-	  if(blocks[i]->HasToken("ExcitationEnergy"))
-		  m_ExcitationEnergy=blocks[i]->GetDouble("ExcitationEnergy","keV");
-      if(blocks[i]->HasToken("InitialPopulation"))
-      {
-          G4String initialPopulationFileName = blocks [i]->GetString("InitialPopulation");
 
-          ifstream filename (initialPopulationFileName);
-          G4double level, population;
-          while (filename >> level >> population)
-          {
-             m_InitalLevel.push_back(level);
-             m_InitalPopulation.push_back(population);
-            
-             cout << "Level " << level << " Population " << population << "\n";
-          }
-      }
-	  if(blocks[i]->HasToken("RadioactiveDecay"))
-      {
-          G4String command = "/grdm/setRadioactiveDecayFile ";
-          G4String fileName = blocks[i]->GetString("RadioactiveDecay");
-          m_RadioactiveDecay=command+
-                  to_string(m_Z)+" "+
-                  to_string(m_A)+" "+
-                  fileName;
-      }
-    }
+  m_Reaction->ReadConfigurationFile(parser);
+  m_ShootLight = m_Reaction->GetShoot3();
+  m_ShootHeavy = m_Reaction->GetShoot4();;
+
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*)
-{
+void EventGeneratorRadioactiveDecay::GenerateEvent(G4Event*){
 
-    G4double cos_theta_min   = cos(m_HalfOpenAngleMin);
-    G4double cos_theta_max   = cos(m_HalfOpenAngleMax);
-    G4double cos_theta       = cos_theta_min + (cos_theta_max - cos_theta_min) * RandFlat::shoot();
-    G4double theta           = acos(cos_theta)                                                   ;
-    G4double phi             = RandFlat::shoot() * 2 * pi                                        ;
-    G4double particle_energy = m_EnergyLow + RandFlat::shoot() * (m_EnergyHigh - m_EnergyLow)    ;
+  //radioactiveDecay->AddUserDecayDataFile(HeavyZ, HeavyA, "simplez82.a188");
+  //////////////////////////////////////////////////
+  //////Define the kind of particle to shoot////////
+  //////////////////////////////////////////////////
+  // Nucleus 3
+  G4int LightZ = m_Reaction->GetNucleus3().GetZ() ;
+  G4int LightA = m_Reaction->GetNucleus3().GetA() ;
+  
+  G4ParticleDefinition* LightName;
+  // If a single excitation energy was given use it
+  if (m_Reaction->GetInitialLevel3()->size() > 0)
+  {
+     m_InitalLevelLight = m_Reaction->GetInitialLevel3();
+     m_InitalPopulationLight = m_Reaction->GetInitialPopulation3();
+        
+     G4double excitEnergy = 0;
+     G4double populationSum = 0;
 
-    G4double momentum_x = sin(theta) * cos(phi)  ;
-    G4double momentum_y = sin(theta) * sin(phi)  ;
-    G4double momentum_z = cos(theta)             ;
+     float startLevel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+     for (unsigned int i = 0; i < m_InitalLevelLight->size(); i++)
+     {
+         populationSum += m_InitalPopulationLight->at(i);
+         //cout << populationSum << " " << startLevel << "\n";
+         if (populationSum > startLevel)
+         {
+             excitEnergy = m_InitalLevelLight->at(i) * keV;
+             break;
+         }
+     } 
+     LightName = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(LightZ, LightA, excitEnergy);
+  }
+  else 
+  {
+      LightName = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(LightZ, LightA, m_Reaction->GetExcitation3()*MeV);
+  }
 
-    G4double x0 = RandGauss::shoot(m_x0,m_SigmaX);
-    G4double y0 = RandGauss::shoot(m_y0,m_SigmaY);
-    G4double z0 = m_z0;
+  // Nucleus 4
+  G4int HeavyZ = m_Reaction->GetNucleus4().GetZ() ;
+  G4int HeavyA = m_Reaction->GetNucleus4().GetA() ;
+  
+  // Generate the excitation energy if a distribution is given
+  m_Reaction->ShootRandomExcitationEnergy();
 
-    /*//Testing for generating a single electron
-    Particle TestElectron(G4ParticleTable::GetParticleTable()->FindParticle("e-"),//particle
-            theta,//thetacm
-            particle_energy,//kinetic energy
-            G4ThreeVector(momentum_x, momentum_y, momentum_z),//direction
-            G4ThreeVector(0.,0.,0.),//position
-            true);//shoot status
+  G4ParticleDefinition* HeavyName;
+  // If a single excitation energy was given use it
+  if (m_Reaction->GetInitialLevel4()->size() > 0)
+  {
+     m_InitalLevelHeavy = m_Reaction->GetInitialLevel4();
+     m_InitalPopulationHeavy = m_Reaction->GetInitialPopulation4();
+        
+     G4double excitEnergy = 0;
+     G4double populationSum = 0;
 
-    m_ParticleStack->AddParticleToStack(TestElectron);
+     float startLevel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+     for (unsigned int i = 0; i < m_InitalLevelHeavy->size(); i++)
+     {
+         populationSum += m_InitalPopulationHeavy->at(i);
+         //cout << populationSum << " " << startLevel << "\n";
+         if (populationSum > startLevel)
+         {
+             excitEnergy = m_InitalLevelHeavy->at(i) * keV;
+             break;
+         }
+     } 
+     HeavyName = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(HeavyZ, HeavyA, excitEnergy);
+  }
+  else
+  {
+      HeavyName = G4ParticleTable::GetParticleTable()->GetIonTable()->GetIon(HeavyZ, HeavyA, m_Reaction->GetExcitation4()*MeV);
+  }
 
-    Particle TestElectron2(G4ParticleTable::GetParticleTable()->FindParticle("e-"),//particle
-            theta,//thetacm
-            particle_energy,//kinetic energy
-            G4ThreeVector(momentum_x, momentum_y, momentum_z),//direction
-            G4ThreeVector(0.,0.,0.),//position
-            false);//shoot status
-
-    m_ParticleStack->AddParticleToStack(TestElectron2);
-*/
 
 
-    G4int Z = m_Z, A = m_A;
-    G4double ionCharge   = 0.*eplus;
-    G4double excitEnergy = 0.;
-    G4double populationSum = 0;
-    
-    if (m_ExcitationEnergy != 0) excitEnergy = m_ExcitationEnergy;
-    else if (m_InitalLevel.size() > 0)
+  // Get the beam particle form the Particle Stack
+  Particle BeamParticle = m_ParticleStack->SearchAndRemoveParticle(m_BeamName);
+  m_Reaction->SetBeamEnergy(BeamParticle.GetParticleKineticEnergy());
+  
+  G4double Beam_theta = BeamParticle.GetParticleMomentumDirection().theta();
+  G4double Beam_phi = BeamParticle.GetParticleMomentumDirection().phi();
+  
+  //////////////////////////////////////////////////////////
+  ///// Build rotation matrix to go from the incident //////
+  ///// beam frame to the "world" frame               //////
+  //////////////////////////////////////////////////////////
+  G4ThreeVector col1(cos(Beam_theta) * cos(Beam_phi),
+                     cos(Beam_theta) * sin(Beam_phi),
+                     -sin(Beam_theta));
+  G4ThreeVector col2(-sin(Beam_phi),
+                     cos(Beam_phi),
+                     0);
+  G4ThreeVector col3(sin(Beam_theta) * cos(Beam_phi),
+                     sin(Beam_theta) * sin(Beam_phi),
+                     cos(Beam_theta));
+  G4RotationMatrix BeamToWorld(col1, col2, col3);
+  
+  /////////////////////////////////////////////////////////////////
+  ///// Angles for emitted particles following Cross Section //////
+  ///// Angles are in the beam frame                         //////
+  /////////////////////////////////////////////////////////////////
+  
+  // Angles
+  // Shoot and Set a Random ThetaCM
+  G4double ThetaCM = m_Reaction->ShootRandomThetaCM();
+  G4double phi     = RandFlat::shoot() * 2. * pi;
+  //G4double phi     = RandFlat::shoot() * .1 * pi;// TODO this is a bad, bad thing
+ 
+  //////////////////////////////////////////////////
+  /////  Momentum and angles from  kinematics  /////
+  /////  Angles are in the beam frame          /////
+  //////////////////////////////////////////////////
+  // Variable where to store results
+  G4double ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy;
+  
+  // Compute Kinematic using previously defined ThetaCM
+  m_Reaction->KineRelativistic(ThetaLight, EnergyLight, ThetaHeavy, EnergyHeavy);
+  
+  // Momentum in beam frame for light particle
+  G4ThreeVector momentum_kineLight_beam(sin(ThetaLight) * cos(phi),
+                                        sin(ThetaLight) * sin(phi),
+                                        cos(ThetaLight));
+  
+  // Momentum in beam frame for heavy particle
+  G4ThreeVector momentum_kineHeavy_beam(sin(ThetaHeavy) * cos(phi+pi),
+                                        sin(ThetaHeavy) * sin(phi+pi),
+                                        cos(ThetaHeavy));
+  
+
+
+  //////////////////////////////////////////////////
+  ///////// Set up everything for shooting /////////
+  //////////////////////////////////////////////////
+  // Case of light particle
+  // Particle direction
+  // Kinematical angles in the beam frame are transformed
+  // to the "world" frame
+  G4ThreeVector momentum_kine_world = BeamToWorld * momentum_kineLight_beam;
+  //Add the particle to the particle stack
+  Particle LightParticle(LightName, ThetaCM , EnergyLight,momentum_kine_world, BeamParticle.GetParticlePosition(), m_ShootLight);
+  m_ParticleStack->AddParticleToStack(LightParticle);
+  
+  // ORIGINAL 
+  // Case of heavy particle
+  // Particle direction
+  // Kinematical angles in the beam frame are transformed
+  // to the "world" frame
+  momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
+  Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, BeamParticle.GetParticlePosition(), 1);
+
+
+  // DANNY'S KLUDGE
+  G4ThreeVector tempPos = BeamParticle.GetParticlePosition();
+  
+  //tempPos.setZ(10.);
+
+  //cout << "original " << tempPos.getX() << " " << tempPos.getY() << " " << tempPos.getZ() << "\n";
+
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::exponential_distribution<> d(1);
+
+  //cout << d(gen) << endl;
+
+
+  //G4double ZDist = tempPos.getZ() + 1 * (G4double) rand()/RAND_MAX;
+  
+    G4double ZDist = 0;// Further than distance to degrader in mm
+
+    while (ZDist < 0.5) // Distance to degrader
     {
-        //G4double startLevel = rand() % 1;
-        float startLevel = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        for (unsigned int i = 0; i < m_InitalLevel.size(); i++)
-        {
-            populationSum += m_InitalPopulation[i];
-            //cout << populationSum << " " << startLevel << "\n";
-            if (populationSum > startLevel)
-            {
-                excitEnergy = m_InitalLevel[i] * keV;
-                break;
-            }
-        } 
+        //ZDist = tempPos.getZ() + 0.5 * d(gen);
+        //ZDist = 0.5 * d(gen);
+        //ZDist = 0.5;
+        ZDist = 1.0;
+
+        tempPos.setX(ZDist*sin(ThetaHeavy)*cos(phi+pi));
+        tempPos.setY(ZDist*sin(ThetaHeavy)*sin(phi+pi));
+        tempPos.setZ(ZDist*cos(ThetaHeavy));
+
+        //cout << 0.5*d(gen)<< endl;
     }
 
-    //cout << "chosen start " << excitEnergy << endl;
+  //cout << tempPos.getX() << " " << tempPos.getY() << " " << tempPos.getZ() << "\n";
 
+  //tempPos.set(15.,0.,10.);
 
-    G4ParticleDefinition* ion = G4IonTable::GetIonTable()->GetIon(Z,A,excitEnergy);
+  //BeamParticle.SetParticlePosition(tempPos);
 
-    G4UImanager* UI = G4UImanager::GetUIpointer();
-    if (m_PhotonEvaporation) UI->ApplyCommand(m_PhotonEvaporation);
-    if (m_RadioactiveDecay)  UI->ApplyCommand(m_RadioactiveDecay);
+  //cout << "new " << tempPos.getX() << " " << tempPos.getY() << " " << tempPos.getZ() << "\n";
 
-    Particle Ion(ion,
-            theta,
-            0,
-            G4ThreeVector(momentum_x, momentum_y, momentum_z),//direction
-            G4ThreeVector(x0,y0,z0),//position
-            true);//shoot status
+  //Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, tempPos, m_ShootHeavy);
+    //Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, BeamParticle.GetParticlePosition(), m_ShootHeavy);
+  //Add the particle to the particle stack
+  m_ParticleStack->AddParticleToStack(HeavyParticle);
 
-
-    m_ParticleStack->AddParticleToStack(Ion);
 }

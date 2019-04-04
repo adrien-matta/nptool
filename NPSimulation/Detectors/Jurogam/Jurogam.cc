@@ -925,6 +925,7 @@ void  Jurogam::CreateCloverSolids()
 }
 void Jurogam::CreateCloverBGOSolids()
 {
+    G4cout << "Creating clover BGO solids" << G4endl;
 	// Form a slicer cube
 	// Create a solid box to be used as a ''slicer''
 	G4VSolid* SliceBoxSub = new G4Box("SliceBoxSub",1001.*mm,100.5*mm,1001.*mm);
@@ -1173,6 +1174,58 @@ G4LogicalVolume* Jurogam::BuildPhaseI()
 		//the lithium contact
 		logicBoreHole_PhaseI = new G4LogicalVolume(solidBoreHole_PhaseI, vacuumMaterial, "hole", 0, 0, 0); //should be Li
 		logicGe_PhaseI->SetSensitiveDetector(m_JurogamScorer);
+    {
+
+	//physiVacuum_PhaseI = new G4PVPlacement(0, G4ThreeVector(0.0*mm, 0.0*mm, 0.0*mm),
+	//		logicVacuum_PhaseI, //its logical volume
+	//		"Vacuum",           //its name
+	//		logicAlCap_PhaseI,  //its mother
+	//		false,              //no boolean operat
+	//		copyNo,            //copy number
+	//		checkOverlaps);             //overlap check
+
+
+	//G4double geZ = fAlCap2Ge_PhaseI + fEndCapThickness_PhaseI;//-delta
+	//physiGe_PhaseI = new G4PVPlacement(0, G4ThreeVector(0.0*mm, 0.0*mm, geZ),
+	//		//theDetector.data(),         //its name
+	//		logicGe_PhaseI,        //its logical volume
+	//		"Tapered",         //its name
+	//		logicVacuum_PhaseI,    //its mother
+	//		false,             //no boolean operat
+	//		copyNo,            //copy number
+	//		checkOverlaps);             //overlap check
+
+
+	//physiPassivated_PhaseI = new G4PVPlacement(0,
+	//		G4ThreeVector(0.0*mm,0.0*mm,fContact_dZ_PhaseI),
+	//		logicPassivated_PhaseI, //its logical volume
+	//		"PassiveGe",    //its name
+	//		logicGe_PhaseI,        //its mother
+	//		false,          //no boolean operat
+	//		copyNo,              //copy number
+	//		checkOverlaps);          //overlap check
+
+
+	//physiContact_PhaseI = new G4PVPlacement(0, G4ThreeVector(0.0*mm,0.0*mm,0.0*mm), //dz = contact-thick ?
+	//		logicContact_PhaseI, //its logical volume
+	//		"LiContact",         //its name
+	//		logicPassivated_PhaseI,        //its mother (I think it should be physiGe_PhaseI)
+	//		false,          //no boolean operat
+	//		copyNo,              //copy number
+	//		checkOverlaps);          //overlap check
+
+
+
+	//physiBoreHole_PhaseI = new G4PVPlacement(0, G4ThreeVector(0.0*mm,0.0*mm,0.0*mm), //dz = contact-thick ?
+	//		logicBoreHole_PhaseI, //its logical volume
+	//		"BoreHole",         //its name
+	//		logicContact_PhaseI,
+	//		false,          //no boolean operat
+	//		copyNo,              //copy number
+	//		checkOverlaps);          //overlap check
+    ////PhaseI_placed = true;
+    }
+
 	}
 	return logicGe_PhaseI;
 }
@@ -1188,9 +1241,9 @@ G4LogicalVolume* Jurogam::BuildPhaseIBGO()
 
 		Phase1Absorber1_log = new G4LogicalVolume(Phase1Absorber1, Absorber1Material,"Phase1Absorber1_log",0,0,0);
 		Phase1Absorber2_log = new G4LogicalVolume(Phase1Absorber2, Absorber2Material,"Phase1Absorber2_log",0,0,0);
-	PhaseILogicBGOCrystal->SetSensitiveDetector(m_JurogamBGOScorer);
+        PhaseILogicBGOCrystal->SetSensitiveDetector(m_JurogamBGOScorer);
 	}
-	return PhaseILogicBGOCrystal;
+    return PhaseILogicBGOCrystal;
 }
 G4LogicalVolume* Jurogam::BuildClover()
 {
@@ -1349,6 +1402,7 @@ G4LogicalVolume* Jurogam::BuildClover()
 }
 G4LogicalVolume* Jurogam::BuildCloverBGO()
 {
+    G4cout << "Building clover BGO solids" << G4endl;
 	if(!CloverBGOConstructed){
 		CloverLogicBGOCrystal[0] = new G4LogicalVolume(CloverSolidBGOCrystal2, BGOMaterial,
 				"CloverBGOCrystal",0,0,0);
@@ -1384,6 +1438,7 @@ void Jurogam::PhaseIPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 	cout << "Placing phase I at\n";
 	cout << "X " << position.getX() << " Y " << position.getY() << " Z " << position.getZ() << "\n";
 	cout << "Theta " << rotation.getTheta() << " Phi " << rotation.getPhi() << " Psi " << rotation.getPsi() << "\n\n";
+    physiAlCap_PhaseI = 0;
 	physiAlCap_PhaseI = new G4PVPlacement(//&rotation,G4ThreeVector(position.x(),position.y(),position.z()),
 			G4Transform3D(rotation, position),
 			logicAlCap_PhaseI, //its logical volume
@@ -1393,6 +1448,8 @@ void Jurogam::PhaseIPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 			copyNo,            //copy number
 			checkOverlaps);             //overlap check
 
+    if(!PhaseI_placed)
+    {
 	physiVacuum_PhaseI = new G4PVPlacement(0, G4ThreeVector(0.0*mm, 0.0*mm, 0.0*mm),
 			"Vacuum",           //its name
 			logicVacuum_PhaseI, //its logical volume
@@ -1440,24 +1497,25 @@ void Jurogam::PhaseIPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool 
 			false,          //no boolean operat
 			copyNo,              //copy number
 			checkOverlaps);          //overlap check
-
+    PhaseI_placed = true;
+    }
 	//a The active layer will appear in yellow colour.
 	G4VisAttributes* visAttActive = new G4VisAttributes( G4Colour(1.0,1.0,0.0) );
 	//visAttActive->SetForceWireframe(true);
 	visAttActive->SetVisibility(false);
 
 	G4VisAttributes* visAttHole = new G4VisAttributes( G4Colour(1.0,0.0,1.0) );
+    //visAttHole->SetVisibility(false);
 	visAttHole->SetVisibility(false);
-	//visAttHole->SetVisibility(false);
 
 	G4VisAttributes* visAttGeVac = new G4VisAttributes( G4Colour(0.9,1.0,0.9) );
 	visAttGeVac->SetForceWireframe(true);
-	//visAttGeVac->SetVisibility(true);
-	visAttGeVac->SetVisibility(false);
+	visAttGeVac->SetVisibility(true);
+	//visAttGeVac->SetVisibility(false);
 
 	G4VisAttributes* visAttPassive = new G4VisAttributes(G4Colour(0.0,1.0,1.0) );
-	//visAttPassive->SetVisibility(true);
-	visAttPassive->SetVisibility(false);
+	visAttPassive->SetVisibility(true);
+	//visAttPassive->SetVisibility(false);
 
 	G4VisAttributes* visAttAlCap = new G4VisAttributes( G4Colour(0.9,1.0,1.0) );
 	visAttAlCap->SetVisibility(true);
@@ -1543,56 +1601,60 @@ void Jurogam::PhaseIBGOPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bo
 	crysrot->rotateZ(-18.*deg);
 	G4ThreeVector crystrans(0,0,-PhaseIBGOShieldLength/2.+0.7*mm);
 
-	PhaseIPhysiBGOCrystal = new G4PVPlacement(crysrot,
-			crystrans,
-			"PhaseIBGOCrystal",
-			PhaseILogicBGOCrystal,
-			PhaseIPhysiBGOShield,
-			false,
-			copyNo,
-			checkOverlaps);
-	//PhaseIPhysiBGOCrystal = new G4PVPlacement(crysrot,
-	//		crystrans,
-	//		PhaseILogicBGOCrystal,
-	//		"PhaseIBGOCrystal",
-	//		logiMother,
-	//		false,
-	//		copyNo,
-	//		checkOverlaps);
+    if(!PhaseI_bgo_placed)
+    {
+        PhaseIPhysiBGOCrystal = new G4PVPlacement(crysrot,
+                crystrans,
+                "PhaseIBGOCrystal",
+                PhaseILogicBGOCrystal,
+                PhaseIPhysiBGOShield,
+                false,
+                copyNo,
+                checkOverlaps);
+        //PhaseIPhysiBGOCrystal = new G4PVPlacement(crysrot,
+        //		crystrans,
+        //		PhaseILogicBGOCrystal,
+        //		"PhaseIBGOCrystal",
+        //		logiMother,
+        //		false,
+        //		copyNo,
+        //		checkOverlaps);
 
-	// Visualization attributes
+        // Visualization attributes
 
-	double hevimet_alpha = 0.5;
-	double shield_alpha = 0.3;
-	double bgo_alpha = 0.4;
-	int usealpha = 0;
-	if (!usealpha) {
-		hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
-	}
+        double hevimet_alpha = 0.5;
+        double shield_alpha = 0.3;
+        double bgo_alpha = 0.4;
+        int usealpha = 0;
+        if (!usealpha) {
+            hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
+        }
 
-	G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
-	grayVA->SetVisibility(true);
-	Phase1Absorber1_log->SetVisAttributes(grayVA);
+        G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
+        grayVA->SetVisibility(true);
+        Phase1Absorber1_log->SetVisAttributes(grayVA);
 
-	G4VisAttributes *orangeVA = new G4VisAttributes(G4Colour(0.8,0.4,0.));
-	orangeVA->SetVisibility(true);
-	Phase1Absorber2_log->SetVisAttributes(orangeVA);
+        G4VisAttributes *orangeVA = new G4VisAttributes(G4Colour(0.8,0.4,0.));
+        orangeVA->SetVisibility(true);
+        Phase1Absorber2_log->SetVisAttributes(orangeVA);
 
-	G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
-	visAttBGOHevimet->SetVisibility(true);
-	visAttBGOHevimet->SetForceWireframe(false);
-	PhaseILogicBGOHevimet->SetVisAttributes(visAttBGOHevimet);
+        G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
+        visAttBGOHevimet->SetVisibility(true);
+        visAttBGOHevimet->SetForceWireframe(false);
+        PhaseILogicBGOHevimet->SetVisAttributes(visAttBGOHevimet);
 
-	G4VisAttributes* visAttBGOShield =new G4VisAttributes(G4Colour(0.9,0.8,1.0,shield_alpha));
-	visAttBGOShield->SetVisibility(true);
-	visAttBGOShield->SetForceWireframe(false);
-	PhaseILogicBGOShield->SetVisAttributes(visAttBGOShield);
+        G4VisAttributes* visAttBGOShield =new G4VisAttributes(G4Colour(0.9,0.8,1.0,shield_alpha));
+        visAttBGOShield->SetVisibility(true);
+        visAttBGOShield->SetForceWireframe(false);
+        PhaseILogicBGOShield->SetVisAttributes(visAttBGOShield);
 
-	G4VisAttributes *visAttBGOCrystal = new G4VisAttributes(G4Colour(0.4,0.4,0.9,bgo_alpha));
-	//visAttBGOCrystal->SetVisibility(false);
-	visAttBGOCrystal->SetVisibility(true);
-	visAttBGOCrystal->SetForceWireframe(false);
-	PhaseILogicBGOCrystal->SetVisAttributes(visAttBGOCrystal);
+        G4VisAttributes *visAttBGOCrystal = new G4VisAttributes(G4Colour(0.4,0.4,0.9,bgo_alpha));
+        //visAttBGOCrystal->SetVisibility(false);
+        visAttBGOCrystal->SetVisibility(true);
+        visAttBGOCrystal->SetForceWireframe(false);
+        PhaseILogicBGOCrystal->SetVisAttributes(visAttBGOCrystal);
+        PhaseI_bgo_placed = true;
+    }
 
 }
 void Jurogam::CloverPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bool checkOverlaps)
@@ -1826,116 +1888,119 @@ void Jurogam::CloverBGOPlacement(G4int copyNo, G4LogicalVolume* logiMother, G4bo
 			copyNo,
 			checkOverlaps);
 
+    if(!Clover_bgo_placed)
+    {
 
-	G4RotationMatrix ShieldRotation; // shield coords 45*deg rotated wrt. world
-	ShieldRotation.set(0,0,0);
-	ShieldRotation.rotateZ(45.*deg);
-	G4double rotoffset = 45.*deg;
-	G4double DistOffset = 0.*mm;
+        G4RotationMatrix ShieldRotation; // shield coords 45*deg rotated wrt. world
+        ShieldRotation.set(0,0,0);
+        ShieldRotation.rotateZ(45.*deg);
+        G4double rotoffset = 45.*deg;
+        G4double DistOffset = 0.*mm;
 
-	G4ThreeVector crystrans0(0,CloverBGOCrystalH,CloverBGOCrystalDist-DistOffset);
-	crystrans0.transform(ShieldRotation);
-	G4RotationMatrix* rmc0 = new G4RotationMatrix;
-	rmc0->set(0,0,0);
-	rmc0->setPhi(0.*deg+rotoffset);
-	rmc0->rotateX(CloverBGOCrystalAngle);
-	CloverPhysiBGOCrystal[0] = new G4PVPlacement(rmc0,
-			crystrans0,
-			"CloverBGOCrystal",
-			CloverLogicBGOCrystal[0],
-			CloverPhysiBGOShield,
-			false,
-			copyNo*4,
-			checkOverlaps);
+        G4ThreeVector crystrans0(0,CloverBGOCrystalH,CloverBGOCrystalDist-DistOffset);
+        crystrans0.transform(ShieldRotation);
+        G4RotationMatrix* rmc0 = new G4RotationMatrix;
+        rmc0->set(0,0,0);
+        rmc0->setPhi(0.*deg+rotoffset);
+        rmc0->rotateX(CloverBGOCrystalAngle);
+        CloverPhysiBGOCrystal[0] = new G4PVPlacement(rmc0,
+                crystrans0,
+                "CloverBGOCrystal1",
+                CloverLogicBGOCrystal[0],
+                CloverPhysiBGOShield,
+                false,
+                copyNo*4,
+                checkOverlaps);
 
-	G4ThreeVector crystrans1(CloverBGOCrystalH,0,CloverBGOCrystalDist-DistOffset);
-	crystrans1.transform(ShieldRotation);
-	G4RotationMatrix* rmc1 = new G4RotationMatrix;
-	rmc1->set(0,0,0);
-	rmc1->setPhi(270.*deg+rotoffset);
-	rmc1->rotateX(CloverBGOCrystalAngle);
-	CloverPhysiBGOCrystal[1] = new G4PVPlacement(rmc1,
-			crystrans1,
-			"CloverBGOCrystal",
-			CloverLogicBGOCrystal[1],
-			CloverPhysiBGOShield,
-			false,
-			copyNo*4+1,
-			checkOverlaps);
-
-
-	G4ThreeVector crystrans2(0,-CloverBGOCrystalH,CloverBGOCrystalDist-DistOffset);
-	crystrans2.transform(ShieldRotation);
-	G4RotationMatrix* rmc2 = new G4RotationMatrix;
-	rmc2->set(0,0,0);
-	rmc2->setPhi(180.*deg+rotoffset);
-	rmc2->rotateX(CloverBGOCrystalAngle);
-	CloverPhysiBGOCrystal[2] = new G4PVPlacement(rmc2,
-			crystrans2,
-			"CloverBGOCrystal",
-			CloverLogicBGOCrystal[2],
-			CloverPhysiBGOShield,
-			false,
-			copyNo*4+2,
-			checkOverlaps);
+        G4ThreeVector crystrans1(CloverBGOCrystalH,0,CloverBGOCrystalDist-DistOffset);
+        crystrans1.transform(ShieldRotation);
+        G4RotationMatrix* rmc1 = new G4RotationMatrix;
+        rmc1->set(0,0,0);
+        rmc1->setPhi(270.*deg+rotoffset);
+        rmc1->rotateX(CloverBGOCrystalAngle);
+        CloverPhysiBGOCrystal[1] = new G4PVPlacement(rmc1,
+                crystrans1,
+                "CloverBGOCrystal2",
+                CloverLogicBGOCrystal[1],
+                CloverPhysiBGOShield,
+                false,
+                copyNo*4+1,
+                checkOverlaps);
 
 
-	G4ThreeVector crystrans3(-CloverBGOCrystalH,0,CloverBGOCrystalDist-DistOffset);
-	crystrans3.transform(ShieldRotation);
-	G4RotationMatrix* rmc3 = new G4RotationMatrix;
-	rmc3->set(0,0,0);
-	rmc3->setPhi(90.*deg+rotoffset);
-	rmc3->rotateX(CloverBGOCrystalAngle);
-	CloverPhysiBGOCrystal[3] = new G4PVPlacement(rmc3,
-			crystrans3,
-			"CloverBGOCrystal",
-			CloverLogicBGOCrystal[3],
-			CloverPhysiBGOShield,
-			false,
-			copyNo*4+3,
-			checkOverlaps);
+        G4ThreeVector crystrans2(0,-CloverBGOCrystalH,CloverBGOCrystalDist-DistOffset);
+        crystrans2.transform(ShieldRotation);
+        G4RotationMatrix* rmc2 = new G4RotationMatrix;
+        rmc2->set(0,0,0);
+        rmc2->setPhi(180.*deg+rotoffset);
+        rmc2->rotateX(CloverBGOCrystalAngle);
+        CloverPhysiBGOCrystal[2] = new G4PVPlacement(rmc2,
+                crystrans2,
+                "CloverBGOCrystal3",
+                CloverLogicBGOCrystal[2],
+                CloverPhysiBGOShield,
+                false,
+                copyNo*4+2,
+                checkOverlaps);
+
+
+        G4ThreeVector crystrans3(-CloverBGOCrystalH,0,CloverBGOCrystalDist-DistOffset);
+        crystrans3.transform(ShieldRotation);
+        G4RotationMatrix* rmc3 = new G4RotationMatrix;
+        rmc3->set(0,0,0);
+        rmc3->setPhi(90.*deg+rotoffset);
+        rmc3->rotateX(CloverBGOCrystalAngle);
+        CloverPhysiBGOCrystal[3] = new G4PVPlacement(rmc3,
+                crystrans3,
+                "CloverBGOCrystal4",
+                CloverLogicBGOCrystal[3],
+                CloverPhysiBGOShield,
+                false,
+                copyNo*4+3,
+                checkOverlaps);
 
 
 
-	// Visualization attributes
+        // Visualization attributes
 
-	double hevimet_alpha = 0.5;
-	double shield_alpha = 0.3;
-	double bgo_alpha = 0.4;
-	int usealpha = 0;
-	if (!usealpha) {
-		hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
-	}
+        double hevimet_alpha = 0.5;
+        double shield_alpha = 0.3;
+        double bgo_alpha = 0.4;
+        int usealpha = 0;
+        if (!usealpha) {
+            hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
+        }
 
 
-	G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
-	grayVA->SetVisibility(true);
-	CloverAbsorber1_log->SetVisAttributes(grayVA);
+        G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
+        grayVA->SetVisibility(true);
+        CloverAbsorber1_log->SetVisAttributes(grayVA);
 
-	G4VisAttributes *orangeVA = new G4VisAttributes(G4Colour(0.8,0.4,0.));
-	orangeVA->SetVisibility(true);
-	CloverAbsorber2_log->SetVisAttributes(orangeVA);
-	// R,   G,   B,   ALPHA
-	G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
-	visAttBGOHevimet->SetVisibility(true);
-	visAttBGOHevimet->SetForceWireframe(false);
-	CloverLogicBGOHevimet->SetVisAttributes(visAttBGOHevimet);
+        G4VisAttributes *orangeVA = new G4VisAttributes(G4Colour(0.8,0.4,0.));
+        orangeVA->SetVisibility(true);
+        CloverAbsorber2_log->SetVisAttributes(orangeVA);
+        // R,   G,   B,   ALPHA
+        G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
+        visAttBGOHevimet->SetVisibility(true);
+        visAttBGOHevimet->SetForceWireframe(false);
+        CloverLogicBGOHevimet->SetVisAttributes(visAttBGOHevimet);
 
-	G4VisAttributes* visAttBGOShield =new G4VisAttributes(G4Colour(0.6,1.,0.6,shield_alpha));
-	visAttBGOShield->SetVisibility(true);
-	visAttBGOShield->SetForceWireframe(false);
-	CloverLogicBGOShield->SetVisAttributes(visAttBGOShield);
+        G4VisAttributes* visAttBGOShield =new G4VisAttributes(G4Colour(0.6,1.,0.6,shield_alpha));
+        visAttBGOShield->SetVisibility(true);
+        visAttBGOShield->SetForceWireframe(false);
+        CloverLogicBGOShield->SetVisAttributes(visAttBGOShield);
 
-	G4VisAttributes *visAttBGOCrystal = new G4VisAttributes(G4Colour(0.4,0.4,0.9,bgo_alpha));
-	//visAttBGOCrystal->SetVisibility(false);
-	visAttBGOCrystal->SetVisibility(true);
-	visAttBGOCrystal->SetForceWireframe(false);
+        G4VisAttributes *visAttBGOCrystal = new G4VisAttributes(G4Colour(0.4,0.4,0.9,bgo_alpha));
+        //visAttBGOCrystal->SetVisibility(false);
+        visAttBGOCrystal->SetVisibility(true);
+        visAttBGOCrystal->SetForceWireframe(false);
 
-	for(int i = 0; i<4; i++)
-	{
-		CloverLogicBGOCrystal[i]->SetVisAttributes(visAttBGOCrystal);
-	}
-
+        for(int i = 0; i<4; i++)
+        {
+            CloverLogicBGOCrystal[i]->SetVisAttributes(visAttBGOCrystal);
+        }
+        Clover_bgo_placed = true;
+    }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

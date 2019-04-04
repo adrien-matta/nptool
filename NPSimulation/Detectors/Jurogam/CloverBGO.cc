@@ -428,88 +428,88 @@ void CloverBGO::Placement(G4int copyNo, G4VPhysicalVolume* physiMother, G4bool c
 
   G4ThreeVector crystrans0(0,BGOCrystalH,BGOCrystalDist-DistOffset);
   crystrans0.transform(ShieldRotation);
-	G4RotationMatrix* rmc0 = new G4RotationMatrix;
-	rmc0->set(0,0,0);
-	rmc0->setPhi(0.*deg+rotoffset);
-	rmc0->rotateX(BGOCrystalAngle);
-	physiBGOCrystal[0] = new G4PVPlacement(rmc0,
-           crystrans0,
-					 "CloverBGOCrystal",
-					 logicBGOCrystal[0],
-					 physiBGOShield,
-					 false,
-					 copyNo*4,
-					 checkOverlaps);
+  G4RotationMatrix* rmc0 = new G4RotationMatrix;
+  rmc0->set(0,0,0);
+  rmc0->setPhi(0.*deg+rotoffset);
+  rmc0->rotateX(BGOCrystalAngle);
+  physiBGOCrystal[0] = new G4PVPlacement(rmc0,
+          crystrans0,
+          "CloverBGOCrystal",
+          logicBGOCrystal[0],
+          physiBGOShield,
+          false,
+          copyNo*4,
+          checkOverlaps);
 
-	G4ThreeVector crystrans1(BGOCrystalH,0,BGOCrystalDist-DistOffset);
+  G4ThreeVector crystrans1(BGOCrystalH,0,BGOCrystalDist-DistOffset);
   crystrans1.transform(ShieldRotation);
-	G4RotationMatrix* rmc1 = new G4RotationMatrix;
-	rmc1->set(0,0,0);
-	rmc1->setPhi(270.*deg+rotoffset);
-	rmc1->rotateX(BGOCrystalAngle);
+  G4RotationMatrix* rmc1 = new G4RotationMatrix;
+  rmc1->set(0,0,0);
+  rmc1->setPhi(270.*deg+rotoffset);
+  rmc1->rotateX(BGOCrystalAngle);
   physiBGOCrystal[1] = new G4PVPlacement(rmc1,
-           crystrans1,
-					 "CloverBGOCrystal",
-					 logicBGOCrystal[1],
-					 physiBGOShield,
-					 false,
-					 copyNo*4+1,
-					 checkOverlaps);
+          crystrans1,
+          "CloverBGOCrystal",
+          logicBGOCrystal[1],
+          physiBGOShield,
+          false,
+          copyNo*4+1,
+          checkOverlaps);
 
 
   G4ThreeVector crystrans2(0,-BGOCrystalH,BGOCrystalDist-DistOffset);
   crystrans2.transform(ShieldRotation);
-	G4RotationMatrix* rmc2 = new G4RotationMatrix;
-	rmc2->set(0,0,0);
-	rmc2->setPhi(180.*deg+rotoffset);
-	rmc2->rotateX(BGOCrystalAngle);
+  G4RotationMatrix* rmc2 = new G4RotationMatrix;
+  rmc2->set(0,0,0);
+  rmc2->setPhi(180.*deg+rotoffset);
+  rmc2->rotateX(BGOCrystalAngle);
   physiBGOCrystal[2] = new G4PVPlacement(rmc2,
-           crystrans2,
-					 "CloverBGOCrystal",
-					 logicBGOCrystal[2],
-					 physiBGOShield,
-					 false,
-					 copyNo*4+2,
-					 checkOverlaps);
+          crystrans2,
+          "CloverBGOCrystal",
+          logicBGOCrystal[2],
+          physiBGOShield,
+          false,
+          copyNo*4+2,
+          checkOverlaps);
 
 
-	G4ThreeVector crystrans3(-BGOCrystalH,0,BGOCrystalDist-DistOffset);
+  G4ThreeVector crystrans3(-BGOCrystalH,0,BGOCrystalDist-DistOffset);
   crystrans3.transform(ShieldRotation);
-	G4RotationMatrix* rmc3 = new G4RotationMatrix;
-	rmc3->set(0,0,0);
-	rmc3->setPhi(90.*deg+rotoffset);
-	rmc3->rotateX(BGOCrystalAngle);
+  G4RotationMatrix* rmc3 = new G4RotationMatrix;
+  rmc3->set(0,0,0);
+  rmc3->setPhi(90.*deg+rotoffset);
+  rmc3->rotateX(BGOCrystalAngle);
   physiBGOCrystal[3] = new G4PVPlacement(rmc3,
-           crystrans3,
-					 "CloverBGOCrystal",
-					 logicBGOCrystal[3],
-					 physiBGOShield,
-					 false,
-					 copyNo*4+3,
-					 checkOverlaps);
+          crystrans3,
+          "CloverBGOCrystal",
+          logicBGOCrystal[3],
+          physiBGOShield,
+          false,
+          copyNo*4+3,
+          checkOverlaps);
 
 
 
-	// Visualization attributes
+  // Visualization attributes
 
-	double hevimet_alpha = 0.5;
-	double shield_alpha = 0.3;
-	double bgo_alpha = 0.4;
-	int usealpha = 0;
-	if (!usealpha) {
-	  hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
-	}
+  double hevimet_alpha = 0.5;
+  double shield_alpha = 0.3;
+  double bgo_alpha = 0.4;
+  int usealpha = 0;
+  if (!usealpha) {
+      hevimet_alpha = shield_alpha = bgo_alpha = 1.0;
+  }
 
 
-	G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
+  G4VisAttributes *grayVA = new G4VisAttributes(G4Colour(0.8,0.8,0.8,1.0));
   grayVA->SetVisibility(true);
   CloverAbsorber1_log->SetVisAttributes(grayVA);
 
   G4VisAttributes *orangeVA = new G4VisAttributes(G4Colour(0.8,0.4,0.));
-	orangeVA->SetVisibility(true);
+  orangeVA->SetVisibility(true);
   CloverAbsorber2_log->SetVisAttributes(orangeVA);
-	                                                         // R,   G,   B,   ALPHA
-	G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
+  // R,   G,   B,   ALPHA
+  G4VisAttributes* visAttBGOHevimet =new G4VisAttributes(G4Colour(0.9,0.5,0.5,hevimet_alpha));
   visAttBGOHevimet->SetVisibility(true);
   visAttBGOHevimet->SetForceWireframe(false);
   logicBGOHevimet->SetVisAttributes(visAttBGOHevimet);
@@ -520,12 +520,12 @@ void CloverBGO::Placement(G4int copyNo, G4VPhysicalVolume* physiMother, G4bool c
   logicBGOShield->SetVisAttributes(visAttBGOShield);
 
   G4VisAttributes *visAttBGOCrystal = new G4VisAttributes(G4Colour(0.4,0.4,0.9,bgo_alpha));
-	//visAttBGOCrystal->SetVisibility(false);
-	visAttBGOCrystal->SetVisibility(true);
+  //visAttBGOCrystal->SetVisibility(false);
+  visAttBGOCrystal->SetVisibility(true);
   visAttBGOCrystal->SetForceWireframe(false);
 
   for(int i = 0; i<4; i++) {
-    logicBGOCrystal[i]->SetVisAttributes(visAttBGOCrystal);
+      logicBGOCrystal[i]->SetVisAttributes(visAttBGOCrystal);
   }
 
 

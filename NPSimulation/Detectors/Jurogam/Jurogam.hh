@@ -159,6 +159,10 @@ class Jurogam : public NPS::VDetector{
 		G4bool CloverConstructed = false;
 		G4bool CloverBGOConstructed = false;
 
+        G4bool PhaseI_placed = false;
+        G4bool PhaseI_bgo_placed = false;
+        G4bool Clover_placed = false;
+        G4bool Clover_bgo_placed = false;
 
 		G4ThreeVector        position;
 		G4RotationMatrix     rotation;
