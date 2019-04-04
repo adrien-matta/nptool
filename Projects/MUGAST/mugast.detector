@@ -1,12 +1,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Target
  THICKNESS= 3.2 micrometer
- ANGLE= 20 deg
+ ANGLE= 0 deg
  RADIUS=	24 mm
  MATERIAL= CD2
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
+% CATS POSITION ARE FROM E748, so WRONG
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+ X1_Y1= -35.86  -35.26  -1457 mm
+ X28_Y1= 35.26  -35.26  -1457 mm
+ X1_Y28= -35.86  35.86  -1457 mm
+ X28_Y28= 35.26  35.86  -1457 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+CATSDetector
+ X1_Y1= 34.86    -35.86   -949 mm
+ X28_Y1= -36.26  -35.86   -949 mm
+ X1_Y28= 34.86    35.26   -949 mm
+ X28_Y28= -36.26  35.26   -949 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%% Telescope 1 %%%%%%%
 M2Telescope
@@ -56,7 +71,7 @@ M2Telescope
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mugast Trapezoid 
- DetectorNumber= 1
+ DetectorNumber= 7
  X128_Y128=       42.4    22.21   -98.74 mm
  X1_Y128=         24.58   40.02   -98.74 mm
  X128_Y1=	  122.38  55.31   -31.63 mm
@@ -72,7 +87,7 @@ Mugast Trapezoid
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mugast Trapezoid      
- DetectorNumber= 4
+ DetectorNumber= 1
  X128_Y128=     -22.21     42.4   -98.74 mm
  X1_Y128=       -40.02    24.58   -98.74 mm
  X128_Y1=	-55.31   122.38   -31.63 mm
@@ -88,23 +103,23 @@ Mugast Trapezoid
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mugast Trapezoid      
- DetectorNumber= 7
+ DetectorNumber= 4
  X128_Y128=    -14.28    -45.68   -98.74 mm
  X1_Y128=       10.92    -45.68   -98.74 mm
  X128_Y1=      -47.42   -125.65   -31.63 mm
  X1_Y1=	        44.06   -125.65   -31.63 mm
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mugast Square      
- DetectorNumber= 9 
- X1_Y1=      143.81   8.21   91.70 mm
+ DetectorNumber= 10
+ X128_Y128=      143.81   8.21   91.70 mm
  X128_Y1=    107.49  95.88   91.70 mm
  X1_Y128=    143.81   8.21     0.0 mm
- X128_Y128=  107.49  95.88     0.0 mm
+ X1_Y1=  107.49  95.88     0.0 mm
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Mugast Square 
- DetectorNumber= 10
+ DetectorNumber= 9
  X1_Y1=     143.81   -8.21  91.7 mm
  X128_Y1=   107.49  -95.88  91.7 mm
  X1_Y128=   143.81   -8.21   0.0 mm
@@ -116,7 +131,7 @@ Mugast Annular
 
 ModularLeaf 
  DefaultValue= -5000
- Leafs= GATCONFMASTER GATCONFSLAVE GATCONFSLAVE2 ADC1_9 CORREL_INVAMOS ADC_CATS_0
+ Leafs= GATCONF_MASTER GATCONF_SLAVE GATCONF_SLAVE2 CONFDEC_AGATA CONFDEC_VAMOS DATATRIG_CATS1 DATATRIG_CATS2 ADC1_9 CORREL_INVAMOS ADC_CATS_0
  X= ADC1_9              ADC1_9               ADC_CATS_0
  Y= CORREL_INVAMOS    ADC_CATS_0           CORREL_INVAMOS
 
