@@ -146,21 +146,16 @@ void TModularLeafPhysics::InitializeRootOutput(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TModularLeafPhysics::BuildPhysicalEvent(){
-cout << 1 << endl;
   static CalibrationManager* Cal = CalibrationManager::getInstance();
   static string name;
   std::map<std::string,short>::iterator it;
 
-cout << 2 << endl;
   for(it = m_RawData.begin() ; it != m_RawData.end() ; it++){
-    // cout << it->first << " " << it->second << endl;
     name = it->first + "/" +it->first; 
-    cout << name << endl;
     if(it->second != m_DefaultValue){
       m_CalibratedData[it->first] = Cal->ApplyCalibration(name, it->second);
     }
   }
-cout << 3 << endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////

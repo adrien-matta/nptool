@@ -8,6 +8,8 @@
 #include<iostream>
 #include"RootOutput.h"
 
+#include <unistd.h>
+
 int main(int argc , char** argv){
   // Root will not issue any BS warning message
   gErrorIgnoreLevel = 10000;

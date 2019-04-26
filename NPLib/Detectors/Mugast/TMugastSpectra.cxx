@@ -109,8 +109,7 @@ void TMugastSpectra::InitRawSpectra(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void TMugastSpectra::InitPreTreatedSpectra()
-{
+void TMugastSpectra::InitPreTreatedSpectra(){
 
   string name;
   for (unsigned int i = 0; i < fNumberOfTelescope; i++) { // loop on number of detectors
@@ -121,6 +120,10 @@ void TMugastSpectra::InitPreTreatedSpectra()
     // STRY_E_CAL
     name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRY_E_CAL";
     AddHisto2D(name, name, fStripY, 1, fStripY+1, 10000, 0, 50, "Mugast/CAL/STRYE");
+
+    // STR X-Y Correlation
+    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRXY_CORR_CAL";
+    AddHisto2D(name, name, 500, 0, 50, 500, 0, 50, "Mugast/CAL/STRXY");
 
     // STRX_T_CAL
     name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_STRX_T_CAL";
@@ -153,12 +156,6 @@ void TMugastSpectra::InitPhysicsSpectra(){
   // X-Y Impact Matrix
   name = "MG_THETA_E";
   AddHisto2D(name, name,360,0,180,500,0,50,"Mugast/PHY");
-
-  // X-Y Energy Correlation
-  for (unsigned int i = 0 ; i < fNumberOfTelescope ; i++) { // loop on number of detectors
-    name = "MG"+NPL::itoa(fTelescopeToIndex[i])+"_XY_COR";
-    AddHisto2D(name, name,500,0,50,500,0,50, "Mugast/PHY"); 
-  }
 
   // ID Plot
   // E-TOF:
@@ -200,7 +197,8 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   static string family;
 
   // STRX_E 
-  for (unsigned int i = 0; i < RawData->GetDSSDXEMult(); i++) {
+  unsigned int size = RawData->GetDSSDXEMult();
+  for (unsigned int i = 0; i < size ; i++) {
     name = "MG"+NPL::itoa( RawData->GetDSSDXEDetectorNbr(i))+"_STRX_E_RAW";
     family = "Mugast/RAW/STRXE";
 
@@ -210,7 +208,8 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   }
 
   // STRY_E
-  for (unsigned int i = 0; i < RawData->GetDSSDYEMult(); i++) {
+  size = RawData->GetDSSDYEMult();
+  for (unsigned int i = 0; i < size ; i++) {
     name = "MG"+NPL::itoa( RawData->GetDSSDYEDetectorNbr(i) )+"_STRY_E_RAW";
     family = "Mugast/RAW/STRYE";
 
@@ -220,7 +219,8 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   }
 
   // STRX_T
-  for (unsigned int i = 0; i < RawData->GetDSSDXTMult(); i++) {
+  size = RawData->GetDSSDXTMult();
+  for (unsigned int i = 0; i < size; i++) {
     name = "MG"+NPL::itoa(RawData->GetDSSDXTDetectorNbr(i))+"_STRX_T_RAW";
     family = "Mugast/RAW/STRXT";
 
@@ -228,8 +228,10 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
         ,RawData->GetDSSDXTStripNbr(i),
         RawData->GetDSSDXTTime(i));
   }
+
   // STRY_T
-  for (unsigned int i = 0; i < RawData->GetDSSDYTMult(); i++) {
+  size = RawData->GetDSSDYTMult();
+  for (unsigned int i = 0; i < size ; i++) {
     name = "MG"+NPL::itoa( RawData->GetDSSDYTDetectorNbr(i))+"_STRY_T_RAW";
     family = "Mugast/RAW/STRYT";
 
@@ -239,7 +241,8 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   }
 
   // SDLR_E
-  for (unsigned int i = 0; i < RawData->GetSecondLayerEMult(); i++) {
+  size = RawData->GetSecondLayerEMult();
+  for (unsigned int i = 0; i < size ; i++) {
     name = "MG"+NPL::itoa( RawData->GetSecondLayerEDetectorNbr(i))+"_SDLR_E_RAW";
     family = "Mugast/RAW/SDLRE";
 
@@ -249,7 +252,8 @@ void TMugastSpectra::FillRawSpectra(TMugastData* RawData){
   }
 
   // SDLR_T
-  for (unsigned int i = 0; i < RawData->GetSecondLayerTMult(); i++) {
+  size = RawData->GetSecondLayerTMult();
+  for (unsigned int i = 0; i < size ; i++) {
     name = "MG"+NPL::itoa(RawData->GetSecondLayerTDetectorNbr(i))+"_SDLR_T_RAW";
     family = "Mugast/RAW/SDLRT";
 
@@ -266,7 +270,8 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
   static string name ;
   static string family;
   // STRX_E
-  for (unsigned int i = 0; i < PreTreatedData->GetDSSDXEMult(); i++) {
+  unsigned int sizeX = PreTreatedData->GetDSSDXEMult();
+  for (unsigned int i = 0; i < sizeX ; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXEDetectorNbr(i))+"_STRX_E_CAL";
     family = "Mugast/CAL/STRXE";
 
@@ -275,7 +280,8 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
         PreTreatedData->GetDSSDXEEnergy(i));
   }
   // STRY_E
-  for (unsigned int i = 0; i < PreTreatedData->GetDSSDYEMult(); i++) {
+  unsigned int sizeY = PreTreatedData->GetDSSDYEMult();
+  for (unsigned int i = 0; i < sizeY; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetDSSDYEDetectorNbr(i))+"_STRY_E_CAL";
     family = "Mugast/CAL/STRYE";
 
@@ -283,8 +289,23 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
         ,PreTreatedData->GetDSSDYEStripNbr(i), 
         PreTreatedData->GetDSSDYEEnergy(i));
   }
+
+  // STR XY Correlation
+  for (unsigned int i = 0; i < sizeX; i++) {
+    for (unsigned int j = 0; j < sizeY; j++) {
+      if(PreTreatedData->GetDSSDXEDetectorNbr(i)==PreTreatedData->GetDSSDYEDetectorNbr(j))
+    name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXEDetectorNbr(i) )+"_STRXY_CORR_CAL";
+    family = "Mugast/CAL/STRXY";
+    FillSpectra(family,name
+        ,PreTreatedData->GetDSSDXEEnergy(i),
+        PreTreatedData->GetDSSDYEEnergy(j));
+    }
+  }
+
+
   // STRX_T
-  for (unsigned int i = 0; i < PreTreatedData->GetDSSDXTMult(); i++) {
+  unsigned int size = PreTreatedData->GetDSSDXTMult();
+  for (unsigned int i = 0; i < size; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXTDetectorNbr(i))+"_STRX_T_CAL";
     family = "Mugast/CAL/STRXT";
 
@@ -293,7 +314,8 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
         PreTreatedData->GetDSSDXTTime(i));
   }
   // STRY_T
-  for (unsigned int i = 0; i < PreTreatedData->GetDSSDYTMult(); i++) {
+  size = PreTreatedData->GetDSSDYTMult();
+  for (unsigned int i = 0; i < size; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetDSSDYTDetectorNbr(i))+"_STRY_T_CAL";
     family = "Mugast/CAL/STRYT";
 
@@ -302,7 +324,8 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
         PreTreatedData->GetDSSDYTTime(i));
   }
   // SDLR_E
-  for (unsigned int i = 0; i < PreTreatedData->GetSecondLayerEMult(); i++) {
+  size = PreTreatedData->GetSecondLayerEMult();
+  for (unsigned int i = 0; i < size; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetSecondLayerEDetectorNbr(i))+"_SDLR_E_CAL";
     family = "Mugast/CAL/SDLRE";
 
@@ -311,7 +334,8 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
         PreTreatedData->GetSecondLayerEEnergy(i));
   }
   // SDLR_T
-  for (unsigned int i = 0; i < PreTreatedData->GetSecondLayerTMult(); i++) {
+  size = PreTreatedData->GetSecondLayerTMult();
+  for (unsigned int i = 0; i < size; i++) {
     name = "MG"+NPL::itoa( PreTreatedData->GetSecondLayerTDetectorNbr(i))+"_SDLR_T_CAL";
     family = "Mugast/CAL/SDLRT";
 
@@ -322,8 +346,9 @@ void TMugastSpectra::FillPreTreatedSpectra(TMugastData* PreTreatedData){
  
   //E-SDLR ID
   family = "Mugast/CAL/ID";
-  for (unsigned int i = 0; i < PreTreatedData->GetDSSDXEMult(); i++) {
-    for (unsigned int j = 0; j < PreTreatedData->GetSecondLayerEMult(); j++) {
+  size = PreTreatedData->GetSecondLayerEMult();
+  for (unsigned int i = 0; i < sizeX; i++) {
+    for (unsigned int j = 0; j < size; j++) {
 
       if(PreTreatedData->GetDSSDXEDetectorNbr(i) == PreTreatedData->GetSecondLayerEDetectorNbr(j)){ 
         name = "MG"+NPL::itoa( PreTreatedData->GetDSSDXEDetectorNbr(i))+"_SDLR"+NPL::itoa(PreTreatedData->GetSecondLayerEStripNbr(j))+"_CAL_ID";
@@ -353,11 +378,6 @@ void TMugastSpectra::FillPhysicsSpectra(TMugastPhysics* Physics){
     double Theta = Physics->GetPositionOfInteraction(i).Angle(TVector3(0,0,1));
     Theta = Theta/deg;
     FillSpectra(family,name,Theta,Physics->DSSD_E[i]);
-
-    // STRX_E_CAL
-//    name = "MG"+NPL::itoa( Physics->TelescopeNumber[i])+"_XY_COR";
- //   FillSpectra(family,name,Physics->DSSD_E[i],Physics->DSSD_EY[i]);
-
 
     // Fill only for particle stopped in the first stage
     if(Physics->SecondLayer_E[i]<0 ){

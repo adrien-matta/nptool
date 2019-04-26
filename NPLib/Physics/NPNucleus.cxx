@@ -26,6 +26,9 @@
 #include "NPCore.h"
 using namespace NPL;
 
+// ROOT headers
+#include "TPRegexp.h"
+#include "TString.h"
 
 // C++ headers
 #include <iostream>
@@ -62,6 +65,12 @@ Nucleus::Nucleus(string isotope){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+Nucleus::Nucleus(string isotope, const string& path){
+  SetUp(isotope);
+  LoadENSDF(isotope, path);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 Nucleus::Nucleus(string name, vector<string> subpart, double binding,double Ex, string SpinParity, double Spin, string Parity, double LifeTime){
   fName= name;
   fCharge= 0;
@@ -83,6 +92,88 @@ Nucleus::Nucleus(string name, vector<string> subpart, double binding,double Ex, 
   fSpin= Spin;
   fParity= Parity;
   fLifeTime = LifeTime;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::LoadENSDF(const string& isotope, const string& pathENSDF)
+{
+   // open file to read                                                         
+   TString fileName = Form("%s/AR_%s.ens", pathENSDF.c_str(), isotope.c_str()); 
+   ifstream inputFile(fileName.Data()); 
+   if (!inputFile) cout << "Problem opening file " << fileName << endl;         
+                                                                                
+   // read file                                                                 
+   TString lineFile;                                                            
+   TString isComment, isWhitespace, isLevel;                                    
+   TString energy, uncertainty;                                                 
+   TString tempIsotopeName = isotope;                                         
+   // calculate size of file name                                               
+   Int_t   size = tempIsotopeName.Length();                                     
+   // get position of first '_' in file name                                    
+   Int_t   pos  = tempIsotopeName.First("_");                                   
+   if (pos != -1) {                                                             
+      // remove everything after first '_'                                      
+      tempIsotopeName.Remove(pos, size-pos);                                    
+      // size now corresponds to the length of the isotope name                 
+      size = tempIsotopeName.Length();                                          
+   }                                                                            
+   // find length of mass number                                                
+//   TString tempIsotopeName = pathENSDF;                                       
+   TPRegexp("\\D").Substitute(tempIsotopeName, "", "g"); // suppress all alpha characters
+   Int_t   nbDigit = tempIsotopeName.Length();                                  
+#ifdef DEBUG                                                                    
+   cout << "size, nbDigit:\t" << size << "\t" << nbDigit << endl;               
+#endif                                                                          
+   while (!inputFile.eof()) {                                                   
+      lineFile.ReadLine(inputFile);                                             
+      isWhitespace = lineFile(size,1);                                          
+      isComment    = lineFile(size+1,1);                                        
+      isLevel      = lineFile(size+2,1);                                        
+      if (size == 3  &&  nbDigit == 2) {     // case of a few isotopes, e.g. 12C, 10B, ...
+         isComment    = lineFile(size+2,1);                                     
+         isLevel      = lineFile(size+3,1);                                     
+      }                                                                         
+      if (size == 2  &&  nbDigit == 1) {     // case of a few isotopes, e.g. 1H ...
+         isComment    = lineFile(size+2,1);                                     
+         isLevel      = lineFile(size+3,1);                                     
+      }                                                                         
+#ifdef DEBUG                                                                    
+      cout << "isComment, isLevel:\t" << isComment << "\t" << isLevel << endl;  
+#endif                                                                          
+      if (isWhitespace.IsWhitespace() && isComment.CompareTo("c") && !isLevel.CompareTo("L")) {
+         energy      = lineFile(size+4,10);                                     
+         energy      = energy.Strip();      // remove trailing white spaces     
+         uncertainty = lineFile(size+14,2);                                     
+         if (size == 3  &&  nbDigit == 2) {                                     
+            energy      = lineFile(size+5,10);                                  
+            energy      = energy.Strip();      // remove trailing white spaces  
+            uncertainty = lineFile(size+15,2);                                  
+         }                                                                      
+         if (size == 2  &&  nbDigit == 1) {     // case of a few isotopes, e.g. 1H ...
+            energy      = lineFile(size+6,10);                                  
+            energy      = energy.Strip();      // remove trailing white spaces  
+            uncertainty = lineFile(size+16,2);                                  
+         }                                                                      
+         if (energy.IsFloat()) {                                                
+            // energy set to MeV units                                          
+            fLevelEnergy.push_back(energy.Atof()*1e-3);                         
+            // transform uncertainty to MeV units                               
+            UInt_t nElementsAfterComma = 0;                                     
+            if (energy.First(".") > 0) nElementsAfterComma = energy.Length() - energy.First(".") - 1;
+            Double_t uncertain = uncertainty.Atof();                            
+         uncertain /= TMath::Power(10, (Int_t)nElementsAfterComma);          
+            fLevelEnergyUncertainty.push_back(uncertain*1e-3);                  
+         }                                                                      
+      }                                                                         
+   }                                                                            
+                                                                                
+   // close input file                                                          
+   inputFile.close();                                                           
+                                                                                
+   // sort level energies                                                       
+   // !! use with caution since if uncertainty are defined they are not sorted accordingly to the 
+   // energies                                                                  
+   sort(fLevelEnergy.begin(), fLevelEnergy.end());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
