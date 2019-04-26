@@ -1,5 +1,5 @@
-#ifndef __REACTION__
-#define __REACTION__
+#ifndef NPREACTION_h
+#define NPREACTION_h
 /*****************************************************************************
  * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *

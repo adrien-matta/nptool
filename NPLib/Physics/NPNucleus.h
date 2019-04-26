@@ -1,5 +1,5 @@
-#ifndef __NUCLEUS__
-#define __NUCLEUS__
+#ifndef NPNUCLEUS_h
+#define NPNUCLEUS_h
 /*****************************************************************************
  * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
@@ -154,6 +154,8 @@ namespace NPL {
     double GetSXn(unsigned int X) const;
     double GetSXp(unsigned int X) const;
     void   PrintThreshold() const;
+
+    ClassDef(Nucleus,0)
 
   };
 }

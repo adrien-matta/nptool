@@ -1,5 +1,5 @@
-#ifndef __Beam__
-#define __Beam__
+#ifndef NPBeam_h
+#define NPBeam_h
 /*****************************************************************************
  * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
