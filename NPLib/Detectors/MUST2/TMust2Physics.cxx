@@ -266,8 +266,6 @@ void TMust2Physics::BuildPhysicalEvent() {
 
   unsigned int couple_size = couple.size();
 
-  EventMultiplicity = std::min(m_StripXEMult, m_StripYEMult);
-
   for (unsigned int i = 0; i < couple_size; ++i) {
 
     if (m_match_type[i] == 1 || m_multimatch) {
@@ -380,6 +378,7 @@ void TMust2Physics::BuildPhysicalEvent() {
       EventType.push_back(m_match_type[i]);
     }
   } // loop on event multiplicity
+  EventMultiplicity=TelescopeNumber.size();
 
   return;
 }
