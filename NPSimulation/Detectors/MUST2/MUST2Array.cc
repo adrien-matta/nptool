@@ -825,7 +825,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     int    detectorNbr = SiScorer->GetDetectorFront(i);
     double time        = SiScorer->GetTimeFront(i);
     // X
-    if (energyX > 0.1 * keV) { // above threshold
+    if (energyX > ThresholdSi) { // above threshold
       SiScoredHit = true;
       // Pixel value at interaction point
       unsigned int a, r, g, b;
@@ -846,7 +846,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
         double rand = G4UniformRand();
         if (rand > 0.5) {
           energyX = rand * energyX;
-          if (energyX > 0.1 * keV) {
+          if (energyX > ThresholdSi) {
             trig.insert(detectorNbr);
             // Energy
             m_Event->SetStripXE(detectorNbr, b + 1,
@@ -858,7 +858,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
           }
         } else {
           energyX = (1 - rand) * energyX;
-          if (energyX > 0.1 * keV) {
+          if (energyX > ThresholdSi) {
             trig.insert(detectorNbr);
 
             // Energy
@@ -881,7 +881,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     double time        = SiScorer->GetTimeBack(i);
 
     // Y
-    if (energyY > 0.1 * keV) { // above threshold
+    if (energyY > ThresholdSi) { // above threshold
       SiScoredHit = true;
       // Pixel value at interaction point
       unsigned int a, r, g, b;
@@ -901,7 +901,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
       } else { // Interstrip Y, keep both strip with shared energy
         double rand     = G4UniformRand();
         double energyY1 = rand * energyY;
-        if (energyY1 > 0.1 * keV) {
+        if (energyY1 > ThresholdSi) {
           trig.insert(detectorNbr);
 
           // Energy
@@ -914,7 +914,7 @@ void MUST2Array::ReadSensitive(const G4Event*) {
                               NPL::EnergyToADC(timeY, 0, 1000, 8192, 16384));
         }
 
-        if (energyY1 > 0.1 * keV) {
+        if (energyY1 > ThresholdSi) {
           trig.insert(detectorNbr);
           double energyY2 = (1 - rand) * energyY;
           // Energy
