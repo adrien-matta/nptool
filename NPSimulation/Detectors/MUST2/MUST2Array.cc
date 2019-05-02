@@ -939,11 +939,13 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     for (unsigned int i = 0; i < sizeSiLi; i++) {
       double ESiLi = RandGauss::shoot(SiLiScorer->GetEnergy(i), ResoSiLi);
       vector<unsigned int> level = SiLiScorer->GetLevel(i);
+      if(ESiLi>ThresholdSiLi){
       m_Event->SetSiLiE(level[0], level[1],
                         NPL::EnergyToADC(ESiLi, 0, 250, 8192, 16384));
       double timeSiLi = RandGauss::shoot(SiLiScorer->GetTime(i), ResoTimeMust);
       m_Event->SetSiLiT(level[0], level[1],
                         NPL::EnergyToADC(timeSiLi, 0, 1000, 16384, 8192));
+      }
     }
 
     // CsI //
@@ -954,11 +956,13 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     for (unsigned int i = 0; i < sizeCsI; i++) {
       double ECsI = RandGauss::shoot(CsIScorer->GetEnergy(i), ResoCsI);
       vector<unsigned int> level = CsIScorer->GetLevel(i);
+      if(ECsI>ThresholdCsI){
       m_Event->SetCsIE(level[0], level[1],
                        NPL::EnergyToADC(ECsI, 0, 250, 8192, 16384));
       double timeCsI = RandGauss::shoot(CsIScorer->GetTime(i), ResoTimeMust);
       m_Event->SetCsIT(level[0], level[1],
                        NPL::EnergyToADC(timeCsI, 0, 1000, 16384, 8192));
+      }
     }
   }
 }
