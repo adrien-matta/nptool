@@ -845,24 +845,17 @@ void MUST2Array::ReadSensitive(const G4Event*) {
       double rand = G4UniformRand();
       if (rand > 0.5) {
         double energyX = rand * energy;
-        if (energyX > ThresholdSi) {
-          trig.insert(detectorNbr);
-
           mapFront[b+detectorNbr*1e6].first+=energyX;
           mapFront[b+detectorNbr*1e6].second=time;
         }
-      } 
 
       else {
-        double energyX = (1 - rand) * energy;
-        if (energyX > ThresholdSi) {
-          trig.insert(detectorNbr);
-          mapFront[b+detectorNbr*1e6].first+=energyX;
-          mapFront[b+detectorNbr*1e6].second=time;
+          double energyX = (1 - rand) * energy;
+          mapFront[g+detectorNbr*1e6].first+=energyX;
+          mapFront[g+detectorNbr*1e6].second=time;
         }
       }
     }
-  }
 
   for(it=mapFront.begin();it!=mapFront.end();it++){
     double energyX = RandGauss::shoot(it->second.first, ResoStrip);
@@ -907,8 +900,8 @@ void MUST2Array::ReadSensitive(const G4Event*) {
           mapBack[b+detectorNbr*1e6].second=time;
 
         double energyY2 = (1 - rand) * energy;
-        mapBack[b+detectorNbr*1e6].first+=energyY2;
-        mapBack[b+detectorNbr*1e6].second=time;
+        mapBack[g+detectorNbr*1e6].first+=energyY2;
+        mapBack[g+detectorNbr*1e6].second=time;
         }
       }
 
