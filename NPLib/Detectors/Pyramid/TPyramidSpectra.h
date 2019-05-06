@@ -27,36 +27,32 @@
 #include "TPyramidData.h"
 #include "TPyramidPhysics.h"
 
-// Forward Declaration
-class TPyramidPhysics;
+// ForwardDeclaration
+class TPyramidPhysics ;
 
-
-class TPyramidSpectra : public VSpectra {
-  //////////////////////////////////////////////////////////////
-  // constructor and destructor
+class TPyramidSpectra: public VSpectra {
   public:
+    // constructor and destructor
     TPyramidSpectra();
-    TPyramidSpectra(unsigned int NumberOfDetectors);
+    TPyramidSpectra(unsigned int NumberOfDetector);
     ~TPyramidSpectra();
 
-  //////////////////////////////////////////////////////////////
-  // Initialization methods
   private:
+    // Initialization methods
     void InitRawSpectra();
     void InitPreTreatedSpectra();
     void InitPhysicsSpectra();
 
-  //////////////////////////////////////////////////////////////
-  // Filling methods
   public:
+    // Filling methods
     void FillRawSpectra(TPyramidData*);
     void FillPreTreatedSpectra(TPyramidData*);
     void FillPhysicsSpectra(TPyramidPhysics*);
 
-  //////////////////////////////////////////////////////////////
-  // Detector parameters 
-  private:
-    unsigned int fNumberOfDetectors;
+  private: // Information 
+    unsigned int fNumberOfDetector;
+    unsigned int fInnerStrip;
+    unsigned int fOuterStrip;
 };
 
 #endif
