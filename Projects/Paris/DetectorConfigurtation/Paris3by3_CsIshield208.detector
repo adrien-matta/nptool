@@ -1,3 +1,9 @@
+%
+%
+%             OBSOLETE?
+%
+%
+%
 %Fichier de configuration manip E225
 %%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
 %Thickness in micrometer
@@ -23,9 +29,9 @@
 %%Option: 0,1 for Si SiLi and CsI
 %%Option: all or sensible for VISualisation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Paris
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%1
-ParisCluster
+%%PARIS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+Paris Cluster
  X1_Y1=	-50.418664	-87.327687	-217.661051
  X1_Y128=	-188.406586	-87.327687	-120.088856
  X128_Y1=	18.575297	-206.828733	-120.088856

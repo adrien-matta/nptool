@@ -1,3 +1,9 @@
+%
+%
+%             OBSOLETE?
+%
+%
+%
 %Fichier de configuration manip E225
 %%%%%%%%%%%Target%%%%%%%%%%%%%%%%%%%1
 %Thickness in micrometer
@@ -23,7 +29,7 @@ Target
 %%Option: 0,1 for Si SiLi and CsI
 %%Option: all or sensible for VISualisation
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Paris
+%%PARIS
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
 ParisCluster
  A=		-84.5 	84.5	0
