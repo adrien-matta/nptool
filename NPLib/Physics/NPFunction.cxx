@@ -220,11 +220,11 @@ namespace NPL{
   void RandomGaussian2D(double MeanX, double MeanY, double SigmaX, double SigmaY, double &X, double &Y){
     if (SigmaX != 0 && SigmaY!=0) {
       X = gRandom->Gaus(MeanX, SigmaX);
-
-      double a = SigmaX/2.;
-      double b = SigmaY/2.;
-      double SigmaYPrim = b * sqrt(1 - X*X / (a*a));
-      Y = gRandom->Gaus(MeanY, SigmaY);
+      //double a = SigmaX/2.;
+      //double b = SigmaY/2.;
+      //double SigmaYPrim = b * sqrt(1 - X*X / (a*a));   
+      double SigmaYPrim=SigmaY;  // This is not right a better solution needed
+      Y = gRandom->Gaus(MeanY, SigmaYPrim); 
     }
 
     else if(SigmaX == 0 && SigmaY!=0) {
