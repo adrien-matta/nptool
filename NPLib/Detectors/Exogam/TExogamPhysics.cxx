@@ -7,8 +7,8 @@
 
 /*****************************************************************************
  * Original Author: Sandra GIRON  contact address: giron@ipno.in2p3.fr       *
- *                  Benjamin LE CROM		   lecrom@ipno.in2p3.fr                                                        *
- * Creation Date  : march 2014                                            *
+ *                  Benjamin LE CROM		   lecrom@ipno.in2p3.fr              *
+ * Creation Date  : march 2014                                               *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
@@ -42,8 +42,6 @@ ClassImp(TExogamPhysics)
 ///////////////////////////////////////////////////////////////////////////
 TExogamPhysics::TExogamPhysics() 
 {
-  // cout << "coconutsssssssssssssssssssssssssssss " << endl;
-
   EventMultiplicity 	= 0 			;  
   ECC_Multiplicity      = 0                     ;
   GOCCE_Multiplicity    = 0                     ;
@@ -460,11 +458,11 @@ void TExogamPhysics::Clear()
 				
 //	Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
 void TExogamPhysics::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("EXOGAMClover");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Exogam");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> token = {"EXOGAMClover"};
+  vector<string> token = {"ANGLE_FILE"};
 
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
     if(blocks[i]->HasTokenList(token)){
@@ -684,8 +682,8 @@ extern "C"{
 class proxy_exogam{
   public:
     proxy_exogam(){
-      NPL::DetectorFactory::getInstance()->AddToken("EXOGAMArray","Exogam");
-      NPL::DetectorFactory::getInstance()->AddDetector("EXOGAMArray",TExogamPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Exogam","Exogam");
+      NPL::DetectorFactory::getInstance()->AddDetector("Exogam",TExogamPhysics::Construct);
     }
 };
 

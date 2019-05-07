@@ -745,12 +745,12 @@ void TCharissaPhysics::Clear(){
 
 ///////////////////////////////////////////////////////////////////////////
 void TCharissaPhysics::ReadConfiguration(NPL::InputParser parser){
-  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("CharissaTelescope");
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Charissa");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " Telescope found " << endl; 
   for(unsigned int i  = 0 ; i < blocks.size() ; i++){
     // Cartesian Case
-    vector<string> cart = {"X1_Y1","X1_Y16","X16_Y1","X16_Y16","SI","SILI","CSI"};
+    vector<string> cart = {"X1_Y1","X1_Y16","X16_Y1","X16_Y16"};
     // Spherical Case
     vector<string> sphe= {"R","THETA","PHI","BETA","SI","SILI","CSI"};
 
@@ -1212,8 +1212,8 @@ extern "C"{
 class proxy_charissa{
   public:
     proxy_charissa(){
-      NPL::DetectorFactory::getInstance()->AddToken("CharissaTelescope","Charissa");
-      NPL::DetectorFactory::getInstance()->AddDetector("CharissaTelescope",TCharissaPhysics::Construct);
+      NPL::DetectorFactory::getInstance()->AddToken("Charissa","Charissa");
+      NPL::DetectorFactory::getInstance()->AddDetector("Charissa",TCharissaPhysics::Construct);
     }
 };
 

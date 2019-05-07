@@ -11,7 +11,7 @@ void Mask(){
 //  double width = 0.5;
 
   // mm per pixel 
-  double scale = 0.01;
+  double scale = 0.005;
   //pitch in pixel
   unsigned int spitch = pitch/scale;
   unsigned int swidth  = width/scale;
