@@ -834,8 +834,8 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     unsigned int a, r, g, b;
     //  pixel
     SiScorer->GetARGBFront(i, a, r, g, b);
-    b = b + 2;
-    g = g + 2;
+    b = b ;
+    g = g ;
     if (r == 0) {
       mapFront[b+detectorNbr*1e6].first+=energy;
       mapFront[b+detectorNbr*1e6].second=time;
@@ -887,8 +887,8 @@ void MUST2Array::ReadSensitive(const G4Event*) {
       unsigned int a, r, g, b;
       //  pixel
       SiScorer->GetARGBBack(i, a, r, g, b);
-      b = b + 2;
-      g = g + 2;
+      b = b ;
+      g = g ;
       if (r == 0) {
           mapBack[b+detectorNbr*1e6].first+=energy;
           mapBack[b+detectorNbr*1e6].second=time;
@@ -975,7 +975,7 @@ void MUST2Array::InitializeScorers() {
   string              nptool   = getenv("NPTOOL");
   G4VPrimitiveScorer* SiScorer = new DSSDScorers::PS_Images(
       "SiScorer", nptool + "/NPLib/Detectors/MUST2/ressources/maskFront.png",
-      nptool + "/NPLib/Detectors/MUST2/ressources/maskBack.png", 0.01, 0.01, 0,
+      nptool + "/NPLib/Detectors/MUST2/ressources/maskBack.png", 97.22/12800, 97.22/12800, 0,
       0, 0xffff0000, 0);
 
   G4VPrimitiveScorer* InterScorer
