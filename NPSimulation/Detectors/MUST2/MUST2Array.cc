@@ -834,8 +834,6 @@ void MUST2Array::ReadSensitive(const G4Event*) {
     unsigned int a, r, g, b;
     //  pixel
     SiScorer->GetARGBFront(i, a, r, g, b);
-    b = b ;
-    g = g ;
     if (r == 0) {
       mapFront[b+detectorNbr*1e6].first+=energy;
       mapFront[b+detectorNbr*1e6].second=time;
@@ -887,8 +885,6 @@ void MUST2Array::ReadSensitive(const G4Event*) {
       unsigned int a, r, g, b;
       //  pixel
       SiScorer->GetARGBBack(i, a, r, g, b);
-      b = b ;
-      g = g ;
       if (r == 0) {
           mapBack[b+detectorNbr*1e6].first+=energy;
           mapBack[b+detectorNbr*1e6].second=time;
