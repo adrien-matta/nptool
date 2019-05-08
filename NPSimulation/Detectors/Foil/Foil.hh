@@ -51,9 +51,10 @@ class Foil : public NPS::VDetector{
     /////// Specific Function of this Class ///////////
     ////////////////////////////////////////////////////
   public:
-    // Cartesian
-    void AddDetector(G4ThreeVector POS, string Shape, double Radius, double Thick, string Material);
-    void AddDetector(G4ThreeVector POS, string Shape, double Height, double Width, double Thick, string Material);
+    void AddDetector( double  R, double Theta, double  Phi, 
+      string Shape, double Radius, double Thick, string Material);
+    void AddDetector( double  R, double Theta, double  Phi, 
+      string Shape, double Height, double Width, double Thick, string Material);
    
     G4LogicalVolume* BuildSquareDetector( double FoilHeight, double FoilWidth, double FoilThickness, string FoilMaterial);
     G4LogicalVolume* BuildCylindricalDetector( double FoilRadius, double FoilThickness, string FoilMaterial);

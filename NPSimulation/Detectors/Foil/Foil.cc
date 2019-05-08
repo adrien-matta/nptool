@@ -83,11 +83,12 @@ Foil::~Foil(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Foil::AddDetector(G4ThreeVector POS, string Shape, double Radius, double Thick, string Material){
-  // Convert the POS value to R theta Phi as Spherical coordinate is easier in G4 
-  m_R.push_back(POS.mag());
-  m_Theta.push_back(POS.theta());
-  m_Phi.push_back(POS.phi());
+void Foil::AddDetector( double  R, double Theta, double  Phi, 
+  string Shape, double Radius, 
+  double Thick, string Material){
+  m_R.push_back(R);
+  m_Theta.push_back(Theta);
+  m_Phi.push_back(Phi);
   m_Shape.push_back(Shape);
 
   m_FoilThickness.push_back(Thick) ;
@@ -98,11 +99,12 @@ void Foil::AddDetector(G4ThreeVector POS, string Shape, double Radius, double Th
 
 }
 
-void Foil::AddDetector(G4ThreeVector POS, string Shape, double Height, double Width, double Thick, string Material){
-  // Convert the POS value to R theta Phi as Spherical coordinate is easier in G4 
-  m_R.push_back(POS.mag());
-  m_Theta.push_back(POS.theta());
-  m_Phi.push_back(POS.phi());
+void Foil::AddDetector(double R, double Theta, double Phi, 
+  string Shape, double Height, double Width, 
+  double Thick, string Material){
+  m_R.push_back(R);
+  m_Theta.push_back(Theta);
+  m_Phi.push_back(Phi);
   m_Shape.push_back(Shape);
 
   m_FoilThickness.push_back(Thick) ;
@@ -146,13 +148,14 @@ G4LogicalVolume* Foil::BuildCylindricalDetector(double Radius, double Thickness,
 // Virtual Method of NPS::VDetector class
 
 // Read stream at Configfile to pick-up parameters of detector (Position,...)
-// Called in DetecorConstruction::ReadDetextorConfiguration Method
+// Called in DetecorConstruction::ReadDetectorConfiguration Method
 void Foil::ReadConfiguration(NPL::InputParser parser){
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Foil");
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
 
-  vector<string> cart = {"POS",};
+  if(NPOptionManager::getInstance()->GetVerboseLevel())
+    cout << "//// " << blocks.size() << " foils found " << endl; 
+
+  vector<string> cart = {"X","Y","Z"};
   vector<string> sphe = {"R","Theta","Phi"};
   vector<string> square= {"Shape","Height","Width","Thickness","Material"};
   vector<string> cylind= {"Shape","Radius","Thickness","Material"};
@@ -161,14 +164,21 @@ void Foil::ReadConfiguration(NPL::InputParser parser){
     if(blocks[i]->HasTokenList(cart)){
       if(NPOptionManager::getInstance()->GetVerboseLevel()){
         cout << endl << "////  Foil " << i+1 <<  endl;
-        G4ThreeVector Pos = NPS::ConvertVector(blocks[i]->GetTVector3("POS","mm"));
+        double X = blocks[i]->GetDouble("X","mm");
+        double Y = blocks[i]->GetDouble("Y","mm");
+        double Z = blocks[i]->GetDouble("Z","mm");
+        double R = sqrt (X*X+Y*Y+Z*Z);
+        double Theta = acos(Z / (R) );
+        double Phi = atan2(Y,X);
+
         if(blocks[i]->HasTokenList(square)){
           string Shape = blocks[i]->GetString("Shape");
           double H = blocks[i]->GetDouble("Height","mm");
           double W = blocks[i]->GetDouble("Width","mm");
           double T = blocks[i]->GetDouble("Thickness","mm");
           string Mat = blocks[i]->GetString("Material");
-          AddDetector(Pos,Shape,H,W,T,Mat);
+          
+          AddDetector(R,Theta,Phi,Shape,H,W,T,Mat);
         }
 
         else if(blocks[i]->HasTokenList(cylind)){
@@ -176,7 +186,7 @@ void Foil::ReadConfiguration(NPL::InputParser parser){
           double Rd = blocks[i]->GetDouble("Radius","mm");
           double T = blocks[i]->GetDouble("Thickness","mm");
           string Mat = blocks[i]->GetString("Material");
-          AddDetector(Pos,Shape,Rd,T,Mat);
+          AddDetector(R,Theta,Phi,Shape,Rd,T,Mat);
         }
       }
     }
@@ -187,23 +197,21 @@ void Foil::ReadConfiguration(NPL::InputParser parser){
         double R = blocks[i]->GetDouble("R","mm");
         double Theta = blocks[i]->GetDouble("Theta","deg");
         double Phi = blocks[i]->GetDouble("Phi","deg");
-        G4ThreeVector Pos;
-        Pos.setRThetaPhi(R,Theta,Phi);
-
+  
         if(blocks[i]->HasTokenList(square)){
           string Shape = blocks[i]->GetString("Shape");
           double H = blocks[i]->GetDouble("Height","mm");
           double W = blocks[i]->GetDouble("Width","mm");
           double T = blocks[i]->GetDouble("Thickness","mm");
           string Mat = blocks[i]->GetString("Material");
-          AddDetector(Pos,Shape,H,W,T,Mat);
+          AddDetector(R,Theta,Phi,Shape,H,W,T,Mat);
         }
         else if(blocks[i]->HasTokenList(cylind)){
           string Shape = blocks[i]->GetString("Shape");
           double Rd = blocks[i]->GetDouble("Radius","mm");
           double T = blocks[i]->GetDouble("Thickness","mm");
           string Mat = blocks[i]->GetString("Material");
-          AddDetector(Pos,Shape,Rd,T,Mat);
+          AddDetector(R,Theta,Phi,Shape,Rd,T,Mat);
         }
       }
     }
