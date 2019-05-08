@@ -130,7 +130,7 @@ void Plastic::AddPlastic(   G4double R                      ,
 void Plastic::ReadConfiguration(NPL::InputParser parser){
   vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithToken("Plastic");
   if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << "//// " << blocks.size() << " detectors found " << endl; 
+    cout << "//// " << blocks.size() << " Plastic found " << endl; 
 
   vector<string> cart = {"X","Y","Z"};
   vector<string> sphe = {"R","Theta","Phi"};
