@@ -1,25 +1,60 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+GeneralTarget
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%0.5mg/cm2 = 2.22 um
 Target
- THICKNESS= 10 micrometer
- RADIUS=	20 mm
- MATERIAL= CD2
+ THICKNESS= 2.22 micrometer 
+ RADIUS=	5 mm
+ MATERIAL= C
  ANGLE= 0 deg
  X= 0 mm
  Y= 0 mm
  Z= 0 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Z = distance downstream tip - target
+%% length active wafer: Z = 75 mm
+%% centering active wafer: Z = 37.5 mm
 Pyramid
- POS= 0 0 350 mm
- Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Pyramid
- POS = 35 35 35 cm
- Shape= Square
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Pyramid
- R= 350 mm
- THETA= 90 deg
- PHI= 63 deg
- Shape= Cylindrical
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Inner= 1
+ Outer= 0
+ %Z= 0.0001 mm
+ Z=75 mm 
+ ANGLE= 20 deg
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Pyramid
+% Inner= 1
+% Outer= 0
+% Z= -35 mm  
+% ANGLE= 20 deg
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%PARIS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%0
+%Paris Cluster    
+ R=		100
+ THETA= 90
+ PHI= 	0	
+ BETA= 	0 0 1	
+ %VIS=all
+% 
+%Paris Cluster    
+ R=		100
+ THETA= 90
+ PHI= 	90	
+ BETA= 	0 0 1	
+ %VIS=all
+%
+%Paris Cluster    
+ R=		100
+ THETA= 90
+ PHI= 	180	
+ BETA= 	0 0 1	
+ %VIS=all
+% 
+%Paris Cluster    
+ R=		100
+ THETA= 90
+ PHI= 	270	
+ BETA= 	0 0 1	
+ %VIS=all  
