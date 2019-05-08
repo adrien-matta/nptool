@@ -40,124 +40,93 @@
 #include "ParticleStack.hh"
 
 // Event Generator Class
-#include "EventGeneratorTwoBodyReaction.hh"
 #include "EventGeneratorIsotropic.hh"
+#include "EventGeneratorCosmic.hh" 
 #include "EventGeneratorMultipleParticle.hh"
 #include "EventGeneratorBeam.hh"
-#include "EventGeneratorGammaDecay.hh"
-#include "EventGeneratorParticleDecay.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::PrimaryGeneratorAction(DetectorConstruction* det): m_detector(det){
-  m_Messenger = new PrimaryGeneratorActionMessenger(this);
-  m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent;
-  m_Target=NULL;
-  }
+    m_Messenger = new PrimaryGeneratorActionMessenger(this);
+    m_GenerateEvent = &NPS::VEventGenerator::GenerateEvent;
+    m_Target=NULL;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PrimaryGeneratorAction::~PrimaryGeneratorAction(){
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    delete m_EventGenerator[i];
-  }
-  m_EventGenerator.clear();
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        delete m_EventGenerator[i];
+    }
+    m_EventGenerator.clear();
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent){
-  // In case the target has changed
-  SetTarget();
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    //m_EventGenerator[i]->GenerateEvent(anEvent);
-    (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
-  }
-
-  ParticleStack::getInstance()->ShootAllParticle(anEvent);
-
+    // In case the target has changed
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        (m_EventGenerator[i]->*m_GenerateEvent)(anEvent);
+    }
+    ParticleStack::getInstance()->ShootAllParticle(anEvent);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ReadEventGeneratorFile(string Path){
-  if(NPOptionManager::getInstance()->GetVerboseLevel())
-    cout << endl << "\033[1;35m//// Reading event generator file  "<< Path  << endl; 
-
-  NPL::InputParser parser(Path);
-
-  vector<NPL::InputBlock*> blocks;
-
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("Isotropic");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("MultipleParticle");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorMultipleParticle();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("Beam");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorBeam();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    myEventGenerator->SetTarget(m_detector->GetTarget());
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-/*  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("TwoBodyReaction");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorTwoBodyReaction();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    myEventGenerator->SetTarget(m_detector->GetTarget());
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("GammaCascade");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorGammaDecay();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    myEventGenerator->SetTarget(m_detector->GetTarget());
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-  blocks.clear();
-  blocks = parser.GetAllBlocksWithToken("ParticleDecay");
-  if (blocks.size()>0) {
-    NPS::VEventGenerator* myEventGenerator = new EventGeneratorParticleDecay();
-    myEventGenerator->ReadConfiguration(parser);
-    myEventGenerator->InitializeRootOutput();
-    myEventGenerator->SetTarget(m_detector->GetTarget());
-    m_EventGenerator.push_back(myEventGenerator);
-  }
-*/
-  m_Target=m_detector->GetTarget();
-  m_Target->SetReactionRegion();
-
+    if(NPOptionManager::getInstance()->GetVerboseLevel())
+        cout << endl << "\033[1;35m//// Reading event generator file  "<< Path  << endl;
+    
+    NPL::InputParser parser(Path);
+    
+    vector<NPL::InputBlock*> blocks;
+    
+    blocks.clear();
+    blocks = parser.GetAllBlocksWithToken("Isotropic");
+    if (blocks.size()>0) {
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorIsotropic();
+        myEventGenerator->ReadConfiguration(parser);
+        myEventGenerator->InitializeRootOutput();
+        m_EventGenerator.push_back(myEventGenerator);
+    }
+    blocks.clear();
+    blocks = parser.GetAllBlocksWithToken("MultipleParticle");
+    if (blocks.size()>0) {
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorMultipleParticle();
+        myEventGenerator->ReadConfiguration(parser);
+        myEventGenerator->InitializeRootOutput();
+        m_EventGenerator.push_back(myEventGenerator);
+    }
+    blocks.clear();
+    blocks = parser.GetAllBlocksWithToken("Beam");
+    if (blocks.size()>0) {
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorBeam();
+        myEventGenerator->ReadConfiguration(parser);
+        myEventGenerator->InitializeRootOutput();
+        if(m_detector->GetTarget()!=NULL)myEventGenerator->SetTarget(m_detector->GetTarget());
+        m_EventGenerator.push_back(myEventGenerator);
+    }
+    blocks.clear();
+    blocks = parser.GetAllBlocksWithToken("Cosmic"); 
+    if (blocks.size()>0) { 
+        NPS::VEventGenerator* myEventGenerator = new EventGeneratorCosmic(); 
+        myEventGenerator->ReadConfiguration(parser); 
+        myEventGenerator->InitializeRootOutput(); 
+        m_EventGenerator.push_back(myEventGenerator); 
+    } 
+    
+    m_Target=m_detector->GetTarget();
+    if(m_Target!=NULL){
+       m_Target->SetReactionRegion();
+    }
+    
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PrimaryGeneratorAction::ClearEventGenerator(){
-  unsigned int mysize = m_EventGenerator.size();
-  for (unsigned int i = 0 ; i < mysize; i++) {
-    delete m_EventGenerator[i];
-  }
-
-  m_EventGenerator.clear();
-
+    unsigned int mysize = m_EventGenerator.size();
+    for (unsigned int i = 0 ; i < mysize; i++) {
+        delete m_EventGenerator[i];
+    }
+    
+    m_EventGenerator.clear();
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PrimaryGeneratorAction::SetTarget(){
-  for (unsigned int i = 0 ; i < m_EventGenerator.size(); i++) {
-    m_EventGenerator[i]->SetTarget(m_Target);
-  }
-}
-

@@ -99,7 +99,7 @@ NPS::VDetector* DetectorFactory::Construct(std::string Token){
     } 
 
     else{
-      std::cout << "Warning: Detector with Token " << Token << " has no Constructor or no Library" << endl << " error is: \n";
+      std::cout << "Warning: Detector with Token " << Token << ", error while loading lib:" << endl;
 			if(LibError) { std::cout << LibError; } else { std::cout << "NULL"; } std::cout << std::endl;
       return NULL;
     }

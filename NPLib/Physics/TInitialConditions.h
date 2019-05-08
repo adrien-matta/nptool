@@ -72,10 +72,10 @@ public:
     virtual ~TInitialConditions();
     
     void  Clear();
-    void  Clear(const Option_t*) {};
+    void  Clear(const Option_t*) {Clear();};
     void  Dump() const;
     
-    /////////////////////           GetTERS           ////////////////////////
+    /////////////////////             SETTERS              ////////////////////////
     // Incident beam parameter
     void SetIncidentParticleName   (const string &Incident_Particle_Name)   {fIC_Incident_Particle_Name = Incident_Particle_Name;}
     void SetIncidentInitialKineticEnergy  (const double &Incident_Initial_Kinetic_Energy)
@@ -128,6 +128,10 @@ public:
     TVector3 GetBeamDirection         () const ;
     TVector3 GetParticleDirection     (const int &i) const ;
     
+    double GetParticlePositionX (const int &i, const double &Z) const;
+    double GetParticlePositionY (const int &i, const double &Z) const;
+
+
     double GetThetaLab_WorldFrame (const int &i) const {
         return (GetParticleDirection(i).Angle(TVector3(0,0,1)))/deg;
     }

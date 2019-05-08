@@ -42,7 +42,8 @@
 #include "G4UnionSolid.hh"
 // NPS
 #include "Sharc.hh"
-#include "SiliconScorers.hh"
+#include "DSSDScorers.hh"
+#include "InteractionScorers.hh"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
 // NPL
@@ -77,7 +78,11 @@ Sharc::Sharc(){
 
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Sharc::~Sharc(){
+  //delete m_BOXScorer;
+  //delete m_PADScorer;
+  //delete m_QQQScorer;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -118,34 +123,34 @@ void Sharc::ReadConfiguration(NPL::InputParser parser){
   if(NPOptionManager::getInstance()->GetVerboseLevel())
     cout << "//// " << blocks.size() << " detectors found " << endl; 
 
- vector<string> tokenQQQ = {"Z","R","Phi","ThicknessDetector"};
- vector<string> tokenBOX = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
- 
+  vector<string> tokenQQQ = {"Z","R","Phi","ThicknessDetector"};
+  vector<string> tokenBOX = {"Z","ThicknessDetector1","ThicknessDetector2","ThicknessDetector3","ThicknessDetector4","ThicknessPAD1","ThicknessPAD2","ThicknessPAD3","ThicknessPAD4"};
+
   for(unsigned int i = 0 ; i < blocks.size() ; i++){
 
     if(blocks[i]->GetMainValue()=="QQQ" && blocks[i]->HasTokenList(tokenQQQ)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc QQQ " << i+1 <<  endl;
-        double Z = blocks[i]->GetDouble("Z","mm");
-        double R = blocks[i]->GetDouble("R","mm");
-        double Phi = blocks[i]->GetDouble("Phi","deg");
-        double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
-        AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double R = blocks[i]->GetDouble("R","mm");
+      double Phi = blocks[i]->GetDouble("Phi","deg");
+      double Thickness= blocks[i]->GetDouble("ThicknessDetector","micrometer");
+      AddQQQDetector(G4ThreeVector(R,Phi,Z),Thickness);
     }
     else if(blocks[i]->GetMainValue()=="BOX" && blocks[i]->HasTokenList(tokenBOX)){
       if(NPOptionManager::getInstance()->GetVerboseLevel())
         cout << endl << "////  Sharc Box " << i+1 <<  endl;
-        double Z = blocks[i]->GetDouble("Z","mm");
-        double Thickness1= blocks[i]->GetDouble("ThicknessDetector1","micrometer");
-        double Thickness2= blocks[i]->GetDouble("ThicknessDetector2","micrometer");
-        double Thickness3= blocks[i]->GetDouble("ThicknessDetector3","micrometer");
-        double Thickness4= blocks[i]->GetDouble("ThicknessDetector4","micrometer");
-        double ThicknessPAD1 = blocks[i]->GetDouble("ThicknessPAD1","micrometer");
-        double ThicknessPAD2 = blocks[i]->GetDouble("ThicknessPAD2","micrometer");
-        double ThicknessPAD3 = blocks[i]->GetDouble("ThicknessPAD3","micrometer");
-        double ThicknessPAD4 = blocks[i]->GetDouble("ThicknessPAD4","micrometer");
-        AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4,
-        ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4);
+      double Z = blocks[i]->GetDouble("Z","mm");
+      double Thickness1= blocks[i]->GetDouble("ThicknessDetector1","micrometer");
+      double Thickness2= blocks[i]->GetDouble("ThicknessDetector2","micrometer");
+      double Thickness3= blocks[i]->GetDouble("ThicknessDetector3","micrometer");
+      double Thickness4= blocks[i]->GetDouble("ThicknessDetector4","micrometer");
+      double ThicknessPAD1 = blocks[i]->GetDouble("ThicknessPAD1","micrometer");
+      double ThicknessPAD2 = blocks[i]->GetDouble("ThicknessPAD2","micrometer");
+      double ThicknessPAD3 = blocks[i]->GetDouble("ThicknessPAD3","micrometer");
+      double ThicknessPAD4 = blocks[i]->GetDouble("ThicknessPAD4","micrometer");
+      AddBoxDetector(Z,Thickness1,Thickness2,Thickness3,Thickness4,
+          ThicknessPAD1,ThicknessPAD2,ThicknessPAD3,ThicknessPAD4);
 
     }
 
@@ -387,7 +392,7 @@ void Sharc::ConstructBOXDetector(G4LogicalVolume* world){
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
             PAD_Wafer_Offset-G4ThreeVector(0,0,0.5*PAD_PCB_Thickness-0.5*m_ThicknessPAD[i][j]),
             logicPADWafer,"PAD_Wafer",logicPADDetector,false,DetNbr);
-      
+
         new G4PVPlacement(new G4RotationMatrix(0,0,0),
             G4ThreeVector(0,0,0),
             logicPADActiveWafer,"PAD_ActiveWafer",logicPADWafer,false,DetNbr);
@@ -566,175 +571,169 @@ void Sharc::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void Sharc::ReadSensitive(const G4Event* event){
+void Sharc::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // BOX
-  NPS::HitsMap<G4double*>* BOXHitMap;
-  std::map<G4int, G4double**>::iterator BOX_itr;
+  DSSDScorers::PS_Rectangle* BOXScorer = (DSSDScorers::PS_Rectangle*) m_BOXScorer->GetPrimitive(0);
 
-  G4int BOXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_BOXScorer/SharcBOX");
-  BOXHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(BOXCollectionID));
 
   // Loop on the BOX map
-  for (BOX_itr = BOXHitMap->GetMap()->begin() ; BOX_itr != BOXHitMap->GetMap()->end() ; BOX_itr++){
+  unsigned int sizeFront= BOXScorer->GetLengthMult();
 
-    G4double* Info = *(BOX_itr->second);
-    G4long index = (BOX_itr->first);
+  for (unsigned int i=0 ; i<sizeFront ; i++){
 
-    double Energy = RandGauss::shoot(Info[0], ResoEnergy);
+    double Energy = BOXScorer->GetEnergyLength(i);
+
     if(Energy>EnergyThreshold){
-      double Time       = Info[1];
-      int DetNbr        = (int) Info[7];
-      int StripFront    = (int) Info[8];
-      int StripBack     = (int) Info[9];
+      double Time       = BOXScorer->GetTimeLength(i);
+      int DetNbr        = BOXScorer->GetDetectorLength(i);
+      int StripFront    = BOXScorer->GetStripLength(i);
+      
+      m_Event->SetFront(DetNbr,
+      StripFront,
+      RandGauss::shoot(Energy, ResoEnergy),
+      RandGauss::shoot(Time, ResoTime),
+      RandGauss::shoot(Time, ResoTime));
+    }
+  } 
 
-      if (index>0){
-        m_Event->SetFront_DetectorNbr(DetNbr);
-        m_Event->SetFront_StripNbr(StripFront);
-        m_Event->SetFront_Energy(Energy);
-        m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-        m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
-      }
-      else{
-        m_Event->SetBack_DetectorNbr(DetNbr);
-        m_Event->SetBack_StripNbr(BOX_Wafer_Back_NumberOfStrip-StripBack+1);
-        m_Event->SetBack_Energy(Energy);
-        m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-        m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
-      }
+  unsigned int sizeBack= BOXScorer->GetWidthMult();
+  for (unsigned int i=0 ; i<sizeBack ; i++){
 
-      // Interraction Coordinates
-      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+    double Energy = BOXScorer->GetEnergyWidth(i);
 
+    if(Energy>EnergyThreshold){
+      double Time       = BOXScorer->GetTimeWidth(i);
+      int DetNbr        = BOXScorer->GetDetectorWidth(i);
+      int StripBack    = BOXScorer->GetStripWidth(i);
+
+      m_Event->SetBack(DetNbr,
+      BOX_Wafer_Back_NumberOfStrip-StripBack+1,
+      RandGauss::shoot(Energy, ResoEnergy),
+      RandGauss::shoot(Time, ResoTime),
+      RandGauss::shoot(Time, ResoTime));
     }
   }
   // clear map for next event
-  BOXHitMap->clear();
-
+  BOXScorer->clear();
   ///////////
   // PAD
-  NPS::HitsMap<G4double*>*     PADHitMap;
-  std::map<G4int, G4double**>::iterator    PAD_itr;
+  DSSDScorers::PS_Rectangle* PADScorer = (DSSDScorers::PS_Rectangle*) m_PADScorer->GetPrimitive(0);
 
-  G4int PADCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_PADScorer/SharcPAD");
-  PADHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(PADCollectionID));
 
-  // Loop on the BOX map
-  for (PAD_itr = PADHitMap->GetMap()->begin() ; PAD_itr != PADHitMap->GetMap()->end() ; PAD_itr++){
-
-    G4double* Info = *(PAD_itr->second);
-
-    double Energy =  RandGauss::shoot(Info[0], ResoEnergy);
+  // Loop on the PAD map
+  unsigned int sizePAD= PADScorer->GetLengthMult();
+  for (unsigned int i=0 ; i<sizePAD ; i++){
+    double Energy = PADScorer->GetEnergyLength(i);
     if(Energy>EnergyThreshold){
-      double Time  = Info[1];
-      int DetNbr =     (int) Info[7];
-
-      m_Event->SetPAD_DetectorNbr(DetNbr);
-      m_Event->SetPAD_Energy(Energy);
-      m_Event->SetPAD_TimeCFD(RandGauss::shoot(Time, ResoTime));
-      m_Event->SetPAD_TimeLED(RandGauss::shoot(Time, ResoTime));
+      double Time       = PADScorer->GetTimeLength(i);
+      int DetNbr        = PADScorer->GetDetectorLength(i);
+      m_Event->SetPAD(DetNbr,
+      RandGauss::shoot(Energy, ResoEnergy),
+      RandGauss::shoot(Time, ResoTime),
+      RandGauss::shoot(Time, ResoTime));
     }
-  }
+  } 
 
   // clear map for next event
-  PADHitMap->clear();
+  PADScorer->clear();
 
   ///////////
   // QQQ
-  NPS::HitsMap<G4double*>* QQQHitMap;
-  std::map<G4int, G4double**>::iterator QQQ_itr;
-
-  G4int QQQCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("Sharc_QQQScorer/SharcQQQ");
-  QQQHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(QQQCollectionID));
+  DSSDScorers::PS_Annular* QQQScorer = (DSSDScorers::PS_Annular*) m_QQQScorer->GetPrimitive(0);
 
   // Loop on the QQQ map
-  for (QQQ_itr = QQQHitMap->GetMap()->begin() ; QQQ_itr != QQQHitMap->GetMap()->end() ; QQQ_itr++){
-
-    G4double* Info = *(QQQ_itr->second);
-
-    double Energy = RandGauss::shoot(Info[0], ResoEnergy);
+  unsigned int sizeRing= QQQScorer->GetRingMult();
+  for (unsigned int i=0 ; i<sizeRing ; i++){
+    double Energy = QQQScorer->GetEnergyRing(i);
     if(Energy>EnergyThreshold){
-      double Time  = Info[1];
-      int DetNbr =     (int) Info[7];
-      int StripFront = (int) Info[8];
-      int StripBack =  (int) Info[9];
-      
-      m_Event->SetFront_DetectorNbr(DetNbr);
-      m_Event->SetFront_StripNbr(QQQ_Wafer_NumberOf_AnnularStrip-StripFront+1); // Order is reverse (1 is outtermost strip)
-      m_Event->SetFront_Energy(Energy);
-      m_Event->SetFront_TimeCFD(RandGauss::shoot(Time, ResoTime));
-      m_Event->SetFront_TimeLED(RandGauss::shoot(Time, ResoTime));
+      double Time       = QQQScorer->GetTimeRing(i);
+      int DetNbr        = QQQScorer->GetDetectorRing(i);
+      int StripRing    = QQQScorer->GetStripRing(i);
+      m_Event->SetFront(DetNbr,
+      QQQ_Wafer_NumberOf_AnnularStrip-StripRing+1,
+      RandGauss::shoot(Energy, ResoEnergy),
+      RandGauss::shoot(Time, ResoTime),
+      RandGauss::shoot(Time, ResoTime));
+    }
+  } 
 
-      m_Event->SetBack_DetectorNbr(DetNbr);
-      m_Event->SetBack_StripNbr(StripBack);
-      m_Event->SetBack_Energy(Energy);
-      m_Event->SetBack_TimeCFD(RandGauss::shoot(Time, ResoTime));
-      m_Event->SetBack_TimeLED(RandGauss::shoot(Time, ResoTime));
+  unsigned int sizeSector= QQQScorer->GetSectorMult();
+  for (unsigned int i=0 ; i<sizeSector ; i++){
 
-      // Interraction Coordinates
-      ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-      ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-      ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-      ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-      ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
+    double Energy = QQQScorer->GetEnergySector(i);
+
+    if(Energy>EnergyThreshold){
+      double Time       = QQQScorer->GetTimeSector(i);
+      int DetNbr        = QQQScorer->GetDetectorSector(i);
+      int StripSector    = QQQScorer->GetStripSector(i);
+
+      m_Event->SetBack(DetNbr,
+      StripSector,
+      RandGauss::shoot(Energy, ResoEnergy),
+      RandGauss::shoot(Time, ResoTime),
+      RandGauss::shoot(Time, ResoTime));
     }
   }
-
   // clear map for next event
-  QQQHitMap->clear();
+  QQQScorer->clear();
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Sharc::InitializeScorers(){
-
   //   Silicon Associate Scorer
   bool already_exist = false;
   m_BOXScorer = CheckScorer("Sharc_BOXScorer",already_exist);
   m_PADScorer = CheckScorer("Sharc_PADScorer",already_exist);
   m_QQQScorer = CheckScorer("Sharc_QQQScorer",already_exist);
-
   // if the scorer were created previously nothing else need to be made
-  if(already_exist) return;
+ if(already_exist) return;
 
   G4VPrimitiveScorer* BOXScorer =
-    new  SILICONSCORERS::PS_Silicon_Rectangle("SharcBOX",0,
+    new  DSSDScorers::PS_Rectangle("SharcBOX",0,
         BOX_ActiveWafer_Length,
         BOX_ActiveWafer_Width,
         BOX_Wafer_Front_NumberOfStrip ,
         BOX_Wafer_Back_NumberOfStrip);
 
   G4VPrimitiveScorer* PADScorer =
-    new  SILICONSCORERS::PS_Silicon_Rectangle("SharcPAD",0,
+    new  DSSDScorers::PS_Rectangle("SharcPAD",0,
         PAD_Wafer_Length,
         PAD_Wafer_Width,
         1 ,
         0);
 
   G4VPrimitiveScorer* QQQScorer =
-    new  SILICONSCORERS::PS_Silicon_Annular("SharcQQQ",0,
+    new  DSSDScorers::PS_Annular("SharcQQQ",0,
         QQQ_Wafer_Inner_Radius,
         QQQ_Wafer_Outer_Radius,
         QQQ_Wafer_Starting_Phi,
         QQQ_Wafer_Stopping_Phi,
         QQQ_Wafer_NumberOf_AnnularStrip,
         QQQ_Wafer_NumberOf_RadialStrip,1);
-
+  
+  G4VPrimitiveScorer* InterScorerBOX = 
+    new  InteractionScorers::PS_Interactions("SharcBOXInteractionScorer",ms_InterCoord,0);
+ 
+ G4VPrimitiveScorer* InterScorerQQQ = 
+    new  InteractionScorers::PS_Interactions("SharcQQQInteractionScorer",ms_InterCoord,0);
+  
   //and register it to the multifunctionnal detector
   m_BOXScorer->RegisterPrimitive(BOXScorer);
+  m_BOXScorer->RegisterPrimitive(InterScorerBOX);
   m_PADScorer->RegisterPrimitive(PADScorer);
   m_QQQScorer->RegisterPrimitive(QQQScorer);
+  m_QQQScorer->RegisterPrimitive(InterScorerQQQ);
 
+  G4SDManager::GetSDMpointer()->ListTree();
   //   Add All Scorer to the Global Scorer Manager
   G4SDManager::GetSDMpointer()->AddNewDetector(m_BOXScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_PADScorer) ;
   G4SDManager::GetSDMpointer()->AddNewDetector(m_QQQScorer) ;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

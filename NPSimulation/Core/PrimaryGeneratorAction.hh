@@ -55,9 +55,6 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction{
   private:// VEventGenerator Function Pointer
     VEventGenerator_FuncPtr m_GenerateEvent;
 
-  public:
-    void SetTarget();
-
   private:
     DetectorConstruction* m_detector;
     vector<NPS::VEventGenerator*> m_EventGenerator;

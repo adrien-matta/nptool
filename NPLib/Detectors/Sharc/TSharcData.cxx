@@ -44,17 +44,20 @@ void TSharcData::Clear(){
   fSharc_StripFront_Energy.clear();
   fSharc_StripFront_TimeCFD.clear();
   fSharc_StripFront_TimeLED.clear();
+  fSharc_StripFront_Time.clear();
 
   fSharc_StripBack_DetectorNbr.clear();
   fSharc_StripBack_StripNbr.clear();
   fSharc_StripBack_Energy.clear();
   fSharc_StripBack_TimeCFD.clear();
   fSharc_StripBack_TimeLED.clear();
+  fSharc_StripBack_Time.clear();
   
   fSharc_PAD_DetectorNbr.clear();
   fSharc_PAD_Energy.clear();
   fSharc_PAD_TimeCFD.clear();
   fSharc_PAD_TimeLED.clear();
+  fSharc_PAD_Time.clear();
 
 }
 

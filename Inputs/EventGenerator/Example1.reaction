@@ -18,6 +18,10 @@ Beam
  %YPhiYProfilePath=
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DefineNucleus 10He
+ SubPart= 8He n n
+ BindingEnergy= 0 MeV
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 TwoBodyReaction
  Beam= 11Li
  Target= 2H
@@ -30,12 +34,12 @@ TwoBodyReaction
  ShootHeavy= 1
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Decay 10He
- Daughter= 8He n n
- ExcitationEnergy= 0 0 0 MeV
- Threshold= 0 MeV
- BranchingRatio= 0.5
- LifeTime= 0 ns
- Shoot= 1 1 1
+%Decay 10He
+% Daughter= 8He n n
+% ExcitationEnergy= 0 0 0 MeV
+% Threshold= 0 MeV
+% BranchingRatio= 0.5
+% LifeTime= 0 ns
+% Shoot= 1 1 1
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

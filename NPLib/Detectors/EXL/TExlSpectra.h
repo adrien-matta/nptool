@@ -35,7 +35,7 @@ class TExlSpectra:public VSpectra{
     // constructor and destructor
     TExlSpectra();
     TExlSpectra(unsigned int NumberOfDetector);
-    ~TSpectra();
+    ~TExlSpectra();
 
   private:
     // Initialization methods

@@ -61,9 +61,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction{
     G4VPhysicalVolume* ReadConfigurationFile();
     void AddDetector(NPS::VDetector*);
     void ReadAllSensitive(const G4Event*);
-
+    void ClearInteractionCoordinates(){
+       if(m_Detectors.size()>0)
+        m_Detectors[0]->GetInterCoordPointer()->Clear();
+      };
 
   private:
+    // Solid world 
+    G4Box* world_box;
     // Logical volumes
     G4LogicalVolume* world_log;
     //G4LogicalVolume* Chamber_log;

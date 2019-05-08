@@ -74,10 +74,10 @@ class Analysis: public NPL::VAnalysis{
     double BeamEnergy;
     int run_major;
     int run_minor;
-    NPL::EnergyLoss He3CD2  ;
-    NPL::EnergyLoss He3Al   ;
-    NPL::EnergyLoss He3Si   ;
-    NPL::EnergyLoss BeamCD2 ;
+    NPL::EnergyLoss LightTarget;
+    NPL::EnergyLoss LightAl   ;
+    NPL::EnergyLoss LightSi   ;
+    NPL::EnergyLoss BeamTarget ;
     NPL::EnergyLoss BeamMylar ;
     NPL::EnergyLoss BeamIsobutane ;
 

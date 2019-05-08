@@ -28,39 +28,43 @@ using namespace std;
 
 ClassImp(TInteractionCoordinates)
 
-TInteractionCoordinates::TInteractionCoordinates()
-{
-   // Default constructor
-
-   Clear();
-}
+  TInteractionCoordinates::TInteractionCoordinates(){
+  }
 
 TInteractionCoordinates::~TInteractionCoordinates()
 {}
 
-void TInteractionCoordinates::Clear()
-{
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   fDetected_Position_X.clear();
-   fDetected_Position_Y.clear();
-   fDetected_Position_Z.clear();
-   // Incident particle angles
-   fDetected_Angle_Theta.clear();
-   fDetected_Angle_Phi.clear();
+void TInteractionCoordinates::Clear(){
+  // Incident particle properties (before interactions in the target)
+  // Energy and Time
+  fDetected_Energy.clear();
+  fDetected_Time.clear();
+  // Vertex of interaction
+  fDetected_Position_X.clear();
+  fDetected_Position_Y.clear();
+  fDetected_Position_Z.clear();
+  // Incident particle angles
+  fDetected_Angle_Theta.clear();
+  fDetected_Angle_Phi.clear();
 }
 
 
 
-void TInteractionCoordinates::Dump() const
-{
-   cout << "XXXXXXXXXXXXX Interaction coordinates XXXXXXXXXXXXXXXX" << endl;
+void TInteractionCoordinates::Dump() const{
+  cout << "XXXXXXXXXXXXX Interaction coordinates XXXXXXXXXXXXXXXX" << endl;
 
-   cout << "Interaction position : " << endl;
-   cout << "\tX : " << fDetected_Position_X[0] << endl;  
-   cout << "\tY : " << fDetected_Position_Y[0] << endl;  
-   cout << "\tZ : " << fDetected_Position_Z[0] << endl;  
-   cout << "Incident particle angles : " << endl;
-   cout << "\tTheta : " << fDetected_Angle_Theta[0] << endl;
-   cout << "\tPhi   : " << fDetected_Angle_Phi[0] << endl;
+  unsigned int size = fDetected_Energy.size();
+  for(unsigned int i = 0 ; i < size ; i++){
+    cout << " Interaction " << i << " of " << size << endl; 
+    cout << "Energy And Time : " << endl;
+    cout << "Energy : " << fDetected_Energy[i] << endl;
+    cout << "Time : " << fDetected_Time[i] << endl;
+    cout << "Interaction position : " << endl;
+    cout << "\tX : " << fDetected_Position_X[i] << endl;  
+    cout << "\tY : " << fDetected_Position_Y[i] << endl;  
+    cout << "\tZ : " << fDetected_Position_Z[i] << endl;  
+    cout << "Incident particle angles : " << endl;
+    cout << "\tTheta : " << fDetected_Angle_Theta[i] << endl;
+    cout << "\tPhi   : " << fDetected_Angle_Phi[i] << endl;
+  }
 }

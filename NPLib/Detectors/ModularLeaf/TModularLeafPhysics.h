@@ -24,15 +24,22 @@
  
 //   STL
 #include <vector>
-using namespace std ;
 
 //   ROOT
 #include "TObject.h"
+#include "TVector2.h"
+#include "TVector3.h"
 
 //   NPL
+#include "TModularLeafSpectra.h"
 #include "NPVDetector.h"
 #include "NPCalibrationManager.h"
 #include "NPInputParser.h"
+
+using namespace std ;
+
+// Forward Declaration
+class TModularLeafSpectra;
 
 class TModularLeafPhysics : public TObject, public NPL::VDetector{
    public:   //   Constructor and Destructor
@@ -45,14 +52,13 @@ class TModularLeafPhysics : public TObject, public NPL::VDetector{
    
    private:   //   Raw and Calibrated Data
       double m_DefaultValue; // !
-      std::map<std::string,double> m_CalibratedData;
-      std::map<std::string,short> m_RawData;
-
+      std::map<std::string, double> m_CalibratedData;
+      std::map<std::string, short> m_RawData; 
+       
    public:   //   inherrited from VDetector
       //   Read stream at ConfigFile to pick-up parameters of detector (Position,...) using Token
       void ReadConfiguration(NPL::InputParser);
       
-
       //   Add Parameter to the CalibrationManger
       void AddParameterToCalibrationManager();      
 
@@ -79,21 +85,34 @@ class TModularLeafPhysics : public TObject, public NPL::VDetector{
       void BuildOnlinePhysicalEvent()  {BuildPhysicalEvent();};
 
       // Give and external TModularLeafData object to TModularLeafPhysics. Needed for online analysis for example.
-      void SetRawDataPointer(void* rawDataPointer) {}
+      // Retrieve raw and pre-treated data
 
       //   Those two method all to clear the Event Physics or Data
       void ClearEventPhysics() {Clear();}      
-      void ClearEventData() ;      
+      void ClearEventData();      
+
+      // Needed for Online spectra
+      void InitSpectra();
+      void FillSpectra();
+      void CheckSpectra();
+      void ClearSpectra();
+      void WriteSpectra() ;
+      map< string , TH1*> GetSpectra() ;
+
+    private: // Spectra Class
+        TModularLeafSpectra* m_Spectra;//!
 
    private:   // Data not writted in the tree
-      int                   NumberOfDetector ;//!
-      //TModularLeafData*         EventData ;//!
-      TModularLeafPhysics*      EventPhysics ;//!
-
+      int                       m_NumberOfDetector ;//!
+      TModularLeafPhysics*      m_EventPhysics ;//!
+      std::vector<std::string>  m_leafs;//!
+      std::vector<std::string>  m_leafs_X;//!
+      std::vector<std::string>  m_leafs_Y;//!
 
    public:
-      inline short GetRawValue(std::string label){return m_RawData[label];};
-      inline double GetCalibratedValue(std::string label){return m_CalibratedData[label];};
+      inline double GetCalibratedValue(const std::string& label){return m_CalibratedData[label];};
+      inline void SetModularData(const string& lbl, const Short_t& val){m_RawData[lbl] = val;};
+
    public: // Static constructor to be passed to the Detector Factory
      static NPL::VDetector* Construct();
      ClassDef(TModularLeafPhysics,1)  // ModularLeafPhysics structure

@@ -23,8 +23,12 @@
 
 // NPTOOL headers
 #include "NPNucleus.h"
+#include "NPCore.h"
 using namespace NPL;
 
+// ROOT headers
+#include "TPRegexp.h"
+#include "TString.h"
 
 // C++ headers
 #include <iostream>
@@ -37,6 +41,9 @@ using namespace NPL;
 using namespace std;
 
 
+
+
+ClassImp(Nucleus)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 Nucleus::Nucleus(){
@@ -57,6 +64,119 @@ Nucleus::Nucleus(string isotope){
   SetUp(isotope);
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+Nucleus::Nucleus(string isotope, const string& path){
+  SetUp(isotope);
+  LoadENSDF(isotope, path);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+Nucleus::Nucleus(string name, vector<string> subpart, double binding,double Ex, string SpinParity, double Spin, string Parity, double LifeTime){
+  fName= name;
+  fCharge= 0;
+  fAtomicWeight= 0;
+  unsigned int size = subpart.size();
+  double Mass = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Nucleus N = Nucleus(subpart[i]);
+    Mass+= N.Mass();
+    fAtomicWeight+= N.GetA();
+    fCharge+= N.GetZ(); 
+  }
+
+  Mass-=binding;
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+
+  fExcitationEnergy=Ex;
+  fSpinParity= SpinParity;
+  fSpin= Spin;
+  fParity= Parity;
+  fLifeTime = LifeTime;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
+void Nucleus::LoadENSDF(const string& isotope, const string& pathENSDF)
+{
+   // open file to read                                                         
+   TString fileName = Form("%s/AR_%s.ens", pathENSDF.c_str(), isotope.c_str()); 
+   ifstream inputFile(fileName.Data()); 
+   if (!inputFile) cout << "Problem opening file " << fileName << endl;         
+                                                                                
+   // read file                                                                 
+   TString lineFile;                                                            
+   TString isComment, isWhitespace, isLevel;                                    
+   TString energy, uncertainty;                                                 
+   TString tempIsotopeName = isotope;                                         
+   // calculate size of file name                                               
+   Int_t   size = tempIsotopeName.Length();                                     
+   // get position of first '_' in file name                                    
+   Int_t   pos  = tempIsotopeName.First("_");                                   
+   if (pos != -1) {                                                             
+      // remove everything after first '_'                                      
+      tempIsotopeName.Remove(pos, size-pos);                                    
+      // size now corresponds to the length of the isotope name                 
+      size = tempIsotopeName.Length();                                          
+   }                                                                            
+   // find length of mass number                                                
+//   TString tempIsotopeName = pathENSDF;                                       
+   TPRegexp("\\D").Substitute(tempIsotopeName, "", "g"); // suppress all alpha characters
+   Int_t   nbDigit = tempIsotopeName.Length();                                  
+#ifdef DEBUG                                                                    
+   cout << "size, nbDigit:\t" << size << "\t" << nbDigit << endl;               
+#endif                                                                          
+   while (!inputFile.eof()) {                                                   
+      lineFile.ReadLine(inputFile);                                             
+      isWhitespace = lineFile(size,1);                                          
+      isComment    = lineFile(size+1,1);                                        
+      isLevel      = lineFile(size+2,1);                                        
+      if (size == 3  &&  nbDigit == 2) {     // case of a few isotopes, e.g. 12C, 10B, ...
+         isComment    = lineFile(size+2,1);                                     
+         isLevel      = lineFile(size+3,1);                                     
+      }                                                                         
+      if (size == 2  &&  nbDigit == 1) {     // case of a few isotopes, e.g. 1H ...
+         isComment    = lineFile(size+2,1);                                     
+         isLevel      = lineFile(size+3,1);                                     
+      }                                                                         
+#ifdef DEBUG                                                                    
+      cout << "isComment, isLevel:\t" << isComment << "\t" << isLevel << endl;  
+#endif                                                                          
+      if (isWhitespace.IsWhitespace() && isComment.CompareTo("c") && !isLevel.CompareTo("L")) {
+         energy      = lineFile(size+4,10);                                     
+         energy      = energy.Strip();      // remove trailing white spaces     
+         uncertainty = lineFile(size+14,2);                                     
+         if (size == 3  &&  nbDigit == 2) {                                     
+            energy      = lineFile(size+5,10);                                  
+            energy      = energy.Strip();      // remove trailing white spaces  
+            uncertainty = lineFile(size+15,2);                                  
+         }                                                                      
+         if (size == 2  &&  nbDigit == 1) {     // case of a few isotopes, e.g. 1H ...
+            energy      = lineFile(size+6,10);                                  
+            energy      = energy.Strip();      // remove trailing white spaces  
+            uncertainty = lineFile(size+16,2);                                  
+         }                                                                      
+         if (energy.IsFloat()) {                                                
+            // energy set to MeV units                                          
+            fLevelEnergy.push_back(energy.Atof()*1e-3);                         
+            // transform uncertainty to MeV units                               
+            UInt_t nElementsAfterComma = 0;                                     
+            if (energy.First(".") > 0) nElementsAfterComma = energy.Length() - energy.First(".") - 1;
+            Double_t uncertain = uncertainty.Atof();                            
+         uncertain /= TMath::Power(10, (Int_t)nElementsAfterComma);          
+            fLevelEnergyUncertainty.push_back(uncertain*1e-3);                  
+         }                                                                      
+      }                                                                         
+   }                                                                            
+                                                                                
+   // close input file                                                          
+   inputFile.close();                                                           
+                                                                                
+   // sort level energies                                                       
+   // !! use with caution since if uncertainty are defined they are not sorted accordingly to the 
+   // energies                                                                  
+   sort(fLevelEnergy.begin(), fLevelEnergy.end());
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo...... 
 void Nucleus::SetUp(string isotope){
   //----------- Constructor Using nubtab12.asc by name----------
   // open the file to read and check if it is open
@@ -376,6 +496,97 @@ double Nucleus::GetThetaCM(double EnergyLab, double ThetaLab, double PhiLab, dou
     
     return ThetaCM;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<string>& v){
+  // Define the mass as the sum of the mass of the particle named in v
+  unsigned int size = v.size();
+  vector<NPL::Nucleus> N;
+  for(unsigned int i = 0 ; i < size ; i++)
+    N.push_back(NPL::Nucleus(v[i]));
+
+  DefineMassByThreshold(N);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::DefineMassByThreshold(const vector<NPL::Nucleus>& N){
+  // Define the mass as the sum of the mass of the particle defined in N
+  unsigned int size = N.size();
+  double Mass = 0;
+  unsigned int A = 0;
+  unsigned int Z = 0;
+  for(unsigned int i = 0 ; i < size ; i++){
+    Mass+= N[i].Mass();
+    A+= N[i].GetA();
+    Z+= N[i].GetZ(); 
+  }
+  // Check the threshold make any sense (same A, same Z):
+  if(A!=GetA()|| Z!=GetZ()){
+    NPL::SendWarning("NPL::Nucleus","Mass and charge is not conserved in DefineMassByThreshold! Doing no change to nucleus");
+    return;
+  } 
+
+  SetExcitationEnergy(0);
+  SetMassExcess( 1000*(Mass-fAtomicWeight*amu_c2 + fCharge*electron_mass_c2));
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXn(unsigned int X) const {
+ Nucleus N(GetZ(),GetA()-X);
+  return N.Mass()+X*neutron_mass_c2-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSXp(unsigned int X) const {
+ Nucleus N(GetZ()-X,GetA()-X);
+  return N.Mass()+X*proton_mass_c2-Mass();
+  }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSn() const {
+  return GetSXn(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSp() const {
+  return GetSXp(1);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2n() const {
+  return GetSXn(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS2p() const {
+  return GetSXp(2);
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSt() const {
+ Nucleus N(GetZ()-1,GetA()-3);
+ Nucleus A(1,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetS3He() const {
+ Nucleus N(GetZ()-2,GetA()-3);
+ Nucleus A(2,3);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+double Nucleus::GetSa() const {
+ Nucleus N(GetZ()-2,GetA()-4);
+ Nucleus A(2,4);
+  return N.Mass()+A.Mass()-Mass();
+  }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Nucleus::PrintThreshold() const {
+   cout << GetName() << " thresholds : " << endl;
+   cout << "  Sn   : "  << GetSn()    << " MeV" << endl;
+   cout << "  Sp   : "  << GetSp()    << " MeV" << endl;
+   cout << "  S2n  : "  << GetS2n()   << " MeV" << endl;
+   cout << "  S2p  : "  << GetS2p()   << " MeV" << endl;
+   cout << "  St   : "  << GetSt()    << " MeV" << endl;
+   cout << "  S3He : "  << GetS3He()  << " MeV" << endl;
+   cout << "  Sa   : "  << GetSa()    << " MeV" << endl;
+  }
 
 
 

@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 include(CheckCXXCompilerFlag)
 project(NPLib CXX)
 set(CMAKE_BUILD_TYPE Release)
+
 # Setting the policy to match Cmake version
 cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 
@@ -15,11 +16,8 @@ set(NPLIB_VERSION_MINOR 2)
 # Change any of the detector in NPA
 set(NPLIB_VERSION_DETA 45)
 
-configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
-set(DETLIST ${ETLIST})
-
 #activate Multithreading (on by default)
-if(NOT DEFINED NPMULTITHREADING) 
+if(NOT DEFINED NPMULTITHREADING)
   set(NPMULTITHREADING 1)
   else()
   set(NPMULTITHREADING ${NPMULTITHREADING})
@@ -33,7 +31,8 @@ if(NPMULTITHREADING)
  message("Building application with no MutilThreading Support")
 endif()
 
-
+configure_file(Core/NPLibVersion.h.in Core/NPLibVersion.h @ONLY)
+set(DETLIST ${ETLIST})
 
 string(COMPARE EQUAL "${DETLIST}" "" rdet)
 if(rdet)
@@ -73,11 +72,12 @@ ENDMACRO()
 # Add include directories to all target
 include_directories("Core/")
 include_directories("Physics/")
+include_directories("TrackReconstruction/")
 include_directories("Online/")
 
 # Call the macro
 subdirlist(SUB_DIRECTORY ${CMAKE_BINARY_DIR})
-set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics Calibration Online Utility)
+set(SUB_DIRECTORY ${SUB_DIRECTORY} Core Physics TrackReconstruction Calibration Online Utility)
 # Add each sub folder to the project
 set(TARGET_LIST "")
 foreach(subdir ${SUB_DIRECTORY})

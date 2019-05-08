@@ -348,18 +348,10 @@ void Plastic::ReadSensitive(const G4Event* event){
   std::map<G4int, G4int*>::iterator DetectorNumber_itr;
   std::map<G4int, G4double*>::iterator Energy_itr;
   std::map<G4int, G4double*>::iterator Time_itr;
-  std::map<G4int, G4double*>::iterator Pos_X_itr;
-  std::map<G4int, G4double*>::iterator Pos_Y_itr;
-  std::map<G4int, G4double*>::iterator Pos_Z_itr;
-  std::map<G4int, G4double*>::iterator Angle_Theta_itr;
 
   NPS::HitsMap<G4int>* DetectorNumberHitMap;
   NPS::HitsMap<G4double>* EnergyHitMap;
   NPS::HitsMap<G4double>* TimeHitMap;
-  NPS::HitsMap<G4double>* PosXHitMap;
-  NPS::HitsMap<G4double>* PosYHitMap;
-  NPS::HitsMap<G4double>* PosZHitMap;
-  NPS::HitsMap<G4double>* AngleThetaHitMap;
 
   //////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////
@@ -367,60 +359,42 @@ void Plastic::ReadSensitive(const G4Event* event){
   // Read the Scorer associate to the Silicon Strip
 
   //Detector Number
-  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/PlasticNumber")     ;
-  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID))          ;
-  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin()                                               ;
+  static string collectionName;
+  collectionName = "PlasticScorer/PlasticNumber";
+  G4int StripDetCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  DetectorNumberHitMap = (NPS::HitsMap<G4int>*)(event->GetHCofThisEvent()->GetHC(StripDetCollectionID));
+  DetectorNumber_itr =  DetectorNumberHitMap->GetMap()->begin();
 
   //Energy
-  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/Energy")      ;
-  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID))           ;
-  Energy_itr = EnergyHitMap->GetMap()->begin()                                                                ;
+  collectionName = "PlasticScorer/Energy";
+  G4int StripEnergyCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  EnergyHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripEnergyCollectionID));
+  Energy_itr = EnergyHitMap->GetMap()->begin();
 
   //Time of Flight
-  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/Time")          ;
-  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID))               ;
-  Time_itr = TimeHitMap->GetMap()->begin()                                                                    ;
+  collectionName = "PlasticScorer/Time";
+  G4int StripTimeCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName);
+  TimeHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(StripTimeCollectionID));
+  Time_itr = TimeHitMap->GetMap()->begin();
 
-  //Interaction Coordinate X
-  G4int InterCoordXCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/InterCoordX");
-  PosXHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordXCollectionID));
-  Pos_X_itr = PosXHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Y
-  G4int InterCoordYCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/InterCoordY");
-  PosYHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordYCollectionID));
-  Pos_Y_itr = PosYHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Z
-  G4int InterCoordZCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/InterCoordZ");
-  PosZHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordZCollectionID));
-  Pos_Z_itr = PosZHitMap->GetMap()->begin();
-
-  //Interaction Coordinate Theta
-  G4int InterCoordThetaCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("PlasticScorer/InterCoordTheta");
-  AngleThetaHitMap = (NPS::HitsMap<G4double>*)(event->GetHCofThisEvent()->GetHC(InterCoordThetaCollectionID));
-  Angle_Theta_itr = AngleThetaHitMap->GetMap()->begin();
-
-  G4int sizeN = DetectorNumberHitMap->entries()    ;
-  G4int sizeE = EnergyHitMap->entries()          ;
-  G4int sizeT = TimeHitMap->entries()          ;
+  G4int sizeN = DetectorNumberHitMap->entries();
+  G4int sizeE = EnergyHitMap->entries();
+  G4int sizeT = TimeHitMap->entries();
   vector<double> energy;
-    vector<double> time;
-    vector<int>    det;
-
-
+  vector<double> time;
+  vector<int>    det;
 
   // Loop on Plastic Number
   for (G4int l = 0 ; l < sizeN ; l++) {
-    G4int N     =      *(DetectorNumber_itr->second)    ;
-    G4int NTrackID  =   DetectorNumber_itr->first - N  ;
+    G4int N     =      *(DetectorNumber_itr->second);
+    G4int NTrackID  =   DetectorNumber_itr->first - N;
       if (N > 0) {
       det.push_back(N);
       //  Energy
       Energy_itr = EnergyHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeE ; h++) {
-        G4int ETrackID  =   Energy_itr->first  - N      ;
-        G4double E     = *(Energy_itr->second)         ;
+        G4int ETrackID  =   Energy_itr->first - N;
+        G4double E     = *(Energy_itr->second);
         if (ETrackID == NTrackID) {
           energy.push_back(RandGauss::shoot(E, E*ResoEnergy/100./2.35))    ;
         }
@@ -431,58 +405,13 @@ void Plastic::ReadSensitive(const G4Event* event){
       //  Time
       Time_itr = TimeHitMap->GetMap()->begin();
       for (G4int h = 0 ; h < sizeT ; h++) {
-        G4int TTrackID  =   Time_itr->first   - N    ;
-        G4double T     = *(Time_itr->second)      ;
-        if (TTrackID == NTrackID) {
-          time.push_back(RandGauss::shoot(T, ResoTime)) ;
-        }
+        G4int TTrackID  =   Time_itr->first - N;
+        G4double T     = *(Time_itr->second);
+      if (TTrackID == NTrackID) {
+          time.push_back(RandGauss::shoot(T, ResoTime));
+      } 
         Time_itr++;
       }
-
-      // Pos X
-      Pos_X_itr = PosXHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosXHitMap->entries() ; h++) {
-        G4int PosXTrackID =   Pos_X_itr->first   - N  ;
-        G4double PosX     = *(Pos_X_itr->second)      ;
-        if (PosXTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionX(PosX) ;
-        }
-        Pos_X_itr++;
-      }
-
-      // Pos Y
-      Pos_Y_itr = PosYHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosYHitMap->entries() ; h++) {
-        G4int PosYTrackID =   Pos_Y_itr->first   - N  ;
-        G4double PosY     = *(Pos_Y_itr->second)      ;
-        if (PosYTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionY(PosY) ;
-        }
-        Pos_Y_itr++;
-      }
-
-      // Pos Z
-      Pos_Z_itr = PosZHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < PosZHitMap->entries() ; h++) {
-        G4int PosZTrackID =   Pos_Z_itr->first   - N  ;
-        G4double PosZ     = *(Pos_Z_itr->second)      ;
-        if (PosZTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedPositionZ(PosZ) ;
-        }
-        Pos_Z_itr++;
-      }
-
-      // Angle Theta
-      Angle_Theta_itr = AngleThetaHitMap->GetMap()->begin();
-      for (G4int h = 0 ; h < AngleThetaHitMap->entries() ; h++) {
-        G4int AngleThetaTrackID =   Angle_Theta_itr->first   - N  ;
-        G4double Theta     = *(Angle_Theta_itr->second)      ;
-        if (AngleThetaTrackID == NTrackID) {
-          ms_InterCoord->SetDetectedAngleTheta(Theta) ;
-        }
-        Angle_Theta_itr++;
-      }
-
     }
     DetectorNumber_itr++;
   }
@@ -493,14 +422,9 @@ void Plastic::ReadSensitive(const G4Event* event){
 
 
   // clear map for next event
-  TimeHitMap->clear()   ;
-  DetectorNumberHitMap->clear()   ;
-  EnergyHitMap->clear()    ;
-  PosXHitMap->clear() ;
-  PosYHitMap->clear() ;
-  PosZHitMap->clear() ;
-  AngleThetaHitMap->clear();
-
+  TimeHitMap->clear();
+  DetectorNumberHitMap->clear();
+  EnergyHitMap->clear();
 }
 
 
@@ -510,24 +434,14 @@ void Plastic::InitializeScorers() {
   m_PlasticScorer = CheckScorer("PlasticScorer",already_exist) ;
 
   if(already_exist) return ;
-
-  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0) ;
-  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0)                   ;
-  G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0)                         ;
-  G4VPrimitiveScorer* InteractionCoordinatesX  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesX("InterCoordX","Plastic", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesY  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesY("InterCoordY","Plastic", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesZ  			= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesZ("InterCoordZ","Plastic", 0);
-  G4VPrimitiveScorer* InteractionCoordinatesTheta  		= new OBSOLETEGENERALSCORERS::PSInteractionCoordinatesAngleTheta("InterCoordTheta","Plastic", 0);
+  G4VPrimitiveScorer* DetNbr = new PSDetectorNumber("PlasticNumber","Plastic", 0);
+  G4VPrimitiveScorer* Energy = new PSEnergy("Energy","Plastic", 0);
+  G4VPrimitiveScorer* Time   = new PSTOF("Time","Plastic", 0);
   //and register it to the multifunctionnal detector
-  m_PlasticScorer->RegisterPrimitive(DetNbr)                         ;
-  m_PlasticScorer->RegisterPrimitive(Energy)                         ;
-  m_PlasticScorer->RegisterPrimitive(Time)                            ;
-  m_PlasticScorer->RegisterPrimitive(InteractionCoordinatesX);
-  m_PlasticScorer->RegisterPrimitive(InteractionCoordinatesY);
-  m_PlasticScorer->RegisterPrimitive(InteractionCoordinatesZ);
-  m_PlasticScorer->RegisterPrimitive(InteractionCoordinatesTheta);
-  G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer) ;
-
+  m_PlasticScorer->RegisterPrimitive(DetNbr);
+  m_PlasticScorer->RegisterPrimitive(Energy);
+  m_PlasticScorer->RegisterPrimitive(Time);
+  G4SDManager::GetSDMpointer()->AddNewDetector(m_PlasticScorer);
 }
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////

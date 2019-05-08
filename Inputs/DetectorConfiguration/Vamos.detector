@@ -1,0 +1,98 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 5 micrometer
+ RADIUS= 20 mm
+ MATERIAL= CD2 
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= 0 mm
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Vamos Configuration
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Vamos
+ R= 1 m
+ Theta= 0 deg 
+
+Vamos DC
+ Z= 60 mm
+ Gas= iC4H10
+ Pressure= 0.01 bar  
+ Temperature= 295 kelvin
+ 
+Vamos DC
+ Z= 200 mm
+ Gas= iC4H10
+ Pressure= 0.01 bar  
+ Temperature= 295 kelvin 
+
+Vamos BeamCatcher 
+ Material= BC400 
+ Width= 30 mm
+ Length= 80 mm
+ Thickness= 30 mm
+ Pos= 0 0 600 mm
+
+Vamos MWPPAC
+ Z= 750 mm
+ Gas= iC4H10
+ Pressure= 0.01 bar
+ Temperature= 295 kelvin
+
+Vamos DC
+ Z= 940 mm
+ Gas= iC4H10
+ Pressure= 0.01 bar
+ Temperature= 295 kelvin
+
+Vamos DC
+ Z= 1060 mm
+ Gas= iC4H10
+ Pressure= 0.01 bar
+ Temperature= 295 kelvin
+
+
+Vamos IC 
+ Z= 1200 mm 
+ Thickness= 50 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+
+Vamos IC 
+ Z= 1250 mm 
+ Thickness= 50 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+
+Vamos IC 
+ Z= 1300 mm 
+ Thickness= 50 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+
+Vamos IC 
+ Z= 1375 mm 
+ Thickness= 100 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+
+Vamos IC 
+ Z= 1525 mm 
+ Thickness= 200 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+
+Vamos IC 
+ Z= 1725 mm 
+ Thickness= 200 mm 
+ Gas= CF4
+ Pressure= 0.2 bar
+ Temperature= 295 kelvin
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

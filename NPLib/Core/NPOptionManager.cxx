@@ -72,10 +72,12 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
   fVerboseLevel               = 1;
   fNumberOfEntryToAnalyse     = -1;
 	fFirstEntryToAnalyse        = 0;
+  fSpectraServerPort          = 9092;
   fDisableAllBranchOption = false;
   fInputPhysicalTreeOption = false;
   fGenerateHistoOption = false ;
   fPROOFMode = false;
+  fCircularTree = false;
   fOnline = false;
   fG4BatchMode = false;
 #ifdef __linux__
@@ -129,6 +131,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
 
     else if (argument == "--verbose" && argc >= i + 1)            fVerboseLevel = atoi(argv[++i]) ;
 
+    else if (argument == "-P"  && argc >= i + 1)                  fSpectraServerPort = atoi(argv[++i]) ;
+
     else if (argument == "--disable-branch")                      fDisableAllBranchOption = true ;
 
     else if (argument == "--input-physical")                      fInputPhysicalTreeOption = true ;
@@ -158,6 +162,8 @@ void NPOptionManager::ReadTheInputArgument(int argc, char** argv){
     else if (argument == "--last-any")                            fLastAnyFile = true ;
 
     else if (argument == "--online")                              {fOnline = true ;fGenerateHistoOption=true;}
+
+    else if (argument == "--circular")                            {fCircularTree = true;}
 
 
     //else ;
@@ -403,11 +409,13 @@ void NPOptionManager::DisplayHelp(){
   std::cout << "\t--input-physical -IP\t\tConsider the Input file is containing Physics Class." << std::endl  ;
   std::cout << "\t-L <arg>\t\t\tLimit the number of events to be analysed to arg" << std::endl ;
   std::cout << "\t-F <arg>\t\t\tSet the first event to analyse to arg (analysis goes from F -> L+F)" << std::endl ;
+  std::cout << "\t-P <arg>\t\t\tSet the Spectra Server Port for online analyis" << std::endl ;
   std::cout << "\t--last-sim\t\t\tIgnore the list of Run to treat if any and analysed the last simulated file" << std::endl ;
   std::cout << "\t--last-phy\t\t\tIgnore the list of Run to treat if any and analysed the last Physics file" << std::endl ;
   std::cout << "\t--last-res\t\t\tIgnore the list of Run to treat if any and analysed the last Result file" << std::endl ;
   std::cout << "\t--last-any\t\t\tIgnore the list of Run to treat if any and analysed the last generated root file" << std::endl ;
   std::cout << "\t--online  \t\t\tStart the spectra server" << std::endl ;
+  std::cout << "\t--circular \t\t\tSet the output tree a circular one" << std::endl ;
   std::cout << std::endl << "NPSimulation only:"<<std::endl;
   std::cout << "\t-M <arg>\t\t\tExecute Geant4 macro <arg> at startup" << std::endl ;
   std::cout << "\t-B <arg>\t\t\tExecute in batch mode (no ui) with Geant4 macro <arg> at startup" << std::endl ;

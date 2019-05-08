@@ -287,37 +287,22 @@ void ForwardArray::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void ForwardArray::ReadSensitive(const G4Event* event){
+void ForwardArray::ReadSensitive(const G4Event*){
     m_Event->Clear();
     
     ///////////
-    // Calorimeter scorer
-    NPS::HitsMap<G4double*>* CaloHitMap;
-    std::map<G4int, G4double**>::iterator Calo_itr;
-    
-    G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("ForwardArrayScorer/Calorimeter");
-    CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-    
-    // Loop on the Calo map
-    for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-        
-        G4double* Info = *(Calo_itr->second);
-        double Energy = RandGauss::shoot(Info[0],ForwardArray_NS::ResoEnergy);
+    CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_ForwardArrayScorer->GetPrimitive(0);
+
+    unsigned int size = Scorer->GetMult(); 
+    for(unsigned int i = 0 ; i < size ; i++){
+        double Energy = RandGauss::shoot(Scorer->GetEnergy(i),ForwardArray_NS::ResoEnergy);
         if(Energy>ForwardArray_NS::EnergyThreshold){
-            double Time = RandGauss::shoot(Info[1],ForwardArray_NS::ResoTime);
-            int DetectorNbr = (int) Info[7];
+            double Time = RandGauss::shoot(Scorer->GetTime(i),ForwardArray_NS::ResoTime);
+            int DetectorNbr = Scorer->GetLevel(i)[0];
             m_Event->SetEnergy(DetectorNbr,Energy);
             m_Event->SetTime(DetectorNbr,Time);
-            
-            ms_InterCoord->SetDetectedPositionX(Info[2]) ;
-            ms_InterCoord->SetDetectedPositionY(Info[3]) ;
-            ms_InterCoord->SetDetectedPositionZ(Info[4]) ;
-            ms_InterCoord->SetDetectedAngleTheta(Info[5]/deg) ;
-            ms_InterCoord->SetDetectedAnglePhi(Info[6]/deg) ;
         }
     }
-    // clear map for next event
-    CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -332,7 +317,7 @@ void ForwardArray::InitializeScorers() {
     
     // Otherwise the scorer is initialised
     vector<int> level; level.push_back(0);
-    G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_CalorimeterWithInteraction("Calorimeter",level, 0) ;
+    G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
     //and register it to the multifunctionnal detector
     m_ForwardArrayScorer->RegisterPrimitive(Calorimeter);
     G4SDManager::GetSDMpointer()->AddNewDetector(m_ForwardArrayScorer) ;

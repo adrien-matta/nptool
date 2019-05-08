@@ -45,7 +45,7 @@ VSpectra::VSpectra(){
 ////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, string family){
   // create histo
-  TH1 *hist = new TH1D(name.c_str(), title.c_str(), nbinsx, xlow, xup);
+  TH1 *hist = new TH1F(name.c_str(), title.c_str(), nbinsx, xlow, xup);
 
   string index= family+"/"+name;
 
@@ -61,7 +61,7 @@ TH1* VSpectra::AddHisto1D(string name, string title, Int_t nbinsx, Double_t xlow
 ////////////////////////////////////////////////////////////////////////////////
 TH1* VSpectra::AddHisto2D(string name, string title, Int_t nbinsx, Double_t xlow, Double_t xup, Int_t nbinsy, Double_t ylow, Double_t yup, string family){
   // create histo
-  TH1 *hist = new TH2D(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
+  TH1 *hist = new TH2F(name.c_str(), title.c_str(), nbinsx, xlow, xup, nbinsy, ylow, yup);
 
   string index= family+"/"+name;
 

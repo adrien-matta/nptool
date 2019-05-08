@@ -253,7 +253,8 @@ G4bool PS_Silicon_Rectangle::ProcessHits(G4Step* aStep, G4TouchableHistory*){
     it= EvtMap->GetMap()->find(m_Index);
     if(it!=EvtMap->GetMap()->end()){
         G4double* dummy = *(it->second);
-        Infos[0]+=dummy[0]; 
+        Infos[0]+=dummy[0];
+        delete dummy;
     }
     EvtMap->set(m_Index, Infos);
     

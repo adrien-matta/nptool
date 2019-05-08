@@ -41,7 +41,6 @@ endif()
 
 # If compiler is GCC active the color diagnostic
 if(${CMAKE_CXX_COMPILER_ID} MATCHES ".*GNU.*")
-set(CMAKE_CXX_FLAGS "-march=native ${CMAKE_CXX_FLAGS} ")
 execute_process(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion
                 OUTPUT_VARIABLE GCC_VERSION)
   if (GCC_VERSION VERSION_GREATER 4.9 OR GCC_VERSION VERSION_EQUAL 4.9)

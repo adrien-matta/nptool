@@ -44,6 +44,8 @@
 #include "G4EmStandardPhysics.hh"
 #include "G4EmLivermorePhysics.hh"
 #include "G4EmPenelopePhysics.hh"
+#include "G4EmStandardPhysics_option1.hh"
+#include "G4EmStandardPhysics_option2.hh"
 #include "G4EmStandardPhysics_option3.hh"
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4EmExtraPhysics.hh"
@@ -84,6 +86,9 @@ class PhysicsList: public G4VUserPhysicsList{
     void AddParametrisation();
     void AddPackage(const G4String& name);
     void BiasCrossSectionByFactor(double factor);
+    void AddIonGasModels();
+    void AddPAIModel(const G4String& modname);
+    void NewPAIModel(const G4ParticleDefinition* part, const G4String& modname,const G4String& procname);
 
   private:
     std::map<std::string,G4VPhysicsConstructor*>  m_PhysList;
@@ -96,7 +101,8 @@ class PhysicsList: public G4VUserPhysicsList{
     G4VPhysicsConstructor* emPhysicsList;
     G4VPhysicsConstructor* decay_List;
     G4VPhysicsConstructor* radioactiveDecay_List;
- 			  
+    G4EmConfigurator* emConfig;
+
   private: // Physics option
     std::string m_EmList;
     double m_IonBinaryCascadePhysics;
@@ -105,11 +111,15 @@ class PhysicsList: public G4VUserPhysicsList{
     double m_HadronElasticPhysics;
     double m_HadronInelasticPhysics;
     double m_StoppingPhysics;
-    double m_OpticalPhysics; 
+    double m_OpticalPhysics;
     double m_DriftElectronPhysics;
     double m_HadronPhysicsQGSP_BIC_HP;
     double m_HadronPhysicsINCLXX;
-    double m_Decay; 
+    double m_Decay;
+    double m_IonGasModels;
+    double m_pai;
+    double m_pai_photon;
+  	double m_Menate_R;
 };
 
 

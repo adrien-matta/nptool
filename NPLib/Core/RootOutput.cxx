@@ -119,11 +119,17 @@ RootOutput::RootOutput(std::string fileNameBase, std::string treeNameBase){
   }
 
   pRootTree = new TTree(treeNameBase.c_str(), "Data created / analysed with the NPTool package");
+  pRootFile->SetCompressionLevel(1);
   pRootList = new TList();
 
   // Init TAsciiFile objects
   InitAsciiFiles();
   gDirectory->cd(currentPath->GetPath()); 
+
+  if(NPOptionManager::getInstance()->GetCircularTree()){
+    cout << "Information: Output tree is set to circular mode" << endl;
+    pRootTree->SetCircular(1000); 
+  }
 }
 
 

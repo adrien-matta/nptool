@@ -22,7 +22,7 @@
 // G4 headers
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
-#include "G4SDManager.hh"
+//#include "G4SDManager.hh"
 #include "G4RunManager.hh"
 #include "G4Trajectory.hh"
 #include "G4TrajectoryContainer.hh"
@@ -61,10 +61,12 @@ void EventAction::EndOfEventAction(const G4Event* event){
     m_detector->ReadAllSensitive(event) ;
     static TTree* tree =  RootOutput::getInstance()->GetTree();
     tree->Fill();
-    if(treated%10000==0){
-        tree->AutoSave();
-        RootOutput::getInstance()->GetFile()->SaveSelf(kTRUE);
-    }
+    m_detector->ClearInteractionCoordinates();
+//    if(treated%10000==0){
+//        tree->AutoSave();
+//        RootOutput::getInstance()->GetFile()->SaveSelf(kTRUE);
+//    }
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -104,11 +106,17 @@ void EventAction::ProgressDisplay(){
         else
             sprintf(star,"-------");
         
-        if(treated!=total && mean_rate >=0 && remain>=0 && displayed>1)
+        if(treated!=total && mean_rate >=1000 && remain>=0 && displayed>1)
             printf("\r \033[1;31m %s Progress:  %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate/1000.,timer,star);
         
-        else if(mean_rate >=0 && remain>=0 && displayed>1){
+        else if(mean_rate >=1000 && remain>=0 && displayed>1){
             printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1fk evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate/1000.,timer,star);
+        }
+        else if( treated!=total && mean_rate >= 0 && remain>=0 && displayed>1)
+            printf("\r \033[1;31m %s Progress:  %.1f%% | Rate: %.1f evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate,timer,star);
+        
+        else if(mean_rate >=0 && remain>=0 && displayed>1){
+            printf("\r \033[1;32m %s Progress: %.1f%% | Rate: %.1f evt/s | Remain: %s %s\033[0m        ", star,percent,mean_rate,timer,star);
         }
         fflush(stdout);
         inter=0;

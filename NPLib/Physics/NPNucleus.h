@@ -1,5 +1,5 @@
-#ifndef __NUCLEUS__
-#define __NUCLEUS__
+#ifndef NPNUCLEUS_h
+#define NPNUCLEUS_h
 /*****************************************************************************
  * Copyright (C) 2009-2016    this file is part of the NPTool Project        *
  *                                                                           *
@@ -48,11 +48,14 @@ namespace NPL {
   public:
     Nucleus();
     Nucleus(string isotope);
+    Nucleus(string isotope, const string& pathENSDF);
     Nucleus(int Z, int A);
+    Nucleus(string name, vector<string> subpart, double binding,double Ex=0, string SpinParity="", double Spin=0, string Parity="", double LifeTime=-1);
     ~Nucleus();
   
   public:
     void SetUp(string isotope);
+    void LoadENSDF(const string& isotope, const string& pathENSDF);
     
   private :
     //intrinsic properties
@@ -74,13 +77,16 @@ namespace NPL {
     double fTimeOfFlight;
     double fVelocity;
     TLorentzVector fEnergyImpulsion;
+    // ENSDF list of levels
+    vector<double> fLevelEnergy;             // list of level energies
+    vector<double> fLevelEnergyUncertainty;  // list of level energies uncertainty
     
   public:
-    void  EnergyToBrho(double Q=-1000);
-    void  EnergyToTof();
+    void EnergyToBrho(double Q=-1000);
+    void EnergyToTof();
     void	BetaToVelocity();
-    void  BrhoToEnergy(double Q=-1000);
-    void  BrhoToTof()    {BrhoToEnergy(); EnergyToTof();}
+    void BrhoToEnergy(double Q=-1000);
+    void BrhoToTof()    {BrhoToEnergy(); EnergyToTof();}
     void	TofToEnergy();
     void	TofToBrho()    {TofToEnergy(); EnergyToBrho();}
     void	EnergyToBeta();
@@ -93,23 +99,23 @@ namespace NPL {
     void Extract(string line);
     
     public :
-    void				GetNucleusName();
-    string			GetName()			const				{return fNucleusName;}
-    int			  	GetZ()				const				{return fCharge;}
-    int			  	GetA()				const				{return fAtomicWeight;}
-    double			GetMassExcess()		const		{return fMassExcess;}
-    string   		GetSpinParity()		const		{return fSpinParity;}
-    double			GetSpin()			    const		{return fSpin;}
-    string   		GetParity()			  const		{return fParity;}
-    double      GetLifeTime()     const   {return fLifeTime;}
-    double			GetEnergy()			  const		{return fKineticEnergy;}
-    double			GetBrho()			    const		{return fBrho;}
-    double			GetTimeOfFlight()	const	  {return fTimeOfFlight;}
-    double			GetBeta()			    const		{return fBeta;}
-    double			GetGamma()			  const		{return fGamma;}
-    double			GetVelocity()	   	const		{return fVelocity;}
-    TLorentzVector	GetEnergyImpulsion() const {return fEnergyImpulsion;}
-    double      GetExcitationEnergy() const {return fExcitationEnergy;}
+    void				   GetNucleusName();
+    string			   GetName()			      const	{return fNucleusName;}
+    int			  	   GetZ()				      const	{return fCharge;}
+    int			  	   GetA()				      const	{return fAtomicWeight;}
+    double			   GetMassExcess()		   const {return fMassExcess;}
+    string   		   GetSpinParity()		   const	{return fSpinParity;}
+    double			   GetSpin()			      const	{return fSpin;}
+    string   		   GetParity()			      const	{return fParity;}
+    double           GetLifeTime()           const {return fLifeTime;}
+    double			   GetEnergy()			      const	{return fKineticEnergy;}
+    double			   GetBrho()			      const	{return fBrho;}
+    double			   GetTimeOfFlight()	      const {return fTimeOfFlight;}
+    double			   GetBeta()			      const	{return fBeta;}
+    double			   GetGamma()			      const	{return fGamma;}
+    double			   GetVelocity()	   	   const	{return fVelocity;}
+    TLorentzVector	GetEnergyImpulsion()    const {return fEnergyImpulsion;}
+    double           GetExcitationEnergy()   const {return fExcitationEnergy;}
     void				SetName(const char* name)	{fName = name;}
     void				SetZ(int charge)					{fCharge = charge;}
     void				SetA(int mass)						{fAtomicWeight = mass;}
@@ -117,7 +123,7 @@ namespace NPL {
     void				SetSpinParity(const char* spinparity)	{fSpinParity = spinparity;}
     void				SetSpin(double spin) {fSpin = spin;}
     void				SetParity(const char* parity)	{fParity = parity;}
-    void        SetLifeTime(double LifeTime) {fLifeTime=LifeTime;}
+    void          SetLifeTime(double LifeTime) {fLifeTime=LifeTime;}
     void				SetKineticEnergy(double energy)	{fKineticEnergy = energy; EnergyToBrho(); EnergyToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
     void				SetBrho(double brho) {fBrho = brho; BrhoToEnergy(); BrhoToTof(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
     void				SetTimeOfFlight(double tof) {fTimeOfFlight = tof; TofToEnergy(); TofToBrho(); EnergyToBeta(); BetaToGamma();BetaToVelocity();}
@@ -137,6 +143,33 @@ namespace NPL {
     double      Mass() const {return (fAtomicWeight*amu_c2 + fMassExcess/1000. - fCharge*electron_mass_c2+fExcitationEnergy);}
       double GetBindingEnergy() const {return (fCharge*proton_mass_c2 + (fAtomicWeight-fCharge)*neutron_mass_c2 + fCharge*electron_mass_c2 - fAtomicWeight*amu_c2 - fMassExcess/1000);}
     void        Print() const   ;
+
+  public:
+    void DefineMassByThreshold(const vector<string>& v); // Define the mass as the sum of the mass of the particle named in v
+    void DefineMassByThreshold(const vector<NPL::Nucleus>& N); // Define the mass as the sum of the mass of the particle defined in N
+
+  public:
+    double GetSn() const;
+    double GetSp() const;
+    double GetS2n() const;
+    double GetS2p() const;
+    double GetSt() const;
+    double GetS3He() const;
+    double GetSa() const;
+    double GetSXn(unsigned int X) const;
+    double GetSXp(unsigned int X) const;
+    void   PrintThreshold() const;
+
+
+    // methods for ENSDF
+  public:
+    unsigned int    GetNumberOfLevels()               {return fLevelEnergy.size();}
+    vector<double>  GetLevelEnergyList()              {return fLevelEnergy;}
+    vector<double>  GetLevelEnergyUncertaintyList()   {return fLevelEnergyUncertainty;}
+    double          GetLevelEnergy(Int_t i)           {return fLevelEnergy[i];}
+    double          GetLevelEnergyUncertainty(Int_t i){return fLevelEnergyUncertainty[i];}
+
+    ClassDef(Nucleus,0)
   };
 }
 #endif

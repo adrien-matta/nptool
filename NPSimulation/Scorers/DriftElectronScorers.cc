@@ -67,6 +67,7 @@ G4bool PS_DECathode::ProcessHits(G4Step* aStep, G4TouchableHistory*){
       G4double* dummy = *(it->second);
       Infos[0]+=dummy[0];
       Infos[1]=dummy[1];
+        delete dummy;
     }
 
   EvtMap->set(m_Index, Infos);
@@ -140,7 +141,8 @@ G4bool PS_DEDigitizer::ProcessHits(G4Step* aStep, G4TouchableHistory*){
   Infos[7] = m_DetectorNumber;
 
   m_Index =  aStep->GetTrack()->GetTrackID()  +  m_DetectorNumber*1e6 ;
-  G4String PID = aStep->GetTrack()->GetDefinition()->GetParticleName();
+  static string PID ;
+  PID = aStep->GetTrack()->GetDefinition()->GetParticleName();
 
     if(PID=="driftelectron"){
         Infos[0] = aStep->GetTrack()->GetWeight();

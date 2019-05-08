@@ -46,3 +46,7 @@ Projects/T40/Analysis.h
 Projects/T40/T40.detector
 Projects/T40/19Fdp.reaction
 Projects/T40/configs/*.dat
+Outputs
+Outputs/*
+Outputs/*/*.*
+NPLib/Utility/npspectra_test

@@ -143,7 +143,8 @@ double NPL::InputBlock::GetDouble(std::string Token,std::string default_unit){
   }
 
   if(verbose)
-    std::cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) <<std::endl; 
+    printf(" %s (%s): %.4f\n",Token.c_str(),default_unit.c_str(), val/ApplyUnit(1,default_unit));
+//    std::cout << " " << Token << " (" <<default_unit << "): " << val/ApplyUnit(1,default_unit) <<std::endl; 
 
   return val;        
 }
@@ -155,7 +156,8 @@ int NPL::InputBlock::GetInt(std::string Token){
   iss >> val ;
 
   if(verbose)
-    std::cout << " " << Token << ": " << val <<std::endl;
+    printf(" %s: %d\n",Token.c_str(),val);
+   // std::cout << " " << Token << ": " << val <<std::endl;
 
 
   return val;        
@@ -164,7 +166,8 @@ int NPL::InputBlock::GetInt(std::string Token){
 std::string NPL::InputBlock::GetString(std::string Token){
   int verbose = NPOptionManager::getInstance()->GetVerboseLevel();
   if(verbose)
-    std::cout << " " << Token << ": " << GetValue(Token) << std::endl; 
+    printf(" %s: %s\n",Token.c_str(),GetValue(Token).c_str());
+//    std::cout << " " << Token << ": " << GetValue(Token) << std::endl; 
 
   return GetValue(Token);
 }
@@ -190,10 +193,12 @@ TVector3 NPL::InputBlock::GetTVector3(std::string Token,std::string  default_uni
   }
 
   if(verbose)
-    std::cout << " " << Token << " (" <<default_unit << "): (" 
-      << x/ApplyUnit(1,default_unit) << " ; " 
-      << y/ApplyUnit(1,default_unit) << " ; " 
-      << z/ApplyUnit(1,default_unit) << ")" << std::endl; 
+
+    printf(" %s (%s): (%.4f;%.4f;%.4f)\n",Token.c_str(),default_unit.c_str(), x/ApplyUnit(1,default_unit),y/ApplyUnit(1,default_unit),z/ApplyUnit(1,default_unit));
+//    std::cout << " " << Token << " (" <<default_unit << "): (" 
+//      << x/ApplyUnit(1,default_unit) << " ; " 
+//      << y/ApplyUnit(1,default_unit) << " ; " 
+//      << z/ApplyUnit(1,default_unit) << ")" << std::endl; 
 
 
   return TVector3(x,y,z);        
@@ -211,10 +216,15 @@ std::vector<std::string> NPL::InputBlock::GetVectorString(std::string Token){
 
 
   if(verbose){
-    std::cout << " " << Token << ": ";
+    printf(" %s: ",Token.c_str());
+    //std::cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      std::cout << val[i] << " " ;
-    std::cout << std::endl; 
+      printf("%s ",val[i].c_str());
+      //std::cout << val[i] << " " ;
+    
+    printf("\n");
+    //std::cout << std::endl; 
+    
   }
   return val;        
 }
@@ -247,10 +257,13 @@ std::vector<double> NPL::InputBlock::GetVectorDouble(std::string Token,std::stri
   }
 
   if(verbose){
-    std::cout << " " << Token << " (" << default_unit << "): ";
+    printf(" %s (%s): ",Token.c_str(),default_unit.c_str());
+    //std::cout << " " << Token << " (" << default_unit << "): ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      std::cout << val[i]/ApplyUnit(1,default_unit) << " " ;
-    std::cout << std::endl; 
+      printf("%f ",val[i]/ApplyUnit(1,default_unit) );
+      //std::cout << val[i]/ApplyUnit(1,default_unit) << " " ;
+    printf("\n");
+    //std::cout << std::endl; 
   }
 
   return val;        
@@ -267,9 +280,11 @@ std::vector<int> NPL::InputBlock::GetVectorInt(std::string Token){
     val.push_back(buffer);
 
   if(verbose){
-    std::cout << " " << Token << ": ";
+    printf(" %s: ",Token.c_str());
+    //std::cout << " " << Token << ": ";
     for(unsigned int i = 0 ; i < val.size() ; i++)
-      std::cout << val[i] << " " ;
+        printf(" %d: ",val[i]);
+    //  std::cout << val[i] << " " ;
     std::cout << std::endl; 
   }
 

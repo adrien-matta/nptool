@@ -27,57 +27,69 @@
 
 #include <vector>
 #include "TObject.h"
-
+#include <iostream>
 using namespace std ;
 
 
-class TInteractionCoordinates : public TObject
-{
-private:
-   // Detected particle properties (before interactions in the target)
-   // Vertex of interaction
-   vector<Double_t>   fDetected_Position_X;
-   vector<Double_t>   fDetected_Position_Y;
-   vector<Double_t>   fDetected_Position_Z;
-   // Particle angles
-   vector<Double_t>   fDetected_Angle_Theta;
-   vector<Double_t>   fDetected_Angle_Phi;
+class TInteractionCoordinates : public TObject{
+  private:
+    // Detected particle properties (before interactions in the target)
+    // Energy and Time
+    vector<double> fDetected_Energy;
+    vector<double> fDetected_Time;
+    // Vertex of interaction
+    vector<double>  fDetected_Position_X;
+    vector<double>  fDetected_Position_Y;
+    vector<double>  fDetected_Position_Z;
+    // Particle angles
+    vector<double>  fDetected_Angle_Theta;
+    vector<double>  fDetected_Angle_Phi;
+
+  public:
+    TInteractionCoordinates();
+    virtual ~TInteractionCoordinates();
+
+    void  Clear();
+    void  Clear(const Option_t*) {};
+    void  Dump() const;
 
 
-public:
-   TInteractionCoordinates();
-   virtual ~TInteractionCoordinates();
-/*
-   void  Clear();
-   void  Dump();
-*/
-   void  Clear();
-   void  Clear(const Option_t*) {};
-   void  Dump() const;
+    void SetInteraction(const double& Energy, const double&Time, const double& PositionX, const double& PositionY, const double& PositionZ,const double& Theta, const double& Phi){
+      fDetected_Energy.push_back(Energy);
+      fDetected_Time.push_back(Time);
+      fDetected_Position_X.push_back(PositionX);
+      fDetected_Position_Y.push_back(PositionY);
+      fDetected_Position_Z.push_back(PositionZ);
+      fDetected_Angle_Theta.push_back(Theta);
+      fDetected_Angle_Phi.push_back(Phi);
+    }
 
-   /////////////////////           SETTERS           ////////////////////////
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   void SetDetectedPositionX(Double_t PositionX)      {fDetected_Position_X.push_back(PositionX);}
-   void SetDetectedPositionY(Double_t PositionY)      {fDetected_Position_Y.push_back(PositionY);}
-   void SetDetectedPositionZ(Double_t PositionZ)      {fDetected_Position_Z.push_back(PositionZ);}
-   // Incident particle angles
-   void SetDetectedAngleTheta(Double_t AngleTheta)  {fDetected_Angle_Theta.push_back(AngleTheta);}
-   void SetDetectedAnglePhi(Double_t AnglePhi)      {fDetected_Angle_Phi.push_back(AnglePhi);}
+    /////////////////////           SETTERS           ////////////////////////
+    // Incident particle properties (before interactions in the target)
+    // Vertex of interaction
+    void SetDetectedPositionX(const double& PositionX)      {fDetected_Position_X.push_back(PositionX);}//!
+    void SetDetectedPositionY(const double& PositionY)      {fDetected_Position_Y.push_back(PositionY);}//!
+    void SetDetectedPositionZ(const double& PositionZ)      {fDetected_Position_Z.push_back(PositionZ);}//!
+    // Incident particle angles
+    void SetDetectedAngleTheta(const double& AngleTheta)  {fDetected_Angle_Theta.push_back(AngleTheta);}//!
+    void SetDetectedAnglePhi(const double& AnglePhi)      {fDetected_Angle_Phi.push_back(AnglePhi);}//!
 
-   /////////////////////           GETTERS           ////////////////////////
-   // Number of interactions (multiplicity)
-   Int_t    GetDetectedMultiplicity()      {return fDetected_Position_X.size();}
-   // Incident particle properties (before interactions in the target)
-   // Vertex of interaction
-   Double_t GetDetectedPositionX(Int_t i)   {return fDetected_Position_X[i];}
-   Double_t GetDetectedPositionY(Int_t i)   {return fDetected_Position_Y[i];}
-   Double_t GetDetectedPositionZ(Int_t i)   {return fDetected_Position_Z[i];}
-   // Incident particle angles
-   Double_t GetDetectedAngleTheta(Int_t i) {return fDetected_Angle_Theta[i];}
-   Double_t GetDetectedAnglePhi(Int_t i)   {return fDetected_Angle_Phi[i];}
-   
-   ClassDef(TInteractionCoordinates, 1) // InteractionCoordinates structure
+    /////////////////////           GETTERS           ////////////////////////
+    // Number of interactions (multiplicity)
+    int    GetDetectedMultiplicity() const     {return fDetected_Position_X.size();}
+    // Incident particle properties (before interactions in the target)
+    // Enery and Time
+    double GetEnergy(const int& i) const {return fDetected_Energy[i];}//!
+    double GetTime(const int& i) const   {return fDetected_Time[i];}//!
+    // Vertex of interaction
+    double GetDetectedPositionX(const int& i) const   {return fDetected_Position_X[i];}//!
+    double GetDetectedPositionY(const int& i) const   {return fDetected_Position_Y[i];}//!
+    double GetDetectedPositionZ(const int& i) const   {return fDetected_Position_Z[i];}//!
+    // Incident particle angles
+    double GetDetectedAngleTheta(const int& i) const {return fDetected_Angle_Theta[i];}//!
+    double GetDetectedAnglePhi(const int& i) const   {return fDetected_Angle_Phi[i];}//!
+
+    ClassDef(TInteractionCoordinates, 2) // InteractionCoordinates structure
 };
 
 #endif

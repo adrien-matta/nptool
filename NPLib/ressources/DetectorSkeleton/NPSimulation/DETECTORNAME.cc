@@ -41,6 +41,7 @@
 // NPTool header
 #include "DETECTORNAME.hh"
 #include "CalorimeterScorers.hh"
+#include "InteractionScorers.hh"
 #include "RootOutput.h"
 #include "MaterialManager.hh"
 #include "NPSDetectorFactory.hh"
@@ -224,31 +225,24 @@ void DETECTORNAME::InitializeRootOutput(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // Read sensitive part and fill the Root tree.
 // Called at in the EventAction::EndOfEventAvtion
-void DETECTORNAME::ReadSensitive(const G4Event* event){
+void DETECTORNAME::ReadSensitive(const G4Event* ){
   m_Event->Clear();
 
   ///////////
   // Calorimeter scorer
-  NPS::HitsMap<G4double*>* CaloHitMap;
-  std::map<G4int, G4double**>::iterator Calo_itr;
+  CalorimeterScorers::PS_Calorimeter* Scorer= (CalorimeterScorers::PS_Calorimeter*) m_DETECTORNAMEScorer->GetPrimitive(0);
 
-  G4int CaloCollectionID = G4SDManager::GetSDMpointer()->GetCollectionID("DETECTORNAMEScorer/Calorimeter");
-  CaloHitMap = (NPS::HitsMap<G4double*>*)(event->GetHCofThisEvent()->GetHC(CaloCollectionID));
-
-  // Loop on the Calo map
-  for (Calo_itr = CaloHitMap->GetMap()->begin() ; Calo_itr != CaloHitMap->GetMap()->end() ; Calo_itr++){
-
-    G4double* Info = *(Calo_itr->second);
-    double Energy = RandGauss::shoot(Info[0],DETECTORNAME_NS::ResoEnergy);
+  unsigned int size = Scorer->GetMult(); 
+  for(unsigned int i = 0 ; i < size ; i++){
+    vector<unsigned int> level = Scorer->GetLevel(i); 
+    double Energy = RandGauss::shoot(Scorer->GetEnergy(i),DETECTORNAME_NS::ResoEnergy);
     if(Energy>DETECTORNAME_NS::EnergyThreshold){
-      double Time = RandGauss::shoot(Info[1],DETECTORNAME_NS::ResoTime);
-      int DetectorNbr = (int) Info[2];
+      double Time = RandGauss::shoot(Scorer->GetTime(i),DETECTORNAME_NS::ResoTime);
+      int DetectorNbr = level[0];
       m_Event->SetEnergy(DetectorNbr,Energy);
       m_Event->SetTime(DetectorNbr,Time); 
     }
   }
-  // clear map for next event
-  CaloHitMap->clear();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -263,9 +257,11 @@ void DETECTORNAME::InitializeScorers() {
 
   // Otherwise the scorer is initialised
   vector<int> level; level.push_back(0);
-  G4VPrimitiveScorer* Calorimeter= new CALORIMETERSCORERS::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Calorimeter= new CalorimeterScorers::PS_Calorimeter("Calorimeter",level, 0) ;
+  G4VPrimitiveScorer* Interaction= new InteractionScorers::PS_Interactions("Interaction",ms_InterCoord, 0) ;
   //and register it to the multifunctionnal detector
   m_DETECTORNAMEScorer->RegisterPrimitive(Calorimeter);
+  m_DETECTORNAMEScorer->RegisterPrimitive(Interaction);
   G4SDManager::GetSDMpointer()->AddNewDetector(m_DETECTORNAMEScorer) ;
 }
 

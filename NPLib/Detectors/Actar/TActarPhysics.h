@@ -8,7 +8,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Pierre Morfouace  contact address: morfouac@nscl.msu.edu                        *
+ * Original Author: Pierre Morfouace  contact address: morfouace@ganil.fr    *
  *                                                                           *
  * Creation Date  : September 2017                                           *
  * Last update    :                                                          *
@@ -33,52 +33,68 @@ using namespace std;
 #include "TH1.h"
 #include "TCanvas.h"
 #include "TVector3.h"
+
 // NPTool headers
+#include "MEventReduced.h"
 #include "TActarData.h"
 #include "TActarSpectra.h"
 #include "NPCalibrationManager.h"
 #include "NPVDetector.h"
 #include "NPInputParser.h"
-// forward declaration
+#include "NPTrack.h"
+#include "NPRansac.h"
+#include "NPCluster.h"
+
+#define NumberOfCobo 16
+#define NumberOfASAD 4
+#define NumberOfAGET 4
+#define NumberOfChannel 68
+
 class TActarSpectra;
 
-
-
 class TActarPhysics : public TObject, public NPL::VDetector {
-  //////////////////////////////////////////////////////////////
-  // constructor and destructor
-  public:
+    //////////////////////////////////////////////////////////////
+    // constructor and destructor
+public:
     TActarPhysics();
     ~TActarPhysics() {};
 
 
-  //////////////////////////////////////////////////////////////
-  // Inherited from TObject and overriden to avoid warnings
-  public:
+    //////////////////////////////////////////////////////////////
+    // Inherited from TObject and overriden to avoid warnings
+public:
     void Clear();
     void Clear(const Option_t*) {};
 
 
-  //////////////////////////////////////////////////////////////
-  // data obtained after BuildPhysicalEvent() and stored in
-  // output ROOT file
-  public:
-    vector<int> PadNumber;
-    vector<int> PadRow;
-    vector<int> PadColumn;
-    vector<int> PadTime;
+    //////////////////////////////////////////////////////////////
+    // data obtained after BuildPhysicalEvent() and stored in
+    // output ROOT file
+public:
+    vector<int> PadX;
+    vector<int> PadY;
+    vector<double> PadZ;
     vector<double> PadCharge;
+    vector<int> BeamPadX;
+    vector<int> BeamPadY;
+    vector<double> BeamPadZ;
+    vector<double> BeamPadCharge;
+    vector<double> Si_E;
+    vector<int> Si_Number;
+    int TrackMult;
 
-    vector<double> HoughRadius;
-    vector<double> HoughAngle;
+    /// A usefull method to bundle all operation to add a detector
+    void AddDetector(TVector3 POS, string shape);
+    void AddDetector(double R, double Theta, double Phi, string shape);
 
-  /// A usefull method to bundle all operation to add a detector
-  void AddDetector(TVector3 POS, string shape);
-  void AddDetector(double R, double Theta, double Phi, string shape);
+public:
+    int GetTrackMult() {return m_Track.size();}
+    vector<NPL::Track> GetTracks() {return m_Track;}
 
-  //////////////////////////////////////////////////////////////
-  // methods inherited from the VDetector ABC class
-  public:
+
+    //////////////////////////////////////////////////////////////
+    // methods inherited from the VDetector ABC class
+public:
     // read stream from ConfigFile to pick-up detector parameters
     void ReadConfiguration(NPL::InputParser);
 
@@ -132,9 +148,9 @@ class TActarPhysics : public TObject, public NPL::VDetector {
     void WriteSpectra();
 
 
-  //////////////////////////////////////////////////////////////
-  // specific methods to Actar array
-  public:
+    //////////////////////////////////////////////////////////////
+    // specific methods to Actar array
+public:
     // remove bad channels, calibrate the data and apply thresholds
     void PreTreat();
 
@@ -144,44 +160,92 @@ class TActarPhysics : public TObject, public NPL::VDetector {
     // read the user configuration file. If no file is found, load standard one
     void ReadAnalysisConfig();
 
+    void CleanPads();
+
+    bool GoodHit(int iX, int iY);
+
+    bool IsBeamZone(int X, int Y);
+
     // give and external TActarData object to TActarPhysics.
     // needed for online analysis for example
     void SetRawDataPointer(TActarData* rawDataPointer) {m_EventData = rawDataPointer;}
 
-    void HoughTransform(vector<int> v1, vector<int> v2, vector<int> v3);
-
-  // objects are not written in the TTree
-  private:
+    // objects are not written in the TTree
+private:
     TActarData*         m_EventData;        //!
+    MEventReduced*      m_EventReduced;     //!
     TActarData*         m_PreTreatedData;   //!
     TActarPhysics*      m_EventPhysics;     //!
+    NPL::Ransac*        m_Ransac;           //!
+    NPL::Cluster*       m_Cluster;          //!
+    vector<NPL::Track>  m_Track;            //!
 
-  // getters for raw and pre-treated data object
-  public:
+    // getters for raw and pre-treated data object
+public:
     TActarData* GetRawData()        const {return m_EventData;}
     TActarData* GetPreTreatedData() const {return m_PreTreatedData;}
 
-  // parameters used in the analysis
-  private:
+    double GetDriftVelocity() {return fDriftVelocity;}
+    double GetPadSizeX() {return fPadSizeX;}
+    double GetPadSizeY() {return fPadSizeY;}
+    int GetNumberOfPadsX() {return fNumberOfPadsX;}
+    int GetNumberOfPadsY() {return fNumberOfPadsY;}
+    double GetPRessure() {return fPressure;}
+    string GetGasName() {return fGas;}
+
+    // parameters used in the analysis
+private:
     // thresholds
-    double m_E_RAW_Threshold; //!
-    double m_E_Threshold;     //!
+    int fHitThreshold;      //!
+    int fQ_Threshold;       //!
+    int fT_Threshold;       //!
+    int fNumberOfPadsX;     //!
+    int fNumberOfPadsY;     //!
+    int fXBeamMax;          //!
+    int fXBeamMin;          //!
+    int fYBeamMax;          //!
+    int fYBeamMin;          //!
+    double fPadSizeX;       //!
+    double fPadSizeY;       //!
+    double fDriftVelocity;  //!
+    double fPressure;       //!
+    string fGas;            //!
+    bool fRecoRansac;       //!
+    bool fRecoCluster;      //!
+    bool fRecoVisu;         //!
+    map<int, int> Si_map;   //!
+    string fInputTreeName;  //!
 
-  // number of detectors
-  private:
+    int TABLE[6][NumberOfCobo*NumberOfASAD*NumberOfAGET*NumberOfChannel]; //!
+    int Hit[128][128];  //!
+
+
+    // number of detectors
+private:
     int m_NumberOfDetectors;  //!
+    int m_NumberOfPadSilicon; //!
 
-  // spectra class
-  private:
-    TActarSpectra* m_Spectra; // !
+    // spectra class
+private:
+    TActarSpectra* m_Spectra; //!
 
-  // spectra getter
-  public:
+    //spme getters and setters
+public:
+    void SetRansacParameter(string filename);
+    void SetClusterParameter(string filename);
+    NPL::Ransac* GetRansacObject() {return m_Ransac;}
+    bool GetRansacStatus() {return fRecoRansac;}
+    NPL::Cluster* GetClusterObject() {return m_Cluster;}
+    bool GetClusterStatus() {return fRecoCluster;}
+
+
+    // spectra getter
+public:
     map<string, TH1*>   GetSpectra();
     vector<TCanvas*>    GetCanvas();
 
-  // Static constructor to be passed to the Detector Factory
-  public:
+    // Static constructor to be passed to the Detector Factory
+public:
     static NPL::VDetector* Construct();
 
     ClassDef(TActarPhysics,1)  // ActarPhysics structure

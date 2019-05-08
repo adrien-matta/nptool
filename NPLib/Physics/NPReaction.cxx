@@ -43,6 +43,7 @@
 #include <vector>
 
 #include "NPReaction.h"
+#include "NPCore.h"
 #include "NPOptionManager.h"
 #include "NPFunction.h"
 
@@ -85,7 +86,9 @@ ClassImp(Reaction)
 
     fshoot3=true;
     fshoot4=true;
+    fUseExInGeant4=true;
     RandGen=new TRandom3();
+    fUseExInGeant4=true;
 
     fLabCrossSection=false; // flag if the provided cross-section is in the lab or not
 
@@ -151,7 +154,7 @@ Reaction::Reaction(string reaction){
 
   fCrossSectionHist = new TH1F(Form("EnergyHist_%i",offset),"Reaction_CS",1,0,180);
   fDoubleDifferentialCrossSectionHist = NULL ;
-  
+
   fshoot3=true;
   fshoot4=true;
   RandGen=new TRandom3();
@@ -168,7 +171,6 @@ Reaction::~Reaction(){
 bool Reaction::CheckKinematic(){
   double theta = fThetaCM;
   if (m1 > m2) theta = M_PI - fThetaCM;
-
   fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
   fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
 
@@ -221,9 +223,9 @@ double Reaction::ShootRandomThetaCM(){
     SetThetaCM( theta );
   }
   else{
-    // When root perform a Spline interpolation to shoot random number out of 
+    // When root perform a Spline interpolation to shoot random number out of
     // the distribution, it can over shoot and output a number larger that 180
-    // this lead to an additional signal at 0-4 deg Lab, especially when using a 
+    // this lead to an additional signal at 0-4 deg Lab, especially when using a
     // flat distribution.
     // This fix it.
     theta=181;
@@ -231,9 +233,9 @@ double Reaction::ShootRandomThetaCM(){
       theta=fCrossSectionHist->GetRandom();
     //cout << " Shooting Random ThetaCM "  << theta << endl;
     SetThetaCM( theta*deg );
-    }
-   
-    
+  }
+
+
   return theta;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -274,7 +276,7 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // Kinetic Energy in the lab frame
   KineticEnergyLab3 = fEnergyImpulsionLab_3.E() - m3;
   KineticEnergyLab4 = fEnergyImpulsionLab_4.E() - m4;
-  
+
   // test for total energy conversion
   if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
     cout << "Problem for energy conservation" << endl;
@@ -313,7 +315,7 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
 //Return EnergyLab
 double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //ThetaLab in rad
-  
+ 
   // IMPORTANT NOTICE: This function is not suitable for reaction A(c,d)B
   // where M(c) < M(d), i.e. (p,d) or (d,3He) since in this case the same 
   // angle observed in the lab corresponds to two different energies.
@@ -329,13 +331,14 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //    only one of the energy branches is considered. 
   //
   // !! If both of the branches are needed the user SHOULD use the center-of-mass distribution.
+
   //
   // This calculation uses the formalism from J.B Marion and F.C Young 
   // (Book: Nucler Reaction Analysis, Graphs and Tables)
 
-
   //Treat Exeptions
   if(fBeamEnergy==0) return m4*fQValue/(m3+m4);
+
   
   double A,B,C,D, ThetaLabMax=181*deg;
   double Q = fQValue ;
@@ -367,8 +370,7 @@ double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //cout << " Angle/energy: " << ThetaLab/deg << " " << EnergyLab << endl ; 
   //cin.get();
 
-  return EnergyLab ;
-
+  return EnergyLab ;  
 }
 
 
@@ -387,7 +389,7 @@ void Reaction::Print() const{
   cout << "Qgg = " << fQValue << " MeV" << endl;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(string Path){
   ifstream ReactionFile;
   string GlobalPath = getenv("NPTOOL");
@@ -403,6 +405,39 @@ void Reaction::ReadConfigurationFile(string Path){
   NPL::InputParser parser(Path);
   ReadConfigurationFile(parser);
 }
+////////////////////////////////////////////////////////////////////////////////
+Nucleus Reaction::GetNucleus(string name, NPL::InputParser parser){
+
+
+  vector<NPL::InputBlock*> blocks = parser.GetAllBlocksWithTokenAndValue("DefineNucleus",name);
+  unsigned int size = blocks.size();
+  if(size==0)
+    return NPL::Nucleus(name);
+  else if(size==1){
+    cout << " -- User defined nucleus " << name << " -- " << endl;
+    vector<string> token = {"SubPart","BindingEnergy"};
+    if(blocks[0]->HasTokenList(token)){
+      NPL::Nucleus N(name,blocks[0]->GetVectorString("SubPart"),blocks[0]->GetDouble("BindingEnergy","MeV"));
+      if(blocks[0]->HasToken("ExcitationEnergy"))
+        N.SetExcitationEnergy(blocks[0]->GetDouble("ExcitationEnergy","MeV"));
+      if(blocks[0]->HasToken("SpinParity"))
+        N.SetSpinParity(blocks[0]->GetString("SpinParity").c_str());
+      if(blocks[0]->HasToken("Spin"))
+        N.SetSpin(blocks[0]->GetDouble("Spin",""));
+      if(blocks[0]->HasToken("Parity"))
+        N.SetParity(blocks[0]->GetString("Parity").c_str());
+      if(blocks[0]->HasToken("LifeTime"))
+        N.SetLifeTime(blocks[0]->GetDouble("LifeTime","s"));
+
+    cout << " -- -- -- -- -- -- -- -- -- -- --" << endl;
+      return N;
+    }
+  }
+  else{
+    NPL::SendErrorAndExit("NPL::Reaction","Too many nuclei define with the same name");
+  }
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::ReadConfigurationFile(NPL::InputParser parser){
 
@@ -422,19 +457,18 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       NPOptionManager::getInstance()->SetVerboseLevel(v);
 
       fBeamEnergy= fNuclei1.GetEnergy();
-
-      fNuclei2 = Nucleus(blocks[i]->GetString("Target"));
-      fNuclei3 = Nucleus(blocks[i]->GetString("Light"));
-      fNuclei4 = Nucleus(blocks[i]->GetString("Heavy"));
+      fNuclei2 = GetNucleus(blocks[i]->GetString("Target"),parser);
+      fNuclei3 = GetNucleus(blocks[i]->GetString("Light"),parser);
+      fNuclei4 = GetNucleus(blocks[i]->GetString("Heavy"),parser);
     }
     else if(blocks[i]->HasTokenList(token2)){
       fNuclei1.SetVerboseLevel(0);
       fNuclei1.ReadConfigurationFile(parser);
       fBeamEnergy= fNuclei1.GetEnergy();
 
-      fNuclei2 = Nucleus(blocks[i]->GetString("Target"));
-      fNuclei3 = Nucleus(blocks[i]->GetString("Nuclei3"));
-      fNuclei4 = Nucleus(blocks[i]->GetString("Nuclei4"));
+      fNuclei2 = GetNucleus(blocks[i]->GetString("Target"),parser);
+      fNuclei3 = GetNucleus(blocks[i]->GetString("Nuclei3"),parser);
+      fNuclei4 = GetNucleus(blocks[i]->GetString("Nuclei4"),parser);
     }
     else{
       cout << "ERROR: check your input file formatting \033[0m" << endl;
@@ -445,7 +479,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       fExcitation1 = blocks[i]->GetDouble("ExcitationEnergyBeam","MeV");
     }
     else if(blocks[i]->HasToken("ExcitationEnergy1")){
-      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergy1","MeV"); 
+      fExcitation1 = blocks[i]->GetDouble("ExcitationEnergy1","MeV");
     }
 
     if(blocks[i]->HasToken("ExcitationEnergyLight"))
@@ -487,7 +521,7 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
       SetCrossSectionHist(CStemp);
       delete fsin;
     }
-    
+
 
     if(blocks[i]->HasToken("DoubleDifferentialCrossSectionPath")){
       vector<string> file = blocks[i]->GetVectorString("DoubleDifferentialCrossSectionPath");
@@ -522,8 +556,16 @@ void Reaction::ReadConfigurationFile(NPL::InputParser parser){
     if(blocks[i]->HasToken("ShootLight")){
       fshoot3 = blocks[i]->GetInt("ShootLight");
     }
+    if(blocks[i]->HasToken("UseExInGeant4")){
+      // This option will not change the Ex of the produced ion in G4 Tracking
+      // This is to be set to true when using a Ex distribution without decay
+      // Otherwise the Ion Table size grew four ech event slowing down the
+      // simulation
+      fUseExInGeant4 = blocks[i]->GetInt("UseExInGeant4");
+    }
+
   }
-  SetCSAngle(CSHalfOpenAngleMin,CSHalfOpenAngleMax);
+  SetCSAngle(CSHalfOpenAngleMin/deg,CSHalfOpenAngleMax/deg);
   initializePrecomputeVariable();
   cout << "\033[0m" ;
 }
@@ -560,8 +602,8 @@ void Reaction::initializePrecomputeVariable(){
   fImpulsionLab_1 = TVector3(0,0,sqrt(fBeamEnergy*fBeamEnergy + 2*fBeamEnergy*m1));
   fImpulsionLab_2 = TVector3(0,0,0);
 
-  fEnergyImpulsionLab_1 = TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
-  fEnergyImpulsionLab_2 = TLorentzVector(fImpulsionLab_2,m2);
+  fEnergyImpulsionLab_1= TLorentzVector(fImpulsionLab_1,m1+fBeamEnergy);
+  fEnergyImpulsionLab_2= TLorentzVector(fImpulsionLab_2,m2);
 
   fTotalEnergyImpulsionLab = fEnergyImpulsionLab_1 + fEnergyImpulsionLab_2;
 
@@ -746,9 +788,11 @@ void Reaction::PrintKinematic(){
 ////////////////////////////////////////////////////////////////////////////////////////////
 void Reaction::SetCSAngle(double CSHalfOpenAngleMin,double CSHalfOpenAngleMax){
   if(fCrossSectionHist){
-    for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++)
-      if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax && fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin)
+    for (int i = 0 ; i< fCrossSectionHist->GetNbinsX(); i++){
+      if( fCrossSectionHist->GetBinCenter(i) > CSHalfOpenAngleMax || fCrossSectionHist->GetBinCenter(i) < CSHalfOpenAngleMin){
         fCrossSectionHist->SetBinContent(i,0);
+      }
+    }
   }
 }
 
@@ -761,6 +805,5 @@ bool Reaction::IsAllowed(double Energy){
   if(AvailableEnergy>RequiredEnergy)
     return true;
   else
-    return false; 
-  }
-      
+    return false;
+}

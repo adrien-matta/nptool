@@ -240,6 +240,8 @@ string ParticleStack::ChangeNameToG4Standard(string OriginalName){
     else if (FinalName=="deuteron") FinalName="deuteron";
     else if (FinalName=="triton")   FinalName="triton";
     else if (FinalName=="alpha")    FinalName="alpha";
+    else if (FinalName=="mu+")   FinalName="mu+";
+    else if (FinalName=="mu-")   FinalName="mu-";
     else if (FinalName=="n")        FinalName="neutron";
     else if (FinalName=="neutron")  FinalName="neutron";
     return(FinalName);

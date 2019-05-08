@@ -1,0 +1,97 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Target
+ THICKNESS= 150 mm
+ RADIUS=	19.5 mm
+ MATERIAL= H2
+ ANGLE= 0 deg
+ X= 0 mm
+ Y= 0 mm
+ Z= -90.03 mm
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 240 deg
+ Zeta = -90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 180 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 120 deg 
+ Zeta = -90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 60 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm
+ Alpha = 0 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = -60 deg 
+ Zeta = -90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm
+ Alpha = 240 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 180 deg 
+ Zeta = 90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 120 deg 
+ Zeta = 90.03 mm
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 60 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = 0 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Dali
+ R = 212.4 mm 
+ Alpha = -60 deg 
+ Zeta = 90.03 mm 
+ Shape = Square
+ Material = NaI(Tl)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,4 +1,4 @@
 TTreeName 
-	SimulatedTree
+  TreeMaster	
 RootFileName 
- ../../Outputs/Simulation/myResult.root
+  /data/mugastX/com2019/acquisition/MERGED_DATA/MergedTree_run_0107_0000.root

@@ -1,11 +1,8 @@
-#! /bin/bash
-
-  CMD="export"
-  SEP="="
+#!/bin/sh
 
 # test if export is supported
 export 1>/dev/null 2>/dev/null
-if [ "${?}" == 0 ]; then
+if [ $? -eq 0 ]; then
   CMD="export"
   SEP="="
 else
@@ -84,7 +81,8 @@ _npp() {
 # associate the tab completion to npp
 if [ -n "$ZSH_VERSION" ]; then
   # ZSH have its own command to make things easy
- compdef _function foobar
+  #compdef _directories -W $NPTOLL/Project npp
+  :
 else
   # the rest of the world use standard posix complete
   complete -F _npp -o filenames npp
