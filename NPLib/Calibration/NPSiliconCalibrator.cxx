@@ -32,19 +32,19 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
     return -1;
   }
 
-  int counts=0;
+  //default range
   if(rmin == -1 && rmax == -1){
     rmin = histo->GetBinCenter(1);
     rmax = histo->GetBinCenter(histo->GetNbinsX()-1);
   }
 
-  else{
-    for(unsigned int i = 1 ; i < histo->GetNbinsX() ; i++){ 
-      if(histo->GetBinCenter(i) < rmin || histo->GetBinCenter(i) > rmax)
-        histo->SetBinContent(i,0);
-      else
-        counts+= histo->GetBinContent(i);
-    }
+  //counts entries with defined range
+  int counts=0;
+  for(unsigned int i = 1 ; i < histo->GetNbinsX() ; i++){ 
+    if(histo->GetBinCenter(i) < rmin || histo->GetBinCenter(i) > rmax)
+      histo->SetBinContent(i,0);
+    else
+      counts+= histo->GetBinContent(i);
   }
 
   if(counts == 0){
@@ -62,8 +62,8 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
   bool   LastStepIncrease = false;
   bool   LastStepDecrease = false;
 
-  // 1% precision on the total scale (typically 6 MeV ) 
-  double my_precision = (rmax-pedestal)*0.01;
+  // 0.1% precision on the total scale (typically 6 MeV ) 
+  double my_precision = (rmax-pedestal)*0.001;
   // Energy of the Source and sigma on the value (MeV)
   double Assume_Thickness = 0 ; // micrometer
   vector<double> Assume_E; // Energie calculated assuming Assume_Thickness deadlayer of Al
@@ -84,11 +84,11 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
     coeff.clear();
     coeff.push_back(0);
     coeff.push_back(-1);
-    return -1;
+    return -3;
   }
 
   while(k++<max_iteration && abs(Assume_Thickness) < 100*micrometer){
-
+    
     // Compute the new assumed energies
     double* x = g->GetX();
     for(unsigned int i = 0 ; i < source_size ; i++){
@@ -97,20 +97,22 @@ double NPL::SiliconCalibrator::ZeroExtrapolation(TH1* histo, NPL::CalibrationSou
     }
 
     DistanceToPedestal = FitPoints(g,&Assume_E[0], Source_Sig, coeff, 0 );
-    if(abs(DistanceToPedestal) < my_precision || Step < 0.01*micrometer)
-      break;
 
-    else if(DistanceToPedestal > 0 ){
+    if(abs(DistanceToPedestal) < my_precision || Step < 0.01*micrometer){
+      break;
+    }
+
+    else if(DistanceToPedestal < 0 ){
       if(LastStepIncrease)
-        Step *= 10.;
+        Step *= 5; //multiply step by 5
 
       Assume_Thickness += Step;
       LastStepIncrease = true;
     }
 
-    else if(DistanceToPedestal < 0 ){
+    else if(DistanceToPedestal > 0 ){
       if(LastStepDecrease)
-        Step *= 10.;
+        Step *= 0.5; //decrease step by half
 
       Assume_Thickness -= Step;
       LastStepDecrease = true;
@@ -241,9 +243,13 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
    // apply range for peak search
    histo->GetXaxis()->SetRangeUser(rmin, rmax);
    // Perform a peak search to get a hint of where are the peaks
-   TSpectrum sp(4,1);
-   //  nfound = sp->Search(histo,3,"",0.25);
-   Int_t    nfound = sp.Search(histo,3,"",0.25);
+   TSpectrum sp(4,1); // number of peaks is 4 to avoid warning of peak buffer
+   //arguments:
+   // hist : input histogram  
+   // sigma:  must be >=1, higher sgma higher resolution
+   // option: nobackground => Don't subtract back ground
+   // threshold: look for peaks within range [HighespeakAmp*threshold ; HighespeakAmp]
+   Int_t    nfound = sp.Search(histo,2,"",0.15); 
    //std::cout << "Number of peaks found = " << nfound << std::endl; // used for debugging
    TSpectrumPosition_t xpeaks = sp.GetPositionX();
 
@@ -263,7 +269,7 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
       m_FitFunction->SetParLimits(7,xpeaks[2]*0.8,xpeaks[2]*1.2);
 
 
-      // Set initial hight
+      // Set initial height
       double H1 = histo->GetBinContent(histo->FindBin(xpeaks[0])); 
       double H2 = histo->GetBinContent(histo->FindBin(xpeaks[1])); 
       double H3 = histo->GetBinContent(histo->FindBin(xpeaks[2])); 
@@ -273,20 +279,24 @@ TGraphErrors* NPL::SiliconCalibrator::FitSpectrum(TH1* histo, double rmin, doubl
       m_FitFunction->SetParameter(6,H3);
 
       // Set Limit
-      m_FitFunction->SetParLimits(0,H1*0.8,H1*1.2);
-      m_FitFunction->SetParLimits(3,H2*0.8,H2*1.2);
-      m_FitFunction->SetParLimits(6,H3*0.8,H3*1.2);
+      m_FitFunction->SetParLimits(0,H1*0.4,H1*2);
+      m_FitFunction->SetParLimits(3,H2*0.4,H2*2);
+      m_FitFunction->SetParLimits(6,H3*0.4,H3*2);
 
       // ballpark the sigma
-      double sigma = (xpeaks[1]-xpeaks[0])/100;
+      double sigma = (xpeaks[1]-xpeaks[0])/10;
       m_FitFunction->SetParameter(2,sigma);
       m_FitFunction->SetParameter(5,sigma);
       m_FitFunction->SetParameter(8,sigma);
 
+      // Set Limit
+      m_FitFunction->SetParLimits(2,0,sigma*3);
+      m_FitFunction->SetParLimits(5,0,sigma*3);
+      m_FitFunction->SetParLimits(8,0,sigma*3);
+
       // Set range and fit spectrum
       histo->GetXaxis()->SetRangeUser(xpeaks[0]-xpeaks[0]/20.,xpeaks[2]+xpeaks[2]/20.);
-      histo->Fit(m_FitFunction,"Q");
-
+      histo->Fit(m_FitFunction,"MQR");
       TF1* fit = histo->GetFunction(m_FitFunction->GetName());
       // energies and associated uncertainties 
       vector< vector<double> > Energies    = m_CalibrationSource->GetEnergies();
