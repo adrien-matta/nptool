@@ -181,7 +181,6 @@ bool Reaction::CheckKinematic(){
     cout << "Problem with energy conservation" << endl;
     return false;
   }
-
   else{
     //cout << "Kinematic OK" << endl;
     return true;
@@ -212,8 +211,12 @@ double Reaction::ShootRandomThetaCM(){
     SetThetaCM( theta=Proj->GetRandom()*deg );
   }
   else if (fLabCrossSection){
-    double thetalab=fCrossSectionHist->GetRandom()*deg;//shot in lab
-    double energylab=EnergyLabFromThetaLab(thetalab); //get corresponding energy
+    double thetalab=-1;
+    double energylab=-1;
+    while(energylab<0){
+      thetalab=fCrossSectionHist->GetRandom()*deg; //shoot in lab
+      energylab=EnergyLabFromThetaLab(thetalab);   //get corresponding energy
+    }
     theta = EnergyLabToThetaCM(energylab, thetalab); //transform to theta CM
     SetThetaCM( theta );
   }
@@ -226,7 +229,7 @@ double Reaction::ShootRandomThetaCM(){
     theta=181;
     if(theta/deg>180)
       theta=fCrossSectionHist->GetRandom();
-
+    //cout << " Shooting Random ThetaCM "  << theta << endl;
     SetThetaCM( theta*deg );
     }
    
@@ -247,11 +250,13 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   // EnergieLab3,4 : lab energy in MeV of the 2 ejectiles
   // ThetaLab3,4   : angles in rad
   // case of inverse kinematics
+
   double theta = fThetaCM;
   if (m1 > m2) theta = M_PI - fThetaCM;
+
   fEnergyImpulsionCM_3	= TLorentzVector(pCM_3*sin(theta),0,pCM_3*cos(theta),ECM_3);
   fEnergyImpulsionCM_4	= fTotalEnergyImpulsionCM - fEnergyImpulsionCM_3;
-  
+
   fEnergyImpulsionLab_3 = fEnergyImpulsionCM_3;
   fEnergyImpulsionLab_3.Boost(0,0,BetaCM);
   fEnergyImpulsionLab_4 = fEnergyImpulsionCM_4;
@@ -271,8 +276,8 @@ void Reaction::KineRelativistic(double& ThetaLab3, double& KineticEnergyLab3,
   KineticEnergyLab4 = fEnergyImpulsionLab_4.E() - m4;
   
   // test for total energy conversion
-  //if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
-  //  cout << "Problem for energy conservation" << endl;
+  if (fabs(fTotalEnergyImpulsionLab.E() - (fEnergyImpulsionLab_3.E()+fEnergyImpulsionLab_4.E())) > 1e-6)
+    cout << "Problem for energy conservation" << endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -301,7 +306,7 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
   fEnergyImpulsionCM_3.Boost(0,0,-BetaCM);
 
   double ThetaCM = M_PI - fEnergyImpulsionCM_1.Angle(fEnergyImpulsionCM_3.Vect());
-
+  
   return(ThetaCM);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -309,46 +314,61 @@ double  Reaction::EnergyLabToThetaCM(double EnergyLab, double ThetaLab){
 double  Reaction::EnergyLabFromThetaLab(double ThetaLab){
   //ThetaLab in rad
   
-  // NB
-  // Tis member function is in progress 
-  // Classic treatment need to be changed to relativistic!!
+  // IMPORTANT NOTICE: This function is not suitable for reaction A(c,d)B
+  // where M(c) < M(d), i.e. (p,d) or (d,3He) since in this case the same 
+  // angle observed in the lab corresponds to two different energies.
   //
+  // If this situation is encountered here:
+  // 1- the final energy will be determined randomly with a 50%-50% 
+  //     split for either energies.
+  // 2- Any angle outside of the allowed range (in this case) will return -1.
+  // 3- The user lab distribution will be used between angles {0,max} and the
+  //    spatial distribution of the high energy and low energy branch
+  //    will be the same. 
+  // 4- Practically, in an experiment using a downstream spectrometer 
+  //    only one of the energy branches is considered. 
+  //
+  // !! If both of the branches are needed the user SHOULD use the center-of-mass distribution.
+  //
+  // This calculation uses the formalism from J.B Marion and F.C Young 
+  // (Book: Nucler Reaction Analysis, Graphs and Tables)
+
 
   //Treat Exeptions
   if(fBeamEnergy==0) return m4*fQValue/(m3+m4);
   
-  //Solve the equation
-  double m4e = m4 + fExcitation4;
-  //Possible problem with this calculation, decide on m4e or m4 in the following formula
-  double r = sqrt(m1*m3*fBeamEnergy)/(m3+m4e);
-  double s = ((m1-m4e)*fBeamEnergy-m4e*fQValue)/(m3+m4e);
+  double A,B,C,D, ThetaLabMax=181*deg;
+  double Q = fQValue ;
+  double T1 = fBeamEnergy;
+  double TT = fBeamEnergy+Q;
+  double sign=+1;
+  
+  A = m1*m4*(T1/TT) /(m1+m2)/(m3+m4);
+  B = m1*m3*(T1/TT) /(m1+m2)/(m3+m4);
+  C = m2*m3*(1+ (m1*Q)/(m2*TT)) /(m1+m2)/(m3+m4);
+  D = m2*m4*(1+ (m1*Q)/(m2*TT)) /(m1+m2)/(m3+m4);
 
-  //Solve quadratic euation of T3 : T3-(2*r*cos(thetaLab)*sqrt(T3)+s = 0
-  //
-  //Solution: sqrt(T3) = r * (cos +/- sqrt(Delta)) ;
-  //where Delta =cos*cos - s/(r*r)
-   
-  //Select solutions according to delta values
-  double Delta = cos(ThetaLab)*cos(ThetaLab)-s/(r*r);
-  double EnergyLab=0;
+  if ( fabs(A+B+C+D-1)>1e-6  or  fabs(A*C-B*D)>1e-6 ) {
+     cout << " Reaction balance is wrong in NPReaction object." << endl;
+     exit(-1);
+  }
+ 
+  if(B>D) {
+    ThetaLabMax = asin(sqrt(D/B));
+    if(RandGen->Rndm()<0.5) sign=-1;
+  }
+  if(ThetaLab>ThetaLabMax) return -1;
 
-  if(Delta<0) return 0;
-  else 
-    if(Delta==0) EnergyLab =r*cos(ThetaLab);
-      else {
-       double sol1 = r*(cos(ThetaLab) + sqrt(Delta));
-       double sol2 = r*(cos(ThetaLab) - sqrt(Delta));
-       
-       if(sol1<0  && sol2<0) return 0;
-       else if(sol1>0  && sol2<0) EnergyLab =sol1*sol1;
-       else if(sol1<0  && sol2>0) EnergyLab = sol2*sol2;
-       else {
-        if(RandGen->Rndm()<0.5) EnergyLab = sol1*sol1; // choose either of the solutions
-          else EnergyLab = sol2*sol2;
-       }
-      }
+  double cosine = cos(ThetaLab);
+  double sine2 = pow(sin(ThetaLab),2); 
+  double factor = sqrt(D/B-sine2);
+  double EnergyLab = TT * B * pow( cosine + sign*factor , 2 );
 
-  return(EnergyLab);
+  //cout << " Angle/energy: " << ThetaLab/deg << " " << EnergyLab << endl ; 
+  //cin.get();
+
+  return EnergyLab ;
+
 }
 
 
@@ -518,7 +538,7 @@ void Reaction::initializePrecomputeVariable(){
 
   //fNuclei1.GetExcitationEnergy() is a copy of fExcitation1
   m1 = fNuclei1.Mass() + fNuclei1.GetExcitationEnergy();// in case of isomeric state, 
-  m2 = fNuclei2.Mass();
+  m2 = fNuclei2.Mass(); // Target
   m3 = fNuclei3.Mass() + fExcitation3;
   m4 = fNuclei4.Mass() + fExcitation4;
   fQValue =m1+m2-m3-m4;
@@ -552,6 +572,7 @@ void Reaction::initializePrecomputeVariable(){
 
   fEnergyImpulsionCM_2 = fEnergyImpulsionLab_2;
   fEnergyImpulsionCM_2.Boost(0,0,-BetaCM);
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
