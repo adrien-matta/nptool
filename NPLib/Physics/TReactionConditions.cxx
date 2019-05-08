@@ -12,7 +12,7 @@
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription: This class records all the information concerning the beam    *
- *             rwaction generators, e.g. vertex of interaction, angles of    *
+ *             reaction generators, e.g. vertex of interaction, angles of    *
  *             emitted particles...                                          *
  *             This class derives from TObject (ROOT) and its aim is to be   *
  *             stored in the output TTree of the G4 simulation               *
@@ -61,7 +61,7 @@ void TReactionConditions::Clear(){
 }
 ////////////////////////////////////////////////////////////////////////////////
 void TReactionConditions::Dump() const{
-    cout << "--------- Initial Condition Dump ---------" << endl ;
+    cout << "--------- Reaction Condition Dump ---------" << endl ;
     
     // Beam beam parameter
     cout << "\t ---- Beam Beam ---- " << endl;
@@ -86,8 +86,8 @@ void TReactionConditions::Dump() const{
     unsigned int size = fRC_Particle_Name.size();
     for(unsigned int i = 0 ; i < size; i ++){
         cout << "\t ---- Particle " << i << " ---- " << endl;
-        cout << "\t Particle Name" <<   fRC_Particle_Name[i] << endl;
-        cout << "\t Energy" <<   fRC_Kinetic_Energy[i] << endl;
+        cout << "\t Particle Name " <<   fRC_Particle_Name[i] << endl;
+        cout << "\t Energy " <<   fRC_Kinetic_Energy[i] << endl;
         cout << "\t Momentum Direction: ( "
         << fRC_Momentum_Direction_X[i] << " ; "
         << fRC_Momentum_Direction_Y[i] << " ; "
