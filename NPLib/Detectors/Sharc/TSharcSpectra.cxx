@@ -107,6 +107,11 @@ void TSharcSpectra::InitRawSpectra(){
     gPad->SetLogy();
 
   } // end loop on number of detectors
+
+  // STR_PAD_DetN_MAP : useful for mapping issue
+  name = "SHARC_STR_PAD_DetN_RAW";
+  AddHisto2D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/RAW/MAP")->Draw("colz");
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -146,6 +151,11 @@ void TSharcSpectra::InitPreTreatedSpectra(){
       AddHisto2D(name, name,500,0,25,500,0,25, "SHARC/CAL/FB"); 
 
   }  // end loop on number of detectors
+
+  // STR_PAD_DetN_MAP : useful for mapping issue
+  name = "SHARC_STR_PAD_DetN_CAL";
+  AddHisto2D(name, name, fNumberOfDetector, 1, fNumberOfDetector+1, fNumberOfDetector, 1, fNumberOfDetector+1, "SHARC/CAL/MAP")->Draw("colz");
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -172,6 +182,7 @@ void TSharcSpectra::InitPhysicsSpectra(){
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
   static string index;
+  static string name;
 
   // STR_FRONT_E 
   unsigned int mysize = RawData->GetMultiplicityFront();
@@ -274,15 +285,30 @@ void TSharcSpectra::FillRawSpectra(TSharcData* RawData){
       ,myMULT[i]);
   }
 
+  //DSSD-PAD Ndet Map 
+  mysize = RawData->GetMultiplicityFront();
+  unsigned int mysizePAD = RawData->GetMultiplicityPAD();
+  for (unsigned int i = 0; i < mysize ; i++) {
+    for (unsigned int j = 0; j < mysizePAD; j++) {
+        index = "SHARC/RAW/MAP";
+        name = "SHARC_STR_PAD_DetN_RAW";
+        FillSpectra(index,name
+          ,RawData->GetFront_DetectorNbr(i), 
+              RawData->GetPAD_DetectorNbr(i));
+    }
+  }
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
   static string index;
   static string name;
+
   // Front-Back
   unsigned int mysizeF = PreTreatedData->GetMultiplicityFront();
   unsigned int mysizeB = PreTreatedData->GetMultiplicityBack();
+  unsigned int mysizePAD = PreTreatedData->GetMultiplicityPAD(); 
 
   for (unsigned int i = 0; i < mysizeF; i++) {
     for (unsigned int j = 0; j < mysizeB; j++) {
@@ -377,7 +403,7 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
 
   //E-PAD ID
   mysize = PreTreatedData->GetMultiplicityFront();
-  unsigned int mysizePAD = PreTreatedData->GetMultiplicityPAD();
+  mysizePAD = PreTreatedData->GetMultiplicityPAD();
   for (unsigned int i = 0; i < mysize ; i++) {
     for (unsigned int j = 0; j < mysizePAD; j++) {
 
@@ -393,6 +419,18 @@ void TSharcSpectra::FillPreTreatedSpectra(TSharcData* PreTreatedData){
     }
   }
 
+  //DSSD-PAD Ndet Map 
+  mysize = PreTreatedData->GetMultiplicityFront();
+  mysizePAD = PreTreatedData->GetMultiplicityPAD();
+  for (unsigned int i = 0; i < mysize ; i++) {
+    for (unsigned int j = 0; j < mysizePAD; j++) {
+        index = "SHARC/CAL/MAP";
+        name = "SHARC_STR_PAD_DetN_CAL";
+        FillSpectra(index,name
+          ,PreTreatedData->GetFront_DetectorNbr(i), 
+              PreTreatedData->GetPAD_DetectorNbr(i));
+    }
+  }
 
 }
 
