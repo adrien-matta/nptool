@@ -32,7 +32,7 @@
 #include <TRandom3.h>
 #include <TVector3.h>
 #include <TMath.h>
-#include<TCutG.h>
+#include <TCutG.h>
 
 #include<fstream>
 #include<vector>
@@ -70,23 +70,22 @@ class Analysis: public NPL::VAnalysis{
   double TargetThickness ;
   // Beam Energy
   double OriginalBeamEnergy ; // AMEV
-                                                           // intermediate variable
+  // intermediate variable
   TRandom3 Rand ;
   int DetectorNumber  ;
   int RunNumber;
   int RunNumberMinor;
   double ThetaNormalTarget;
   double Energy ;
-  
-  double ThetaSharcSurface ;
+  double ThetaDetector;
+  double Si_E_Sharc ;  
   double X_Sharc ;
   double Y_Sharc ;
   double Z_Sharc ;
+  
   double X_Trifoil;
   double Y_Trifoil;
-  double ThetaDetector;
-  double Si_E_Sharc ;
-  double E_Sharc ;
+
   TSharcPhysics* Sharc;
   TPlasticPhysics* Trifoil;
 

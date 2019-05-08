@@ -66,7 +66,6 @@ void Analysis::Init(){
   RunNumber = 0;
   RunNumberMinor=0;
 
-  ThetaSharcSurface = 0;
   X_Sharc = 0 ;
   Y_Sharc = 0 ;
   Z_Sharc = 0 ;
@@ -74,7 +73,6 @@ void Analysis::Init(){
   Y_Trifoil = 0 ;
 
   Si_E_Sharc = 0 ;
-  E_Sharc = 0;
   ThetaDetector = 0   ;
   BeamDirection = TVector3(0,0,1);
   // S1554
