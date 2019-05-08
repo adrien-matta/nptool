@@ -79,6 +79,13 @@ void TSharcPhysics::BuildPhysicalEvent(){
 
   vector< TVector2 > couple = Match_Front_Back() ;
   EventMultiplicity = couple.size();
+  
+  /*
+  for(unsigned int i = 0 ; i < EventMultiplicity ; ++i){
+    cout << " iX= " << couple[i].X() << "  iY=" << couple[i].Y() << endl;
+  }
+  //CHECK
+  */
 
   unsigned int size = couple.size();
   for(unsigned int i = 0 ; i < size ; ++i){
@@ -99,30 +106,32 @@ void TSharcPhysics::BuildPhysicalEvent(){
     StripFront_T.push_back(Front_T) ;
     StripBack_E.push_back(Back_E) ;
     StripBack_T.push_back(Back_T) ;
+    Strip_Front.push_back(Front) ;
+    Strip_Back.push_back(Back) ;
 
     // Try to obtain Pixel Calibration
     static CalibrationManager* Cal = CalibrationManager::getInstance();
     static string name;
+    //Store for calibration purposes
+    Strip_Front_RawE.push_back(StripFront_OriginalE[couple[i].X()]);
+    Strip_Back_RawE.push_back(StripBack_OriginalE[couple[i].Y()]);
+    //Proceed for Pixel Calibration
     name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_E";
     double Pixel_E = Cal->ApplyCalibration(name,StripFront_OriginalE[couple[i].X()] );
-    Strip_Front_RawE.push_back(StripFront_OriginalE[couple[i].X()]);
     if(Pixel_E != StripFront_OriginalE[couple[i].X()]){
       Strip_E.push_back(Pixel_E);
       name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_BACK"+ NPL::itoa(Back)+"_DEADLAYER";
       DeadLayer.push_back(Cal->GetValue(name,0));
     }
-
     // Fall Back option, take the Strip Calibration
     else if(m_Take_E_Front){
       Strip_E.push_back(Front_E) ;
       name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_FRONT"+ NPL::itoa(Front)+"_DEADLAYER";
       DeadLayer.push_back(Cal->GetValue(name,0));
     }
-
-    
     else{
       Strip_E.push_back(Back_E) ;
-      name = "SHARC/D"+ NPL::itoa(N)+"_BACK"+ NPL::itoa(Back)+"_DEADLAYER";
+      name = "SHARC/D"+ NPL::itoa(N)+"_STRIP_BACK"+ NPL::itoa(Back)+"_DEADLAYER";
       DeadLayer.push_back(Cal->GetValue(name,0));
     }
 
@@ -131,25 +140,39 @@ void TSharcPhysics::BuildPhysicalEvent(){
     else
       Strip_T.push_back(Front_T) ;
 
-    Strip_Front.push_back(Front) ;
-    Strip_Back.push_back(Back) ;
-
     // Search for associate PAD
     check_PAD = false ;
     unsigned int sizePAD = m_PreTreatedData-> GetMultiplicityPAD();
-    for(unsigned int j = 0 ; j < sizePAD ; ++j){
+    for(unsigned int j = 0 ; j < sizePAD ; j++){
       if(m_PreTreatedData->GetPAD_DetectorNbr(j)==N){
         PAD_E.push_back( m_PreTreatedData-> GetPAD_Energy(j)) ;
         PAD_T.push_back( m_PreTreatedData-> GetPAD_TimeCFD(j)  ) ;
         check_PAD = true ;
       }
-
     }
-
+    // default for pad
     if(!check_PAD){
       PAD_E.push_back(-1000)   ;
       PAD_T.push_back(-1000)   ;
     }
+
+//CHECK
+   /* 
+    for(unsigned int j = 0 ; j < DetectorNumber.size() ; ++j){
+      cout << "DetectorNumber " <<(N)<<endl;
+      cout << "StripFront_E " <<(Front_E)<<endl;
+      cout << "StripFront_T " <<(Front_T) <<endl;
+      cout << "StripBack_E " <<(Back_E) <<endl;
+      cout << "StripBack_T " <<(Back_T) <<endl;
+      cout << "Strip_Front " <<(Front) <<endl;
+      cout << "Strip_Back " <<(Back) <<endl;
+    }
+
+    for(unsigned int j = 0 ; j < sizePAD ; ++j){
+      cout << " Pad E " << m_PreTreatedData-> GetPAD_Energy(j) << endl;
+    }
+    cin.get(); //CHECK
+    */
   }
 
   if(DetectorNumber.size()==1)
@@ -165,7 +188,7 @@ void TSharcPhysics::PreTreat(){
     if( m_EventData->GetFront_Energy(i)>m_StripFront_E_RAW_Threshold && IsValidChannel("Front", m_EventData->GetFront_DetectorNbr(i), m_EventData->GetFront_StripNbr(i)) ){
       double Front_E = fStrip_Front_E(m_EventData , i);
       if( Front_E > m_StripFront_E_Threshold ){
-        m_PreTreatedData->SetFront( m_EventData->GetFront_DetectorNbr(i),
+            m_PreTreatedData->SetFront( m_EventData->GetFront_DetectorNbr(i),
             m_EventData->GetFront_StripNbr(i),
             Front_E,
             m_EventData->GetFront_TimeCFD(i),
@@ -186,7 +209,9 @@ void TSharcPhysics::PreTreat(){
             m_EventData->GetBack_StripNbr(i),
             Back_E,
             m_EventData->GetBack_TimeCFD(i),
-            m_EventData->GetBack_TimeLED(i) );
+            m_EventData->GetBack_TimeLED(i));
+
+      StripBack_OriginalE.push_back( m_EventData->GetBack_Energy(i));
       }
     }
   }
@@ -194,7 +219,8 @@ void TSharcPhysics::PreTreat(){
   //  PAD
   unsigned int sizePAD = m_EventData->GetMultiplicityPAD();
   for(unsigned int i = 0 ; i < sizePAD ; i++){
-    if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold && IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1) ){
+    if( m_EventData->GetPAD_Energy(i)>m_PAD_E_RAW_Threshold && 
+        IsValidChannel("PAD", m_EventData->GetPAD_DetectorNbr(i),1) ){
       double PAD_E = fPAD_E(m_EventData , i);
       if( PAD_E > m_PAD_E_Threshold ){
         m_PreTreatedData->SetPAD( m_EventData->GetPAD_DetectorNbr(i),
@@ -204,7 +230,9 @@ void TSharcPhysics::PreTreat(){
       }
     }
   }
-
+  
+  //m_PreTreatedData->Dump();
+  //CHECK
   return;
 }
 
@@ -222,23 +250,38 @@ vector < TVector2 > TSharcPhysics :: Match_Front_Back(){
   if( m_PreTreatedData->GetMultiplicityFront() > m_MaximumStripMultiplicityAllowed || m_PreTreatedData->GetMultiplicityBack() > m_MaximumStripMultiplicityAllowed )
     return ArrayOfGoodCouple;
 
+  ArrayOfGoodCouple.clear();
   unsigned int mysizeF =  m_PreTreatedData->GetMultiplicityFront();
   unsigned int mysizeB =  m_PreTreatedData->GetMultiplicityBack();
+  //cout << " mysizeF/B = " << mysizeF << " " << mysizeB << endl; //CHECK
 
   for(unsigned int i = 0 ; i < mysizeF ; i++) {
     for(unsigned int j = 0 ; j < mysizeB ; j++){
+      //cout << "Det Number F/B = " << m_PreTreatedData->GetFront_DetectorNbr(i) << " =? " << m_PreTreatedData->GetBack_DetectorNbr(j) << endl;
       //   if same detector check energy
       if ( m_PreTreatedData->GetFront_DetectorNbr(i) == m_PreTreatedData->GetBack_DetectorNbr(j) ){
+        //cout << "Energy F= " << m_PreTreatedData->GetFront_Energy(i) << endl;
+        //cout << "Energy B= " << m_PreTreatedData->GetBack_Energy(j) << endl;
+        //cout << "abs(F-B)= " << abs( (m_PreTreatedData->GetFront_Energy(i)-m_PreTreatedData->GetBack_Energy(j))/2. ) << endl;
+        //cout << "Allowed difference = " << m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma << endl;
+
         //   Look if energy match
-        if( abs( (m_PreTreatedData->GetFront_Energy(i)-m_PreTreatedData->GetBack_Energy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma )
+        if( abs( (m_PreTreatedData->GetFront_Energy(i)-m_PreTreatedData->GetBack_Energy(j))/2. ) < m_StripEnergyMatchingNumberOfSigma*m_StripEnergyMatchingSigma ){
+          //cout << " Good Couple!! " << endl;
           ArrayOfGoodCouple.push_back ( TVector2(i,j) ) ;
-      }
+        }
+
+      }  
     }
   }
+
+  //cout << " Good couples = " << ArrayOfGoodCouple.size()  << "  must.be.less.then  " << m_PreTreatedData->GetMultiplicityFront() << endl;
 
   //  Prevent to treat event with ambiguous matching beetween Front and Back
   if( ArrayOfGoodCouple.size() > m_PreTreatedData->GetMultiplicityFront() ) 
     ArrayOfGoodCouple.clear() ;
+  
+  //cout << " final size = " << ArrayOfGoodCouple.size() << endl;
 
   return ArrayOfGoodCouple;
 }
@@ -446,8 +489,10 @@ void TSharcPhysics::Clear(){
   Strip_Front.clear() ;
   Strip_Back.clear() ;
   StripFront_OriginalE.clear();
+  StripBack_OriginalE.clear();
   DeadLayer.clear();
   Strip_Front_RawE.clear(); 
+  Strip_Back_RawE.clear();
   // PAD
   PAD_E.clear() ;
   PAD_T.clear() ;
@@ -595,8 +640,8 @@ void TSharcPhysics::InitializeRootInputPhysics(){
   inputChain->SetBranchStatus( "Strip_E" , true );
   inputChain->SetBranchStatus( "Strip_T" , true );
   inputChain->SetBranchStatus( "StripFront_E" , true );
-  inputChain->SetBranchStatus( "StripBack_T" , true );
-  inputChain->SetBranchStatus( "StripFront_E" , true );
+  inputChain->SetBranchStatus( "StripFront_T" , true );
+  inputChain->SetBranchStatus( "StripBack_E" , true );
   inputChain->SetBranchStatus( "StripBack_T" , true );
   inputChain->SetBranchStatus( "Strip_Front" , true );
   inputChain->SetBranchStatus( "Strip_Back" , true );

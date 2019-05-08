@@ -82,9 +82,11 @@ class TSharcPhysics : public TObject, public NPL::VDetector{
 
     // Used to apply Pixel Cal
     vector<double> StripFront_OriginalE; //!
+    vector<double> StripBack_OriginalE; //!
     vector<double> DeadLayer; //!    
     // Used for Calibration
     vector<double> Strip_Front_RawE;
+    vector<double> Strip_Back_RawE;
 
   public:      //   Innherited from VDetector Class
 
