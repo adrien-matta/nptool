@@ -306,9 +306,6 @@ double   EnergyLoss::EvaluateEnergyFromDeltaE(  double DeltaE           , // Ene
   const 
 {
 
-  if (Angle > halfpi) Angle = pi-Angle;
-  TargetThickness = TargetThickness / ( cos(Angle) );
-
   double step_size = 10.*MeV;
   double Energy = EnergyMax;
   double DE = 0 ;
