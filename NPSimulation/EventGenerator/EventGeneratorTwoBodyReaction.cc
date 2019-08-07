@@ -132,6 +132,8 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   // Nucleus 3
   G4int LightZ = m_Reaction->GetNucleus3().GetZ() ;
   G4int LightA = m_Reaction->GetNucleus3().GetA() ;
+  //cout << "LightZ " << LightZ << " LightA " << LightA << endl;
+
   
   G4ParticleDefinition* LightName;
   // If a single excitation energy was given use it
@@ -271,7 +273,7 @@ void EventGeneratorTwoBodyReaction::GenerateEvent(G4Event*){
   // Kinematical angles in the beam frame are transformed
   // to the "world" frame
   momentum_kine_world = BeamToWorld * momentum_kineHeavy_beam;
-  Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, BeamParticle.GetParticlePosition(), 1);
+  Particle HeavyParticle(HeavyName, ThetaCM + M_PI, EnergyHeavy,momentum_kine_world, BeamParticle.GetParticlePosition(), m_ShootHeavy);
 
 
   // DANNY'S KLUDGE

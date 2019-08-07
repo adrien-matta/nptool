@@ -157,16 +157,27 @@ void Spede::BuildFoil(G4double thickness,
     double foilInnerHole = 10.;
     double foilOuterRadius = 30.;
 
+    double Al_thickness = 0.005;
     G4Tubs* Foil = new G4Tubs("Foil ",
         foilInnerHole*mm,
         foilOuterRadius*mm,
         thickness/2*mm,
+        0.*deg, 360.*deg);
+
+    G4Tubs* Foil_Al = new G4Tubs("Foil_Al ",
+        foilInnerHole*mm,
+        foilOuterRadius*mm,
+        Al_thickness/2*mm,
         0.*deg, 360.*deg);
     
     G4Material* Mylar= MaterialManager::getInstance()->GetMaterialFromLibrary("Mylar");
     m_Foil = new G4LogicalVolume(Foil, Mylar, "Foil_log");
     G4VisAttributes *foilVA = new G4VisAttributes(G4Colour(0.,0.5,0.5));
     m_Foil -> SetVisAttributes(foilVA);
+    G4Material* Aluminium= MaterialManager::getInstance()->GetMaterialFromLibrary("Al");
+    m_Foil_Al = new G4LogicalVolume(Foil_Al, Aluminium, "Foil_log");
+    G4VisAttributes *foil_AlVA = new G4VisAttributes(G4Colour(0.9,0.9,0.9));
+    m_Foil_Al -> SetVisAttributes(G4VisAttributes::Invisible);
 
 	G4double fs_thickness = 2.;
 	G4Tubs* spede_fs = new G4Tubs("SpedeFoilSupport",50./2.*mm,60./2.*mm,fs_thickness/2.*mm,0,360*deg);
@@ -192,6 +203,8 @@ void Spede::BuildFoil(G4double thickness,
 
 	G4ThreeVector fs_pos_front = Det_pos - Det_pos.unit()*(thickness+fs_thickness/2);
 
+	G4ThreeVector Al_pos = Det_pos - Det_pos.unit()*(thickness+Al_thickness/2);
+
 	new G4PVPlacement(G4Transform3D(*Rot,fs_pos_front),
 			m_SPEDE_fs_front,
 			"SPEDE_fs_front", world, false,0);
@@ -199,6 +212,10 @@ void Spede::BuildFoil(G4double thickness,
 	new G4PVPlacement(G4Transform3D(*Rot,Det_pos),
 			m_Foil,
 			"foil",world,false, 0);
+
+	new G4PVPlacement(G4Transform3D(*Rot,Al_pos),
+			m_Foil_Al,
+			"foil Al",world,false, 0);
 
     return;
 }

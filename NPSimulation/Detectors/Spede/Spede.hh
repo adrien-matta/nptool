@@ -75,6 +75,7 @@ class Spede : public NPS::VDetector{
   private:
     G4LogicalVolume* m_SiliconDetector;
     G4LogicalVolume* m_Foil;
+    G4LogicalVolume* m_Foil_Al;
     G4LogicalVolume* m_Ladder;
 
 	//Variables for electromagnetic field
