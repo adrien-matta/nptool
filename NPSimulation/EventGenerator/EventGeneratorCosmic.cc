@@ -6,13 +6,14 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Original Author: Adrien MATTA  contact address: matta@lpccaen.in2p3.fr    *
+ * Original Author: Elidiano TRONCHIN                                        *
+ * contact address: elidiano.tronchin(at)gmail.com                           *
  *                                                                           *
- * Creation Date  : January 2009                                             *
+ * Creation Date  : November 2018                                            *
  * Last update    :                                                          *
  *---------------------------------------------------------------------------*
  * Decription:                                                               *
- *  This event Generator is used to simulated Isotropic ion Source           *
+ *  This event Generator is used to simulated Cosmic Rays                    *
  *  Very usefull to figure out Geometric Efficacity of experimental Set-Up   *
  *---------------------------------------------------------------------------*
  * Comment:                                                                  *
