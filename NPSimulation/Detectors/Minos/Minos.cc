@@ -706,7 +706,7 @@ void Minos::ConstructDetector(G4LogicalVolume* world){
     // }
 
     new G4PVPlacement(0,//its name
-        G4ThreeVector(wX,wY, wZ + ChamberLength - m_TargetLength[i]-WindowThickness*2. - 11*mm ),	// Z positioning putting TPC beginn and Target beginning w/ difference of 11mm 
+        G4ThreeVector(wX,wY, wZ + ChamberLength - m_TargetLength[i]-WindowThickness*2. - 5*mm ),	// Z positioning putting TPC beginn and Target beginning w/ difference of 5mm 
         BuildTPC(),	//its logical volume
         "TPC",	//its name
         world,	//its mother  volume
