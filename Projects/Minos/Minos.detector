@@ -14,10 +14,10 @@
 % Shape= Square
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Minos
-  R= 35 mm
-  THETA= 90 deg
+  R= 0 mm
+  THETA= 0 deg
   POS = 0 0 -50 cm
-  PHI= 63 deg
+  PHI= 0 deg
   TargetLength = 152.76 mm
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
