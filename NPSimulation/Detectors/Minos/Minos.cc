@@ -246,7 +246,7 @@ void Minos::DefineMaterials()
   Ar_iso_95_5->GetIonisation()->SetMeanExcitationEnergy(25.0*eV);
 
   G4Material* LH2 = 
-    new G4Material("LH2", density= 0.0715*g/cm3, ncomponents=1);
+    new G4Material("LH2", density= 0.07293*g/cm3, ncomponents=1);
   LH2->AddElement(H, natoms=2);
 
   G4Material* Myl = 
