@@ -73,7 +73,7 @@ namespace Dali_NS{
   // Energy and time Resolution
   const double EnergyThreshold = 0*MeV;
   const double ResoTime = 0.0*ns; //4.5*ns ;
-  const double ResoEnergy = 0.51*MeV ; // mean Resolution(FWHM) 1.7% of 80MeV from slides 20170214-SAMURAI34-setup-DALI.pdf if 1.7% of 30MeV = 0.51 MeV // 0.001*MeV ;
+  const double ResoEnergy = 1.36*MeV ; // mean Resolution(FWHM) 1.7% of 80MeV from slides 20170214-SAMURAI34-setup-DALI.pdf if 1.7% of 30MeV = 0.51 MeV // 0.001*MeV ;
   const double Radius = 50*mm ; 
   const double Width = 49.76*mm ;
   const double Hight = 84.81*mm ;
@@ -308,11 +308,6 @@ G4LogicalVolume* Dali::BuildSquareDetector(){
                       0);
 
 
-
-
-    
-                                                
-    
     // MgO Volume -
     new G4PVPlacement(0, positionnull,
                                              m_SquareDetector_CanMgO,
