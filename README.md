@@ -1,3 +1,11 @@
+IMPORTANT
+=========
+
+nptool has moved away. The repository has been transferred to the gitlab in2p3 service for more consistency. The entire repository has been cloned, you can now use the repository at : https://gitlab.in2p3.fr/np/nptool
+
+for more information, contact Adrien Matta at matta@lpccaen.in2p3.fr
+
+
 NPTool
 ======
 
