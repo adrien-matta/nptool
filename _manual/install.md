@@ -14,12 +14,12 @@ easy way to access the last version of the code. First make sure you have git
 installed. If not, use your package manager to get it. Then go to the directory
 where you want to install the NPTool package and do:
 {% highlight bash %}
-$ git clone https://github.com/adrien-matta/nptool
+$ git clone https://gitlab.in2p3.fr/np/nptool
 {% endhighlight %}
 This will create the nptool folder with the latest version of NPTool.
 
 ### Downloading from Git Hub
-Alternatively, you can browse the following page https://github.com/adrien-matta/nptool,
+Alternatively, you can browse the following page https://gitlab.in2p3.fr/np/nptool,
 and click the Download ZIP button on the right side of the page. Then, unzip
 the archive at the desire location
 
