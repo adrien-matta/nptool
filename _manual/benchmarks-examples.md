@@ -10,7 +10,7 @@ show_in_nav: false
 You need to download additional files to be able to run the benchmarks and
 the examples. In the $NPTOOL directory, do the following:
 {% highlight bash %}
-$ git clone https://gitlab.in2p3.fr/np/nptool
+$ git clone https://gitlab.in2p3.fr/np/NPData
 {% endhighlight %}
 
 ### Benchmarks
